@@ -10,7 +10,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -56,7 +56,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken1,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -65,15 +65,15 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
     );
-    liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken1);
-    liqId2 = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken1);
+    liqId2 = await getLiquidityAssetId(GASP_ASSET_ID, newToken2);
     testLog.getLog().info("liqId: " + liqId.toString());
     testLog.getLog().info("liqId2: " + liqId2.toString());
   });
@@ -84,7 +84,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser0,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken1,
             newToken1,
             Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -99,13 +99,13 @@ describe("Proof of stake tests", () => {
     test("Reward a pool is not free of cost", async () => {
       const testUser = testUser1;
       const amountToReward = Assets.DEFAULT_AMOUNT.muln(10e6);
-      testUser.addAssets([MGA_ASSET_ID, newToken1, newToken2]);
+      testUser.addAssets([GASP_ASSET_ID, newToken1, newToken2]);
       await testUser.refreshAmounts();
 
       await signTx(
         getApi(),
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken2,
           newToken2,
           amountToReward,
@@ -119,7 +119,7 @@ describe("Proof of stake tests", () => {
       await testUser.refreshAmounts(AssetWallet.AFTER);
       const diff = testUser.getWalletDifferences();
       expect(
-        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)?.diff
+        diff.find((assetDiff) => assetDiff.currencyId === GASP_ASSET_ID)?.diff
           .free,
       ).bnLt(BN_ZERO);
 
@@ -129,11 +129,11 @@ describe("Proof of stake tests", () => {
     test("Activate - deactivate is free if success", async () => {
       const testUser = testUser0;
       const amountToActivate = Assets.DEFAULT_AMOUNT;
-      testUser.addAssets([MGA_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
+      testUser.addAssets([GASP_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
       await signTx(
         getApi(),
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken1,
           amountToActivate,
           amountToActivate.muln(2),
@@ -157,7 +157,7 @@ describe("Proof of stake tests", () => {
       await testUser.refreshAmounts(AssetWallet.AFTER);
       const diff = testUser.getWalletDifferences();
       expect(
-        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)?.diff
+        diff.find((assetDiff) => assetDiff.currencyId === GASP_ASSET_ID)?.diff
           .free,
       ).toBeUndefined();
       expect(
@@ -186,7 +186,7 @@ describe("Proof of stake tests", () => {
       await testUser.refreshAmounts(AssetWallet.AFTER);
       const diffDeact = testUser.getWalletDifferences();
       expect(
-        diffDeact.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)
+        diffDeact.find((assetDiff) => assetDiff.currencyId === GASP_ASSET_ID)
           ?.diff.free,
       ).toBeUndefined();
       expect(
@@ -204,7 +204,7 @@ describe("Proof of stake tests", () => {
     test("Activate - deactivate is not free if fails", async () => {
       const testUser = testUser0;
       const amountToActivate = Assets.DEFAULT_AMOUNT;
-      testUser.addAssets([MGA_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
+      testUser.addAssets([GASP_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
       await testUser.refreshAmounts();
 
       await signTx(
@@ -222,7 +222,7 @@ describe("Proof of stake tests", () => {
       await testUser.refreshAmounts(AssetWallet.AFTER);
       const diff = testUser.getWalletDifferences();
       expect(
-        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)?.diff
+        diff.find((assetDiff) => assetDiff.currencyId === GASP_ASSET_ID)?.diff
           .free,
       ).bnLt(BN_ZERO);
 
@@ -245,7 +245,7 @@ describe("Proof of stake tests", () => {
       await testUser.refreshAmounts(AssetWallet.AFTER);
       const diffDeact = testUser.getWalletDifferences();
       expect(
-        diffDeact.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)
+        diffDeact.find((assetDiff) => assetDiff.currencyId === GASP_ASSET_ID)
           ?.diff.free,
       ).bnLt(BN_ZERO);
       // only MGX token must be affected
@@ -257,7 +257,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser,
           Xyk.mintLiquidity(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken1,
             Assets.DEFAULT_AMOUNT,
             Assets.DEFAULT_AMOUNT.muln(2),
@@ -276,7 +276,7 @@ describe("Proof of stake tests", () => {
         expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
       await testUser.refreshAmounts();
-      testUser.addAssets([MGA_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
+      testUser.addAssets([GASP_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
       await testUser.refreshAmounts();
       await signTx(
         getApi(),
@@ -289,7 +289,7 @@ describe("Proof of stake tests", () => {
       await testUser.refreshAmounts(AssetWallet.AFTER);
       const diff = testUser.getWalletDifferences();
       expect(
-        diff.find((assetDiff) => assetDiff.currencyId === MGA_ASSET_ID)?.diff
+        diff.find((assetDiff) => assetDiff.currencyId === GASP_ASSET_ID)?.diff
           .free,
       ).bnLt(BN_ZERO);
 

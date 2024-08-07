@@ -17,7 +17,7 @@ import {
 import { devTestingPairs, setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { KSM_ASSET_ID, MGA_ASSET_ID } from "../../utils/Constants";
+import { KSM_ASSET_ID, GASP_ASSET_ID } from "../../utils/Constants";
 import { SudoUser } from "../../utils/Framework/User/SudoUser";
 import { Node } from "../../utils/Framework/Node/Node";
 import {
@@ -109,7 +109,7 @@ describe("UI XCM tests - KSM", () => {
     );
 
     testUser1.addAsset(KSM_ASSET_ID);
-    testUser1.addAsset(MGA_ASSET_ID);
+    testUser1.addAsset(GASP_ASSET_ID);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
   });
 

@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   ExtrinsicResult,
   waitSudoOperationSuccess,
@@ -64,7 +64,7 @@ beforeAll(async () => {
     null,
     thresholdValue,
     [
-      [MGA_ASSET_ID, true],
+      [GASP_ASSET_ID, true],
       [firstCurrency, true],
     ],
   );
@@ -98,13 +98,13 @@ beforeAll(async () => {
       Xyk.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         defaultPoolVolumeValue,
       ),
     ),
   );
 
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(secondCurrency);
   testUser1.addAsset(thirdCurrency);
@@ -135,25 +135,25 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //MGA pool
   expect(
     await mangata?.rpc.isSellAssetLockFree(
-      [firstCurrency.toString(), MGA_ASSET_ID.toString()],
+      [firstCurrency.toString(), GASP_ASSET_ID.toString()],
       thresholdValue.subn(2),
     ),
   ).toBeFalsy();
   expect(
     await mangata?.rpc.isSellAssetLockFree(
-      [MGA_ASSET_ID.toString(), firstCurrency.toString()],
+      [GASP_ASSET_ID.toString(), firstCurrency.toString()],
       thresholdValue.subn(2),
     ),
   ).toBeFalsy();
   expect(
     await mangata?.rpc.isSellAssetLockFree(
-      [MGA_ASSET_ID.toString(), firstCurrency.toString()],
+      [GASP_ASSET_ID.toString(), firstCurrency.toString()],
       thresholdValue,
     ),
   ).toBeTruthy();
   expect(
     await mangata?.rpc.isSellAssetLockFree(
-      [firstCurrency.toString(), MGA_ASSET_ID.toString()],
+      [firstCurrency.toString(), GASP_ASSET_ID.toString()],
       thresholdValue,
     ),
   ).toBeTruthy();
@@ -231,7 +231,7 @@ test("gasless- isFree works same as multiswap of two", async () => {
   );
   expect(isFree).toBeTruthy();
   const mgasBef = await mangata?.query.getTokenBalance(
-    MGA_ASSET_ID.toString(),
+    GASP_ASSET_ID.toString(),
     testUser1.keyRingPair.address,
   );
   const events = await mangata?.xyk.multiswapSellAsset({
@@ -247,7 +247,7 @@ test("gasless- isFree works same as multiswap of two", async () => {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
 
   const mgasAfter = await mangata?.query.getTokenBalance(
-    MGA_ASSET_ID.toString(),
+    GASP_ASSET_ID.toString(),
     testUser1.keyRingPair.address,
   );
   expect(mgasBef?.reserved).bnEqual(BN_ZERO);

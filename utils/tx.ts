@@ -17,7 +17,7 @@ import { getApi, getMangataInstance } from "./api";
 import {
   ETH_ASSET_ID,
   MAX_BALANCE,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   MGA_DEFAULT_LIQ_TOKEN,
 } from "./Constants";
 import { Fees } from "./Fees";
@@ -814,12 +814,12 @@ async function mintMgas(account: KeyringPair) {
   const sudo = getSudoUser();
   const user = new User(keyring);
   user.addFromAddress(keyring, account.address);
-  await user.addMGATokens(sudo);
+  await user.addGASPTokens(sudo);
 }
 export async function createPoolIfMissing(
   sudo: SudoUser,
   amountInPool: string,
-  firstAssetId = MGA_ASSET_ID,
+  firstAssetId = GASP_ASSET_ID,
   seccondAssetId = ETH_ASSET_ID,
   promoted = false,
 ) {
@@ -848,7 +848,7 @@ export async function createPoolIfMissing(
       .withFn(
         sudo.node.api!.tx.sudo.sudo(
           sudo.node.api!.tx.tokens.mint(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             sudo.keyRingPair.address,
             new BN(Math.pow(10, 20).toString()),
           ),
@@ -987,6 +987,51 @@ export async function registerAsset(
   );
 }
 
+export async function registerL1Asset(
+  sudoUser: User,
+  assetId: BN | null,
+  l1AssetChain = "Ethereum",
+  tokenAddress: string,
+) {
+  const api = getApi();
+  let l1Asset: any;
+  let locMarker: string;
+  if (l1AssetChain === "Ethereum") {
+    l1Asset = {
+      Ethereum: tokenAddress,
+    };
+  } else {
+    l1Asset = {
+      Arbitrum: tokenAddress,
+    };
+  }
+  if (assetId === null) {
+    locMarker = "";
+  } else {
+    locMarker = assetId.toString();
+  }
+  return await signTx(
+    api,
+    api.tx.sudo.sudo(
+      api.tx.assetRegistry.registerL1Asset(
+        {
+          decimals: 18,
+          name: "TEST_TOKEN-" + locMarker,
+          symbol: "TEST" + locMarker,
+          existentialDeposit: 0,
+        },
+        //@ts-ignore
+        assetId,
+        l1Asset,
+      ),
+    ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
+  );
+}
+
 export async function updateAsset(
   sudoUser: User,
   assetId: any,
@@ -1008,6 +1053,33 @@ export async function updateAsset(
         additional,
       ),
     ),
+    sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
+  );
+}
+
+export async function updateL1Asset(
+  sudoUser: User,
+  assetId: BN,
+  l1AssetChain = "Ethereum",
+  tokenAddress: string,
+) {
+  const api = getApi();
+  let l1Asset: any;
+  if (l1AssetChain === "Ethereum") {
+    l1Asset = {
+      Ethereum: tokenAddress,
+    };
+  } else {
+    l1Asset = {
+      Arbitrum: tokenAddress,
+    };
+  }
+  return await signTx(
+    api,
+    api.tx.sudo.sudo(api.tx.assetRegistry.updateL1AssetData(assetId, l1Asset)),
     sudoUser.keyRingPair,
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),

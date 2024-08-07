@@ -27,7 +27,7 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_BILLION, BN_TEN_THOUSAND, BN_ZERO } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -122,7 +122,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     const feeLockAmount = stringToBN(
       JSON.parse(JSON.stringify(meta)).feeLockAmount.toString(),
     );
-    let tokenList = tokenIds.concat(MGA_ASSET_ID);
+    let tokenList = tokenIds.concat(GASP_ASSET_ID);
     tokenList = tokenList.reverse();
     testUser0.addAssets(tokenList);
     await testUser0.refreshAmounts(AssetWallet.BEFORE);
@@ -132,7 +132,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     await testUser0.refreshAmounts(AssetWallet.AFTER);
     const diff = testUser0.getWalletDifferences();
     expect(
-      diff.find((x) => x.currencyId === MGA_ASSET_ID)?.diff.reserved,
+      diff.find((x) => x.currencyId === GASP_ASSET_ID)?.diff.reserved,
     ).bnEqual(feeLockAmount);
   });
   test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
@@ -163,14 +163,14 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
   });
   test("[gasless] Fail on swap when selling remove all MGAs", async () => {
     const testUser = users[1];
-    let tokenList = tokenIds.concat(MGA_ASSET_ID);
+    let tokenList = tokenIds.concat(GASP_ASSET_ID);
     tokenList = tokenList.reverse();
     testUser.addAssets(tokenList);
     await testUser.refreshAmounts(AssetWallet.BEFORE);
     const events = await multiSwapSell(
       testUser,
       tokenList,
-      testUser.getAsset(MGA_ASSET_ID)?.amountBefore.free!,
+      testUser.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const swapErrorEvent = await getEventResultFromMangataTx(events, [

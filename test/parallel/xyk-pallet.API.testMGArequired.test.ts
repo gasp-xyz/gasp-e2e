@@ -144,7 +144,7 @@ test("xyk-pallet - User Balance - Selling an asset does not require paying fees"
   );
   //TODO:swapFees
   if (Fees.swapFeesEnabled) {
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
   }
   let exception = false;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -176,7 +176,7 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
   );
   //TODO:swapFees
   if (Fees.swapFeesEnabled) {
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
   }
   let exception = false;
   await testUser1.refreshAmounts(AssetWallet.BEFORE);

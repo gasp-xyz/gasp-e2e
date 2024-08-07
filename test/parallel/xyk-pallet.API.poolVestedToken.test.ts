@@ -8,7 +8,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   getEventResultFromMangataTx,
   sudoIssueAsset,
@@ -57,7 +57,7 @@ async function createPoolAndVestingToken(
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         defaultCurrencyValue,
         createdToken,
         defaultCurrencyValue,
@@ -65,7 +65,7 @@ async function createPoolAndVestingToken(
     ),
   );
 
-  liquidityID = await getLiquidityAssetId(MGA_ASSET_ID, createdToken);
+  liquidityID = await getLiquidityAssetId(GASP_ASSET_ID, createdToken);
 
   if (needPromotePool) {
     const promotingPool = await promotePool(sudo.keyRingPair, liquidityID);
@@ -76,7 +76,7 @@ async function createPoolAndVestingToken(
   const vestingStartBlockNumber = (await getBlockNumber()) + 5;
   await vestingTransfer(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     sudo,
     testUser1,
     vestingStartBlockNumber,
@@ -156,7 +156,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     const burnLiudityResult = await burnLiquidity(
       testUser1.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       createdToken,
       new BN(150000),
     );
@@ -229,7 +229,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       createdToken,
       new BN(maxInstantBurnAmount),
     );
@@ -315,7 +315,7 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       createdToken,
       new BN(maxInstantBurnAmount),
     );

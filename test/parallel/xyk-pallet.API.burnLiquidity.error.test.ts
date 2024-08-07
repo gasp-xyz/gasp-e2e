@@ -55,7 +55,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
   });
 
   test("Burn liquidity assets that does not belong to any pool", async () => {
@@ -119,7 +119,7 @@ describe("xyk-pallet - Burn liquidity tests: BurnLiquidity Errors:", () => {
     //create a new user
     const testUser2 = new User(keyring);
     keyring.addPair(testUser2.keyRingPair);
-    await testUser2.addMGATokens(sudo);
+    await testUser2.addGASPTokens(sudo);
     [firstCurrency, secondCurrency] = await UserCreatesAPoolAndMintLiquidity(
       testUser1,
       sudo,

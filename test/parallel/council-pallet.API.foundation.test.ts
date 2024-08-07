@@ -16,9 +16,9 @@ import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 
 import { BN_THOUSAND } from "@polkadot/util";
-import { BN_HUNDRED } from "gasp-sdk";
+import { BN_HUNDRED, MangataGenericEvent } from "gasp-sdk";
 import { User } from "../../utils/User";
-import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
+import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
 import { findErrorMetadata, waitForNBlocks } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Maintenance } from "../../utils/Maintenance";
@@ -29,6 +29,7 @@ import {
 import { Option } from "@polkadot/types-codec";
 import { Call } from "@polkadot/types/interfaces";
 import { Council } from "../../utils/Council";
+import BN from "bn.js";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -283,7 +284,7 @@ async function createProposals(users: User[], num = 10): Promise<string[]> {
       users.length,
       api.tx.sudoOrigin.sudo(
         api.tx.tokens.mint(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           userToSubmit.keyRingPair.address,
           new BN(i).addn(1),
         ),

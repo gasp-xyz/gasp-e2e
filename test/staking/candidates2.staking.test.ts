@@ -19,7 +19,7 @@ import {
 } from "../../utils/Staking";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -67,14 +67,14 @@ beforeAll(async () => {
     Assets.mintToken(tokenId2, testUser4, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser3,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3)),
+      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3)),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.createPool(MGA_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3)),
+      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3)),
     ),
   );
-  const liqToken1 = await getLiquidityAssetId(MGA_ASSET_ID, tokenId1);
+  const liqToken1 = await getLiquidityAssetId(GASP_ASSET_ID, tokenId1);
   await Sudo.asSudoFinalized(
     Sudo.sudo(Staking.addStakingLiquidityToken(liqToken1)),
   );
@@ -84,13 +84,13 @@ describe("Test candidates actions: Collision by liq token", () => {
   beforeEach(async () => {});
   it("A candidate can join to the aggregator list when no more candidate joined with the same staking token", async () => {
     const aggregator = testUser1;
-    const liqToken1 = await getLiquidityAssetId(MGA_ASSET_ID, tokenId1);
+    const liqToken1 = await getLiquidityAssetId(GASP_ASSET_ID, tokenId1);
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
         testUser2,
         await Staking.joinAsCandidate(
           minStk.muln(2),
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenOriginEnum.AvailableBalance,
         ),
       ),
@@ -98,7 +98,7 @@ describe("Test candidates actions: Collision by liq token", () => {
         testUser4,
         await Staking.joinAsCandidate(
           minStk.muln(2),
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenOriginEnum.AvailableBalance,
         ),
       ),

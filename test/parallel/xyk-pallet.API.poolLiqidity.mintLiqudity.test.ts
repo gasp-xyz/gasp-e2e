@@ -6,8 +6,8 @@
 import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO } from "gasp-sdk";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -64,7 +64,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -73,7 +73,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -81,8 +81,8 @@ beforeAll(async () => {
     ),
   );
 
-  liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  liqIdNonPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  liqIdPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+  liqIdNonPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token2);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
@@ -97,7 +97,7 @@ test("Check that a user that mints on a promoted pool liquidity tokens are reser
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await mintLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
   );
@@ -121,7 +121,7 @@ test("Check that a user that mints on a non-promoted pool liquidity tokens are f
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await mintLiquidity(
     testUser1.keyRingPair,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     token2,
     defaultCurrencyValue,
   );

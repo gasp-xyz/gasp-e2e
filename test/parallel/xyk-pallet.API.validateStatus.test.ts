@@ -7,8 +7,8 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO } from "gasp-sdk";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -65,14 +65,14 @@ describe("Validate initial status", () => {
       Sudo.sudoAs(
         testUser,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.divn(2),
           token1,
           Assets.DEFAULT_AMOUNT.divn(2),
         ),
       ),
     );
-    liqId = await getLiquidityAssetId(MGA_ASSET_ID, token1);
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
     await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 
     await Sudo.batchAsSudoFinalized(
@@ -93,7 +93,7 @@ describe("Validate initial status", () => {
 
     await mintLiquidity(
       testUser1.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       token1,
       defaultCurrencyValue,
     );
@@ -137,7 +137,7 @@ describe("Validate initial status", () => {
 
     await mintLiquidity(
       testUser1.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       token1,
       defaultCurrencyValue,
     );

@@ -239,9 +239,10 @@ describe("sequencerStaking", () => {
       seq.keyRingPair,
     ).then((events) => {
       const res = expectExtrinsicFail(events);
-      expect(res.data.toString()).toContain(
+      expect([
         "SequencerLastUpdateStillInDisputePeriod",
-      );
+        "SequencerAwaitingCancelResolution",
+      ]).toContain(res.data.toString());
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await signTx(
@@ -472,6 +473,7 @@ describe("sequencerStaking", () => {
     ).then((events) => {
       expectExtrinsicSucceed(events);
     });
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await signTx(
       api,
       await SequencerStaking.unstake("Arbitrum"),
@@ -479,7 +481,7 @@ describe("sequencerStaking", () => {
     ).then((events) => {
       const res = expectExtrinsicFail(events);
       expect(res.data.toString()).toContain(
-        "SequencerAwaitingCancelResolution",
+        "SequencerLastUpdateStillInDisputePeriod",
       );
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());

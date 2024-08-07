@@ -54,8 +54,8 @@ beforeEach(async () => {
   bank = new Bank(sudo);
 
   // Fund accounts
-  await voter.addMGATokens(bank.sudoUser, new BN(Math.pow(10, 17).toString()));
-  await candidate.addMGATokens(
+  await voter.addGASPTokens(bank.sudoUser, new BN(Math.pow(10, 17).toString()));
+  await candidate.addGASPTokens(
     bank.sudoUser,
     new BN(Math.pow(10, 16).toString()),
   );

@@ -3,7 +3,7 @@ import {
   BTC_ASSET_NAME,
   DOT_ASSET_NAME,
   FIVE_MIN,
-  MGA_ASSET_NAME,
+  GASP_ASSET_NAME,
   USDC_ASSET_NAME,
 } from "../../Constants";
 import { getEnvironmentRequiredVars, sleep } from "../../utils";
@@ -66,7 +66,7 @@ export class Mangata {
   async waitForFaucetToGenerateTokens(timeOut = FIVE_MIN) {
     const sidebar = new Sidebar(this.driver);
     const promises: Promise<void>[] = [];
-    [MGA_ASSET_NAME, DOT_ASSET_NAME, BTC_ASSET_NAME, USDC_ASSET_NAME].forEach(
+    [GASP_ASSET_NAME, DOT_ASSET_NAME, BTC_ASSET_NAME, USDC_ASSET_NAME].forEach(
       async function (value) {
         promises.push(sidebar.waitUntilTokenAvailable(value, timeOut));
       },

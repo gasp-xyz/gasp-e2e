@@ -10,7 +10,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -63,7 +63,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -72,7 +72,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser2,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -81,7 +81,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser2,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -99,7 +99,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           newToken,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -109,7 +109,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken2,
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -119,7 +119,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser3,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           Assets.DEFAULT_AMOUNT,
           Assets.DEFAULT_AMOUNT.muln(2),
@@ -128,7 +128,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           newToken,
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -141,8 +141,8 @@ describe("Proof of stake tests", () => {
   describe("Activation rewards scenarios", () => {
     test("A user can activate some rewards", async () => {
       const testUser = testUser1;
-      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
-      testUser.addAssets([liqId, newToken, MGA_ASSET_ID]);
+      const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
+      testUser.addAssets([liqId, newToken, GASP_ASSET_ID]);
       await testUser.refreshAmounts();
       await signTx(
         getApi(),
@@ -181,7 +181,7 @@ describe("Proof of stake tests", () => {
     });
     test("A user can activate twice some rewards", async () => {
       const testUser = testUser2;
-      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
+      const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken2);
       testUser.addAssets([liqId, newToken2]);
       await testUser.refreshAmounts();
       await signTx(
@@ -207,7 +207,7 @@ describe("Proof of stake tests", () => {
       ).bnEqual(Assets.DEFAULT_AMOUNT.neg());
       const withoutMgx = diff.filter(
         (assetDiff) =>
-          assetDiff.currencyId.toNumber() !== MGA_ASSET_ID.toNumber(),
+          assetDiff.currencyId.toNumber() !== GASP_ASSET_ID.toNumber(),
       );
       expect(withoutMgx).toHaveLength(1);
 
@@ -240,8 +240,8 @@ describe("Proof of stake tests", () => {
     test("A user can activate rewards that were activated on some other schedules", async () => {
       const testUser = testUser3;
       //user3 has mgx anf new token. He can provide liq on mgx/new token and mgx/new token2 rewards
-      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
-      testUser.addAssets([liqId, newToken, newToken3, MGA_ASSET_ID]);
+      const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
+      testUser.addAssets([liqId, newToken, newToken3, GASP_ASSET_ID]);
       await testUser.refreshAmounts();
       await waitIfSessionWillChangeInNblocks(6);
       const totalActivatedBefore =
@@ -272,7 +272,7 @@ describe("Proof of stake tests", () => {
       ).bnEqual(Assets.DEFAULT_AMOUNT.neg());
       const withoutMgx = diff.filter(
         (assetDiff) =>
-          assetDiff.currencyId.toNumber() !== MGA_ASSET_ID.toNumber(),
+          assetDiff.currencyId.toNumber() !== GASP_ASSET_ID.toNumber(),
       );
       expect(withoutMgx).toHaveLength(1);
 

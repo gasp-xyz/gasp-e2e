@@ -12,7 +12,7 @@ import {
   getEventResultFromMangataTx,
   getBalanceOfPool,
 } from "../../utils/txHandler";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { toBN } from "gasp-sdk";
 import {
   checkLastBootstrapFinalized,
@@ -62,7 +62,7 @@ test("bootstrap - Check non-sudo user cannot start bootstrap", async () => {
   // check that non-sudo user can not start bootstrap
   const nonSudoBootstrap = await scheduleBootstrap(
     testUser1,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
     waitingPeriod,
     bootstrapPeriod,
@@ -76,7 +76,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   // check that sudo user can start bootstrap
   const sudoBootstrap = await scheduleBootstrap(
     sudo,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
     waitingPeriod,
     bootstrapPeriod,
@@ -108,7 +108,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   // we need to add MGA token in the provision for creating a pool
   const provisionPublicMGA = await provisionBootstrap(
     testUser1,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapAmount,
   );
   eventResponse = getEventResultFromMangataTx(provisionPublicMGA);
@@ -127,7 +127,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   expect(eventResponse.data).toContain("Unauthorized");
 
   // Check existing pool
-  bootstrapPool = await getBalanceOfPool(MGA_ASSET_ID, bootstrapCurrency);
+  bootstrapPool = await getBalanceOfPool(GASP_ASSET_ID, bootstrapCurrency);
   const bootstrapPoolBalance = bootstrapPool[0];
   expect(bootstrapPoolBalance[0]).bnEqual(bootstrapAmount);
   expect(bootstrapPoolBalance[1]).bnEqual(bootstrapAmount);
@@ -139,7 +139,7 @@ test("bootstrap - Check happy path bootstrap with one user", async () => {
   eventResponse = getEventResultFromMangataTx(claimRewards);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   const liquidityID = await getLiquidityAssetId(
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     bootstrapCurrency,
   );
 

@@ -2,7 +2,7 @@
 import Keyring from "@polkadot/keyring";
 import BN from "bn.js";
 import { Assets } from "./Assets";
-import { KSM_ASSET_ID, MAX_BALANCE, MGA_ASSET_ID } from "./Constants";
+import { KSM_ASSET_ID, MAX_BALANCE, GASP_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
 import { Extrinsic, setupApi, setupUsers, sudo } from "./setup";
 import { Sudo } from "./sudo";
@@ -302,35 +302,35 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     Assets.mintNative(testUser6, amount),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, amount.divn(10), token2, amount.divn(10)),
+      Xyk.createPool(GASP_ASSET_ID, amount.divn(10), token2, amount.divn(10)),
     ),
   );
-  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  const liqId = await getLiquidityAssetId(GASP_ASSET_ID, token2);
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser5,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser6,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, amount.divn(10), amount),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
     ),
   );
   await waitForRewards(testUser4, liqId);
@@ -595,10 +595,10 @@ export async function joinAsCandidate(
   if (liq.gt(BN_ZERO)) {
     const tokenInPool = await (
       await getLiquidityPool(liq)
-    ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+    ).filter((x) => x.gt(GASP_ASSET_ID))[0];
     const tokensToMint = await calculate_buy_price_id_rpc(
       tokenInPool,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       amountToJoin,
     );
     console.info("Token to  mint: " + tokensToMint.toString());
@@ -608,7 +608,7 @@ export async function joinAsCandidate(
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(2),
           amountToJoin.muln(100000),
@@ -655,9 +655,9 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   //const amountToJoin = new BN("5000000000000000000000");
   const tokenInPool = await (
     await getLiquidityPool(liq)
-  ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+  ).filter((x) => x.gt(GASP_ASSET_ID))[0];
   const totalIssuance = new BN(await api.query.tokens.totalIssuance(liq));
-  const mgx = await getBalanceOfPool(MGA_ASSET_ID, tokenInPool);
+  const mgx = await getBalanceOfPool(GASP_ASSET_ID, tokenInPool);
   const minLiqToJoin = amountToJoin.mul(totalIssuance).div(mgx[0][0]);
   console.info("amount " + amountToJoin.toString());
   console.info("issuance " + totalIssuance.toString());
@@ -666,7 +666,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
   console.info("users must set " + minLiqToJoin.toString());
   let tokensToMint = await calculate_buy_price_id_rpc(
     tokenInPool,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     amountToJoin,
   );
   if (tokensToMint.eqn(0)) {
@@ -683,7 +683,7 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(10),
           MAX_BALANCE,
@@ -727,10 +727,10 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
   if (pool.length > 0) {
     const tokenInPool = await (
       await getLiquidityPool(liq)
-    ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+    ).filter((x) => x.gt(GASP_ASSET_ID))[0];
     const tokensToMint = await calculate_buy_price_id_rpc(
       tokenInPool,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       amountToJoin,
     );
     console.info("Token to  mint: " + tokensToMint.toString());
@@ -740,7 +740,7 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
       Sudo.sudoAs(
         user,
         Xyk.mintLiquidity(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           tokenInPool,
           amountToJoin.muln(2),
           tokensToMint.muln(4),
@@ -777,11 +777,11 @@ export async function fillWithDelegators(
   //const amountToJoin = new BN("5000000000000000000000");
   const tokenInPool = await (
     await getLiquidityPool(liq)
-  ).filter((x) => x.gt(MGA_ASSET_ID))[0];
+  ).filter((x) => x.gt(GASP_ASSET_ID))[0];
   if (!liq.eqn(0)) {
     let tokensToMint = await calculate_buy_price_id_rpc(
       tokenInPool,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       amountToJoin,
     );
     if (tokensToMint.eqn(0)) {
@@ -798,7 +798,7 @@ export async function fillWithDelegators(
         Sudo.sudoAs(
           user,
           Xyk.mintLiquidity(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             tokenInPool,
             amountToJoin.muln(2),
             MAX_BALANCE,
@@ -909,12 +909,12 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
   if (div) {
     tx = Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, amount, token2, amount.divn(ratio)),
+      Xyk.createPool(GASP_ASSET_ID, amount, token2, amount.divn(ratio)),
     );
   } else {
     tx = Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, amount, token2, amount.muln(ratio)),
+      Xyk.createPool(GASP_ASSET_ID, amount, token2, amount.muln(ratio)),
     );
   }
   await Sudo.batchAsSudoFinalized(
@@ -1484,7 +1484,7 @@ export async function activateAndClaim3rdPartyRewardsForUser(
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(1e6),
         newToken,
         Assets.DEFAULT_AMOUNT.muln(1e6),
@@ -1493,21 +1493,21 @@ export async function activateAndClaim3rdPartyRewardsForUser(
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT,
         newToken2,
         Assets.DEFAULT_AMOUNT,
       ),
     ),
   );
-  const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken2);
+  const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken2);
   await promotePool(sudo.keyRingPair, liqId, 20);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       sudo,
       await ProofOfStake.rewardPool(
         newToken2,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         newToken,
         Assets.DEFAULT_AMOUNT.muln(1e6),
         2,
@@ -1647,10 +1647,10 @@ export async function addStakedUnactivatedReserves(
       Assets.mintNative(sudo, tokenAmount.muln(2)),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(MGA_ASSET_ID, tokenAmount, newToken, tokenAmount),
+        Xyk.createPool(GASP_ASSET_ID, tokenAmount, newToken, tokenAmount),
       ),
     );
-    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+    liqToken = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
   } else {
     liqToken = new BN(tokenId);
     await Sudo.batchAsSudoFinalized(
@@ -1713,17 +1713,17 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
       Sudo.sudoAs(
         user,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT,
           assetID,
           Assets.DEFAULT_AMOUNT,
         ),
       ),
     );
-    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, assetID);
+    liqToken = await getLiquidityAssetId(GASP_ASSET_ID, assetID);
   } else {
     assetID = new BN(tokenId);
-    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, assetID);
+    liqToken = await getLiquidityAssetId(GASP_ASSET_ID, assetID);
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(user),
       Assets.mintToken(liqToken, user, Assets.DEFAULT_AMOUNT.muln(2)),
@@ -1736,7 +1736,7 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
         sudo.keyRingPair.address,
         user,
         Assets.DEFAULT_AMOUNT.divn(2),
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         100,
       ),
     ),
@@ -1805,6 +1805,29 @@ export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
       amountValue.toString(),
   );
 }
+
+export async function signEthUserTxByMetamask(
+  txHex: string,
+  ethPrivateKey: string,
+) {
+  const api = getApi();
+  const keyring = new Keyring({ type: "ethereum" });
+
+  const testEthUser = new User(keyring, ethPrivateKey);
+
+  const extrinsic = await api.createType("Extrinsic", txHex);
+  await signTxMetamask(
+    extrinsic,
+    testEthUser.keyRingPair.address,
+    ethPrivateKey,
+  );
+
+  console.log(
+    "Extrinsic was signed by using Metamask for the user  " +
+      testEthUser.ethAddress,
+  );
+}
+
 export async function listenTransfers() {
   const web3 = new Web3("ws://localhost:8545");
   //@ts-ignore
@@ -1948,12 +1971,12 @@ export async function depositHell(num: number, txIndexer = 0) {
   const api = await getApi();
   let txIndex;
   if (txIndexer === 0) {
-    txIndex = await Rolldown.maxAcceptedRequestIdOnl2();
+    txIndex = await Rolldown.lastProcessedRequestOnL2();
   } else {
     txIndex = txIndexer;
   }
   const sequencer = await SequencerStaking.getSequencerUser();
-  await Rolldown.waitForReadRights(sequencer.ethAddress);
+  await Rolldown.waitForReadRights(sequencer.ethAddress.toLowerCase());
   testLog.getLog().info("Depositing " + num + " transactions from " + txIndex);
   const depositBatch = new L2Update(api)
     .withDeposit(txIndex, sequencer.toString(), sequencer.toString(), 1001)

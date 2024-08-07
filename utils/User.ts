@@ -14,15 +14,17 @@ import {
   mintLiquidity,
   mintLiquidityUsingVestingNativeTokens,
   registerAsset,
+  registerL1Asset,
   reserveVestingLiquidityTokens,
   transferAll,
   updateAsset,
+  updateL1Asset,
 } from "./tx";
 import { getEventResultFromMangataTx } from "./txHandler";
 import {
   KSM_ASSET_ID,
   MAX_BALANCE,
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   TUR_ASSET_ID,
 } from "./Constants";
 import { strict as assert } from "assert";
@@ -323,14 +325,14 @@ export class User {
     });
   }
 
-  async addMGATokens(
+  async addGASPTokens(
     sudo: User,
     amountFree: BN = new BN(BigInt(1000 * 10 ** 20).toString()),
   ) {
-    await sudo.mint(MGA_ASSET_ID, this, amountFree);
+    await sudo.mint(GASP_ASSET_ID, this, amountFree);
   }
 
-  async addKSMTokens(sudo: User, amountFree: BN = toBN("1", 13)) {
+  async addETHTokens(sudo: User, amountFree: BN = toBN("1", 13)) {
     await sudo.mint(KSM_ASSET_ID, this, amountFree);
   }
 
@@ -377,6 +379,14 @@ export class User {
     return await registerAsset(this, assetId, location, locMarker, null);
   }
 
+  async registerL1Asset(
+    assetId: any,
+    tokenAddress = "0x" + randomBytes(20).toString("hex"),
+    l1AssetChain = "Ethereum",
+  ) {
+    return await registerL1Asset(this, assetId, l1AssetChain, tokenAddress);
+  }
+
   async updateAsset(
     assetId: any,
     additional = {
@@ -404,6 +414,14 @@ export class User {
     },
   ) {
     return await updateAsset(this, assetId, location, additional);
+  }
+
+  async updateL1Asset(
+    assetId: BN,
+    tokenAddress = "0x" + randomBytes(20).toString("hex"),
+    l1AssetChain = "Ethereum",
+  ) {
+    return await updateL1Asset(this, assetId, l1AssetChain, tokenAddress);
   }
 }
 export class Asset {

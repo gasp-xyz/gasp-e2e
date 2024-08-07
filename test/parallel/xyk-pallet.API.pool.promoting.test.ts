@@ -7,7 +7,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -69,7 +69,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser1,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -78,7 +78,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser2,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -87,7 +87,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser3,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -95,15 +95,15 @@ beforeAll(async () => {
     ),
   );
 
-  liqIdPool1 = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  liqIdPool2 = await getLiquidityAssetId(MGA_ASSET_ID, token2);
-  liqIdPool3 = await getLiquidityAssetId(MGA_ASSET_ID, token3);
+  liqIdPool1 = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+  liqIdPool2 = await getLiquidityAssetId(GASP_ASSET_ID, token2);
+  liqIdPool3 = await getLiquidityAssetId(GASP_ASSET_ID, token3);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser11,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
         Assets.DEFAULT_AMOUNT.muln(2),

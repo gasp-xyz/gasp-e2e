@@ -56,7 +56,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     // add users to pair.
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
   });
 
   test("Mint liquidity when not enough assetY for minting Xamount", async () => {

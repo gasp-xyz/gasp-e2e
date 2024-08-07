@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { MangataInstance } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -69,7 +69,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -78,7 +78,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -99,14 +99,14 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
     Sudo.sudoAs(
       testUser1,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token1,
         defaultCurrencyValue.mul(new BN(2)),
       ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token1, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ),
   );
 
@@ -134,12 +134,12 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token2, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token2, defaultCurrencyValue),
     ),
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
@@ -147,7 +147,7 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
@@ -155,7 +155,7 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
@@ -163,7 +163,7 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
@@ -171,7 +171,7 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
     Sudo.sudoAs(
       testUser2,
       Xyk.mintLiquidity(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
@@ -194,7 +194,7 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
 });
 
 async function promotePool(token: BN) {
-  liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token);
+  liqIdPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),

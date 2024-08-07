@@ -13,7 +13,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import {
@@ -74,7 +74,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -83,7 +83,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser2,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -92,7 +92,7 @@ describe("Proof of stake tests", () => {
       Sudo.sudoAs(
         testUser2,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(20e6),
@@ -113,12 +113,12 @@ describe("Proof of stake tests", () => {
   describe("Setup rewards scenarios", () => {
     test("Multiple users can reward the same pool - same tokens", async () => {
       await waitIfSessionWillChangeInNblocks(4);
-      const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
           testUser1,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             newToken,
             Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -128,7 +128,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser2,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             newToken,
             Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -163,7 +163,7 @@ describe("Proof of stake tests", () => {
       ).toHaveLength(2);
     });
     test("Multiple users can reward multiple pools - token does not belong to the promoted pool", async () => {
-      // const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      // const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
       const rewardsPalletAddress = "0x6d6f646c72657761726473210000000000000000";
       const balanceBefore = await getBalanceOfAssetStr(
         newToken2,
@@ -173,7 +173,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser2,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             newToken2,
             Assets.DEFAULT_AMOUNT.muln(1e6),
@@ -183,7 +183,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser2,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken2,
             newToken2,
             Assets.DEFAULT_AMOUNT.muln(1e6),
@@ -204,7 +204,7 @@ describe("Proof of stake tests", () => {
       expect(rewardedPools.length).toBe(2);
     });
     test("A user can reward a pool that is not directly paired with mgx", async () => {
-      // const liqId = await getLiquidityAssetId(MGA_ASSET_ID, newToken);
+      // const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
           testUser3,
@@ -233,7 +233,7 @@ describe("Proof of stake tests", () => {
           await ProofOfStake.rewardPool(
             newToken3,
             newToken2,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             Assets.DEFAULT_AMOUNT.muln(1e6),
             3,
           ),
@@ -243,7 +243,7 @@ describe("Proof of stake tests", () => {
         expect(event.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
       });
       const rewardedPools = await ProofOfStake.rewardsSchedulesList([
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
       ]);
       const filtered = rewardedPools.filter((x) =>
         stringToBN(x.liqToken.toString()).eq(liqId),
@@ -258,7 +258,7 @@ describe("Proof of stake tests", () => {
           await ProofOfStake.rewardPool(
             newToken2,
             newToken3,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             Assets.DEFAULT_AMOUNT.muln(1e6),
             0,
           ),
@@ -275,9 +275,9 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser3,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             TEN_DOLLARS.addn(1),
             1,
           ),
@@ -293,9 +293,9 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser3,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             TEN_DOLLARS.subn(1),
             2,
           ),
@@ -308,7 +308,7 @@ describe("Proof of stake tests", () => {
       });
     });
     test("Min liq valuation is required setup rewards", async () => {
-      const pool = await getBalanceOfPool(MGA_ASSET_ID, newToken);
+      const pool = await getBalanceOfPool(GASP_ASSET_ID, newToken);
       const thresholdAmount = calculate_buy_price_local_no_fee(
         pool[0],
         pool[1],
@@ -319,7 +319,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser3,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             newToken,
             thresholdAmount.addn(1),
@@ -336,7 +336,7 @@ describe("Proof of stake tests", () => {
         Sudo.sudoAs(
           testUser3,
           await ProofOfStake.rewardPool(
-            MGA_ASSET_ID,
+            GASP_ASSET_ID,
             newToken,
             newToken,
             thresholdAmount.subn(1),

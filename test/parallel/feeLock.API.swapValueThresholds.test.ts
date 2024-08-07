@@ -7,7 +7,7 @@ import { jest } from "@jest/globals";
 import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import {
-  MGA_ASSET_ID,
+  GASP_ASSET_ID,
   EVENT_SECTION_PAYMENT,
   EVENT_METHOD_PAYMENT,
 } from "../../utils/Constants";
@@ -67,7 +67,7 @@ beforeEach(async () => {
     null,
     thresholdValue,
     [
-      [MGA_ASSET_ID, true],
+      [GASP_ASSET_ID, true],
       [firstCurrency, true],
     ],
   );
@@ -87,7 +87,7 @@ beforeEach(async () => {
     ),
   );
 
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(secondCurrency);
 });
@@ -100,7 +100,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
       Xyk.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         defaultPoolVolumeValue,
       ),
     ),
@@ -134,9 +134,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
     );
 
   const userMgaFees = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.reserved!,
     );
 
   expect(userFirstCurLockedValue).bnEqual(new BN(0));
@@ -163,7 +163,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
       Xyk.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         defaultPoolVolumeValue,
       ),
     ),
@@ -197,9 +197,9 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
     );
 
   const userMgaLockedValue = testUser1
-    .getAsset(MGA_ASSET_ID)
+    .getAsset(GASP_ASSET_ID)
     ?.amountAfter.reserved!.sub(
-      testUser1.getAsset(MGA_ASSET_ID)?.amountBefore.reserved!,
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.reserved!,
     );
 
   expect(userFirstCurLockedValue).bnEqual(new BN(0));

@@ -12,7 +12,7 @@ import {
 } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getUserBalanceOfToken } from "../../utils/utils";
 import { BN_BILLION, BN_ONE, BN_ZERO } from "gasp-sdk";
 import { Assets } from "../../utils/Assets";
@@ -66,10 +66,10 @@ beforeAll(async () => {
     Assets.mintNative(testUser1, aBigEnoughAmount),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(MGA_ASSET_ID, totalMgxInPool, newTokenId, tokenAmount),
+      Xyk.createPool(GASP_ASSET_ID, totalMgxInPool, newTokenId, tokenAmount),
     ),
   );
-  liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newTokenId);
+  liqToken = await getLiquidityAssetId(GASP_ASSET_ID, newTokenId);
   await Sudo.batchAsSudoFinalized(
     Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
     Assets.promotePool(liqToken.toNumber(), 20),

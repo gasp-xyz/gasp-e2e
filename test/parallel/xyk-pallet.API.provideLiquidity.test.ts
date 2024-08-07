@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -67,7 +67,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -76,7 +76,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -93,8 +93,8 @@ beforeAll(async () => {
     ),
   );
 
-  liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token1);
-  liqIdNonPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token2);
+  liqIdPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+  liqIdNonPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token2);
   liqIdNonMgaPool = await getLiquidityAssetId(token2, token3);
 
   await Sudo.batchAsSudoFinalized(
@@ -107,7 +107,7 @@ beforeEach(async () => {
 
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser1));
 
-  testUser1.addAsset(MGA_ASSET_ID);
+  testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(token1);
   testUser1.addAsset(token2);
   testUser1.addAsset(liqIdPromPool);
@@ -118,7 +118,7 @@ test("Function provideLiquidityWithConversion does not work with non-mga paired 
   await provideLiquidity(
     testUser1.keyRingPair,
     liqIdNonMgaPool,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
@@ -131,7 +131,7 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
   await provideLiquidity(
     testUser1.keyRingPair,
     liqIdNonPromPool,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
@@ -148,7 +148,7 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
   await provideLiquidity(
     testUser1.keyRingPair,
     liqIdPromPool,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     defaultCurrencyValue,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
@@ -171,14 +171,14 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
 test("A user who uses provideLiquidityWithConversion and other who do manually a swap + mint, gets the similar ratio of liquidity tokens.", async () => {
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser2));
 
-  testUser2.addAsset(MGA_ASSET_ID);
+  testUser2.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(token1);
   testUser2.addAsset(token2);
 
   const provideLiquidityWithConversion = await provideLiquidity(
     testUser1.keyRingPair,
     liqIdPromPool,
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     defaultCurrencyValue,
   );
   const eventResponse = getEventResultFromMangataTx(
@@ -192,13 +192,13 @@ test("A user who uses provideLiquidityWithConversion and other who do manually a
 
   const soldAssetAmount = await filteredEvent[0].event.data[2].toString();
 
-  await testUser2.sellAssets(MGA_ASSET_ID, token1, new BN(soldAssetAmount));
+  await testUser2.sellAssets(GASP_ASSET_ID, token1, new BN(soldAssetAmount));
 
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
 
   const secondTokenAmount = testUser2.getAsset(token1)!.amountBefore.free;
 
-  await testUser2.mintLiquidity(token1, MGA_ASSET_ID, secondTokenAmount);
+  await testUser2.mintLiquidity(token1, GASP_ASSET_ID, secondTokenAmount);
 
   const testUser1Rewards = await getRewardsInfo(
     testUser1.keyRingPair.address,

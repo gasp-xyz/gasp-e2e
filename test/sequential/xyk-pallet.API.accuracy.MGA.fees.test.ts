@@ -22,7 +22,7 @@ import {
   getFeeLockMetadata,
   getTokensDiffForBlockAuthor,
 } from "../../utils/utils";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -57,7 +57,7 @@ beforeEach(async () => {
   // setup users
   [testUser1] = setupUsers();
   sudo = getSudoUser();
-  firstCurrency = MGA_ASSET_ID;
+  firstCurrency = GASP_ASSET_ID;
   secondCurrency = await Assets.issueAssetToUser(
     sudo,
     defaultCurrecyValue,
@@ -70,7 +70,7 @@ beforeEach(async () => {
     Sudo.sudoAs(
       sudo,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         firstAssetAmount,
         secondCurrency,
         secondAssetAmount,

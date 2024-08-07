@@ -22,8 +22,8 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
+import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, signTx } from "gasp-sdk";
-import { FOUNDATION_ADDRESS_1, MGA_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
 import { Maintenance } from "../../utils/Maintenance";
@@ -51,7 +51,6 @@ let sequencer: User;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 async function setupMm() {
-
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
@@ -131,13 +130,18 @@ describe.each(["mm", "upgradabilityMm"])(
         const tokenIds = await SudoDB.getInstance().getTokenIds(1);
         const [token] = await setupAsEthTokens(tokenIds);
         const tokenAddress = JSON.parse(token.toString()).ethereum;
-        await setupUsersWithBalances(users, tokenIds.concat([MGA_ASSET_ID]));
+        await setupUsersWithBalances(users, tokenIds.concat([GASP_ASSET_ID]));
         await Sudo.batchAsSudoFinalized(
           Sudo.sudoAs(
             users[2],
             await SequencerStaking.provideSequencerStaking(),
           ),
-        );
+        ).then((value) => {
+          testLog
+            .getLog()
+            .info("Sequencer staking provided" + JSON.stringify(value));
+          expectMGAExtrinsicSuDidSuccess(value);
+        });
         tests = {
           updateL2fromL1: [
             new L2Update(api)
@@ -231,12 +235,16 @@ describe.each(["mm", "upgradabilityMm"])(
       it.each(["sequencerSetup", "sequencerTearDown"])(
         "%s operations are allowed in mm",
         async (testName) => {
+          testLog.getLog().info("DEBUG::TestName - " + testName);
           const [extrinsic, signer] = tests[testName];
           const nonce = await getCurrentNonce(signer.keyRingPair.address);
           await signTx(api, extrinsic, signer.keyRingPair, {
             nonce: nonce,
           }).then(async (events) => {
             const event = getEventResultFromMangataTx(events);
+            testLog
+              .getLog()
+              .info("DEBUG::Event result - " + JSON.stringify(event));
             expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
           });
         },

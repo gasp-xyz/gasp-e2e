@@ -9,7 +9,7 @@ import {
   getFeeLockMetadata,
   getTokensDiffForBlockAuthor,
 } from "../../utils/utils";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Xyk } from "../../utils/xyk";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
@@ -66,7 +66,7 @@ describe("API fees test suite", () => {
     );
     const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
     await user.refreshAmounts(AssetWallet.AFTER);
-    const mgaUserToken = user.getAsset(MGA_ASSET_ID)!;
+    const mgaUserToken = user.getAsset(GASP_ASSET_ID)!;
     const diff = mgaUserToken.amountBefore.free.sub(
       mgaUserToken.amountAfter.free!,
     );
@@ -85,7 +85,7 @@ describe("API fees test suite", () => {
     );
     const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
     await user.refreshAmounts(AssetWallet.AFTER);
-    const mgaUserToken = user.getAsset(MGA_ASSET_ID)!;
+    const mgaUserToken = user.getAsset(GASP_ASSET_ID)!;
     const diff = mgaUserToken.amountBefore.free.sub(
       mgaUserToken.amountAfter.free!,
     );

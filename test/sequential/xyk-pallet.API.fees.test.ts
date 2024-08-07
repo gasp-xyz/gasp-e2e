@@ -20,7 +20,7 @@ import {
   getTokensDiffForBlockAuthor,
   waitIfSessionWillChangeInNblocks,
 } from "../../utils/utils";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { waitNewBlock } from "../../utils/eventListeners";
 import { Fees } from "../../utils/Fees";
 
@@ -67,10 +67,10 @@ beforeAll(async () => {
     sudo,
   );
   //add zero MGA tokens.
-  await testUser1.addMGATokens(sudo);
-  testUser1.addAsset(MGA_ASSET_ID);
-  await testUser2.addMGATokens(sudo);
-  testUser2.addAsset(MGA_ASSET_ID);
+  await testUser1.addGASPTokens(sudo);
+  testUser1.addAsset(GASP_ASSET_ID);
+  await testUser2.addGASPTokens(sudo);
+  testUser2.addAsset(GASP_ASSET_ID);
 
   await createPool(
     testUser1.keyRingPair,
@@ -109,7 +109,7 @@ test("xyk-pallet - MGA tokens are substracted as fee : CreatePool", async () => 
   );
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
+  const mgaUserToken = testUser1.getAsset(GASP_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!,
   );
@@ -132,7 +132,7 @@ test("xyk-pallet - MGA tokens are substracted as fee : MintLiquidity", async () 
   );
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
+  const mgaUserToken = testUser1.getAsset(GASP_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!,
   );
@@ -155,7 +155,7 @@ test("xyk-pallet - MGA tokens are substracted as fee : BurnLiquidity", async () 
   );
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
+  const mgaUserToken = testUser1.getAsset(GASP_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!,
   );
@@ -178,7 +178,7 @@ test("xyk-pallet - MGA tokens are substracted as fee : Transfer", async () => {
   );
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
+  const mgaUserToken = testUser1.getAsset(GASP_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!,
   );
@@ -206,7 +206,7 @@ test("xyk-pallet - MGA tokens are substracted as fee : TransferAll", async () =>
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
 
   await testUser2.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser2.getAsset(MGA_ASSET_ID)!;
+  const mgaUserToken = testUser2.getAsset(GASP_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!,
   );
@@ -225,7 +225,7 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
+  const mgaUserToken = testUser1.getAsset(GASP_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free,
   );
@@ -240,8 +240,8 @@ test("xyk-pallet - MGA tokens are not substracted as fee : SellAsset", async () 
     );
     expect(new BN(0)).bnEqual(authorMGAtokens);
     expect(diff).bnEqual(new BN(0));
-    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
-      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!,
+    expect(testUser1.getAsset(GASP_ASSET_ID)!.amountBefore.free).bnEqual(
+      testUser1.getAsset(GASP_ASSET_ID)!.amountAfter.free!,
     );
   }
 });
@@ -255,7 +255,7 @@ test("xyk-pallet - MGA tokens are / are not substracted as fee : BuyAsset", asyn
   );
   const authorMGAtokens = await getTokensDiffForBlockAuthor(blockNumber);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const mgaUserToken = testUser1.getAsset(MGA_ASSET_ID)!;
+  const mgaUserToken = testUser1.getAsset(GASP_ASSET_ID)!;
   const diff = mgaUserToken.amountBefore.free.sub(
     mgaUserToken.amountAfter.free!,
   );
@@ -271,8 +271,8 @@ test("xyk-pallet - MGA tokens are / are not substracted as fee : BuyAsset", asyn
     );
     expect(new BN(0)).bnEqual(authorMGAtokens);
     expect(diff).bnEqual(new BN(0));
-    expect(testUser1.getAsset(MGA_ASSET_ID)!.amountBefore.free).bnEqual(
-      testUser1.getAsset(MGA_ASSET_ID)!.amountAfter.free!,
+    expect(testUser1.getAsset(GASP_ASSET_ID)!.amountBefore.free).bnEqual(
+      testUser1.getAsset(GASP_ASSET_ID)!.amountAfter.free!,
     );
   }
 });

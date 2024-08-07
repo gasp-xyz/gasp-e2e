@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -64,7 +64,7 @@ beforeAll(async () => {
     Sudo.sudoAs(
       testUser,
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token,
         Assets.DEFAULT_AMOUNT.divn(2),
@@ -74,7 +74,7 @@ beforeAll(async () => {
 });
 
 test("One user claim all the rewards on every session and other user claim them at the 3rd session, the sum of rewards are equal", async () => {
-  liqIdPromPool = await getLiquidityAssetId(MGA_ASSET_ID, token);
+  liqIdPromPool = await getLiquidityAssetId(GASP_ASSET_ID, token);
 
   await Sudo.batchAsSudoFinalized(
     Assets.promotePool(liqIdPromPool.toNumber(), 20),
@@ -82,11 +82,11 @@ test("One user claim all the rewards on every session and other user claim them 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token, defaultCurrencyValue),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(MGA_ASSET_ID, token, defaultCurrencyValue),
+      Xyk.mintLiquidity(GASP_ASSET_ID, token, defaultCurrencyValue),
     ),
   );
 

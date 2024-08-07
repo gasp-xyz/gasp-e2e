@@ -9,7 +9,7 @@ import { getApi, initApi } from "../../utils/api";
 import { Node } from "../../utils/Framework/Node/Node";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -68,13 +68,13 @@ export class Extrinsic3rdPartySchedule extends performanceTestItem {
         Assets.DEFAULT_AMOUNT.muln(40e6),
       ),
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[0]),
         Assets.DEFAULT_AMOUNT.muln(10e6),
       ),
       Xyk.createPool(
-        MGA_ASSET_ID,
+        GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[1]),
         Assets.DEFAULT_AMOUNT.muln(10e6),
@@ -120,9 +120,9 @@ async function createAndSignNewSchedules(
 
   const assets = [tokens[0], tokens[1]];
   const tx = await ProofOfStake.rewardPool(
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     new BN(assets[0]),
-    MGA_ASSET_ID,
+    GASP_ASSET_ID,
     Assets.DEFAULT_AMOUNT.muln(10e6),
     3,
   );

@@ -74,7 +74,7 @@ beforeEach(async () => {
     [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
     sudo,
   );
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
 
   // add users to pair.
   keyring.addPair(testUser1.keyRingPair);

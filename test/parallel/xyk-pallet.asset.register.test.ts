@@ -16,7 +16,7 @@ import { BN, hexToU8a } from "@polkadot/util";
 import { BN_ONE, BN_TEN, MangataGenericEvent } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Xyk } from "../../utils/xyk";
-import { MGA_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { signSendFinalized } from "../../utils/sign";
 
@@ -88,7 +88,7 @@ beforeAll(async () => {
   sudo = getSudoUser();
   testUser1 = new User(keyring);
   keyring.addPair(testUser1.keyRingPair);
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
 });
 
 test("register new asset from sudo user", async () => {
@@ -204,7 +204,7 @@ test("register asset with xyk disabled and try to create a pool, expect to fail"
 
   await expect(
     signSendFinalized(
-      Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+      Xyk.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
       testUser1,
     ),
   ).rejects.toEqual(
@@ -233,7 +233,7 @@ test("register asset with xyk undefined and try to create a pool, expect success
   await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
-    Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+    Xyk.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
     testUser1,
   );
 });
@@ -256,7 +256,7 @@ test("register asset with xyk enabled and try to create a pool, expect success",
   await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
-    Xyk.createPool(assetId, BN_ONE, MGA_ASSET_ID, BN_ONE),
+    Xyk.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
     testUser1,
   );
 });

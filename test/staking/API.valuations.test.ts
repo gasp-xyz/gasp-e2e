@@ -10,7 +10,7 @@ import {
 } from "../../utils/tx";
 import { Keyring } from "@polkadot/api";
 import { User } from "../../utils/User";
-import { MAX_BALANCE, MGA_ASSET_ID } from "../../utils/Constants";
+import { MAX_BALANCE, GASP_ASSET_ID } from "../../utils/Constants";
 import { getUserBalanceOfToken } from "../../utils/utils";
 import { BN_BILLION, BN_ONE, BN_ZERO } from "gasp-sdk";
 import { BN } from "@polkadot/util";
@@ -73,7 +73,7 @@ describe("Collators: MinCandidateStk limit", () => {
       Sudo.sudoAs(
         testUser1,
         Xyk.createPool(
-          MGA_ASSET_ID,
+          GASP_ASSET_ID,
           totalMgxInPool,
           newTokenId,
           aBigEnoughAmount.div(multiplier),
@@ -81,7 +81,7 @@ describe("Collators: MinCandidateStk limit", () => {
       ),
     );
 
-    liqToken = await getLiquidityAssetId(MGA_ASSET_ID, newTokenId);
+    liqToken = await getLiquidityAssetId(GASP_ASSET_ID, newTokenId);
     await Sudo.asSudoFinalized(
       Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
     );
@@ -95,7 +95,7 @@ describe("Collators: MinCandidateStk limit", () => {
     );
     await mintLiquidity(
       testUser2.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       newTokenId,
       minCandidate,
       MAX_BALANCE,
@@ -110,7 +110,7 @@ describe("Collators: MinCandidateStk limit", () => {
     ).sub(BN_ONE);
     await mintLiquidity(
       testUser4.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       newTokenId,
       minCandidate,
       MAX_BALANCE,
@@ -133,7 +133,7 @@ describe("Collators: MinCandidateStk limit", () => {
     ).add(BN_ONE);
     await mintLiquidity(
       testUser3.keyRingPair,
-      MGA_ASSET_ID,
+      GASP_ASSET_ID,
       newTokenId,
       minCandidate,
       MAX_BALANCE,

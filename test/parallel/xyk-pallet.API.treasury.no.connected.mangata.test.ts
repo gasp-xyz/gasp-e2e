@@ -64,7 +64,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       [defaultCurrecyValue, defaultCurrecyValue],
       sudo,
     );
-    await testUser1.addMGATokens(sudo);
+    await testUser1.addGASPTokens(sudo);
     await createPool(
       testUser1.keyRingPair,
       firstCurrency,

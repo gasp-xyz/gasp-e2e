@@ -75,8 +75,8 @@ beforeEach(async () => {
   state.accounts.push(voter);
 
   // Fund accounts
-  await voter.addMGATokens(bank.sudoUser, accountFundingAmount);
-  await candidate.addMGATokens(bank.sudoUser, stakeAmount);
+  await voter.addGASPTokens(bank.sudoUser, accountFundingAmount);
+  await candidate.addGASPTokens(bank.sudoUser, stakeAmount);
 
   // Subscribe to events
   candidate.node.subscribeToUserBalanceChanges(candidate);

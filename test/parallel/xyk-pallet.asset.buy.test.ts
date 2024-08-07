@@ -61,7 +61,7 @@ beforeEach(async () => {
   // setup Pallet.
   pallet = new User(keyring);
   pallet.addFromAddress(keyring, pallet_address);
-  await testUser1.addMGATokens(sudo);
+  await testUser1.addGASPTokens(sudo);
   //add two curerncies and balance to testUser:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
