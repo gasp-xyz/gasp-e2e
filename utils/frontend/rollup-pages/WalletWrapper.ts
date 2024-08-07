@@ -60,7 +60,7 @@ export class WalletWrapper {
   }
 
   async openWithdraw() {
-    const betaButton = buildXpathByElementText("button", "Withdraw");
+    const betaButton = buildXpathByElementText("button", "Send");
     await clickElement(this.driver, betaButton);
   }
 
