@@ -149,8 +149,11 @@ describe("Gasp Prod UI withdraw tests", () => {
     await depositModal.selectChain(ARB_CHAIN_NAME);
     await depositModal.openTokensList();
     await depositModal.waitForTokenListElementsVisible(ARB_ASSET_NAME);
+    const l1TokensAmountBefore = await depositModal.getTokenListRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
     await depositModal.selectToken(ARB_ASSET_NAME);
-    const l1TokensAmountBefore = await depositModal.getTokenAmount();
     await depositModal.close();
 
     await walletWrapper.openWithdraw();
@@ -200,10 +203,17 @@ describe("Gasp Prod UI withdraw tests", () => {
     await depositModal.selectChain(ARB_CHAIN_NAME);
     await depositModal.openTokensList();
     await depositModal.waitForTokenListElementsVisible(ARB_ASSET_NAME);
-    await depositModal.selectToken(ARB_ASSET_NAME);
-    await depositModal.waitTokenAmountChange(l1TokensAmountBefore);
 
-    const l1TokensAmountAfter = await depositModal.getTokenAmount();
+    await depositModal.waitTokenListAmountChange(
+      l1TokensAmountBefore,
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
+
+    const l1TokensAmountAfter = await depositModal.getTokenListRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
     expect(await uiStringToNumber(l1TokensAmountAfter)).toBeGreaterThan(
       await uiStringToNumber(l1TokensAmountBefore),
     );

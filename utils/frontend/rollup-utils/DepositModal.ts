@@ -4,6 +4,7 @@ import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
   buildXpathByElementText,
+  buildXpathByMultiText,
   buildXpathByText,
   clickElement,
   getText,
@@ -31,6 +32,7 @@ const CLOSE_MODAL = "deposit-modal-close";
 const CONFIRMING_BLOCKING = "deposit-status-loading";
 const SUCCESS_MODAL = "transfer-success";
 const CLOSE_BUTTON = "close";
+const TOKEN_LIST_AMOUNT = "token-amount";
 
 export enum DepositActionType {
   Deposit,
@@ -131,6 +133,16 @@ export class DepositModal {
     await waitForElementVisible(this.driver, tokenLocator, 5000);
   }
 
+  async getTokenListRowAmount(tokenName: string, origin = "Native") {
+    const tokenRowAmount =
+      buildDataTestIdXpath(TOKEN_LIST) +
+      buildXpathByMultiText([tokenName, origin]) +
+      buildDataTestIdXpath(TOKEN_LIST_AMOUNT);
+    await waitForElementVisible(this.driver, tokenRowAmount);
+    const amount = await getText(this.driver, tokenRowAmount);
+    return amount.split(",").join("");
+  }
+
   async enterValue(amount: string) {
     const inputTokenLocator = buildDataTestIdXpath(TOKEN_TEXT_INPUT);
     await clickElement(this.driver, inputTokenLocator);
@@ -195,6 +207,33 @@ export class DepositModal {
     while (Date.now() < endTime) {
       try {
         const tokenAmount = await this.getTokenAmount();
+        if (tokenAmount !== initValue) {
+          return;
+        }
+      } catch (error) {
+        // Element not found or other error occurred, continue waiting
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    throw new Error(
+      `Timeout: Element value not as desired after ${timeout} milliseconds`,
+    );
+  }
+
+  async waitTokenListAmountChange(
+    initValue: string,
+    tokenName: string,
+    origin: string,
+    timeout = FIVE_MIN,
+  ) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
+
+    while (Date.now() < endTime) {
+      try {
+        const tokenAmount = await this.getTokenListRowAmount(tokenName, origin);
         if (tokenAmount !== initValue) {
           return;
         }
