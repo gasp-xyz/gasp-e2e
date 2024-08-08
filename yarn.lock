@@ -8782,26 +8782,26 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-eth-rollup-develop.1:
-  version "0.0.2-eth-rollup-develop.1"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-eth-rollup-develop.1.tgz#8d8104f5edf047735de4e854e31ca4abfa3df6b5"
-  integrity sha512-eVlN145HBIHrShjeRnwLOwSbWbunX1VgFGlTRUhlw9WSMrq/r07j8dzrTDEZKigNG/Z4GaH63m4/w/4vXHiq0A==
+gasp-sdk@0.0.2-feature-merkle-root.2:
+  version "0.0.2-feature-merkle-root.2"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-merkle-root.2.tgz#bd19761537e0082de4c01dfea9a013e7d287c66b"
+  integrity sha512-hUUGe1kutT0kEns35EeXn6OkNkMMuj7iGUztICkFbJOo9kifY7KD/Ds9WLDfnH1BAZ+E3eQn1ce8+75GnEz+tw==
   dependencies:
     "@metamask/sdk" "0.16.0"
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-eth-rollup-develop.1"
+    gasp-type-definitions "0.0.2-feature-merkle-root.2"
     tslib "^2.3.0"
     tslog "4.8.2"
 
-gasp-type-definitions@0.0.2-eth-rollup-develop.1:
-  version "0.0.2-eth-rollup-develop.1"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-eth-rollup-develop.1.tgz#4eb0b269b53871f4146abeeb15eec2803a6791a1"
-  integrity sha512-RP+Wm2PUQik1O0zjwMa+X88Tizp468a7XHpWaaPya7Umn3O38CL6wEy0Htg2IocCa+LyXnxjSFaN6OW08acpgw==
+gasp-type-definitions@0.0.2-feature-merkle-root.2:
+  version "0.0.2-feature-merkle-root.2"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-merkle-root.2.tgz#55d7a65cd0f75174fa811a2df3cff996d1bf1125"
+  integrity sha512-LDWVoAH7MhSZfJlukeWcDrVOhIsknSAi9rLGwAI0jbFN3IQNGy5k4rnglQhUmoFzhTUm/fnNkkVNIOiJ9ALWNA==
 
-gasp-types@0.0.2-eth-rollup-develop.1:
-  version "0.0.2-eth-rollup-develop.1"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-eth-rollup-develop.1.tgz#295262f5be1bc5c280d9de52f19bdfd7e07271e9"
-  integrity sha512-DHB13bWt2y12YirU+KNinb66r3Q9DjmejQ7d+5GqbeMnewM7Ixv92HmQeILOHQBngc9R9+TcQFZpo42TIKt+jg==
+gasp-types@0.0.2-feature-merkle-root.2:
+  version "0.0.2-feature-merkle-root.2"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-merkle-root.2.tgz#91788fb6a22888907d914fb3f64014991eee2057"
+  integrity sha512-jtVwcFr82v3dxc9m4sl9Ta8wXF46abZzXAeOTApqYMZcemKWm3/IZJEgmajjhEdvtntbE/s+BK/lDkd8l2Du2w==
 
 gauge@^4.0.3:
   version "4.0.4"

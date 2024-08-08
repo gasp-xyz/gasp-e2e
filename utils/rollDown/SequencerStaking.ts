@@ -33,6 +33,7 @@ export class SequencerStaking {
     return api.tx.sequencerStaking.provideSequencerStake(
       chainName,
       stringToBN(amountToStake.toString()),
+      null
     );
   }
 
