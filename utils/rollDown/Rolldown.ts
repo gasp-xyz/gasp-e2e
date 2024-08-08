@@ -2,18 +2,24 @@ import { setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { BN } from "@polkadot/util";
-import { MangataGenericEvent, signTx } from "gasp-sdk";
+import { BN_MILLION, MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
-import { stringToBN, waitBlockNumber } from "../utils";
-import { getEventsAt, waitNewBlock } from "../eventListeners";
+import { stringToBN, waitBlockNumber, waitForNBlocks } from "../utils";
+import {
+  getEventsAt,
+  waitNewBlock,
+  waitSudoOperationSuccess,
+} from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
-import { ChainName } from "./SequencerStaking";
+import { ChainName, SequencerStaking } from "./SequencerStaking";
 import { testLog } from "../Logger";
 import { BTreeMap } from "@polkadot/types-codec";
 import {
   PalletRolldownSequencerRights,
   SpRuntimeAccountAccountId20,
 } from "@polkadot/types/lookup";
+import { User } from "../User";
+import { Sudo } from "../sudo";
 
 export class Rolldown {
   static async lastProcessedRequestOnL2(l1 = "Ethereum") {
@@ -327,5 +333,78 @@ export class L2Update {
     );
     this.pendingL2UpdatesToRemove.push(updateToRemove);
     return this;
+  }
+}
+
+export async function createAnUpdate(
+  seq: User | string,
+  chain: ChainName = "Arbitrum",
+  forcedIndex = 0,
+) {
+  const address = typeof seq === "string" ? seq : seq.keyRingPair.address;
+  await Rolldown.waitForReadRights(address, 50, chain);
+  let txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+  if (forcedIndex !== 0) {
+    txIndex = forcedIndex;
+  }
+  const api = getApi();
+  const update = new L2Update(api)
+    .withDeposit(txIndex, address, address, BN_MILLION)
+    .on(chain)
+    .build();
+  let reqId = 0;
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(address, update),
+  ).then(async (events) => {
+    await waitSudoOperationSuccess(events, "SudoAsDone");
+    reqId = Rolldown.getRequestIdFromEvents(events);
+  });
+  return { txIndex, api, reqId };
+}
+
+export async function createAnUpdateAndCancelIt(
+  seq: User,
+  cancelerAddress: string,
+  chain: ChainName = "Arbitrum",
+  cancellation: boolean = true,
+) {
+  const { txIndex, api, reqId } = await createAnUpdate(seq, chain);
+  let reqIdCanceled: number = 0;
+  if (cancellation === true) {
+    const cancel = await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        cancelerAddress,
+        await Rolldown.cancelRequestFromL1(chain, reqId),
+      ),
+    );
+    await waitSudoOperationSuccess(cancel, "SudoAsDone");
+    reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
+  }
+  return { txIndex, api, reqId, reqIdCanceled };
+}
+
+export async function leaveSequencing(userAddr: string) {
+  const stakedEth = await SequencerStaking.sequencerStake(userAddr, "Ethereum");
+  const stakedArb = await SequencerStaking.sequencerStake(userAddr, "Arbitrum");
+  let chain = "";
+  if (stakedEth.toHuman() !== "0") {
+    chain = "Ethereum";
+  } else if (stakedArb.toHuman() !== "0") {
+    chain = "Arbitrum";
+  }
+  if (chain !== "") {
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        userAddr,
+        await SequencerStaking.leaveSequencerStaking(chain as ChainName),
+      ),
+    );
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        userAddr,
+        await SequencerStaking.unstake(chain as ChainName),
+      ),
+    );
   }
 }
