@@ -4,7 +4,7 @@ import { EthUser } from "../EthUser";
 import { BN } from "@polkadot/util";
 import { BN_MILLION, MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
-import { stringToBN, waitBlockNumber, waitForNBlocks } from "../utils";
+import { stringToBN, waitBlockNumber } from "../utils";
 import {
   getEventsAt,
   waitNewBlock,
@@ -390,7 +390,6 @@ export async function leaveSequencing(userAddr: string) {
     chain = "Arbitrum";
   }
   if (chain !== "") {
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         userAddr,

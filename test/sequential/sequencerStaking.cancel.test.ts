@@ -26,22 +26,22 @@ let chain: any;
 let testUser1: User;
 let testUser2: User;
 let testUser2Address: string;
-
-async function createAUserWithGASP() {
-  const [user] = setupUsers();
-  await Sudo.asSudoFinalized(Assets.mintNative(user));
-  return user;
-}
+let disputePeriodLength: number;
+let providingExtrinsic: any;
 
 beforeAll(async () => {
   await initApi();
-  setupUsers();
   await setupApi();
+  disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
 });
 
 beforeEach(async () => {
   //There shouldn't be any sequencer in activeSequencers
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  [testUser1, testUser2] = setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintNative(testUser2),
+  );
   const activeSequencers = await SequencerStaking.activeSequencers();
   for (const chain in activeSequencers.toHuman()) {
     for (const seq of activeSequencers.toHuman()[chain] as string[]) {
@@ -50,36 +50,23 @@ beforeEach(async () => {
       }
     }
   }
-
   chain = "Ethereum";
-  const notYetSequencer = await createAUserWithGASP();
-  testUser2 = await createAUserWithGASP();
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  await signTx(
-    await getApi(),
-    await SequencerStaking.provideSequencerStaking(
-      minToBeSequencer.addn(1000),
-      "Ethereum",
-    ),
-    notYetSequencer.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
+  providingExtrinsic = await SequencerStaking.provideSequencerStaking(
+    minToBeSequencer.addn(1000),
+    "Ethereum",
+  );
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, providingExtrinsic),
+    Sudo.sudoAs(testUser2, providingExtrinsic),
+  );
   const sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(
-    notYetSequencer.keyRingPair.address,
+    testUser1.keyRingPair.address,
   );
-  await signTx(
-    await getApi(),
-    await SequencerStaking.provideSequencerStaking(
-      minToBeSequencer.addn(1000),
-      "Ethereum",
-    ),
-    testUser2.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  testUser1 = notYetSequencer;
+  expect(sequencers.toHuman().Ethereum).toContain(
+    testUser2.keyRingPair.address,
+  );
   testUser2Address = testUser2.ethAddress.toString();
   testUser1.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(GASP_ASSET_ID);
@@ -90,10 +77,12 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     testUser2Address,
     chain,
   );
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await Rolldown.waitForReadRights(testUser2Address, 50, "Ethereum");
+  await waitForNBlocks(disputePeriodLength);
+  await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   //we approve the cancellation
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser2Address,
@@ -104,9 +93,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser2.refreshAmounts(AssetWallet.BEFORE);
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const cancelerRewardValue = testUser2
@@ -132,10 +119,11 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
     testUser2Address,
     chain,
   );
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await Rolldown.waitForReadRights(testUser2Address, 50, "Ethereum");
+  await waitForNBlocks(disputePeriodLength);
+  await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   //the cancellation is incorrectly
+  await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser2Address,
@@ -146,8 +134,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await testUser2.refreshAmounts(AssetWallet.BEFORE);
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const updaterDiffValue = testUser1
@@ -169,7 +156,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await createAnUpdate(testUser1, chain);
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const updaterPenaltyValue = testUser1
     .getAsset(GASP_ASSET_ID)
@@ -186,8 +173,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
     testUser2Address,
     chain,
   );
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await Rolldown.waitForReadRights(testUser2Address, 60, "Ethereum");
+  await waitForNBlocks(disputePeriodLength);
   updaterRightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
@@ -195,6 +181,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
   expect(updaterRightsStatus.cancelRights.toString()).toBe("1");
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   //we approve the cancellation
+  await Rolldown.waitForReadRights(testUser2Address);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser2Address,
@@ -205,7 +192,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
   updaterRightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
@@ -216,23 +203,17 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels, THEN it can be still slashed and kicked, cancels & updates will be executed.", async () => {
   let cancelResolutionEvents: MangataGenericEvent[];
   let sequencers: any;
-  const judge = await createAUserWithGASP();
-  await signTx(
-    await getApi(),
-    await SequencerStaking.provideSequencerStaking(
-      (await SequencerStaking.minimalStakeAmount()).addn(1000),
-      "Ethereum",
-    ),
-    judge.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
+  const [judge] = setupUsers();
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(judge),
+    Sudo.sudoAs(judge, providingExtrinsic),
+  );
   sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(judge.keyRingPair.address);
-  await Rolldown.waitForReadRights(testUser1.keyRingPair.address);
+  await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const { reqIdCanceled: reqIdCanceled1, api: api1 } =
     await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain);
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
   const txIndex1 = await Rolldown.lastProcessedRequestOnL2(chain);
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   cancelResolutionEvents = await Sudo.asSudoFinalized(
@@ -245,7 +226,8 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
+  await testUser2.refreshAmounts(AssetWallet.AFTER);
   await signTx(
     await getApi(),
     await SequencerStaking.provideSequencerStaking(
@@ -258,14 +240,14 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   });
   sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(judge.keyRingPair.address);
-  await Rolldown.waitForReadRights(testUser2.keyRingPair.address);
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const { reqIdCanceled: reqIdCanceled2, api: api2 } =
     await createAnUpdateAndCancelIt(
       testUser2,
       testUser1.keyRingPair.address,
       chain,
     );
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
   const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   cancelResolutionEvents = await Sudo.asSudoFinalized(
@@ -278,5 +260,22 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(disputePeriodLength);
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+  const testUser1PenaltyValue = testUser1
+    .getAsset(GASP_ASSET_ID)
+    ?.amountBefore.reserved!.sub(
+      testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
+    );
+  const testUser2PenaltyValue = testUser2
+    .getAsset(GASP_ASSET_ID)
+    ?.amountBefore.reserved!.sub(
+      testUser2.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
+    );
+  expect(testUser1PenaltyValue).bnEqual(
+    await SequencerStaking.slashFineAmount(),
+  );
+  expect(testUser2PenaltyValue).bnEqual(
+    await SequencerStaking.slashFineAmount(),
+  );
 });
