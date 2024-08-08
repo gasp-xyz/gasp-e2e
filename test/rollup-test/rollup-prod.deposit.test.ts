@@ -35,6 +35,8 @@ let acc_addr = "";
 let acc_addr_short = "";
 const ETH_ASSET_NAME = "ETH";
 const ETH_ORIGIN = "Ethereum";
+const ARB_ASSET_NAME = "ETH";
+const ARB_ORIGIN = "Arbitrum";
 
 describe("Gasp Prod UI deposit tests", () => {
   beforeAll(async () => {
@@ -100,6 +102,61 @@ describe("Gasp Prod UI deposit tests", () => {
     const tokensAmountAfter = await walletWrapper.getMyTokensRowAmount(
       ETH_ASSET_NAME,
       ETH_ORIGIN,
+    );
+    expect(await uiStringToNumber(tokensAmountAfter)).toBeGreaterThan(
+      await uiStringToNumber(tokensAmountBefore),
+    );
+  });
+
+  test("User can deposit ARB", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    const tokensAmountBefore = await walletWrapper.getMyTokensRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
+    await walletWrapper.openDeposit();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await depositModal.openChainList();
+    await depositModal.selectChain("Arbitrum");
+    await depositModal.openTokensList();
+    await depositModal.waitForTokenListElementsVisible(ARB_ASSET_NAME);
+    await depositModal.selectToken(ARB_ASSET_NAME);
+
+    const randomNum = Math.floor(Math.random() * 99) + 1;
+    await depositModal.enterValue("0.001" + randomNum.toString());
+
+    await depositModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    expect(isOriginFeeDisplayed).toBeTruthy();
+
+    const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled(
+      DepositActionType.NetworkArbitrum,
+    );
+    expect(isNetworkButtonEnabled).toBeTruthy();
+
+    await depositModal.clickDepositButtonByText(
+      DepositActionType.NetworkArbitrum,
+    );
+    await acceptNetworkSwitchInNewWindow(driver);
+
+    await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
+    await waitForActionNotification(driver, TransactionType.Deposit);
+    await depositModal.closeSuccessModal();
+
+    await walletWrapper.waitTokenAmountChange(
+      ARB_ASSET_NAME,
+      tokensAmountBefore,
+      ARB_ORIGIN,
+    );
+    const tokensAmountAfter = await walletWrapper.getMyTokensRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
     );
     expect(await uiStringToNumber(tokensAmountAfter)).toBeGreaterThan(
       await uiStringToNumber(tokensAmountBefore),

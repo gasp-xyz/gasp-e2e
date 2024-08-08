@@ -36,6 +36,7 @@ export enum DepositActionType {
   Deposit,
   Approve,
   Network,
+  NetworkArbitrum,
   Approving,
   Done,
 }
@@ -51,6 +52,7 @@ export class DepositModal {
     [DepositActionType.Approve]: "Approve Deposit",
     [DepositActionType.Deposit]: "Deposit",
     [DepositActionType.Network]: "Switch to Holesky",
+    [DepositActionType.NetworkArbitrum]: "Switch to Arbitrum",
     [DepositActionType.Approving]: "Enabling Deposit...",
     [DepositActionType.Done]: "Ok, I understand",
   };
@@ -181,8 +183,8 @@ export class DepositModal {
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 
-  async isNetworkButtonEnabled() {
-    const xpath = buildXpathByElementText("button", "Switch to Holesky");
+  async isNetworkButtonEnabled(action = DepositActionType.Network) {
+    const xpath = buildXpathByElementText("button", this.depositAction[action]);
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 
