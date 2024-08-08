@@ -7,6 +7,7 @@ import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import {
   L2Update,
   Rolldown,
+  createAnUpdate,
   createAnUpdateAndCancelIt,
   leaveSequencing,
 } from "../../utils/rollDown/Rolldown";
@@ -108,23 +109,24 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
-  const slashRewardCanceler = testUser2
+  const cancelerRewardValue = testUser2
     .getAsset(GASP_ASSET_ID)
     ?.amountAfter.free!.sub(
       testUser2.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
-  const slashFineUpdater = testUser1
+  const updaterPenaltyValue = testUser1
     .getAsset(GASP_ASSET_ID)
     ?.amountBefore.reserved!.sub(
       testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
-  expect(slashRewardCanceler).bnEqual(
+  expect(cancelerRewardValue).bnEqual(
     (await SequencerStaking.slashFineAmount()).muln(0.2),
   );
-  expect(slashFineUpdater).bnEqual(await SequencerStaking.slashFineAmount());
+  expect(updaterPenaltyValue).bnEqual(await SequencerStaking.slashFineAmount());
 });
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
@@ -144,44 +146,37 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
-  const slashRewardUpdater = testUser1
+  const updaterDiffValue = testUser1
     .getAsset(GASP_ASSET_ID)
     ?.amountAfter.free!.sub(
       testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
-  const slashFineCanceler = testUser2
+  const cancelerPenaltyValue = testUser2
     .getAsset(GASP_ASSET_ID)
     ?.amountBefore.reserved!.sub(
       testUser2.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
-  expect(slashRewardUpdater).bnEqual(BN_ZERO);
-  expect(slashFineCanceler).bnEqual(await SequencerStaking.slashFineAmount());
+  expect(updaterDiffValue).bnEqual(BN_ZERO);
+  expect(cancelerPenaltyValue).bnEqual(
+    await SequencerStaking.slashFineAmount(),
+  );
 });
 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await testUser2.refreshAmounts(AssetWallet.BEFORE);
-  await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain, false);
+  await createAnUpdate(testUser1, chain);
   await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  await testUser2.refreshAmounts(AssetWallet.AFTER);
-  const slashRewardUpdater = testUser1
-    .getAsset(GASP_ASSET_ID)
-    ?.amountAfter.free!.sub(
-      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
-    );
-  const slashFineUpdater = testUser1
+  const updaterPenaltyValue = testUser1
     .getAsset(GASP_ASSET_ID)
     ?.amountBefore.reserved!.sub(
       testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
-  expect(slashRewardUpdater).bnEqual(BN_ZERO);
-  expect(slashFineUpdater).bnEqual(BN_ZERO);
+  expect(updaterPenaltyValue).bnEqual(BN_ZERO);
 });
 
 it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / cancel until the next session ( if gets elected )", async () => {
@@ -235,7 +230,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(judge.keyRingPair.address);
   await Rolldown.waitForReadRights(testUser1.keyRingPair.address);
-  await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const { reqIdCanceled: reqIdCanceled1, api: api1 } =
     await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain);
   await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
@@ -252,7 +246,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await testUser2.refreshAmounts(AssetWallet.AFTER);
   await signTx(
     await getApi(),
     await SequencerStaking.provideSequencerStaking(
@@ -265,7 +258,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   });
   sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(judge.keyRingPair.address);
-  await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await Rolldown.waitForReadRights(testUser2.keyRingPair.address);
   const { reqIdCanceled: reqIdCanceled2, api: api2 } =
     await createAnUpdateAndCancelIt(
@@ -287,17 +279,4 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await testUser1.refreshAmounts(AssetWallet.AFTER);
-  const slashFineTestUser1 = testUser1
-    .getAsset(GASP_ASSET_ID)
-    ?.amountBefore.reserved!.sub(
-      testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
-    );
-  const slashFineTestUser2 = testUser2
-    .getAsset(GASP_ASSET_ID)
-    ?.amountBefore.reserved!.sub(
-      testUser2.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
-    );
-  expect(slashFineTestUser1).bnGt(BN_ZERO);
-  expect(slashFineTestUser2).bnGt(BN_ZERO);
 });

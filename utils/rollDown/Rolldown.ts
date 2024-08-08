@@ -366,20 +366,17 @@ export async function createAnUpdateAndCancelIt(
   seq: User,
   cancelerAddress: string,
   chain: ChainName = "Arbitrum",
-  cancellation: boolean = true,
 ) {
   const { txIndex, api, reqId } = await createAnUpdate(seq, chain);
   let reqIdCanceled: number = 0;
-  if (cancellation === true) {
-    const cancel = await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        cancelerAddress,
-        await Rolldown.cancelRequestFromL1(chain, reqId),
-      ),
-    );
-    await waitSudoOperationSuccess(cancel, "SudoAsDone");
-    reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
-  }
+  const cancel = await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      cancelerAddress,
+      await Rolldown.cancelRequestFromL1(chain, reqId),
+    ),
+  );
+  await waitSudoOperationSuccess(cancel, "SudoAsDone");
+  reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
   return { txIndex, api, reqId, reqIdCanceled };
 }
 
