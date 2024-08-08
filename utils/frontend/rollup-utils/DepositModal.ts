@@ -4,6 +4,7 @@ import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
   buildXpathByElementText,
+  buildXpathByMultiText,
   buildXpathByText,
   clickElement,
   getText,
@@ -31,11 +32,13 @@ const CLOSE_MODAL = "deposit-modal-close";
 const CONFIRMING_BLOCKING = "deposit-status-loading";
 const SUCCESS_MODAL = "transfer-success";
 const CLOSE_BUTTON = "close";
+const TOKEN_LIST_AMOUNT = "token-amount";
 
 export enum DepositActionType {
   Deposit,
   Approve,
   Network,
+  NetworkArbitrum,
   Approving,
   Done,
 }
@@ -51,6 +54,7 @@ export class DepositModal {
     [DepositActionType.Approve]: "Approve Deposit",
     [DepositActionType.Deposit]: "Deposit",
     [DepositActionType.Network]: "Switch to Holesky",
+    [DepositActionType.NetworkArbitrum]: "Switch to Arbitrum",
     [DepositActionType.Approving]: "Enabling Deposit...",
     [DepositActionType.Done]: "Ok, I understand",
   };
@@ -129,6 +133,16 @@ export class DepositModal {
     await waitForElementVisible(this.driver, tokenLocator, 5000);
   }
 
+  async getTokenListRowAmount(tokenName: string, origin = "Native") {
+    const tokenRowAmount =
+      buildDataTestIdXpath(TOKEN_LIST) +
+      buildXpathByMultiText([tokenName, origin]) +
+      buildDataTestIdXpath(TOKEN_LIST_AMOUNT);
+    await waitForElementVisible(this.driver, tokenRowAmount);
+    const amount = await getText(this.driver, tokenRowAmount);
+    return amount.split(",").join("");
+  }
+
   async enterValue(amount: string) {
     const inputTokenLocator = buildDataTestIdXpath(TOKEN_TEXT_INPUT);
     await clickElement(this.driver, inputTokenLocator);
@@ -181,8 +195,8 @@ export class DepositModal {
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 
-  async isNetworkButtonEnabled() {
-    const xpath = buildXpathByElementText("button", "Switch to Holesky");
+  async isNetworkButtonEnabled(action = DepositActionType.Network) {
+    const xpath = buildXpathByElementText("button", this.depositAction[action]);
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 
@@ -193,6 +207,33 @@ export class DepositModal {
     while (Date.now() < endTime) {
       try {
         const tokenAmount = await this.getTokenAmount();
+        if (tokenAmount !== initValue) {
+          return;
+        }
+      } catch (error) {
+        // Element not found or other error occurred, continue waiting
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    throw new Error(
+      `Timeout: Element value not as desired after ${timeout} milliseconds`,
+    );
+  }
+
+  async waitTokenListAmountChange(
+    initValue: string,
+    tokenName: string,
+    origin: string,
+    timeout = FIVE_MIN,
+  ) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
+
+    while (Date.now() < endTime) {
+      try {
+        const tokenAmount = await this.getTokenListRowAmount(tokenName, origin);
         if (tokenAmount !== initValue) {
           return;
         }

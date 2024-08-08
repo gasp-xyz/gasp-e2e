@@ -19,7 +19,8 @@ export const DriverBuilder = (function () {
     }
     options
       .addArguments("--disable-dev-shm-usage")
-      .addArguments("--enable-clipboard-read");
+      .addArguments("--enable-clipboard-read")
+      .addArguments("--disable-search-engine-choice-screen");
     //.addArguments("--disable-web-security");
     const prefs = new logging.Preferences();
     prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);

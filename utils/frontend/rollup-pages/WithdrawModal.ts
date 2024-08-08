@@ -32,6 +32,7 @@ const CLOSE_BUTTON = "close";
 export enum WithdrawActionType {
   Withdraw,
   Network,
+  NetworkArbitrum,
 }
 
 export class WithdrawModal {
@@ -44,6 +45,7 @@ export class WithdrawModal {
   withdrawAction: Record<WithdrawActionType, string> = {
     [WithdrawActionType.Withdraw]: "Withdraw",
     [WithdrawActionType.Network]: "Switch to Holesky",
+    [WithdrawActionType.NetworkArbitrum]: "Switch to Arbitrum",
   };
 
   async isModalVisible() {
@@ -141,8 +143,11 @@ export class WithdrawModal {
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 
-  async isNetworkButtonEnabled() {
-    const xpath = buildXpathByElementText("button", "Switch to Holesky");
+  async isNetworkButtonEnabled(action = WithdrawActionType.Network) {
+    const xpath = buildXpathByElementText(
+      "button",
+      this.withdrawAction[action],
+    );
     return await (await this.driver.findElement(By.xpath(xpath))).isEnabled();
   }
 

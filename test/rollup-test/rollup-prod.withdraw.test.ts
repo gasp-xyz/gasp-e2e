@@ -37,6 +37,9 @@ let acc_addr_short = "";
 const ASSET_NAME = "GASPV2";
 const NATIVE_ORIGIN = "Native";
 const CHAIN_NAME = "Holesky";
+const ARB_CHAIN_NAME = "Arbitrum";
+const ARB_ASSET_NAME = "ETH";
+const ARB_ORIGIN = "Arbitrum";
 
 describe("Gasp Prod UI withdraw tests", () => {
   beforeAll(async () => {
@@ -123,6 +126,94 @@ describe("Gasp Prod UI withdraw tests", () => {
     await depositModal.waitTokenAmountChange(l1TokensAmountBefore);
 
     const l1TokensAmountAfter = await depositModal.getTokenAmount();
+    expect(await uiStringToNumber(l1TokensAmountAfter)).toBeGreaterThan(
+      await uiStringToNumber(l1TokensAmountBefore),
+    );
+  });
+
+  test("User can withdraw ARB", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    const tokensAmountBefore = await walletWrapper.getMyTokensRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
+
+    await walletWrapper.openDeposit();
+    const depositModal = new DepositModal(driver);
+    let isDepositModalVisible = await depositModal.isModalVisible();
+    expect(isDepositModalVisible).toBeTruthy();
+    await depositModal.openChainList();
+    await depositModal.selectChain(ARB_CHAIN_NAME);
+    await depositModal.openTokensList();
+    await depositModal.waitForTokenListElementsVisible(ARB_ASSET_NAME);
+    const l1TokensAmountBefore = await depositModal.getTokenListRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
+    await depositModal.selectToken(ARB_ASSET_NAME);
+    await depositModal.close();
+
+    await walletWrapper.openWithdraw();
+    const withdrawModal = new WithdrawModal(driver);
+    const isModalVisible = await withdrawModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await withdrawModal.openChainList();
+    await withdrawModal.selectChain(ARB_CHAIN_NAME);
+    await withdrawModal.openTokensList();
+    await withdrawModal.waitForTokenListElementsVisible(ARB_ASSET_NAME);
+    await withdrawModal.selectToken(ARB_ASSET_NAME);
+    await withdrawModal.enterValue("0.0011");
+
+    await withdrawModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed =
+      await withdrawModal.isDestinationFeeDisplayed();
+    expect(isOriginFeeDisplayed).toBeTruthy();
+
+    // const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
+    // expect(isNetworkButtonEnabled).toBeTruthy();
+
+    // await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Network);
+    // await acceptNetworkSwitchInNewWindow(driver);
+
+    await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Withdraw);
+    await waitForActionNotification(driver, TransactionType.Withdraw);
+    await withdrawModal.closeSuccessModal();
+
+    await walletWrapper.waitTokenAmountChange(
+      ARB_ASSET_NAME,
+      tokensAmountBefore,
+      ARB_ORIGIN,
+    );
+    const tokensAmountAfter = await walletWrapper.getMyTokensRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
+    expect(await uiStringToNumber(tokensAmountAfter)).toBeLessThan(
+      await uiStringToNumber(tokensAmountBefore),
+    );
+
+    await walletWrapper.openDeposit();
+    isDepositModalVisible = await depositModal.isModalVisible();
+    expect(isDepositModalVisible).toBeTruthy();
+    await depositModal.openChainList();
+    await depositModal.selectChain(ARB_CHAIN_NAME);
+    await depositModal.openTokensList();
+    await depositModal.waitForTokenListElementsVisible(ARB_ASSET_NAME);
+
+    await depositModal.waitTokenListAmountChange(
+      l1TokensAmountBefore,
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
+
+    const l1TokensAmountAfter = await depositModal.getTokenListRowAmount(
+      ARB_ASSET_NAME,
+      ARB_ORIGIN,
+    );
     expect(await uiStringToNumber(l1TokensAmountAfter)).toBeGreaterThan(
       await uiStringToNumber(l1TokensAmountBefore),
     );
