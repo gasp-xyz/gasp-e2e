@@ -1,8 +1,6 @@
 name: Xcm - monitor
 
 on:
-  schedule:
-    - cron: "0 */12 * * *" #lets run this job every 2 hours.
   workflow_dispatch:
 jobs:
   checkout:
