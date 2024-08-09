@@ -1,6 +1,6 @@
 /*
  *
- * @group sequencerStaking
+ * @group sequencerCancelling
  */
 
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
