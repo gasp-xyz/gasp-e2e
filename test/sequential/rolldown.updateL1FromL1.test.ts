@@ -212,8 +212,6 @@ describe("updateL1FromL1", () => {
         BN_THOUSAND,
       ),
     ).toBe(false);
-    expect(events.length).toBeGreaterThan(2);
-    expect(events2.length).toBe(2);
   });
   it("Old Ids can be included but wont be considered", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();

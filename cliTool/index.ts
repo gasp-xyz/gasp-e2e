@@ -67,6 +67,7 @@ import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { toNumber } from "lodash-es";
+import { getDecodedData } from "../utils/rollup/ethUtils";
 
 async function app(): Promise<any> {
   return inquirer
@@ -125,10 +126,21 @@ async function app(): Promise<any> {
         "depositHell",
         "getPolkAddress",
         "allCandidatesToSequence",
+        "rpc-pendingUpdates-ETH",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("rpc-pendingUpdates-ETH")) {
+        await setupApi();
+        const api = getApi();
+        const pendingUpdates =
+          await api.rpc.rolldown.pending_l2_requests("Ethereum");
+        const res = getDecodedData("update_l1_from_l2", pendingUpdates.toHex());
+        console.log(JSON.stringify(res));
+
+        return app();
+      }
       if (answers.option.includes("allCandidatesToSequence")) {
         return allCandidatesToSequence();
       }
