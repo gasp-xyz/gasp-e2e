@@ -3,9 +3,9 @@ import {
   Address,
   Chain,
   createPublicClient,
-  createWalletClient,
+  createWalletClient, decodeAbiParameters,
   http,
-  PrivateKeyAccount,
+  PrivateKeyAccount
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
@@ -19,6 +19,7 @@ import { User } from "../User";
 import { ArbAnvil, EthAnvil, getL1, L1Type } from "./l1s";
 import { encodeAddress } from "@polkadot/keyring";
 import { blake2AsU8a } from "@polkadot/util-crypto";
+import { L2Update } from "../rollDown/Rolldown";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650";
@@ -221,6 +222,14 @@ export async function fakeDepositOnL2(
     Assets.mintNative(ethUser),
   );
 }
+
+export function getDecodedData(methodName: string, pendingUpdates: `0x${string}`): Array<L2Update> {
+  return decodeAbiParameters(
+    abi.find((e: any) => e.name === methodName)!.inputs,
+    pendingUpdates,
+  ) as unknown as Array<L2Update>;
+}
+
 export function convertEthAddressToDotAddress(ethAddress: string) {
   return encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42);
 }

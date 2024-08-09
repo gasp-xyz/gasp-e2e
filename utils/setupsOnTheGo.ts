@@ -2003,6 +2003,9 @@ export async function allCandidatesToSequence() {
     );
   }
 }
+
+
+
 export async function getPolkAddress(address: string) {
   return convertEthAddressToDotAddress(address);
 }
