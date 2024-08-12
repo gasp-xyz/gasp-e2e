@@ -5,7 +5,6 @@ import {
   buildDataTestIdXpath,
   buildXpathByElementText,
   buildXpathByMultiText,
-  buildXpathByText,
   clickElement,
   getText,
   isDisplayed,
@@ -107,9 +106,10 @@ export class DepositModal {
   }
 
   async selectToken(assetName: string) {
-    //const tokenTestId = `tokenList-item`;
+    const tokenIconTestId = `token-icon-${assetName}`;
     const tokenLocator =
-      buildDataTestIdXpath(TOKEN_LIST_ITEM) + buildXpathByText(assetName);
+      buildDataTestIdXpath(TOKEN_LIST_ITEM) +
+      buildDataTestIdXpath(tokenIconTestId);
     await sleep(1000);
     await waitForElementVisible(this.driver, tokenLocator, 5000);
     await clickElement(this.driver, tokenLocator);

@@ -695,7 +695,7 @@ export function buildXpathByText(text: string) {
 }
 
 export function buildXpathByMultiText(texts: string[]) {
-  return `//*[${texts.map((text) => `contains(., "${text}")`).join(" and ")}]`;
+  return `/*[${texts.map((text) => `contains(., "${text}")`).join(" and ")}]`;
 }
 
 export function buildXpathByElementText(element: string, text: string) {
