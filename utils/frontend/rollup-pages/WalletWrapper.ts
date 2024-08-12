@@ -114,6 +114,7 @@ export class WalletWrapper {
   async getMyTokensRowAmount(tokenName: string, origin = "Native") {
     const tokenRowAmount =
       buildDataTestIdXpath(MY_TOKENS) +
+      buildDataTestIdXpath(tokenName + "-token-row") +
       buildXpathByMultiText([tokenName, origin]) +
       buildDataTestIdXpath(MY_TOKENS_ROW_AMOUNT);
     await waitForElementVisible(this.driver, tokenRowAmount);
