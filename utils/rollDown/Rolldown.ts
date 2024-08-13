@@ -340,6 +340,7 @@ export async function createAnUpdate(
   seq: User | string,
   chain: ChainName = "Arbitrum",
   forcedIndex = 0,
+  updateValue: any = null,
 ) {
   const address = typeof seq === "string" ? seq : seq.keyRingPair.address;
   await Rolldown.waitForReadRights(address, 50, chain);
@@ -348,10 +349,15 @@ export async function createAnUpdate(
     txIndex = forcedIndex;
   }
   const api = getApi();
-  const update = new L2Update(api)
-    .withDeposit(txIndex, address, address, BN_MILLION)
-    .on(chain)
-    .build();
+  let update: any;
+  if (updateValue === null) {
+    update = new L2Update(api)
+      .withDeposit(txIndex, address, address, BN_MILLION)
+      .on(chain)
+      .build();
+  } else {
+    update = updateValue;
+  }
   let reqId = 0;
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(address, update),
@@ -366,8 +372,15 @@ export async function createAnUpdateAndCancelIt(
   seq: User,
   cancelerAddress: string,
   chain: ChainName = "Arbitrum",
+  updateValue: any = null,
+  forcedIndex = 0,
 ) {
-  const { txIndex, api, reqId } = await createAnUpdate(seq, chain);
+  const { txIndex, api, reqId } = await createAnUpdate(
+    seq,
+    chain,
+    forcedIndex,
+    updateValue,
+  );
   let reqIdCanceled: number = 0;
   const cancel = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
