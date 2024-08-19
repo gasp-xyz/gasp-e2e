@@ -123,6 +123,11 @@ export class Rolldown {
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
   }
 
+  static async forceCancelRequestFromL1(chainId: ChainName, reqId: number) {
+    const api = getApi();
+    return api.tx.rolldown.forceCancelRequestsFromL1(chainId, reqId);
+  }
+
   static getRequestIdFromEvents(
     events: MangataGenericEvent[],
     module = "rolldown",
