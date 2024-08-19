@@ -118,7 +118,15 @@ export async function waitForActionNotification(
       await withdrawModal.waitForSuccessVisible();
       break;
     default:
+      const toast = new NotificationToast(driver);
+      await toast.waitForToastState(ToastType.Confirm, transaction, 3000);
+      const isModalWaitingForSignVisible = await toast.istoastVisible(
+        ToastType.Confirm,
+        transaction,
+      );
+      expect(isModalWaitingForSignVisible).toBeTruthy();
       await MetaMask.signTransactionInDifferentWindow(driver);
+      await toast.waitForToastState(ToastType.Success, transaction);
   }
 }
 

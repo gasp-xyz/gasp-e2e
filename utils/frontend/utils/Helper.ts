@@ -296,6 +296,16 @@ export async function writeText(
   await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
 }
 
+export async function writeTextManual(
+  driver: WebDriver,
+  elementXpath: string,
+  text: string,
+) {
+  await waitForElement(driver, elementXpath);
+  await clearTextManual(driver, elementXpath);
+  await (await driver.findElement(By.xpath(elementXpath))).sendKeys(text);
+}
+
 export async function appendText(
   driver: WebDriver,
   elementXpath: string,
