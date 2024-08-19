@@ -9,12 +9,16 @@ import {
 } from "../../utils/rollDown/SequencerStaking";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
-import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { BN_MILLION } from "gasp-sdk";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import { BN_MILLION, signTx } from "gasp-sdk";
+import {
+  ExtrinsicResult,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { waitForNBlocks } from "../../utils/utils";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 async function leaveSequencing(userAddr: string) {
   const stakedEth = await SequencerStaking.sequencerStake(userAddr, "Ethereum");
@@ -78,7 +82,6 @@ beforeEach(async () => {
 
 it("forceUpdateL2FromL1 can be called by Sudo", async () => {
   const [testUser] = setupUsers();
-  const sudo = getSudoUser();
   const testUserAddress = testUser.keyRingPair.address;
   const providingExtrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).muln(2),
@@ -93,7 +96,30 @@ it("forceUpdateL2FromL1 can be called by Sudo", async () => {
     .withDeposit(txIndex, testUserAddress, testUserAddress, BN_MILLION)
     .on("Ethereum")
     .forceBuild();
-  await Sudo.asSudoFinalized(Sudo.sudoAs(sudo, update)).then(async (events) => {
-    await waitSudoOperationSuccess(events, "SudoAsDone");
+  await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
+    await waitSudoOperationSuccess(events);
+  });
+});
+
+it("forceUpdateL2FromL1 can't be called by non-sudo user", async () => {
+  const [testUser] = setupUsers();
+  const testUserAddress = testUser.keyRingPair.address;
+  const providingExtrinsic = await SequencerStaking.provideSequencerStaking(
+    (await SequencerStaking.minimalStakeAmount()).muln(2),
+    "Ethereum",
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser),
+    Sudo.sudoAs(testUser, providingExtrinsic),
+  );
+  const txIndex = await Rolldown.lastProcessedRequestOnL2("Ethereum");
+  const update = new L2Update(api)
+    .withDeposit(txIndex, testUserAddress, testUserAddress, BN_MILLION)
+    .on("Ethereum")
+    .forceBuild();
+  await signTx(api, update, testUser.keyRingPair).then((events) => {
+    const res = getEventResultFromMangataTx(events);
+    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(res.data).toEqual("UnknownError");
   });
 });
