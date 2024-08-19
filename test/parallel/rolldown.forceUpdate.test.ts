@@ -17,7 +17,7 @@ import {
   ExtrinsicResult,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { waitForNBlocks } from "../../utils/utils";
+import { isBadOriginError, waitForNBlocks } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 async function leaveSequencing(userAddr: string) {
@@ -120,6 +120,7 @@ it("forceUpdateL2FromL1 can't be called by non-sudo user", async () => {
   await signTx(api, update, testUser.keyRingPair).then((events) => {
     const res = getEventResultFromMangataTx(events);
     expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(res.data).toEqual("UnknownError");
+    const isBadOrigin = isBadOriginError(events);
+    expect(isBadOrigin).toEqual(true);
   });
 });
