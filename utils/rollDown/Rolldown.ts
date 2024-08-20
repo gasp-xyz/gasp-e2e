@@ -6,6 +6,7 @@ import { BN_MILLION, MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import {
+  findEventData,
   getEventsAt,
   waitNewBlock,
   waitSudoOperationSuccess,
@@ -341,6 +342,7 @@ export async function createAnUpdate(
   chain: ChainName = "Arbitrum",
   forcedIndex = 0,
   updateValue: any = null,
+  depositAmountValue = BN_MILLION,
 ) {
   const address = typeof seq === "string" ? seq : seq.keyRingPair.address;
   await Rolldown.waitForReadRights(address, 50, chain);
@@ -352,20 +354,24 @@ export async function createAnUpdate(
   let update: any;
   if (updateValue === null) {
     update = new L2Update(api)
-      .withDeposit(txIndex, address, address, BN_MILLION)
+      .withDeposit(txIndex, address, address, depositAmountValue)
       .on(chain)
       .build();
   } else {
     update = updateValue;
   }
   let reqId = 0;
+  let executionBlockNumber: any;
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(address, update),
   ).then(async (events) => {
+    executionBlockNumber = findEventData(events, "rolldown.L1ReadStored")[0][2]
+      .toString()
+      .replaceAll(",", "");
     await waitSudoOperationSuccess(events, "SudoAsDone");
     reqId = Rolldown.getRequestIdFromEvents(events);
   });
-  return { txIndex, api, reqId };
+  return { txIndex, api, reqId, executionBlockNumber };
 }
 
 export async function createAnUpdateAndCancelIt(
@@ -375,7 +381,7 @@ export async function createAnUpdateAndCancelIt(
   updateValue: any = null,
   forcedIndex = 0,
 ) {
-  const { txIndex, api, reqId } = await createAnUpdate(
+  const { txIndex, api, reqId, executionBlockNumber } = await createAnUpdate(
     seq,
     chain,
     forcedIndex,
@@ -390,7 +396,7 @@ export async function createAnUpdateAndCancelIt(
   );
   await waitSudoOperationSuccess(cancel, "SudoAsDone");
   reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
-  return { txIndex, api, reqId, reqIdCanceled };
+  return { txIndex, api, reqId, reqIdCanceled, executionBlockNumber };
 }
 
 export async function leaveSequencing(userAddr: string) {

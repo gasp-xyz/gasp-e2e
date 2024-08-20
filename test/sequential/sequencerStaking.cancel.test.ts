@@ -18,7 +18,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
-import { BN_ZERO } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 
@@ -74,13 +74,12 @@ beforeEach(async () => {
   testUser2.addAsset(GASP_ASSET_ID);
 });
 it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
-  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
+  const { reqIdCanceled, executionBlockNumber } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
     chain,
   );
   await waitForNBlocks(disputePeriodLength);
-  await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -95,6 +94,12 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
+  const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
+  const events = (await api.query.system.events.at(blockHash));
+  const filteredEvent = events.filter(
+    (result: any) => result.event.method === "RegisteredAsset",
+  );
+  expect(filteredEvent[0]).toBeUndefined();
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const cancelerRewardValue = testUser2
@@ -115,7 +120,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
+  const { reqIdCanceled, executionBlockNumber } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
     chain,
@@ -134,6 +139,12 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
+  const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
+  const events = (await api.query.system.events.at(blockHash));
+  const filteredEvent = events.filter(
+    (result: any) => result.event.method === "RegisteredAsset",
+  );
+  expect(filteredEvent[0]).toBeUndefined();
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const updaterDiffValue = testUser1
@@ -154,8 +165,21 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await createAnUpdate(testUser1, chain);
+  const { executionBlockNumber } = await createAnUpdate(
+    testUser1,
+    chain,
+    0,
+    null,
+    BN_MILLION,
+  );
   await waitForNBlocks(disputePeriodLength);
+  const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
+  const events = (await api.query.system.events.at(blockHash));
+  const filteredEvent = events.filter(
+    (result: any) => result.event.method === "RegisteredAsset",
+  );
+  const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
+  testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const updaterPenaltyValue = testUser1
     .getAsset(GASP_ASSET_ID)
@@ -163,6 +187,7 @@ it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", 
       testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
   expect(updaterPenaltyValue).bnEqual(BN_ZERO);
+  expect(testUser1.getAsset(assetId)?.amountAfter.free!).bnEqual(BN_MILLION);
 });
 
 it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / cancel until the next session ( if gets elected )", async () => {
@@ -331,10 +356,16 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
     ?.amountBefore.reserved!.sub(
       testUser2.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
+  const testUser2RightsStatus = await Rolldown.sequencerRights(
+    chain,
+    testUser2.keyRingPair.address,
+  );
   expect(sequencers.toHuman().Ethereum).toContain(testUser2Address);
   expect(testUser2PenaltyValue).bnEqual(
     await SequencerStaking.slashFineAmount(),
   );
+  expect(testUser2RightsStatus.readRights.toString()).toBe("1");
+  expect(testUser2RightsStatus.cancelRights.toString()).toBe("1");
 });
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels AND users provide staking THEN users have read/cancel rights", async () => {
