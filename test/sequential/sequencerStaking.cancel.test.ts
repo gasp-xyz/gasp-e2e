@@ -11,7 +11,7 @@ import {
   createAnUpdateAndCancelIt,
   leaveSequencing,
 } from "../../utils/rollDown/Rolldown";
-import { initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
@@ -22,6 +22,7 @@ import { BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 
+let api: any;
 let chain: any;
 let testUser1: User;
 let testUser2: User;
@@ -32,6 +33,7 @@ let providingExtrinsic: any;
 beforeAll(async () => {
   await initApi();
   await setupApi();
+  api = getApi();
   disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
 });
 
@@ -54,7 +56,7 @@ beforeEach(async () => {
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
   providingExtrinsic = await SequencerStaking.provideSequencerStaking(
     minToBeSequencer.addn(1000),
-    "Ethereum",
+    chain,
   );
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, providingExtrinsic),
@@ -72,7 +74,7 @@ beforeEach(async () => {
   testUser2.addAsset(GASP_ASSET_ID);
 });
 it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
-  const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
+  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
     chain,
@@ -80,7 +82,6 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   await waitForNBlocks(disputePeriodLength);
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  //we approve the cancellation
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(
@@ -88,7 +89,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
       testUser2Address,
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, true)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
   );
@@ -114,22 +115,20 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
+  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
     chain,
   );
-  //await waitForNBlocks(disputePeriodLength);
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  //the cancellation is incorrectly
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser2Address,
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, false)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
   );
@@ -168,7 +167,7 @@ it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", 
 
 it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / cancel until the next session ( if gets elected )", async () => {
   let updaterRightsStatus: any;
-  const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
+  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
     chain,
@@ -187,7 +186,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
       testUser2Address,
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, true)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
   );
@@ -214,15 +213,12 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     Sudo.sudoAs(judge, providingExtrinsic),
   );
 
-  const {
-    api,
-    txIndex: txIndex1,
-    reqIdCanceled: reqIdCanceled1,
-  } = await createAnUpdateAndCancelIt(
-    testUser1,
-    testUser2.keyRingPair.address,
-    chain,
-  );
+  const { txIndex: txIndex1, reqIdCanceled: reqIdCanceled1 } =
+    await createAnUpdateAndCancelIt(
+      testUser1,
+      testUser2.keyRingPair.address,
+      chain,
+    );
   await waitForNBlocks(disputePeriodLength);
   const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
   const txIndex3 = txIndex2 + 1;
@@ -254,7 +250,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       judge.keyRingPair.address,
       new L2Update(api)
         .withCancelResolution(txIndex1, reqIdCanceled1, false)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
   );
@@ -268,7 +264,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       judge.keyRingPair.address,
       new L2Update(api)
         .withCancelResolution(txIndex3, reqIdCanceled2, false)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
   );
@@ -300,9 +296,9 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
 });
 
-it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator stakes new token THEN it will be slashed and returned to the sequencer pool", async () => {
+it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator provides staking THEN cancelator will be slashed but he will stay in activeSequncer pool", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
+  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
     chain,
@@ -310,17 +306,17 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator st
   //await waitForNBlocks(disputePeriodLength);
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  //the cancellation is incorrectly
   providingExtrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).muln(2),
-    "Ethereum",
+    chain,
   );
+  //the cancellation is incorrectly
   const cancelResolutionEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser2Address,
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, false)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
     Sudo.sudoAs(testUser2, providingExtrinsic),
@@ -341,22 +337,19 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator st
   );
 });
 
-it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels AND users stakes new token THEN they return sequencersRights", async () => {
+it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels AND users provide staking THEN users have read/cancel rights", async () => {
   const [judge] = setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(judge),
     Sudo.sudoAs(judge, providingExtrinsic),
   );
 
-  const {
-    api,
-    txIndex: txIndex1,
-    reqIdCanceled: reqIdCanceled1,
-  } = await createAnUpdateAndCancelIt(
-    testUser1,
-    testUser2.keyRingPair.address,
-    chain,
-  );
+  const { txIndex: txIndex1, reqIdCanceled: reqIdCanceled1 } =
+    await createAnUpdateAndCancelIt(
+      testUser1,
+      testUser2.keyRingPair.address,
+      chain,
+    );
   await waitForNBlocks(disputePeriodLength);
   const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
   const txIndex3 = txIndex2 + 1;
@@ -384,14 +377,14 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   await waitForNBlocks(disputePeriodLength);
   providingExtrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).muln(2),
-    "Ethereum",
+    chain,
   );
   const cancelResolutionEvent1 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       judge.keyRingPair.address,
       new L2Update(api)
         .withCancelResolution(txIndex1, reqIdCanceled1, false)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
     Sudo.sudoAs(testUser2, providingExtrinsic),
@@ -406,7 +399,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       judge.keyRingPair.address,
       new L2Update(api)
         .withCancelResolution(txIndex3, reqIdCanceled2, false)
-        .on("Ethereum")
+        .on(chain)
         .build(),
     ),
     Sudo.sudoAs(testUser1, providingExtrinsic),
