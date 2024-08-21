@@ -124,7 +124,6 @@ beforeEach(async () => {
 });
 
 it("forceUpdateL2FromL1 can be called by Sudo", async () => {
-  let assetId: any;
   const txIndex = await Rolldown.lastProcessedRequestOnL2("Ethereum");
   const update = new L2Update(api)
     .withDeposit(txIndex, testUserAddress, testUserAddress, BN_MILLION)
@@ -132,13 +131,7 @@ it("forceUpdateL2FromL1 can be called by Sudo", async () => {
     .forceBuild();
   await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
     await waitSudoOperationSuccess(events);
-    assetId = findEventData(events, "assetRegistry.RegisteredAsset")
-      .assetId.toString()
-      .replaceAll(",", "");
   });
-  testUser.addAsset(assetId);
-  await testUser.refreshAmounts(AssetWallet.AFTER);
-  expect(testUser.getAsset(assetId)?.amountAfter.free!).bnEqual(BN_MILLION);
 });
 
 it("forceUpdateL2FromL1 can't be called by non-sudo user", async () => {
@@ -175,4 +168,22 @@ it("Validate that forceCancelRequestsFromL1 can't be called by non-sudo user", a
     const isBadOrigin = isBadOriginError(events);
     expect(isBadOrigin).toEqual(true);
   });
+});
+
+it("forceUpdateL2FromL1 does not wait for a dispute period", async () => {
+  let assetId: any;
+  const txIndex = await Rolldown.lastProcessedRequestOnL2("Ethereum");
+  const update = new L2Update(api)
+    .withDeposit(txIndex, testUserAddress, testUserAddress, BN_MILLION)
+    .on("Ethereum")
+    .forceBuild();
+  await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
+    await waitSudoOperationSuccess(events);
+    assetId = findEventData(events, "assetRegistry.RegisteredAsset")
+      .assetId.toString()
+      .replaceAll(",", "");
+  });
+  testUser.addAsset(assetId);
+  await testUser.refreshAmounts(AssetWallet.AFTER);
+  expect(testUser.getAsset(assetId)?.amountAfter.free!).bnEqual(BN_MILLION);
 });
