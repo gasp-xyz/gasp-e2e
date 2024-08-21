@@ -18,7 +18,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
-import { BN, BN_ZERO } from "@polkadot/util";
+import { BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 
@@ -92,8 +92,8 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
-  const tokenAddress = testUser1.keyRingPair.address;
 
+  const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
     tokenAddress,
     chain,
@@ -139,12 +139,17 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
-  const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
-  const events = await api.query.system.events.at(blockHash);
-  const filteredEvent = events.filter(
-    (result: any) => result.event.method === "RegisteredAsset",
+
+  const tokenAddress = testUser1.keyRingPair.address;
+  const didDepositRun = await Rolldown.isTokenBalanceIncreased(
+    tokenAddress,
+    chain,
   );
-  expect(filteredEvent[0]).toBeUndefined();
+  const isTokenGenerated =
+    await Rolldown.wasAssetRegistered(executionBlockNumber);
+  expect(didDepositRun).toBe(false);
+  expect(isTokenGenerated).toBe(false);
+
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const updaterDiffValue = testUser1
@@ -173,12 +178,7 @@ it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", 
     BN_MILLION,
   );
   await waitForNBlocks(disputePeriodLength);
-  const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
-  const events = await api.query.system.events.at(blockHash);
-  const filteredEvent = events.filter(
-    (result: any) => result.event.method === "RegisteredAsset",
-  );
-  const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
+  const assetId = await Rolldown.getRegisteredAssetId(executionBlockNumber);
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const updaterPenaltyValue = testUser1
@@ -238,12 +238,15 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     Sudo.sudoAs(judge, providingExtrinsic),
   );
 
-  const { txIndex: txIndex1, reqIdCanceled: reqIdCanceled1 } =
-    await createAnUpdateAndCancelIt(
-      testUser1,
-      testUser2.keyRingPair.address,
-      chain,
-    );
+  const {
+    txIndex: txIndex1,
+    reqIdCanceled: reqIdCanceled1,
+    executionBlockNumber: execution1BlockNumber,
+  } = await createAnUpdateAndCancelIt(
+    testUser1,
+    testUser2.keyRingPair.address,
+    chain,
+  );
   await waitForNBlocks(disputePeriodLength);
   const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
   const txIndex3 = txIndex2 + 1;
@@ -262,7 +265,10 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     )
     .on(chain)
     .build();
-  const { reqIdCanceled: reqIdCanceled2 } = await createAnUpdateAndCancelIt(
+  const {
+    reqIdCanceled: reqIdCanceled2,
+    executionBlockNumber: execution2BlockNumber,
+  } = await createAnUpdateAndCancelIt(
     testUser2,
     testUser1.keyRingPair.address,
     chain,
@@ -295,6 +301,26 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
+
+  const didDeposit1Run = await Rolldown.isTokenBalanceIncreased(
+    testUser1.keyRingPair.address,
+    chain,
+  );
+  const isToken1Generated = await Rolldown.wasAssetRegistered(
+    execution1BlockNumber,
+  );
+  const didDeposit2Run = await Rolldown.isTokenBalanceIncreased(
+    testUser2.keyRingPair.address,
+    chain,
+  );
+  const isToken2Generated = await Rolldown.wasAssetRegistered(
+    execution2BlockNumber,
+  );
+  expect(didDeposit1Run).toBe(false);
+  expect(isToken1Generated).toBe(false);
+  expect(didDeposit2Run).toBe(false);
+  expect(isToken2Generated).toBe(false);
+
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const testUser1PenaltyValue = testUser1
     .getAsset(GASP_ASSET_ID)

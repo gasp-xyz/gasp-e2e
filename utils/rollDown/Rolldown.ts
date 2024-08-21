@@ -193,6 +193,18 @@ export class Rolldown {
     );
     return filteredEvent[0] !== undefined;
   }
+
+  static async getRegisteredAssetId(executionBlockNumber: number) {
+    const api = getApi();
+    const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
+    const events = await api.query.system.events.at(blockHash);
+    const filteredEvent = events.filter(
+      (result: any) => result.event.method === "RegisteredAsset",
+    );
+    // @ts-ignore
+    const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
+    return assetId;
+  }
 }
 export class L2Update {
   api: ApiPromise;
