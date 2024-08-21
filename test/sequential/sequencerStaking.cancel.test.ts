@@ -74,11 +74,8 @@ beforeEach(async () => {
   testUser2.addAsset(GASP_ASSET_ID);
 });
 it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
-  const { reqIdCanceled, executionBlockNumber } = await createAnUpdateAndCancelIt(
-    testUser1,
-    testUser2Address,
-    chain,
-  );
+  const { reqIdCanceled, executionBlockNumber } =
+    await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain);
   await waitForNBlocks(disputePeriodLength);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -95,7 +92,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
   const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
-  const events = (await api.query.system.events.at(blockHash));
+  const events = await api.query.system.events.at(blockHash);
   const filteredEvent = events.filter(
     (result: any) => result.event.method === "RegisteredAsset",
   );
@@ -120,11 +117,8 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const { reqIdCanceled, executionBlockNumber } = await createAnUpdateAndCancelIt(
-    testUser1,
-    testUser2Address,
-    chain,
-  );
+  const { reqIdCanceled, executionBlockNumber } =
+    await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain);
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -140,7 +134,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
   const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
-  const events = (await api.query.system.events.at(blockHash));
+  const events = await api.query.system.events.at(blockHash);
   const filteredEvent = events.filter(
     (result: any) => result.event.method === "RegisteredAsset",
   );
@@ -174,7 +168,7 @@ it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", 
   );
   await waitForNBlocks(disputePeriodLength);
   const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
-  const events = (await api.query.system.events.at(blockHash));
+  const events = await api.query.system.events.at(blockHash);
   const filteredEvent = events.filter(
     (result: any) => result.event.method === "RegisteredAsset",
   );
