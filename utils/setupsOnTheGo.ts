@@ -64,7 +64,7 @@ import {
 } from "./rollup/ethUtils";
 import Web3 from "web3";
 import { L2Update, Rolldown } from "./rollDown/Rolldown";
-import { SequencerStaking } from "./rollDown/SequencerStaking";
+import { ChainName, SequencerStaking } from "./rollDown/SequencerStaking";
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
@@ -1986,25 +1986,24 @@ export async function depositHell(num: number, txIndexer = 0) {
   return txIndex + num;
 }
 
-export async function allCandidatesToSequence() {
+export async function create10sequencers(nw = "Ethereum") {
   await setupApi();
-  await setupUsers();
-  const api = await getApi();
-  const candidates = await api.query.parachainStaking.candidatePool();
-  //@ts-ignore
-  const candidatesList = candidates.toHuman().map((x) => x.owner);
-  for (const candidate of candidatesList) {
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintNativeAddress(candidate),
+  const txs = [];
+  for (let i = 0; i < 10; i++) {
+    const users = await setupUsers();
+    txs.push(Assets.mintNativeAddress(users[0].keyRingPair.address));
+    txs.push(
       Sudo.sudoAsWithAddressString(
-        candidate,
-        await SequencerStaking.provideSequencerStaking(BN_ZERO, "Ethereum"),
+        users[0].keyRingPair.address,
+        await SequencerStaking.provideSequencerStaking(
+          BN_ZERO,
+          nw as ChainName,
+        ),
       ),
     );
   }
+  await Sudo.batchAsSudoFinalized(...txs);
 }
-
-
 
 export async function getPolkAddress(address: string) {
   return convertEthAddressToDotAddress(address);
