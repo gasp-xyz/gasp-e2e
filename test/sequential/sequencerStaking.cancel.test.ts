@@ -73,6 +73,7 @@ beforeEach(async () => {
   testUser1.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(GASP_ASSET_ID);
 });
+
 it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
   const { reqIdCanceled, executionBlockNumber } =
     await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain);
@@ -91,12 +92,17 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength);
-  const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
-  const events = await api.query.system.events.at(blockHash);
-  const filteredEvent = events.filter(
-    (result: any) => result.event.method === "RegisteredAsset",
+  const tokenAddress = testUser1.keyRingPair.address;
+
+  const didDepositRun = await Rolldown.isTokenBalanceIncreased(
+    tokenAddress,
+    chain,
   );
-  expect(filteredEvent[0]).toBeUndefined();
+  const isTokenGenerated =
+    await Rolldown.wasAssetRegistered(executionBlockNumber);
+  expect(didDepositRun).toBe(false);
+  expect(isTokenGenerated).toBe(false);
+
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const cancelerRewardValue = testUser2

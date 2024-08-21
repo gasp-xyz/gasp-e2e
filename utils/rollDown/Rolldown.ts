@@ -2,7 +2,7 @@ import { setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { BN } from "@polkadot/util";
-import { BN_MILLION, MangataGenericEvent, signTx } from "gasp-sdk";
+import { BN_MILLION, BN_ZERO, MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import {
@@ -21,6 +21,8 @@ import {
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
+import { getAssetIdFromErc20 } from "../rollup/ethUtils";
+import { getL1FromName } from "../rollup/l1s";
 
 export class Rolldown {
   static async lastProcessedRequestOnL2(l1 = "Ethereum") {
@@ -164,6 +166,32 @@ export class Rolldown {
       "PalletRolldownSequencerRights",
       rights.toJSON()[seqAddress],
     ) as any as PalletRolldownSequencerRights;
+  }
+
+  static async isTokenBalanceIncreased(
+    tokenAddress: string,
+    chain: any,
+    gt: BN = BN_ZERO,
+  ) {
+    const api = getApi();
+    const l1 = getL1FromName(chain)!;
+    const assetId = await getAssetIdFromErc20(tokenAddress, l1);
+    if (assetId.lte(BN_ZERO)) {
+      return false;
+    } else {
+      const balance = await api.query.tokens.accounts(tokenAddress, assetId);
+      return balance.free.toBn().gt(gt);
+    }
+  }
+
+  static async wasAssetRegistered(executionBlockNumber: number) {
+    const api = getApi();
+    const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
+    const events = await api.query.system.events.at(blockHash);
+    const filteredEvent = events.filter(
+      (result: any) => result.event.method === "RegisteredAsset",
+    );
+    return filteredEvent[0] !== undefined;
   }
 }
 export class L2Update {
@@ -387,7 +415,6 @@ export async function createAnUpdateAndCancelIt(
     forcedIndex,
     updateValue,
   );
-  let reqIdCanceled: number = 0;
   const cancel = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       cancelerAddress,
@@ -395,7 +422,7 @@ export async function createAnUpdateAndCancelIt(
     ),
   );
   await waitSudoOperationSuccess(cancel, "SudoAsDone");
-  reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
+  const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
   return { txIndex, api, reqId, reqIdCanceled, executionBlockNumber };
 }
 
