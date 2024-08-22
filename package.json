@@ -127,6 +127,7 @@
     "test-microapps-prod-first": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=microappsProdDeposit --group=microappsProdSwap --group=microappsProdWallet --group=microappsProdWithdraw --group=microappsProdStaking --group=microappsProdPools",
     "test-gasp-ui": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=rollupDepositDev --group=rollupWalletDev --group=rollupWithdrawDev --group=rollupSwapDev --group=rollupMyPositionsDev",
     "test-gasp-prod-first": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=rollupWithdrawProd --group=rollupDepositProd",
+    "test-gasp-pr-first": "export CHOPSTICK_UI=true ; rm nonce.db ; rm sudo.lock;  node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --ci --group=rollupWalletPr",
     "cliTool": "node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules cliTool/index.ts --runInBand",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
   },
