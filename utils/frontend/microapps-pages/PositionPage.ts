@@ -68,7 +68,7 @@ export class PositionPageDriver {
     await clickElement(this.driver, removeButtonXpath);
     const removeAmountXpath = buildDataTestIdXpath("50%-button");
     await clickElement(this.driver, removeAmountXpath);
-    const feeValueXpath = buildDataTestIdXpath("removeLiq-fee-value-anchor");
+    const feeValueXpath = buildDataTestIdXpath("removeLiq-fee-value");
     await waitForElementVisible(this.driver, feeValueXpath, 12000);
   }
 
