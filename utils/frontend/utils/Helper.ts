@@ -492,7 +492,7 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 
 export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   try {
-    await waitForElement(driver, elementXpath, 4000);
+    await waitForElement(driver, elementXpath, 6000);
     return await (
       await driver.findElement(By.xpath(elementXpath))
     ).isDisplayed();
