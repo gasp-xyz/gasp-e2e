@@ -6,7 +6,6 @@ import { BN_MILLION, BN_ZERO, MangataGenericEvent, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import {
-  findEventData,
   getEventsAt,
   waitNewBlock,
   waitSudoOperationSuccess,
@@ -184,9 +183,9 @@ export class Rolldown {
     }
   }
 
-  static async wasAssetRegistered(executionBlockNumber: number) {
+  static async wasAssetRegistered(blockNumber: number) {
     const api = getApi();
-    const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
+    const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
     const events = await api.query.system.events.at(blockHash);
     const filteredEvent = events.filter(
       (result: any) => result.event.method === "RegisteredAsset",
@@ -194,9 +193,9 @@ export class Rolldown {
     return filteredEvent[0] !== undefined;
   }
 
-  static async getRegisteredAssetId(executionBlockNumber: number) {
+  static async getRegisteredAssetId(blockNumber: number) {
     const api = getApi();
-    const blockHash = await api.rpc.chain.getBlockHash(executionBlockNumber);
+    const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
     const events = await api.query.system.events.at(blockHash);
     const filteredEvent = events.filter(
       (result: any) => result.event.method === "RegisteredAsset",
@@ -401,17 +400,13 @@ export async function createAnUpdate(
     update = updateValue;
   }
   let reqId = 0;
-  let executionBlockNumber: any;
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(address, update),
   ).then(async (events) => {
-    executionBlockNumber = findEventData(events, "rolldown.L1ReadStored")[0][2]
-      .toString()
-      .replaceAll(",", "");
     await waitSudoOperationSuccess(events, "SudoAsDone");
     reqId = Rolldown.getRequestIdFromEvents(events);
   });
-  return { txIndex, api, reqId, executionBlockNumber };
+  return { txIndex, api, reqId };
 }
 
 export async function createAnUpdateAndCancelIt(
@@ -421,7 +416,7 @@ export async function createAnUpdateAndCancelIt(
   updateValue: any = null,
   forcedIndex = 0,
 ) {
-  const { txIndex, api, reqId, executionBlockNumber } = await createAnUpdate(
+  const { txIndex, api, reqId } = await createAnUpdate(
     seq,
     chain,
     forcedIndex,
@@ -435,7 +430,7 @@ export async function createAnUpdateAndCancelIt(
   );
   await waitSudoOperationSuccess(cancel, "SudoAsDone");
   const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
-  return { txIndex, api, reqId, reqIdCanceled, executionBlockNumber };
+  return { txIndex, api, reqId, reqIdCanceled };
 }
 
 export async function leaveSequencing(userAddr: string) {

@@ -75,8 +75,11 @@ beforeEach(async () => {
 });
 
 it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
-  const { reqIdCanceled, executionBlockNumber } =
-    await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain);
+  const { reqIdCanceled, reqId } = await createAnUpdateAndCancelIt(
+    testUser1,
+    testUser2Address,
+    chain,
+  );
   await waitForNBlocks(disputePeriodLength);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -98,8 +101,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     tokenAddress,
     chain,
   );
-  const isTokenGenerated =
-    await Rolldown.wasAssetRegistered(executionBlockNumber);
+  const isTokenGenerated = await Rolldown.wasAssetRegistered(reqId);
   expect(didDepositRun).toBe(false);
   expect(isTokenGenerated).toBe(false);
 
@@ -123,8 +125,11 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const { reqIdCanceled, executionBlockNumber } =
-    await createAnUpdateAndCancelIt(testUser1, testUser2Address, chain);
+  const { reqIdCanceled, reqId } = await createAnUpdateAndCancelIt(
+    testUser1,
+    testUser2Address,
+    chain,
+  );
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -145,8 +150,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
     tokenAddress,
     chain,
   );
-  const isTokenGenerated =
-    await Rolldown.wasAssetRegistered(executionBlockNumber);
+  const isTokenGenerated = await Rolldown.wasAssetRegistered(reqId);
   expect(didDepositRun).toBe(false);
   expect(isTokenGenerated).toBe(false);
 
@@ -170,15 +174,9 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const { executionBlockNumber } = await createAnUpdate(
-    testUser1,
-    chain,
-    0,
-    null,
-    BN_MILLION,
-  );
+  const { reqId } = await createAnUpdate(testUser1, chain, 0, null, BN_MILLION);
   await waitForNBlocks(disputePeriodLength);
-  const assetId = await Rolldown.getRegisteredAssetId(executionBlockNumber);
+  const assetId = await Rolldown.getRegisteredAssetId(reqId);
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const updaterPenaltyValue = testUser1
@@ -241,7 +239,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   const {
     txIndex: txIndex1,
     reqIdCanceled: reqIdCanceled1,
-    executionBlockNumber: execution1BlockNumber,
+    reqId: reqId1,
   } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2.keyRingPair.address,
@@ -265,15 +263,13 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     )
     .on(chain)
     .build();
-  const {
-    reqIdCanceled: reqIdCanceled2,
-    executionBlockNumber: execution2BlockNumber,
-  } = await createAnUpdateAndCancelIt(
-    testUser2,
-    testUser1.keyRingPair.address,
-    chain,
-    updateValue,
-  );
+  const { reqIdCanceled: reqIdCanceled2, reqId: reqId2 } =
+    await createAnUpdateAndCancelIt(
+      testUser2,
+      testUser1.keyRingPair.address,
+      chain,
+      updateValue,
+    );
   await waitForNBlocks(disputePeriodLength);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const cancelResolutionEvent1 = await Sudo.asSudoFinalized(
@@ -306,16 +302,12 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     testUser1.keyRingPair.address,
     chain,
   );
-  const isToken1Generated = await Rolldown.wasAssetRegistered(
-    execution1BlockNumber,
-  );
+  const isToken1Generated = await Rolldown.wasAssetRegistered(reqId1);
   const didDeposit2Run = await Rolldown.isTokenBalanceIncreased(
     testUser2.keyRingPair.address,
     chain,
   );
-  const isToken2Generated = await Rolldown.wasAssetRegistered(
-    execution2BlockNumber,
-  );
+  const isToken2Generated = await Rolldown.wasAssetRegistered(reqId2);
   expect(didDeposit1Run).toBe(false);
   expect(isToken1Generated).toBe(false);
   expect(didDeposit2Run).toBe(false);
