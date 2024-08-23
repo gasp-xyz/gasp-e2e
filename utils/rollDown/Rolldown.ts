@@ -209,6 +209,15 @@ export class Rolldown {
     const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
     return assetId;
   }
+
+  static async waitCancelResolution(user: User, chain = "Ethereum") {
+    setupUsers();
+    const api = getApi();
+    const waitingResolution = await api.query.rolldown.awaitingCancelResolution(
+      [chain, user.keyRingPair.address],
+    );
+    return JSON.parse(JSON.stringify(waitingResolution));
+  }
 }
 export class L2Update {
   api: ApiPromise;
