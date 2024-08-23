@@ -47,7 +47,7 @@ import {
   readL2Updates,
   depositHell,
   getPolkAddress,
-  allCandidatesToSequence,
+  create10sequencers,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -125,7 +125,7 @@ async function app(): Promise<any> {
         "RollDownMonitor",
         "depositHell",
         "getPolkAddress",
-        "allCandidatesToSequence",
+        "create10sequencers",
         "rpc-pendingUpdates-ETH",
       ],
     })
@@ -141,8 +141,19 @@ async function app(): Promise<any> {
 
         return app();
       }
-      if (answers.option.includes("allCandidatesToSequence")) {
-        return allCandidatesToSequence();
+      if (answers.option.includes("create10sequencers")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "network",
+              message: "Eth? arb?",
+              default: "Ethereum",
+            },
+          ])
+          .then(async (answers: { network: string }) => {
+            await create10sequencers(answers.network.toString());
+          });
       }
       if (answers.option.includes("getPolkAddress")) {
         return inquirer

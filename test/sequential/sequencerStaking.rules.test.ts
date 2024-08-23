@@ -7,7 +7,13 @@ import {
   ChainName,
   SequencerStaking,
 } from "../../utils/rollDown/SequencerStaking";
-import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
+import {
+  L2Update,
+  Rolldown,
+  createAnUpdate,
+  createAnUpdateAndCancelIt,
+  leaveSequencing,
+} from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -16,7 +22,6 @@ import {
   expectExtrinsicSucceed,
   waitForNBlocks,
 } from "../../utils/utils";
-import { User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import {
   ExtrinsicResult,
@@ -32,79 +37,6 @@ async function findACollatorButNotSequencerUser() {
   const [user] = setupUsers();
   await Sudo.asSudoFinalized(Assets.mintNative(user));
   return user;
-}
-
-async function leaveSequencingIfAlreadySequencer(userAddr: string) {
-  const stakedEth = await SequencerStaking.sequencerStake(userAddr, "Ethereum");
-  const stakedArb = await SequencerStaking.sequencerStake(userAddr, "Arbitrum");
-  let chain = "";
-  if (stakedEth.toHuman() !== "0") {
-    chain = "Ethereum";
-  } else if (stakedArb.toHuman() !== "0") {
-    chain = "Arbitrum";
-  }
-  if (chain !== "") {
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        userAddr,
-        await SequencerStaking.leaveSequencerStaking(chain as ChainName),
-      ),
-    );
-    await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        userAddr,
-        await SequencerStaking.unstake(chain as ChainName),
-      ),
-    );
-  }
-}
-
-async function createAnUpdate(
-  seq: User | string,
-  chain: ChainName = "Arbitrum",
-  forcedIndex = 0,
-) {
-  const address = typeof seq === "string" ? seq : seq.keyRingPair.address;
-  await Rolldown.waitForReadRights(address, 50, chain);
-  let txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  if (forcedIndex !== 0) {
-    txIndex = forcedIndex;
-  }
-  const api = getApi();
-  const update = new L2Update(api)
-    .withDeposit(txIndex, address, address, BN_MILLION)
-    .on(chain)
-    .build();
-  let reqId = 0;
-  await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(address, update),
-  ).then(async (events) => {
-    await waitSudoOperationSuccess(events, "SudoAsDone");
-    reqId = Rolldown.getRequestIdFromEvents(events);
-  });
-  //await signTx(api, update, seq.keyRingPair).then((events) => {
-  //    expectExtrinsicSucceed(events);
-  //    reqId = Rolldown.getRequestIdFromEvents(events);
-  //  });
-  return { txIndex, api, reqId };
-}
-
-async function createAnUpdateAndCancelIt(
-  seq: User,
-  canceler: string,
-  chain: ChainName = "Arbitrum",
-) {
-  const { txIndex, api, reqId } = await createAnUpdate(seq, chain);
-  const cancel = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      canceler,
-      await Rolldown.cancelRequestFromL1(chain, reqId),
-    ),
-  );
-  await waitSudoOperationSuccess(cancel, "SudoAsDone");
-  const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
-  return { txIndex, api, reqId, reqIdCanceled };
 }
 
 async function setupASequencer(chain: ChainName = "Ethereum") {
@@ -158,7 +90,7 @@ describe("sequencerStaking", () => {
           seq !== preSetupSequencers.Ethereum &&
           seq !== preSetupSequencers.Arbitrum
         ) {
-          await leaveSequencingIfAlreadySequencer(seq);
+          await leaveSequencing(seq);
           anysequencerGone = true;
         }
       }

@@ -81,3 +81,13 @@ export function getL1(type: L1Type) {
       return undefined;
   }
 }
+export function getL1FromName(name: string): L1Type | undefined {
+  switch (name.toLowerCase()) {
+    case "ethereum":
+      return "EthAnvil";
+    case "anvil":
+      return "ArbAnvil";
+    default:
+      return undefined;
+  }
+}
