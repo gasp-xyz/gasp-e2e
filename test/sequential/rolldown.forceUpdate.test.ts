@@ -1,6 +1,6 @@
 /*
  *
- * @group sequencerStaking
+ * @group sequencerCancellation
  */
 
 import {
@@ -11,6 +11,7 @@ import {
   L2Update,
   Rolldown,
   createAnUpdate,
+  createAnUpdateAndCancelIt,
   leaveSequencing,
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
@@ -20,6 +21,7 @@ import { BN_MILLION, signTx } from "gasp-sdk";
 import {
   ExtrinsicResult,
   findEventData,
+  waitNewBlock,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { isBadOriginError, waitForNBlocks } from "../../utils/utils";
@@ -31,10 +33,6 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 let api: any;
 let testUser: User;
 let testUserAddress: string;
-const preSetupSequencers = {
-  Ethereum: "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
-  Arbitrum: "0x798d4ba9baf0064ec19eb4f0a1a45785ae9d6dfc",
-};
 let chain: any;
 
 async function setupASequencer(user: User, chain: ChainName = "Ethereum") {
@@ -60,20 +58,12 @@ beforeEach(async () => {
   //TODO: Replace this by some monitoring of the active queue.
   await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
   const activeSequencers = await SequencerStaking.activeSequencers();
-  let anysequencerGone = false;
   for (const chain in activeSequencers.toHuman()) {
     for (const seq of activeSequencers.toHuman()[chain] as string[]) {
-      if (
-        seq !== preSetupSequencers.Ethereum &&
-        seq !== preSetupSequencers.Arbitrum
-      ) {
+      if (seq !== null) {
         await leaveSequencing(seq);
-        anysequencerGone = true;
       }
     }
-  }
-  if (anysequencerGone) {
-    await waitForNBlocks(10);
   }
   [testUser] = setupUsers();
   testUserAddress = testUser.keyRingPair.address;
@@ -163,4 +153,79 @@ it("forceCancelRequest does not need any resolution to justify the cancelation",
   //     testUser.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
   //   );
   // expect(penaltyValue).bnEqual(await SequencerStaking.slashFineAmount());
+});
+
+describe("Seq1 do an update and seq2 cancel it", () => {
+  let testUser2: User;
+  let txIndex: any;
+  let reqIdValue: number;
+  beforeEach(async () => {
+    [testUser2] = setupUsers();
+    await setupASequencer(testUser, chain);
+    await setupASequencer(testUser2, chain);
+    txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    testUser.addAsset(GASP_ASSET_ID);
+    testUser2.addAsset(GASP_ASSET_ID);
+    await testUser.refreshAmounts(AssetWallet.BEFORE);
+    await testUser2.refreshAmounts(AssetWallet.BEFORE);
+    const { reqIdCanceled } = await createAnUpdateAndCancelIt(
+      testUser,
+      testUser2.keyRingPair.address,
+      chain,
+    );
+    reqIdValue = reqIdCanceled;
+  });
+  it("When forceUpdateL2FromL1 and Justified=false then the slashed is the canceler and sequencerStatus is updated accordingly", async () => {
+    const update = new L2Update(api)
+      .withCancelResolution(txIndex, reqIdValue, false)
+      .on(chain)
+      .forceBuild();
+    await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
+      await waitSudoOperationSuccess(events);
+    });
+    await waitNewBlock();
+    await testUser2.refreshAmounts(AssetWallet.AFTER);
+    const activeSequencers = (
+      await SequencerStaking.activeSequencers()
+    ).toHuman();
+    expect(activeSequencers.Ethereum).toContain(testUser.keyRingPair.address);
+    expect(activeSequencers.Ethereum).not.toContain(
+      testUser2.keyRingPair.address,
+    );
+    const testUser2PenaltyValue = testUser2
+      .getAsset(GASP_ASSET_ID)
+      ?.amountBefore.reserved!.sub(
+        testUser2.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
+      );
+    expect(testUser2PenaltyValue).bnEqual(
+      await SequencerStaking.slashFineAmount(),
+    );
+  });
+
+  it("When forceUpdateL2FromL1 and Justified=true then the slashed is the updater and sequencerStatus is updated accordingly", async () => {
+    const update = new L2Update(api)
+      .withCancelResolution(txIndex, reqIdValue, true)
+      .on(chain)
+      .forceBuild();
+    await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
+      await waitSudoOperationSuccess(events);
+    });
+    await waitNewBlock();
+    await testUser.refreshAmounts(AssetWallet.AFTER);
+    const activeSequencers = (
+      await SequencerStaking.activeSequencers()
+    ).toHuman();
+    expect(activeSequencers.Ethereum).not.toContain(
+      testUser.keyRingPair.address,
+    );
+    expect(activeSequencers.Ethereum).toContain(testUser2.keyRingPair.address);
+    const testUserPenaltyValue = testUser
+      .getAsset(GASP_ASSET_ID)
+      ?.amountBefore.reserved!.sub(
+        testUser.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
+      );
+    expect(testUserPenaltyValue).bnEqual(
+      await SequencerStaking.slashFineAmount(),
+    );
+  });
 });
