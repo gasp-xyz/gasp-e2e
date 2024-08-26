@@ -7,6 +7,7 @@ import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import {
   getEventsAt,
+  waitForEvents,
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../eventListeners";
@@ -139,6 +140,15 @@ export class Rolldown {
     const event = getEventResultFromMangataTx(events, [module, method]);
     return stringToBN(event.data[0][2].toString()).toNumber();
   }
+  static getUpdateIdFromEvents(
+    events: MangataGenericEvent[],
+    module = "rolldown",
+    method = "WithdrawlRequestCreated",
+  ): BN {
+    const event = getEventResultFromMangataTx(events, [module, method]);
+    // @ts-ignore
+    return stringToBN(event.data.requestId.id);
+  }
   static getRequestIdFromCancelEvent(
     cancel: MangataGenericEvent[],
     rolldown: string = "rolldown",
@@ -203,6 +213,32 @@ export class Rolldown {
     // @ts-ignore
     const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
     return assetId;
+  }
+
+  static async waitForNextBatchCreated(chain: string) {
+    const api = await getApi();
+    const event = (await waitForEvents(
+      api,
+      "rolldown.TxBatchCreated",
+      25,
+      chain,
+    )) as any[];
+    const batchId = event[0].event.data[3];
+    const range = {
+      from: event[0].event.data[4][0],
+      to: event[0].event.data[4][1],
+    };
+    return { batchId, range };
+  }
+
+  static async withdraw(
+    chain: ChainName,
+    address: string,
+    tokenAddress: string,
+    bn: BN,
+  ) {
+    const api = getApi();
+    return api.tx.rolldown.withdraw(chain, address, tokenAddress, bn);
   }
 }
 export class L2Update {

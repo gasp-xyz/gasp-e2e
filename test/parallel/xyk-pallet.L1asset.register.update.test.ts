@@ -16,7 +16,6 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { randomBytes } from "crypto";
-import { MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -49,7 +48,7 @@ test("Asset can be created by a sudo user", async () => {
   await sudo.registerL1Asset(null, tokenEthereumAddress).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    assetId = getAssetId(result);
+    assetId = Assets.getAssetId(result);
   });
   const idToL1Asset = JSON.parse(
     JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
@@ -78,13 +77,13 @@ test("GIVEN Create one asset with the same address but different chains THEN Ope
   await sudo.registerL1Asset(null, tokenAddress, "Ethereum").then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    assetIdEthereum = getAssetId(result);
+    assetIdEthereum = Assets.getAssetId(result);
   });
 
   await sudo.registerL1Asset(null, tokenAddress, "Arbitrum").then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    assetIdArbitrum = getAssetId(result);
+    assetIdArbitrum = Assets.getAssetId(result);
   });
 
   const idToL1EthereumAsset = JSON.parse(
@@ -127,7 +126,7 @@ describe("update L1AssetData-", () => {
     await sudo.registerL1Asset(null, tokenAddressBefore).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      assetId = getAssetId(result);
+      assetId = Assets.getAssetId(result);
     });
 
     idToL1Asset = JSON.parse(
@@ -182,7 +181,7 @@ describe("update L1AssetData-", () => {
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-        assetIdRegistered = getAssetId(result);
+        assetIdRegistered = Assets.getAssetId(result);
       });
 
     await sudo
@@ -243,17 +242,7 @@ test("GIVEN 2 assets which have been created by registerAsset and registerL1Asse
   await sudo.registerL1Asset(null).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    assetId2 = getAssetId(result);
+    assetId2 = Assets.getAssetId(result);
   });
   expect(assetId2).bnGt(assetId1);
 });
-
-function getAssetId(result: MangataGenericEvent[]) {
-  const regAsset = JSON.parse(
-    JSON.stringify(
-      result.filter((event) => event.method === "RegisteredAsset"),
-    ),
-  );
-  const assetId = regAsset[0].event.data[0];
-  return new BN(assetId);
-}

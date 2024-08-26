@@ -9,16 +9,13 @@ import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { api, Extrinsic, setupApi, setupUsers } from "./setup";
 import { Sudo } from "./sudo";
 import { getAssetSupply, getNextAssetId } from "./tx";
-import {
-  getEventResultFromMangataTx,
-  setAssetInfo,
-  sudoIssueAsset,
-} from "./txHandler";
+import { getEventResultFromMangataTx, setAssetInfo, sudoIssueAsset } from "./txHandler";
 import { User } from "./User";
 import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
 import { testLog } from "./Logger";
 import { randomBytes } from "crypto";
+import { getApi } from "./api";
 
 export class Assets {
   static legacy = false;
@@ -378,6 +375,22 @@ export class Assets {
       });
       await Sudo.asSudoFinalized(extrinsicToTokenEnable);
     }
+  }
+  static getAssetId(result: MangataGenericEvent[]) {
+    const regAsset = JSON.parse(
+      JSON.stringify(
+        result.filter((event) => event.method === "RegisteredAsset"),
+      ),
+    );
+    const assetId = regAsset[0].event.data[0];
+    return new BN(assetId);
+  }
+
+  static async getL1Token(assetId: BN) {
+    const api = await getApi();
+    return JSON.parse(
+      JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
+    );
   }
 }
 
