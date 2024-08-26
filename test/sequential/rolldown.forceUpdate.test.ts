@@ -24,7 +24,7 @@ import {
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { isBadOriginError, waitForNBlocks } from "../../utils/utils";
+import { isBadOriginError } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
@@ -56,7 +56,6 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   //TODO: Replace this by some monitoring of the active queue.
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
   const activeSequencers = await SequencerStaking.activeSequencers();
   for (const chain in activeSequencers.toHuman()) {
     for (const seq of activeSequencers.toHuman()[chain] as string[]) {
