@@ -49,7 +49,7 @@ describe("Gasp UI swap tests", () => {
     acc_addr_short = acc_addr.slice(-4).toLowerCase();
 
     await setupPage(driver);
-    await connectWallet(driver, "Metamask", acc_addr_short);
+    await connectWallet(driver, "MetaMask", acc_addr_short);
   });
 
   it("Remove pool liquidity", async () => {

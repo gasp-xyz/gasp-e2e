@@ -48,7 +48,7 @@ type WalletPermissionFunction = Record<
 const acceptWalletPermissionFunction: WalletPermissionFunction = {
   Polkadot: acceptPermissionsPolkadotExtensionInNewWindow,
   Talisman: acceptPermissionsTalismanExtensionInNewWindow,
-  Metamask: acceptPermissionsMetamaskExtensionInNewWindow,
+  MetaMask: acceptPermissionsMetamaskExtensionInNewWindow,
 };
 
 export async function setupWalletExtension(
@@ -492,7 +492,7 @@ export async function leaveOnlyOneTab(driver: WebDriver) {
 
 export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   try {
-    await waitForElement(driver, elementXpath, 6000);
+    await waitForElement(driver, elementXpath, 4000);
     return await (
       await driver.findElement(By.xpath(elementXpath))
     ).isDisplayed();
