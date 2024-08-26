@@ -12,7 +12,7 @@ import {
   Rolldown,
   createAnUpdate,
   createAnUpdateAndCancelIt,
-  leaveSequencing,
+  removeAllSequencers,
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -56,14 +56,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   //TODO: Replace this by some monitoring of the active queue.
-  const activeSequencers = await SequencerStaking.activeSequencers();
-  for (const chain in activeSequencers.toHuman()) {
-    for (const seq of activeSequencers.toHuman()[chain] as string[]) {
-      if (seq !== null) {
-        await leaveSequencing(seq);
-      }
-    }
-  }
+  await removeAllSequencers();
   [testUser] = setupUsers();
   testUserAddress = testUser.keyRingPair.address;
 });

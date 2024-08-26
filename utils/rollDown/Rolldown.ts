@@ -471,3 +471,14 @@ export async function leaveSequencing(userAddr: string) {
     );
   }
 }
+
+export async function removeAllSequencers() {
+  const activeSequencers = await SequencerStaking.activeSequencers();
+  for (const chain in activeSequencers.toHuman()) {
+    for (const seq of activeSequencers.toHuman()[chain] as string[]) {
+      if (seq !== null) {
+        await leaveSequencing(seq);
+      }
+    }
+  }
+}

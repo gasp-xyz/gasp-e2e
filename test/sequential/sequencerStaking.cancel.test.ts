@@ -9,7 +9,7 @@ import {
   Rolldown,
   createAnUpdate,
   createAnUpdateAndCancelIt,
-  leaveSequencing,
+  removeAllSequencers,
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -44,14 +44,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
   );
-  const activeSequencers = await SequencerStaking.activeSequencers();
-  for (const chain in activeSequencers.toHuman()) {
-    for (const seq of activeSequencers.toHuman()[chain] as string[]) {
-      if (seq !== null) {
-        await leaveSequencing(seq);
-      }
-    }
-  }
+  await removeAllSequencers();
   chain = "Ethereum";
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
   providingExtrinsic = await SequencerStaking.provideSequencerStaking(
