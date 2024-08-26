@@ -12,7 +12,6 @@ import {
   Rolldown,
   createAnUpdate,
   createAnUpdateAndCancelIt,
-  removeAllSequencers,
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
@@ -56,7 +55,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   //TODO: Replace this by some monitoring of the active queue.
-  await removeAllSequencers();
+  await SequencerStaking.removeAllSequencers();
   [testUser] = setupUsers();
   testUserAddress = testUser.keyRingPair.address;
 });
