@@ -49,7 +49,7 @@ export class WalletConnectModal {
     await waitForElementVisible(
       this.driver,
       this.modalStage[ModalType.AccountList],
-      20000,
+      10000,
     );
   }
 
