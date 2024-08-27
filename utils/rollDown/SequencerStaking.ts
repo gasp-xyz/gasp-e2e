@@ -4,6 +4,7 @@ import { Keyring } from "@polkadot/api";
 import { EthUser } from "../EthUser";
 import { stringToBN } from "../utils";
 import { BN, BN_ZERO } from "@polkadot/util";
+import { leaveSequencing } from "./Rolldown";
 export type ChainName = "Ethereum" | "Arbitrum";
 const baltathar = "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0";
 export const wellKnownUsers: Record<string, string> = {
@@ -73,5 +74,16 @@ export class SequencerStaking {
   static async maxSequencers() {
     const api = getApi();
     return await api.consts.sequencerStaking.maxSequencers;
+  }
+
+  static async removeAllSequencers() {
+    const activeSequencers = await SequencerStaking.activeSequencers();
+    for (const chain in activeSequencers.toHuman()) {
+      for (const seq of activeSequencers.toHuman()[chain] as string[]) {
+        if (seq !== null) {
+          await leaveSequencing(seq);
+        }
+      }
+    }
   }
 }

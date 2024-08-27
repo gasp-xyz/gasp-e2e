@@ -131,6 +131,11 @@ export class Rolldown {
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
   }
 
+  static async forceCancelRequestFromL1(chainId: ChainName, reqId: number) {
+    const api = getApi();
+    return api.tx.rolldown.forceCancelRequestsFromL1(chainId, reqId);
+  }
+
   static getRequestIdFromEvents(
     events: MangataGenericEvent[],
     module = "rolldown",
@@ -203,6 +208,15 @@ export class Rolldown {
     // @ts-ignore
     const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
     return assetId;
+  }
+
+  static async waitCancelResolution(user: User, chain = "Ethereum") {
+    setupUsers();
+    const api = getApi();
+    const waitingResolution = await api.query.rolldown.awaitingCancelResolution(
+      [chain, user.keyRingPair.address],
+    );
+    return JSON.parse(JSON.stringify(waitingResolution));
   }
 }
 export class L2Update {
