@@ -55,7 +55,9 @@ export class Rolldown {
     );
   }
   static async untilL2Processed(txResult: MangataGenericEvent[]) {
-    const blockNo = new BN(this.getRequestIdFromEvents(txResult));
+    const blockNo = stringToBN(
+      this.getRequestIdFromEvents(txResult).toString(),
+    );
     await waitBlockNumber(blockNo.toString(), 10);
     let events = await getEventsAt(blockNo);
     if (!Rolldown.hasL2Processed(events as any[] as MangataGenericEvent[])) {
