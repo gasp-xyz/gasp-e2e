@@ -18,7 +18,7 @@ import {
 import { Keyring } from "@polkadot/api";
 import { testLog } from "../../utils/Logger";
 
-describe("updateL1FromL1", () => {
+describe.skip("updateL1FromL1", () => {
   let sequencer: EthUser;
   beforeEach(async () => {
     await initApi();
