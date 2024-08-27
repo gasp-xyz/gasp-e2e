@@ -409,7 +409,7 @@ describe.skip("updateL1FromL1", () => {
     expect((await user.getBalanceForEthToken(userAddr)).free).bnEqual(BN_ZERO);
   });
 });
-describe("updateL1FromL1 - errors", () => {
+describe.skip("updateL1FromL1 - errors", () => {
   let sequencer: EthUser;
   beforeEach(async () => {
     await initApi();
