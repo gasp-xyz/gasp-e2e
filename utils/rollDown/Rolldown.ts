@@ -137,7 +137,10 @@ export class Rolldown {
     method = "L1ReadStored",
   ) {
     const event = getEventResultFromMangataTx(events, [module, method]);
-    return stringToBN(event.data[0][2].toString()).toNumber();
+    const { disputePeriodEnd } = event.data as unknown as {
+      disputePeriodEnd: number;
+    };
+    return disputePeriodEnd;
   }
   static getRequestIdFromCancelEvent(
     cancel: MangataGenericEvent[],
