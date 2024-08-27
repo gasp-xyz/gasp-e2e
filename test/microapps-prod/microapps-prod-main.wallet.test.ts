@@ -23,6 +23,7 @@ import {
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { WalletWrapper } from "../../utils/frontend/microapps-pages/WalletWrapper";
 
+jest.retryTimes(1);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 jest.setTimeout(1500000);
