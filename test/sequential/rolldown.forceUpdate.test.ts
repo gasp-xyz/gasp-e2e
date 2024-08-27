@@ -1,6 +1,6 @@
 /*
  *
- * @group sequencerCancellation
+ * @group L1RolldownUpdates
  */
 
 import {
