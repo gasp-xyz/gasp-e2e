@@ -3,9 +3,10 @@ import {
   Address,
   Chain,
   createPublicClient,
-  createWalletClient, decodeAbiParameters,
+  createWalletClient,
+  decodeAbiParameters,
   http,
-  PrivateKeyAccount
+  PrivateKeyAccount,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
@@ -223,7 +224,10 @@ export async function fakeDepositOnL2(
   );
 }
 
-export function getDecodedData(methodName: string, pendingUpdates: `0x${string}`): Array<L2Update> {
+export function getDecodedData(
+  methodName: string,
+  pendingUpdates: `0x${string}`,
+): Array<L2Update> {
   return decodeAbiParameters(
     abi.find((e: any) => e.name === methodName)!.inputs,
     pendingUpdates,
