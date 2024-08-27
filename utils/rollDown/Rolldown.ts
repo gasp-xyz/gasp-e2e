@@ -201,16 +201,13 @@ export class Rolldown {
       (result: any) => result.event.method === "RegisteredAsset",
     );
     // @ts-ignore
-    const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
-    return assetId;
+    return new BN(filteredEvent[0].event.data.assetId.toString());
   }
 }
 export class L2Update {
   api: ApiPromise;
   pendingDeposits: any[];
-  pendingWithdrawalResolutions: any[];
   pendingCancelResolutions: any[];
-  pendingL2UpdatesToRemove: any[];
   chain: string = "Ethereum";
 
   constructor(api: ApiPromise) {
@@ -218,14 +215,8 @@ export class L2Update {
     this.pendingDeposits = this.api.createType(
       "Vec<PalletRolldownMessagesDeposit>",
     );
-    this.pendingWithdrawalResolutions = this.api.createType(
-      "Vec<PalletRolldownMessagesWithdrawalResolution>",
-    );
     this.pendingCancelResolutions = this.api.createType(
       "Vec<PalletRolldownMessagesCancelResolution>",
-    );
-    this.pendingL2UpdatesToRemove = this.api.createType(
-      "Vec<PalletRolldownMessagesL2UpdatesToRemove>",
     );
   }
 
@@ -247,15 +238,6 @@ export class L2Update {
         "Vec<PalletRolldownMessagesCancelResolution>",
         this.pendingCancelResolutions,
       ),
-      // @ts-ignore
-      pendingWithdrawalResolutions: this.api.createType(
-        "Vec<PalletRolldownMessagesWithdrawalResolution>",
-        this.pendingWithdrawalResolutions,
-      ),
-      pendingL2UpdatesToRemove: this.api.createType(
-        "Vec<PalletRolldownMessagesL2UpdatesToRemove>",
-        this.pendingL2UpdatesToRemove,
-      ),
     };
   }
 
@@ -267,22 +249,10 @@ export class L2Update {
         this.withDeposit(index, x.depositRecipient, x.tokenAddress, x.amount);
       }
     });
-    this.pendingL2UpdatesToRemove.forEach((x) => {
-      for (let i = 0; i < number; i++) {
-        index++;
-        this.withUpdatesToRemove(index, x.updatesToRemove);
-      }
-    });
     this.pendingCancelResolutions.forEach((x) => {
       for (let i = 0; i < number; i++) {
         index++;
         this.withCancelResolution(index, x.l2RequestId, x.cancelJustified);
-      }
-    });
-    this.pendingWithdrawalResolutions.forEach((x) => {
-      for (let i = 0; i < number; i++) {
-        index++;
-        this.withWithdraw(index, x.txIndex, x.status);
       }
     });
 
@@ -312,28 +282,6 @@ export class L2Update {
     this.pendingDeposits.push(deposit);
     return this;
   }
-
-  withWithdraw(
-    txIndex: number,
-    txIndexForL2Request: number,
-    status: boolean,
-    timestamp: number = Date.now(),
-  ) {
-    const withdraw = this.api.createType(
-      "PalletRolldownMessagesWithdrawalResolution",
-      {
-        requestId: this.api.createType("PalletRolldownMessagesRequestId", [
-          "L1",
-          txIndex,
-        ]),
-        l2RequestId: txIndexForL2Request,
-        status: status,
-        timeStamp: timestamp,
-      },
-    );
-    this.pendingWithdrawalResolutions.push(withdraw);
-    return this;
-  }
   withCancelResolution(
     txIndex: number,
     l2RequestId: number,
@@ -353,25 +301,6 @@ export class L2Update {
       },
     );
     this.pendingCancelResolutions.push(cancelResolution);
-    return this;
-  }
-  withUpdatesToRemove(
-    txIndex: number,
-    updatesToRemove: number[],
-    timestamp: number = Date.now(),
-  ) {
-    const updateToRemove = this.api.createType(
-      "PalletRolldownMessagesL2UpdatesToRemove",
-      {
-        requestId: this.api.createType("PalletRolldownMessagesRequestId", [
-          "L1",
-          txIndex,
-        ]),
-        l2UpdatesToRemove: this.api.createType("Vec<u128>", updatesToRemove),
-        timeStamp: timestamp,
-      },
-    );
-    this.pendingL2UpdatesToRemove.push(updateToRemove);
     return this;
   }
 }

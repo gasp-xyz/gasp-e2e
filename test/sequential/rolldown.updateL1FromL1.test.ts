@@ -33,9 +33,7 @@ describe("updateL1FromL1", () => {
     const userAddr = user.keyRingPair.address;
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex + 1, txIndexForL2Request, false, Date.now())
       .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
-      .withUpdatesToRemove(txIndex + 2, [0, 1], Date.now())
       .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
@@ -52,25 +50,21 @@ describe("updateL1FromL1", () => {
     const userAddr = user.keyRingPair.address;
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex + 4, txIndexForL2Request, false, Date.now())
       .withDeposit(txIndex + 1, userAddr, userAddr, BN_MILLION)
-      .withUpdatesToRemove(txIndex + 2, [0, 1], Date.now())
-      .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
+      .withCancelResolution(txIndex + 2, txIndexForL2Request, false, Date.now())
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("WrongRequestId");
   });
-  it("Future -1,0,+2,+3 updates are  not accepted", async () => {
+  it("Future -1,0 updates are  not accepted", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const user = new EthUser(new Keyring({ type: "ethereum" }));
     const userAddr = user.keyRingPair.address;
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
       .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
-      .withUpdatesToRemove(txIndex + 2, [0, 1], Date.now())
-      .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
+      .withCancelResolution(txIndex - 1, txIndexForL2Request, false, Date.now())
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
@@ -250,15 +244,19 @@ describe("updateL1FromL1", () => {
   });
   it("Old Ids can be included on some other update and wont be considered", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
-    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 1,
+        otherUser.keyRingPair.address,
+        otherUser.keyRingPair.address,
+        BN_MILLION,
+      )
       .withDeposit(
         txIndex,
-        otherUser.ethAddress,
-        otherUser.ethAddress,
+        otherUser.keyRingPair.address,
+        otherUser.keyRingPair.address,
         BN_MILLION,
       )
       .build();
@@ -277,15 +275,23 @@ describe("updateL1FromL1", () => {
       ),
     ).toBe(false);
 
+    const userBalance = await otherUser.getBalanceForEthToken(
+      otherUser.keyRingPair.address,
+    );
+    expect(stringToBN(userBalance.free.toString())).bnEqual(BN_MILLION);
     expect(events.length).toBeGreaterThan(2);
   });
   it("An update with no new updates will not fail but wont run", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
-    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 1,
+        otherUser.keyRingPair.address,
+        otherUser.keyRingPair.address,
+        BN_MILLION,
+      )
       .withDeposit(
         txIndex - 2,
         otherUser.ethAddress,
@@ -299,14 +305,23 @@ describe("updateL1FromL1", () => {
     expect(
       Rolldown.isDepositSucceed(events, otherUser.ethAddress, BN_MILLION),
     ).toBe(false);
+
+    const userBalance = await otherUser.getBalanceForEthToken(
+      otherUser.keyRingPair.address,
+    );
+    expect(stringToBN(userBalance.free.toString())).bnEqual(BN_ZERO);
   });
   it("An update with a gap will fail", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
-    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 3, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 3,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
       .withDeposit(
         txIndex - 1,
         otherUser.ethAddress,
@@ -325,11 +340,15 @@ describe("updateL1FromL1", () => {
   });
   it("An update that is not ordered will fail", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
-    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 2, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 2,
+        otherUser.ethAddress,
+        otherUser.ethAddress,
+        BN_MILLION,
+      )
       .withDeposit(
         txIndex,
         otherUser.ethAddress,
@@ -348,11 +367,15 @@ describe("updateL1FromL1", () => {
   });
   it("An update with two identical deposits must be executed correctly", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
-    const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 1, txIndexForL2Request, false, Date.now())
+      .withDeposit(
+        txIndex - 1,
+        otherUser.keyRingPair.address,
+        otherUser.keyRingPair.address,
+        BN_MILLION,
+      )
       .withDeposit(
         txIndex,
         otherUser.keyRingPair.address,
@@ -382,9 +405,9 @@ describe("updateL1FromL1", () => {
     const userAddr = user.keyRingPair.address;
     const api = getApi();
     const update = new L2Update(api)
-      .withWithdraw(txIndex - 2, txIndexForL2Request, false, Date.now())
+      .withCancelResolution(txIndex - 2, txIndexForL2Request, false, Date.now())
       .withDeposit(txIndex - 1, userAddr, userAddr, BN_MILLION)
-      .withUpdatesToRemove(txIndex - 3, [0, 1], Date.now())
+      .withDeposit(txIndex - 3, userAddr, userAddr, BN_MILLION)
       .withCancelResolution(txIndex - 4, txIndexForL2Request, false, Date.now())
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
@@ -421,9 +444,9 @@ describe("updateL1FromL1 - errors", () => {
 
         testLog.getLog().info(`Indexes ${indexes}`);
         const update = new L2Update(api)
-          .withWithdraw(indexes[0], txIndexForL2Request, false, Date.now())
+          .withDeposit(indexes[0], userAddr, userAddr, BN_MILLION)
           .withDeposit(indexes[1], userAddr, userAddr, BN_MILLION)
-          .withUpdatesToRemove(indexes[2], [0, 1], Date.now())
+          .withDeposit(indexes[2], userAddr, userAddr, BN_MILLION)
           .withCancelResolution(
             indexes[3],
             txIndexForL2Request,
