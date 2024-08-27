@@ -37,7 +37,7 @@ describe("Gasp UI wallet tests", () => {
 
     driver = await DriverBuilder.getInstance();
     acc_addr = await importMetamaskExtension(driver);
-    acc_addr_short = acc_addr.slice(-4).toLowerCase();
+    acc_addr_short = acc_addr.slice(-4);
 
     await setupPage(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short);
@@ -51,6 +51,7 @@ describe("Gasp UI wallet tests", () => {
     await walletWrapper.openWalletSettings();
 
     const walletModal = new WalletConnectModal(driver);
+    await walletModal.waitForaccountsDisplayed();
     const areAccountsDisplayed = await walletModal.accountsDisplayed();
     expect(areAccountsDisplayed).toBeTruthy();
     const isAccInfoDisplayed =
@@ -58,6 +59,7 @@ describe("Gasp UI wallet tests", () => {
     expect(isAccInfoDisplayed).toBeTruthy();
 
     await walletModal.disconnect();
+    await walletWrapper.waitForWalletDisconnect();
     const isWalletConnected = await walletWrapper.isWalletConnected();
     expect(isWalletConnected).toBeFalsy();
   });
