@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 import { User } from "./User";
 import { testLog } from "./Logger";
 import { getApi } from "./api";
-import { api } from "./setup";
+import { api, setupApi } from "./setup";
 import { OrmlTokensAccountData } from "@polkadot/types/lookup";
 
 export class EthUser extends User {
@@ -43,6 +43,7 @@ export class EthUser extends User {
       Ethereum: address,
     });
     if (tokenId.isNone) {
+      await setupApi();
       return api.createType("OrmlTokensAccountData", {
         free: 0,
         reserved: 0,

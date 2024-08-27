@@ -34,7 +34,7 @@ describe("updateL1FromL1", () => {
     const api = getApi();
     const update = new L2Update(api)
       .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
-      .withCancelResolution(txIndex + 3, txIndexForL2Request, false, Date.now())
+      .withCancelResolution(txIndex + 1, txIndexForL2Request, false, Date.now())
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
@@ -56,13 +56,14 @@ describe("updateL1FromL1", () => {
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("WrongRequestId");
   });
-  it("Future -1,0 updates are  not accepted", async () => {
+  it("Future -1,0,1 updates are  not accepted", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const txIndexForL2Request = await Rolldown.lastProcessedRequestOnL2();
     const user = new EthUser(new Keyring({ type: "ethereum" }));
     const userAddr = user.keyRingPair.address;
     const api = getApi();
     const update = new L2Update(api)
+      .withDeposit(txIndex + 1, userAddr, userAddr, BN_MILLION)
       .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
       .withCancelResolution(txIndex - 1, txIndexForL2Request, false, Date.now())
       .build();
@@ -281,13 +282,13 @@ describe("updateL1FromL1", () => {
     expect(stringToBN(userBalance.free.toString())).bnEqual(BN_MILLION);
     expect(events.length).toBeGreaterThan(2);
   });
-  it("An update with no new updates will not fail but wont run", async () => {
+  it("An update with no new updates will fail", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
     const otherUser = new EthUser(new Keyring({ type: "ethereum" }));
     const api = getApi();
     const update = new L2Update(api)
       .withDeposit(
-        txIndex - 1,
+        txIndex - 3,
         otherUser.keyRingPair.address,
         otherUser.keyRingPair.address,
         BN_MILLION,
@@ -300,16 +301,7 @@ describe("updateL1FromL1", () => {
       )
       .build();
     const res = await signTx(api, update, sequencer.keyRingPair);
-    expectExtrinsicSucceed(res);
-    const events = await Rolldown.untilL2Processed(res);
-    expect(
-      Rolldown.isDepositSucceed(events, otherUser.ethAddress, BN_MILLION),
-    ).toBe(false);
-
-    const userBalance = await otherUser.getBalanceForEthToken(
-      otherUser.keyRingPair.address,
-    );
-    expect(stringToBN(userBalance.free.toString())).bnEqual(BN_ZERO);
+    expectExtrinsicFail(res);
   });
   it("An update with a gap will fail", async () => {
     const txIndex = await Rolldown.lastProcessedRequestOnL2();
