@@ -12,7 +12,7 @@ import {
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
-import { waitForNBlocks } from "../../utils/utils";
+import { waitBlockNumber, waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
@@ -165,7 +165,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const { reqId } = await createAnUpdate(testUser1, chain, 0, null, BN_MILLION);
-  await waitForNBlocks(disputePeriodLength);
+  await waitBlockNumber(reqId.toString(), disputePeriodLength);
   const assetId = await Rolldown.getRegisteredAssetId(reqId);
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
