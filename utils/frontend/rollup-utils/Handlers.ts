@@ -1,8 +1,10 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
-import { WalletConnectModal } from "../microapps-pages/WalletConnectModal";
 import { Polkadot } from "../pages/Polkadot";
-import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
+import {
+  acceptNetworkSwitchInNewWindow,
+  acceptPermissionsWalletExtensionInNewWindow,
+} from "../utils/Helper";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { Main } from "../rollup-pages/Main";
@@ -15,6 +17,7 @@ import {
 } from "../rollup-pages/NotificationToast";
 import { DepositModal } from "./DepositModal";
 import { WithdrawModal } from "../rollup-pages/WithdrawModal";
+import { WalletConnectModal } from "../rollup-pages/WalletConnectModal";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -37,6 +40,7 @@ export async function connectWallet(
   expect(isWalletConnectModalDisplayed).toBeTruthy();
 
   await acceptPermissionsWalletExtensionInNewWindow(driver, walletType);
+  await acceptNetworkSwitchInNewWindow(driver);
 
   const areAccountsDisplayed = await walletConnectModal.accountsDisplayed();
   expect(areAccountsDisplayed).toBeTruthy();

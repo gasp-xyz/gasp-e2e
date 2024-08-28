@@ -10,6 +10,7 @@ import {
   getText,
   isDisplayed,
   waitForElement,
+  waitForElementToDissapear,
   waitForElementVisible,
 } from "../utils/Helper";
 
@@ -68,6 +69,15 @@ export class WalletWrapper {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
     const walletConnectedContent = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
     return await elementExists(
+      this.driver,
+      walletWrapper + walletConnectedContent,
+    );
+  }
+
+  async waitForWalletDisconnect() {
+    const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
+    const walletConnectedContent = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
+    await waitForElementToDissapear(
       this.driver,
       walletWrapper + walletConnectedContent,
     );

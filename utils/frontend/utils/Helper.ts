@@ -48,7 +48,7 @@ type WalletPermissionFunction = Record<
 const acceptWalletPermissionFunction: WalletPermissionFunction = {
   Polkadot: acceptPermissionsPolkadotExtensionInNewWindow,
   Talisman: acceptPermissionsTalismanExtensionInNewWindow,
-  Metamask: acceptPermissionsMetamaskExtensionInNewWindow,
+  MetaMask: acceptPermissionsMetamaskExtensionInNewWindow,
 };
 
 export async function setupWalletExtension(

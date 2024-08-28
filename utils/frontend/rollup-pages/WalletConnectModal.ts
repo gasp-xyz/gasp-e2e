@@ -5,6 +5,7 @@ import {
   buildXpathByText,
   clickElement,
   isDisplayed,
+  waitForElementVisible,
 } from "../utils/Helper";
 
 //SELECTORS
@@ -41,6 +42,14 @@ export class WalletConnectModal {
     return await isDisplayed(
       this.driver,
       this.modalStage[ModalType.AccountList],
+    );
+  }
+
+  async waitForaccountsDisplayed() {
+    await waitForElementVisible(
+      this.driver,
+      this.modalStage[ModalType.AccountList],
+      10000,
     );
   }
 
