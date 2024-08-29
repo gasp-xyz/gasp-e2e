@@ -46,7 +46,7 @@ describe("Gasp UI swap tests", () => {
 
     driver = await DriverBuilder.getInstance();
     acc_addr = await importMetamaskExtension(driver, true);
-    acc_addr_short = acc_addr.slice(-4).toLowerCase();
+    acc_addr_short = acc_addr.slice(-4);
 
     await setupPage(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short);
