@@ -22,6 +22,7 @@ import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
 import { TransactionType } from "../../utils/frontend/rollup-pages/NotificationToast";
 import { Sidebar } from "../../utils/frontend/rollup-pages/Sidebar";
 import { MyPositionsPage } from "../../utils/frontend/rollup-pages/MyPositionsPage";
+import { sleep } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -46,7 +47,7 @@ describe("Gasp UI swap tests", () => {
 
     driver = await DriverBuilder.getInstance();
     acc_addr = await importMetamaskExtension(driver, true);
-    acc_addr_short = acc_addr.slice(-4).toLowerCase();
+    acc_addr_short = acc_addr.slice(-4);
 
     await setupPage(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short);
@@ -72,6 +73,7 @@ describe("Gasp UI swap tests", () => {
 
     await myPositionsPage.clickSwitchNetwork();
     await acceptNetworkSwitchInNewWindow(driver);
+    await sleep(500);
     await myPositionsPage.clickRemoveLiquidity();
     await myPositionsPage.clickConfirmFeeAmount();
     await waitForActionNotification(driver, TransactionType.RemoveLiquidity);

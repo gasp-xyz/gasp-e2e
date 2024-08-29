@@ -18,6 +18,7 @@ import {
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletConnectModal } from "../../utils/frontend/rollup-pages/WalletConnectModal";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
+import { sleep } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -37,7 +38,7 @@ describe("Gasp UI wallet tests", () => {
 
     driver = await DriverBuilder.getInstance();
     acc_addr = await importMetamaskExtension(driver);
-    acc_addr_short = acc_addr.slice(-4).toLowerCase();
+    acc_addr_short = acc_addr.slice(-4);
 
     await setupPage(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short);
@@ -58,6 +59,7 @@ describe("Gasp UI wallet tests", () => {
     expect(isAccInfoDisplayed).toBeTruthy();
 
     await walletModal.disconnect();
+    await sleep(1000);
     const isWalletConnected = await walletWrapper.isWalletConnected();
     expect(isWalletConnected).toBeFalsy();
   });
