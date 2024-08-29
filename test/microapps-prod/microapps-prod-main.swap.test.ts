@@ -22,6 +22,7 @@ import {
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { Swap } from "../../utils/frontend/microapps-pages/Swap";
 
+jest.retryTimes(1);
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;

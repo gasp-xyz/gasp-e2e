@@ -59,6 +59,7 @@ export async function setupPage(driver: WebDriver) {
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
   await mainPage.skipWelcomeMessage();
+  await mainPage.skipMailerIframe();
 }
 
 export async function setupPageWithState(driver: WebDriver, acc_name: string) {
