@@ -18,6 +18,7 @@ import {
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletConnectModal } from "../../utils/frontend/rollup-pages/WalletConnectModal";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
+import { sleep } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -58,6 +59,7 @@ describe("Gasp UI wallet tests", () => {
     expect(isAccInfoDisplayed).toBeTruthy();
 
     await walletModal.disconnect();
+    await sleep(1000);
     const isWalletConnected = await walletWrapper.isWalletConnected();
     expect(isWalletConnected).toBeFalsy();
   });
