@@ -13,13 +13,13 @@ import {
   createAnUpdate,
   createAnUpdateAndCancelIt,
 } from "../../utils/rollDown/Rolldown";
+import { waitForAllEventsFromMatchingBlock } from "../../utils/eventListeners";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { BN_MILLION, signTx } from "gasp-sdk";
 import {
   ExtrinsicResult,
-  findEventData,
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
@@ -116,10 +116,21 @@ it("forceUpdateL2FromL1 does not wait for a dispute period", async () => {
     .forceBuild();
   await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
     await waitSudoOperationSuccess(events);
-    assetId = findEventData(events, "assetRegistry.RegisteredAsset")
-      .assetId.toString()
-      .replaceAll(",", "");
   });
+
+  const events = await waitForAllEventsFromMatchingBlock(
+    api,
+    10,
+    (ev) =>
+      ev.method === "RequestProcessedOnL2" &&
+      ev.section === "rolldown" &&
+      (ev.data.toHuman() as any).requestId === txIndex.toString(),
+  );
+
+  const e = events.find(
+    (ev) => ev.method === "RegisteredAsset" && ev.section === "assetRegistry",
+  );
+  assetId = (e!.data.toHuman() as any).assetId.toString().replace(",", "");
   testUser.addAsset(assetId);
   await testUser.refreshAmounts(AssetWallet.AFTER);
   expect(testUser.getAsset(assetId)?.amountAfter.free!).bnEqual(BN_MILLION);
@@ -130,6 +141,7 @@ it("forceCancelRequest does not need any resolution to justify the cancelation",
   await setupASequencer(testUser, chain);
   await testUser.refreshAmounts(AssetWallet.BEFORE);
   const { reqId } = await createAnUpdate(testUser, chain);
+  console.info(reqId);
   const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
   await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
     await waitSudoOperationSuccess(events);

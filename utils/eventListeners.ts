@@ -12,6 +12,7 @@ import { getEnvironmentRequiredVars, getThirdPartyRewards } from "./utils";
 import { Codec } from "@polkadot/types/types";
 import { Call } from "@polkadot/types/interfaces";
 import { Option } from "@polkadot/types-codec";
+import { GenericEvent } from "@polkadot/types";
 
 // lets create a enum for different status.
 export enum ExtrinsicResult {
@@ -149,6 +150,39 @@ export function validateExtrinsicFailed(
   expect(propBefore.toHuman()).not.toBeNull();
 }
 
+export const waitForAllEventsFromMatchingBlock = async (
+  api: ApiPromise,
+  blocks: number = 10,
+  matchBlock: (eventsFromBlock: GenericEvent) => boolean,
+): Promise<GenericEvent[]> => {
+  return new Promise(async (resolve, reject) => {
+    let counter = 0;
+    const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
+      const events = await (await api.at(head.hash)).query.system.events();
+      counter++;
+      testLog
+        .getLog()
+        .info(
+          `→ find on ${api.runtimeChain} for event, attempt ${counter}, head ${head.hash}`,
+        );
+
+      events.forEach((e) => logEvent(api.runtimeChain, e));
+
+      const filtered = _.filter(
+        events,
+        ({ event }) => matchBlock(event)
+      );
+      if (filtered.length > 0) {
+          resolve(events.map(({event}) => event))
+          unsub();
+      }
+      if (counter === blocks) {
+        reject(`not found within blocks limit`);
+      }
+    });
+  });
+};
+
 export const waitForEvents = async (
   api: ApiPromise,
   method: string,
@@ -186,6 +220,7 @@ export const waitForEvents = async (
     });
   });
 };
+
 export const waitForSessionChange = async (): Promise<number> => {
   const currSession = await api.query.session.currentIndex();
   return new Promise(async (resolve) => {
