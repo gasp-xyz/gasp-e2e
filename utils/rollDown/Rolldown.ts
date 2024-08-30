@@ -55,9 +55,11 @@ export class Rolldown {
     );
   }
   static async untilL2Processed(txResult: MangataGenericEvent[]) {
-    const blockNo = stringToBN(
-      this.getRequestIdFromEvents(txResult).toString(),
-    );
+    const until = getEventResultFromMangataTx(txResult, [
+      "rolldown",
+      "L1ReadStored",
+    ]);
+    const blockNo = stringToBN(until.data[0][2]);
     await waitBlockNumber(blockNo.toString(), 10);
     let events = await getEventsAt(blockNo);
     if (!Rolldown.hasL2Processed(events as any[] as MangataGenericEvent[])) {
@@ -140,10 +142,10 @@ export class Rolldown {
     method = "L1ReadStored",
   ) {
     const event = getEventResultFromMangataTx(events, [module, method]);
-    const { disputePeriodEnd } = event.data as unknown as {
-      disputePeriodEnd: number;
-    };
-    return disputePeriodEnd;
+    const disputePeriodEnd = JSON.parse(
+      JSON.stringify(event.data),
+    ).disputePeriodEnd;
+    return stringToBN(disputePeriodEnd).toNumber();
   }
   static getRequestIdFromCancelEvent(
     cancel: MangataGenericEvent[],
@@ -207,7 +209,8 @@ export class Rolldown {
       (result: any) => result.event.method === "RegisteredAsset",
     );
     // @ts-ignore
-    return new BN(filteredEvent[0].event.data.assetId.toString());
+    const assetId = new BN(filteredEvent[0].event.data.assetId.toString());
+    return assetId;
   }
 
   static async waitCancelResolution(user: User, chain = "Ethereum") {
@@ -270,7 +273,6 @@ export class L2Update {
         this.withCancelResolution(index, x.l2RequestId, x.cancelJustified);
       }
     });
-
     return this;
   }
   on(chainName = "Ethereum") {
@@ -297,6 +299,7 @@ export class L2Update {
     this.pendingDeposits.push(deposit);
     return this;
   }
+
   withCancelResolution(
     txIndex: number,
     l2RequestId: number,
