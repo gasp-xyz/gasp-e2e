@@ -30,7 +30,7 @@ export const EthAnvil: TestChain = defineChain({
   },
   contracts: {
     rollDown: {
-      address: "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650",
+      address: "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc",
     },
     dummyErc20: {
       address: "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
