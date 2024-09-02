@@ -168,13 +168,10 @@ export const waitForAllEventsFromMatchingBlock = async (
 
       events.forEach((e) => logEvent(api.runtimeChain, e));
 
-      const filtered = _.filter(
-        events,
-        ({ event }) => matchBlock(event)
-      );
+      const filtered = _.filter(events, ({ event }) => matchBlock(event));
       if (filtered.length > 0) {
-          resolve(events.map(({event}) => event))
-          unsub();
+        resolve(events.map(({ event }) => event));
+        unsub();
       }
       if (counter === blocks) {
         reject(`not found within blocks limit`);
