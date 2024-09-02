@@ -108,7 +108,6 @@ it("Validate that forceCancelRequestsFromL1 can't be called by non-sudo user", a
 });
 
 it("forceUpdateL2FromL1 does not wait for a dispute period", async () => {
-  let assetId: any;
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   const update = new L2Update(api)
     .withDeposit(txIndex, testUserAddress, testUserAddress, BN_MILLION)
@@ -130,7 +129,9 @@ it("forceUpdateL2FromL1 does not wait for a dispute period", async () => {
   const e = events.find(
     (ev) => ev.method === "RegisteredAsset" && ev.section === "assetRegistry",
   );
-  assetId = (e!.data.toHuman() as any).assetId.toString().replace(",", "");
+  const assetId = (e!.data.toHuman() as any).assetId
+    .toString()
+    .replace(",", "");
   testUser.addAsset(assetId);
   await testUser.refreshAmounts(AssetWallet.AFTER);
   expect(testUser.getAsset(assetId)?.amountAfter.free!).bnEqual(BN_MILLION);
@@ -141,7 +142,6 @@ it("forceCancelRequest does not need any resolution to justify the cancelation",
   await setupASequencer(testUser, chain);
   await testUser.refreshAmounts(AssetWallet.BEFORE);
   const { reqId } = await createAnUpdate(testUser, chain);
-  console.info(reqId);
   const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
   await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
     await waitSudoOperationSuccess(events);
