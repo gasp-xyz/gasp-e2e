@@ -15,9 +15,12 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  waitForEvents,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
-import { BN_ZERO } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 
@@ -86,7 +89,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
@@ -135,7 +138,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
@@ -167,8 +170,16 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const { reqId } = await createAnUpdate(testUser1, chain, 0, null, BN_MILLION);
-  await waitForNBlocks(disputePeriodLength);
-  const assetId = await Rolldown.getRegisteredAssetId(reqId);
+  let executionReqId = new BN(reqId);
+  executionReqId = executionReqId.addn(1);
+  await waitForEvents(
+    api,
+    "rolldown.RequestProcessedOnL2",
+    disputePeriodLength * 2,
+  );
+  const assetId = await Rolldown.getRegisteredAssetId(
+    executionReqId.toNumber(),
+  );
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const updaterPenaltyValue = testUser1
@@ -187,7 +198,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
     testUser2Address,
     chain,
   );
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   updaterRightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
@@ -206,7 +217,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   updaterRightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
@@ -262,7 +273,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       chain,
       updateValue,
     );
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const cancelResolutionEvent1 = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -274,7 +285,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -288,7 +299,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
 
   const didDeposit1Run = await Rolldown.isTokenBalanceIncreased(
     testUser1.keyRingPair.address,
@@ -358,7 +369,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
   );
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   const sequencers = await SequencerStaking.activeSequencers();
   const testUser2PenaltyValue = testUser2
@@ -391,7 +402,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       testUser2.keyRingPair.address,
       chain,
     );
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
   const txIndex3 = txIndex2 + 1;
   const updateValue = new L2Update(api)
@@ -415,7 +426,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     chain,
     updateValue,
   );
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   providingExtrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).muln(2),
     chain,
@@ -432,7 +443,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   const cancelResolutionEvent2 = await Sudo.batchAsSudoFinalized(
@@ -447,7 +458,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  await waitForNBlocks(disputePeriodLength);
+  await waitForNBlocks(disputePeriodLength + 1);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const testUser1RightsStatus = await Rolldown.sequencerRights(
     chain,

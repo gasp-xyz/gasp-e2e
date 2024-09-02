@@ -9588,27 +9588,27 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-feature-remove-request-results.2:
-  version "0.0.2-feature-remove-request-results.2"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-remove-request-results.2.tgz#1b2b449365bb07a2c7e06426a011d8f2cecad2ac"
-  integrity sha512-FqfZ9I6oGk2UMc1lIupOFdxH6ET4IdgIgJbAaKHT3xloKfKFkC1qb4i+5JJc46SaVnQk55iwCPNXNDB83u/4Kg==
+gasp-sdk@0.0.2-feature-mgx-1366.1:
+  version "0.0.2-feature-mgx-1366.1"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-mgx-1366.1.tgz#1b0a9964cb577a0195bf2108ef046ceb182af8af"
+  integrity sha512-EzABx8GJ9gTOkKuJKc2aMnxqHeSQLJrG+Fd6+s/gliFGjQZ0UM0V9IrY8nvfMVtrZ3tgNkzxPQeDcxE0uyjSqQ==
   dependencies:
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-feature-remove-request-results.2"
+    gasp-type-definitions "0.0.2-feature-mgx-1366.1"
     tslib "^2.3.0"
     tslog "4.8.2"
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-feature-remove-request-results.2:
-  version "0.0.2-feature-remove-request-results.2"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-remove-request-results.2.tgz#9133cc438374ebedfcb7343e4106168c210b7574"
-  integrity sha512-xjtRjnQ3Gsfc6P+U88mRV9L/K4H81Qt2jT2G+YUgoYW2M8/OIDQ4DREXRO3Q142t8LPVbXRwkNTtj+X1oGJDDQ==
+gasp-type-definitions@0.0.2-feature-mgx-1366.1:
+  version "0.0.2-feature-mgx-1366.1"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-mgx-1366.1.tgz#5da138f56bda23e437fe6e9d3ddb5f56ca9cd1dd"
+  integrity sha512-n+seQaPk87KzmLhGtRBJqlFRkogxstD42X/CFZIW1PGJwHaeKvgLXHaA6tEStLvSDin0nNwbMskIYEOXtq9jxg==
 
-gasp-types@0.0.2-feature-remove-request-results.2:
-  version "0.0.2-feature-remove-request-results.2"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-remove-request-results.2.tgz#c0121995ea70b218b170e87d6832fc84689af429"
-  integrity sha512-TVUvB+EtcP2+eIfeMVGPQoVkygedcCDRqkkyj0eklzB0eqn/UNRW1v8od86NZPTsHYBXN+cDhKZF8t2RXOIkxw==
+gasp-types@0.0.2-feature-mgx-1366.1:
+  version "0.0.2-feature-mgx-1366.1"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-mgx-1366.1.tgz#4c1ebd70459bbb96b290b7a975a9cb1ff3a1c768"
+  integrity sha512-wuaGAQuJoo0bEbcmT/IgeSQTZhhtK7tGCyyDrNQkkEYgQz10fep5Bp4Fi9VJJKKl0JqFaS5AR2QL+WheW6aJww==
 
 gauge@^4.0.3:
   version "4.0.4"
