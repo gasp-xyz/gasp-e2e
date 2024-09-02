@@ -48,6 +48,7 @@ import {
   depositHell,
   getPolkAddress,
   create10sequencers,
+  closeL1Item,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -125,10 +126,24 @@ async function app(): Promise<any> {
         "depositHell",
         "getPolkAddress",
         "create10sequencers",
+        "Close L1 item",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("Close L1 item")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "itemId",
+              message: "itemId",
+            },
+          ])
+          .then(async (answers: { itemId: number }) => {
+            await closeL1Item(BigInt(answers.itemId));
+      });
+      }
       if (answers.option.includes("create10sequencers")) {
         return inquirer
           .prompt([

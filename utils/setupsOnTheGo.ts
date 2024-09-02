@@ -55,16 +55,20 @@ import {
 import { EthUser } from "./EthUser";
 import { signTxMetamask } from "./metamask";
 import {
+  metadata,
   abi,
   convertEthAddressToDotAddress,
   getBalance,
   getL2UpdatesStorage,
   getPublicClient,
+  getWalletClient,
   ROLL_DOWN_CONTRACT_ADDRESS,
 } from "./rollup/ethUtils";
 import Web3 from "web3";
 import { L2Update, Rolldown } from "./rollDown/Rolldown";
 import { ChainName, SequencerStaking } from "./rollDown/SequencerStaking";
+import { decodeAbiParameters, PublicClient } from "viem";
+import { getL1, L1Type } from "./rollup/l1s";
 Assets.legacy = true;
 export async function claimForAllAvlRewards() {
   await setupApi();
@@ -2004,6 +2008,59 @@ export async function create10sequencers(nw = "Ethereum") {
   }
   await Sudo.batchAsSudoFinalized(...txs);
 }
+export async function closeL1Item(
+  itemId: bigint,
+  closingItem = "close_withdrawal",
+  chain = "Ethereum",
+) {
+  await setupApi();
+  const api = await getApi();
+  const network = chain === "Ethereum" ? "EthAnvil" : "ArbAnvil";
+  const viemClient = getWalletClient(network);
+  const publicClient = getPublicClient(network);
+  const range = await findMerkleRange(publicClient, itemId);
+  const rangeStart = (range as any).start;
+  const rangeEnd = (range as any).end;
+
+  const chainPk = api.createType("Chain", chain);
+  const encodedWithdrawal = await api.rpc.rolldown.get_abi_encoded_l2_request(
+    chain,
+    itemId,
+  );
+  console.log(
+    `chain: ${chainPk} range: [${rangeStart}, ${rangeEnd}] withdrawalRequestId: ${itemId} `,
+  );
+  const root = await api.rpc.rolldown.get_merkle_root(chain, [
+    rangeStart,
+    rangeEnd,
+  ]);
+  const proof = await api.rpc.rolldown.get_merkle_proof(
+    chain,
+    [rangeStart, rangeEnd],
+    itemId,
+  );
+  const withdrawal = decodeAbiParameters(
+    (metadata as any).output.abi.find((e: any) => e.name === closingItem)!
+      .inputs[0].components,
+    encodedWithdrawal.toHex(),
+  );
+  //@ts-ignore
+  const { request } = await publicClient.simulateContract({
+    address: ROLL_DOWN_CONTRACT_ADDRESS,
+    chain: getL1(network as L1Type)!,
+    abi: abi,
+    functionName: closingItem,
+    //@ts-ignore
+    args: [withdrawal, root.toHuman(), proof.toHuman()],
+  });
+  const txHash = await viemClient.writeContract(request);
+  const result = await publicClient.waitForTransactionReceipt({ hash: txHash });
+  console.log(
+    `closing withdrawal ${itemId}: tx:${result.transactionHash} - ${result.status}`,
+  );
+
+  console.log("L1 item closed with tx", request);
+}
 
 export async function getPolkAddress(address: string) {
   return convertEthAddressToDotAddress(address);
@@ -2012,3 +2069,12 @@ export async function getPolkAddress(address: string) {
 BigInt.prototype["toJSON"] = function () {
   return this.toString();
 };
+
+async function findMerkleRange(publicClient: PublicClient, requestId: bigint) {
+  return await publicClient.readContract({
+    address: ROLL_DOWN_CONTRACT_ADDRESS,
+    abi: abi,
+    functionName: "find_l2_batch",
+    args: [requestId],
+  });
+}
