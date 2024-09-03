@@ -3,9 +3,10 @@ import {
   Address,
   Chain,
   createPublicClient,
-  createWalletClient, decodeAbiParameters,
+  createWalletClient,
+  decodeAbiParameters,
   http,
-  PrivateKeyAccount
+  PrivateKeyAccount,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
@@ -22,7 +23,7 @@ import { blake2AsU8a } from "@polkadot/util-crypto";
 import { L2Update } from "../rollDown/Rolldown";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
-  "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650";
+  "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
 
 export const ERC20_ADDRESS = "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F";
 export const account = privateKeyToAccount(
@@ -223,7 +224,10 @@ export async function fakeDepositOnL2(
   );
 }
 
-export function getDecodedData(methodName: string, pendingUpdates: `0x${string}`): Array<L2Update> {
+export function getDecodedData(
+  methodName: string,
+  pendingUpdates: `0x${string}`,
+): Array<L2Update> {
   return decodeAbiParameters(
     abi.find((e: any) => e.name === methodName)!.inputs,
     pendingUpdates,
