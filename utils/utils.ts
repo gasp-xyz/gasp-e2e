@@ -86,23 +86,23 @@ export function getEnvironmentRequiredVars() {
 
   const uiUri = process.env.UI_URL
     ? process.env.UI_URL
-    : "https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/";
+    : "https://gasp-dev-dot-direct-pixel-353917.oa.r.appspot.com/";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
-    : "localhost";
+    : "http://localhost:4200/";
 
   const stashServiceAddress = process.env.STASH_URL
     ? process.env.STASH_URL
-    : "https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com";
+    : "https://mangata-stash-rollup-dev-dot-direct-pixel-353917.oa.r.appspot.com";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
-    : "oh oh";
+    : "twelve insect obvious hurdle control nature search response march version cake buffalo";
 
   const privKeyMetaMask = process.env.PRIVKEY_META
     ? process.env.PRIVKEY_META
-    : "oh oh";
+    : "21ee67f57bbefbb37290e5b1f5a2ad5daab329b9e70578267538f298a59ef68f";
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK

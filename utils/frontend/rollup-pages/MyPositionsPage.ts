@@ -11,6 +11,7 @@ import {
   waitInputValueSetInterval,
   writeText,
   getAttribute,
+  isEnabled,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
@@ -95,6 +96,9 @@ export class MyPositionsPage {
     await clickElement(this.driver, removeButtonXpath);
     const removeAmountXpath = buildDataTestIdXpath(REMOVE_AMOUNT_INPUT);
     await writeTextManual(this.driver, removeAmountXpath, amount);
+  }
+
+  async waitForFeeVisible() {
     const feeValueXpath = buildDataTestIdXpath("removeLiq-fee-value-anchor");
     await waitForElementVisible(this.driver, feeValueXpath, 12000);
   }
@@ -102,6 +106,11 @@ export class MyPositionsPage {
   async clickRemoveLiquidity() {
     const submitSwapXpath = buildDataTestIdXpath("submitSwap");
     await clickElement(this.driver, submitSwapXpath);
+  }
+
+  async isSubmitEnabled() {
+    const submitSwapXpath = buildDataTestIdXpath("submitSwap");
+    await isEnabled(this.driver, submitSwapXpath);
   }
 
   async clickSwitchNetwork(network = "Holesky") {

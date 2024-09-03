@@ -105,6 +105,7 @@ export async function waitForMicroappsActionNotification(
 export async function waitForActionNotification(
   driver: WebDriver,
   transaction: TransactionType,
+  rejection = false,
 ) {
   switch (transaction) {
     case TransactionType.ApproveContract:
@@ -121,6 +122,26 @@ export async function waitForActionNotification(
       await withdrawModal.waitForConfirmingVisible();
       await MetaMask.signWithdrawInDifferentWindow(driver);
       await withdrawModal.waitForSuccessVisible();
+      break;
+    case TransactionType.RemoveLiquidity:
+      const removeLiqToast = new NotificationToast(driver);
+      await removeLiqToast.waitForToastState(
+        ToastType.Confirm,
+        transaction,
+        3000,
+      );
+      const isWaitingForSignVisible = await removeLiqToast.istoastVisible(
+        ToastType.Confirm,
+        transaction,
+      );
+      expect(isWaitingForSignVisible).toBeTruthy();
+      if (rejection) {
+        await MetaMask.rejectTransactionInDifferentWindow(driver);
+        await removeLiqToast.waitForToastState(ToastType.Error, transaction);
+      } else {
+        await MetaMask.signTransactionInDifferentWindow(driver);
+        await removeLiqToast.waitForToastState(ToastType.Success, transaction);
+      }
       break;
     default:
       const toast = new NotificationToast(driver);

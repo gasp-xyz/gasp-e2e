@@ -62,14 +62,15 @@ describe("Gasp UI swap tests", () => {
 
     myPositionsPage = new MyPositionsPage(driver);
     await myPositionsPage.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await myPositionsPage.isLiqPoolDisplayed(
+    const isPoolVisible = await myPositionsPage.isLiqPoolDisplayed(
       GASP_ASSET_NAME,
       ETH_ASSET_NAME,
     );
-    expect(isPoolMgxKsmVisible).toBeTruthy();
+    expect(isPoolVisible).toBeTruthy();
 
     await myPositionsPage.clickPoolPosition(GASP_ASSET_NAME, ETH_ASSET_NAME);
     await myPositionsPage.setupRemoveLiquidityPercentage("1");
+    await myPositionsPage.waitForFeeVisible();
 
     await myPositionsPage.clickSwitchNetwork();
     await acceptNetworkSwitchInNewWindow(driver);
@@ -77,6 +78,29 @@ describe("Gasp UI swap tests", () => {
     await myPositionsPage.clickRemoveLiquidity();
     await myPositionsPage.clickConfirmFeeAmount();
     await waitForActionNotification(driver, TransactionType.RemoveLiquidity);
+  });
+
+  it("Cant remove 0 pc pool liquidity", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    myPositionsPage = new MyPositionsPage(driver);
+    await myPositionsPage.waitForPoolPositionsVisible();
+    const isPoolVisible = await myPositionsPage.isLiqPoolDisplayed(
+      GASP_ASSET_NAME,
+      ETH_ASSET_NAME,
+    );
+    expect(isPoolVisible).toBeTruthy();
+
+    await myPositionsPage.clickPoolPosition(GASP_ASSET_NAME, ETH_ASSET_NAME);
+    await myPositionsPage.setupRemoveLiquidityPercentage("0");
+
+    await sleep(500);
+    const isSubmitEnabled = await myPositionsPage.isSubmitEnabled();
+    expect(isSubmitEnabled).toBeFalsy();
   });
 
   it("Add pool liquidity", async () => {
@@ -88,11 +112,11 @@ describe("Gasp UI swap tests", () => {
 
     myPositionsPage = new MyPositionsPage(driver);
     await myPositionsPage.waitForPoolPositionsVisible();
-    const isPoolMgxKsmVisible = await myPositionsPage.isLiqPoolDisplayed(
+    const isPoolVisible = await myPositionsPage.isLiqPoolDisplayed(
       GASP_ASSET_NAME,
       ETH_ASSET_NAME,
     );
-    expect(isPoolMgxKsmVisible).toBeTruthy();
+    expect(isPoolVisible).toBeTruthy();
 
     await myPositionsPage.clickPoolPosition(GASP_ASSET_NAME, ETH_ASSET_NAME);
 
@@ -106,6 +130,7 @@ describe("Gasp UI swap tests", () => {
 
     // only first token value set by user
     await myPositionsPage.setFirstTokenAmount("0.01");
+    await myPositionsPage.waitForFeeVisible();
     await myPositionsPage.waitSecondTokenAmountSet(true);
     await driver.sleep(500);
     const firstTokenAmount = await myPositionsPage.getFirstTokenAmount();
