@@ -15,12 +15,9 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { waitBlockNumber, waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
-import {
-  waitForEvents,
-  waitSudoOperationSuccess,
-} from "../../utils/eventListeners";
+import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
-import { BN, BN_ZERO } from "@polkadot/util";
+import { BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 
