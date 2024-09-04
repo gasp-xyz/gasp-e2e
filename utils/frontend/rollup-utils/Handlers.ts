@@ -40,7 +40,11 @@ export async function connectWallet(
   expect(isWalletConnectModalDisplayed).toBeTruthy();
 
   await acceptPermissionsWalletExtensionInNewWindow(driver, walletType);
-  await acceptNetworkSwitchInNewWindow(driver);
+  
+  if(false)
+  {
+    await acceptNetworkSwitchInNewWindow(driver);
+  }
 
   const areAccountsDisplayed = await walletConnectModal.accountsDisplayed();
   expect(areAccountsDisplayed).toBeTruthy();
@@ -123,7 +127,7 @@ export async function waitForActionNotification(
       await MetaMask.signWithdrawInDifferentWindow(driver);
       await withdrawModal.waitForSuccessVisible();
       break;
-    case TransactionType.RemoveLiquidity:
+    case TransactionType.AddLiquidity:
       const removeLiqToast = new NotificationToast(driver);
       await removeLiqToast.waitForToastState(
         ToastType.Confirm,

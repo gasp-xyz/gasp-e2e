@@ -130,7 +130,7 @@ describe("Gasp UI swap tests", () => {
 
     // only first token value set by user
     await myPositionsPage.setFirstTokenAmount("0.01");
-    await myPositionsPage.waitForFeeVisible();
+    await myPositionsPage.waitForAddLiqFeeVisible();
     await myPositionsPage.waitSecondTokenAmountSet(true);
     await driver.sleep(500);
     const firstTokenAmount = await myPositionsPage.getFirstTokenAmount();
@@ -138,6 +138,47 @@ describe("Gasp UI swap tests", () => {
     await myPositionsPage.submitAddLiq();
 
     await waitForActionNotification(driver, TransactionType.AddLiquidity);
+  });
+
+  it("Add pool liquidity - rejected", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    myPositionsPage = new MyPositionsPage(driver);
+    await myPositionsPage.waitForPoolPositionsVisible();
+    const isPoolVisible = await myPositionsPage.isLiqPoolDisplayed(
+      GASP_ASSET_NAME,
+      ETH_ASSET_NAME,
+    );
+    expect(isPoolVisible).toBeTruthy();
+
+    await myPositionsPage.clickPoolPosition(GASP_ASSET_NAME, ETH_ASSET_NAME);
+
+    await myPositionsPage.clickAddLiquidity();
+    const isFirstTokenNameSet =
+      await myPositionsPage.isFirstTokenNameSet(GASP_ASSET_NAME);
+    expect(isFirstTokenNameSet).toBeTruthy();
+    const isSecondTokenNameSet =
+      await myPositionsPage.isSecondTokenNameSet(ETH_ASSET_NAME);
+    expect(isSecondTokenNameSet).toBeTruthy();
+
+    // only first token value set by user
+    await myPositionsPage.setSecondTokenAmount("0.01");
+    await myPositionsPage.waitForAddLiqFeeVisible();
+    await myPositionsPage.waitFirstTokenAmountSet(true);
+
+    //temp
+    await myPositionsPage.clickSwitchNetwork();
+    await acceptNetworkSwitchInNewWindow(driver);
+    await sleep(500);
+
+    await driver.sleep(500);
+    await myPositionsPage.submitAddLiq();
+
+    await waitForActionNotification(driver, TransactionType.AddLiquidity, true);
   });
 
   afterEach(async () => {
