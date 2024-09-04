@@ -2008,9 +2008,26 @@ export async function create10sequencers(nw = "Ethereum") {
   }
   await Sudo.batchAsSudoFinalized(...txs);
 }
+
+export async function createWithdrawalsInBatch(num: number) {
+  await setupApi();
+  await setupUsers();
+  const txs = [];
+  for (let index = 0; index < num; index++) {
+    const tx = Rolldown.withdraw(
+      "EthAnvil" as L1Type,
+      "0x14dc79964da2c08b23698b3d3cc7ca32193d9955",
+      "0x2bdcc0de6be1f7d2ee689a0342d76f52e8efaba3",
+      new BN(1122),
+    );
+    txs.push(tx);
+  }
+  await Sudo.batchAsSudoFinalized(...txs);
+}
+
 export async function closeL1Item(
   itemId: bigint,
-  closingItem = "close_withdrawal",
+  closingItem = "close_cancel",
   chain = "Ethereum",
 ) {
   await setupApi();

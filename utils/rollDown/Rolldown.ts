@@ -15,15 +15,30 @@ import { ChainName, SequencerStaking } from "./SequencerStaking";
 import { testLog } from "../Logger";
 import { BTreeMap } from "@polkadot/types-codec";
 import {
+  PalletRolldownMessagesChain,
   PalletRolldownSequencerRights,
   SpRuntimeAccountAccountId20,
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
 import { getAssetIdFromErc20 } from "../rollup/ethUtils";
-import { getL1FromName } from "../rollup/l1s";
+import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 
 export class Rolldown {
+  static withdraw(
+    chain: L1Type,
+    destAddres: string,
+    tokenAddres: string,
+    amount: BN,
+  ) {
+    const api = getApi();
+    return api.tx.rolldown.withdraw(
+      getL1(chain)!.gaspName as unknown as PalletRolldownMessagesChain,
+      destAddres,
+      tokenAddres,
+      amount,
+    );
+  }
   static async lastProcessedRequestOnL2(l1 = "Ethereum") {
     setupUsers();
     const api = getApi();

@@ -49,6 +49,7 @@ import {
   getPolkAddress,
   create10sequencers,
   closeL1Item,
+  createWithdrawalsInBatch,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -127,10 +128,14 @@ async function app(): Promise<any> {
         "getPolkAddress",
         "create10sequencers",
         "Close L1 item",
+        "1000 withdrawals",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("1000 withdrawals")) {
+        await createWithdrawalsInBatch(1000);
+      }
       if (answers.option.includes("Close L1 item")) {
         return inquirer
           .prompt([
@@ -142,7 +147,7 @@ async function app(): Promise<any> {
           ])
           .then(async (answers: { itemId: number }) => {
             await closeL1Item(BigInt(answers.itemId));
-      });
+          });
       }
       if (answers.option.includes("create10sequencers")) {
         return inquirer
