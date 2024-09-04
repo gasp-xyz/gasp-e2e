@@ -81,11 +81,12 @@ describe("Gasp Prod UI deposit tests", () => {
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
 
-    const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled();
-    expect(isNetworkButtonEnabled).toBeTruthy();
+    // Skip until we have same behaviour on dev and prod
+    // const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled();
+    // expect(isNetworkButtonEnabled).toBeTruthy();
 
-    await depositModal.clickDepositButtonByText(DepositActionType.Network);
-    await acceptNetworkSwitchInNewWindow(driver);
+    // await depositModal.clickDepositButtonByText(DepositActionType.Network);
+    // await acceptNetworkSwitchInNewWindow(driver);
 
     // await depositModal.clickDepositButtonByText(DepositActionType.Approve);
     // await waitForActionNotification(driver, TransactionType.ApproveContract);

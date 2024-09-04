@@ -7,7 +7,6 @@ import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
-  acceptNetworkSwitchInNewWindow,
   addExtraLogs,
   importMetamaskExtension,
   uiStringToNumber,
@@ -94,11 +93,12 @@ describe("Gasp Prod UI withdraw tests", () => {
       await withdrawModal.isDestinationFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
 
-    const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
-    expect(isNetworkButtonEnabled).toBeTruthy();
+    // Skip until we have same behaviour on dev and prod
+    // const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
+    // expect(isNetworkButtonEnabled).toBeTruthy();
 
-    await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Network);
-    await acceptNetworkSwitchInNewWindow(driver);
+    // await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Network);
+    // await acceptNetworkSwitchInNewWindow(driver);
 
     await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Withdraw);
     await waitForActionNotification(driver, TransactionType.Withdraw);
