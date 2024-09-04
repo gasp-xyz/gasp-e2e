@@ -12,15 +12,12 @@ import {
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
-import { waitForNBlocks } from "../../utils/utils";
+import { waitBlockNumber, waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
-import {
-  waitForEvents,
-  waitSudoOperationSuccess,
-} from "../../utils/eventListeners";
+import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
-import { BN, BN_ZERO } from "@polkadot/util";
+import { BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 
@@ -42,10 +39,6 @@ beforeAll(async () => {
 beforeEach(async () => {
   //There shouldn't be any sequencer in activeSequencers
   [testUser1, testUser2] = setupUsers();
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(testUser1),
-    Assets.mintNative(testUser2),
-  );
   await SequencerStaking.removeAllSequencers();
   chain = "Ethereum";
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
@@ -54,6 +47,8 @@ beforeEach(async () => {
     chain,
   );
   await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser1),
+    Assets.mintNative(testUser2),
     Sudo.sudoAs(testUser1, providingExtrinsic),
     Sudo.sudoAs(testUser2, providingExtrinsic),
   );
@@ -75,7 +70,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     testUser2Address,
     chain,
   );
-  await waitForNBlocks(disputePeriodLength);
+  await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -170,16 +165,10 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const { reqId } = await createAnUpdate(testUser1, chain, 0, null, BN_MILLION);
-  let executionReqId = new BN(reqId);
-  executionReqId = executionReqId.addn(1);
-  await waitForEvents(
-    api,
-    "rolldown.RequestProcessedOnL2",
-    disputePeriodLength * 2,
-  );
-  const assetId = await Rolldown.getRegisteredAssetId(
-    executionReqId.toNumber(),
-  );
+  //if we don't cancel the update then function RegisteredAsset runs in next block after disputePeriodEnd
+  const registrationBlock = reqId + 1;
+  await waitBlockNumber(registrationBlock.toString(), disputePeriodLength * 2);
+  const assetId = await Rolldown.getRegisteredAssetId(registrationBlock);
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const updaterPenaltyValue = testUser1
@@ -198,7 +187,6 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
     testUser2Address,
     chain,
   );
-  await waitForNBlocks(disputePeriodLength + 1);
   updaterRightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
@@ -273,7 +261,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       chain,
       updateValue,
     );
-  await waitForNBlocks(disputePeriodLength + 1);
+  await Rolldown.waitForReadRights(judge.keyRingPair.address);
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const cancelResolutionEvent1 = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -349,7 +337,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
     testUser2Address,
     chain,
   );
-  //await waitForNBlocks(disputePeriodLength);
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   providingExtrinsic = await SequencerStaking.provideSequencerStaking(
@@ -426,11 +413,11 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     chain,
     updateValue,
   );
-  await waitForNBlocks(disputePeriodLength + 1);
   providingExtrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).muln(2),
     chain,
   );
+  await Rolldown.waitForReadRights(judge.keyRingPair.address);
   const cancelResolutionEvent1 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       judge.keyRingPair.address,
