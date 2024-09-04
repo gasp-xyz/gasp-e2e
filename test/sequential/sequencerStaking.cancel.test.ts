@@ -165,9 +165,10 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   const { reqId } = await createAnUpdate(testUser1, chain, 0, null, BN_MILLION);
-  await waitBlockNumber((reqId + 2).toString(), disputePeriodLength * 2);
   //if we don't cancel the update then function RegisteredAsset runs in next block after disputePeriodEnd
-  const assetId = await Rolldown.getRegisteredAssetId(reqId + 1);
+  const registrationBlock = reqId + 1;
+  await waitBlockNumber(registrationBlock.toString(), disputePeriodLength * 2);
+  const assetId = await Rolldown.getRegisteredAssetId(registrationBlock);
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const updaterPenaltyValue = testUser1
