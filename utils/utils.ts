@@ -84,9 +84,7 @@ export function getEnvironmentRequiredVars() {
     ? process.env.UI_USR_PWD
     : "mangata123";
 
-  const uiUri = process.env.UI_URL
-    ? process.env.UI_URL
-    : "https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/";
+  const uiUri = process.env.UI_URL ? process.env.UI_URL : "oh oh";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS

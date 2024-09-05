@@ -501,6 +501,15 @@ export async function isDisplayed(driver: WebDriver, elementXpath: string) {
   }
 }
 
+export async function isEnabled(driver: WebDriver, elementXpath: string) {
+  try {
+    await waitForElement(driver, elementXpath, 4000);
+    return await (await driver.findElement(By.xpath(elementXpath))).isEnabled();
+  } catch (Error) {
+    return false;
+  }
+}
+
 export async function areDisplayed(
   driver: WebDriver,
   listDataTestIds: string[],

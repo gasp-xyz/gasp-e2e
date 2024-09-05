@@ -23,6 +23,7 @@ export async function connectWallet(
   driver: WebDriver,
   walletType: string,
   acc_addr: string,
+  prod = false,
 ) {
   const walletWrapper = new WalletWrapper(driver);
   const isWalletButton = await walletWrapper.isWalletConnectButtonDisplayed();
@@ -40,8 +41,11 @@ export async function connectWallet(
   expect(isWalletConnectModalDisplayed).toBeTruthy();
 
   await acceptPermissionsWalletExtensionInNewWindow(driver, walletType);
-  await acceptNetworkSwitchInNewWindow(driver);
+  if (prod) {
+    await acceptNetworkSwitchInNewWindow(driver);
+  }
 
+  await walletConnectModal.waitForaccountsDisplayed();
   const areAccountsDisplayed = await walletConnectModal.accountsDisplayed();
   expect(areAccountsDisplayed).toBeTruthy();
 
@@ -105,6 +109,7 @@ export async function waitForMicroappsActionNotification(
 export async function waitForActionNotification(
   driver: WebDriver,
   transaction: TransactionType,
+  rejection = false,
 ) {
   switch (transaction) {
     case TransactionType.ApproveContract:
@@ -121,6 +126,26 @@ export async function waitForActionNotification(
       await withdrawModal.waitForConfirmingVisible();
       await MetaMask.signWithdrawInDifferentWindow(driver);
       await withdrawModal.waitForSuccessVisible();
+      break;
+    case TransactionType.AddLiquidity:
+      const removeLiqToast = new NotificationToast(driver);
+      await removeLiqToast.waitForToastState(
+        ToastType.Confirm,
+        transaction,
+        3000,
+      );
+      const isWaitingForSignVisible = await removeLiqToast.istoastVisible(
+        ToastType.Confirm,
+        transaction,
+      );
+      expect(isWaitingForSignVisible).toBeTruthy();
+      if (rejection) {
+        await MetaMask.rejectTransactionInDifferentWindow(driver);
+        await removeLiqToast.waitForToastState(ToastType.Error, transaction);
+      } else {
+        await MetaMask.signTransactionInDifferentWindow(driver);
+        await removeLiqToast.waitForToastState(ToastType.Success, transaction);
+      }
       break;
     default:
       const toast = new NotificationToast(driver);

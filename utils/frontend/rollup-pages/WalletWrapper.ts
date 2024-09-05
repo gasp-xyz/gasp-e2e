@@ -10,6 +10,7 @@ import {
   getText,
   isDisplayed,
   waitForElement,
+  waitForElementStateInterval,
   waitForElementToDissapear,
   waitForElementVisible,
 } from "../utils/Helper";
@@ -96,6 +97,12 @@ export class WalletWrapper {
   async pickWallet(wallet: string) {
     const walletButtonXpath = buildXpathByText(wallet);
     const walletItem = buildDataTestIdXpath(DIV_WALLET_ITEM);
+    await waitForElementStateInterval(
+      this.driver,
+      walletItem + walletButtonXpath,
+      true,
+      6000,
+    );
     await clickElement(this.driver, walletItem + walletButtonXpath);
   }
 

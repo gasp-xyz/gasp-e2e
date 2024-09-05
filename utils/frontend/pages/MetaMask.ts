@@ -45,6 +45,7 @@ const BTN_IMPORT_ACCOUNT_CONFIRM = "import-account-confirm-button";
 const BTN_FOOTER_NEXT = "page-container-footer-next";
 const BTN_GENERIC_CONFIRMATION = "confirmation-submit-button";
 const BTN_CONFIRM_TRANSACTION = "confirm-footer-confirm-button";
+const BTN_REJECT_TRANSACTION = "page-container-footer-cancel";
 
 export class MetaMask {
   WEB_UI_ACCESS_URL =
@@ -328,6 +329,24 @@ export class MetaMask {
     await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
   }
 
+  private static async rejectTransaction(driver: WebDriver) {
+    const XPATH_SCROLL_DOWN = "//*[@aria-label='Scroll down']";
+    await waitForElement(driver, XPATH_SCROLL_DOWN);
+    await clickElement(driver, XPATH_SCROLL_DOWN);
+    const XPATH_BTN_REJECT_TRANSACTION = buildDataTestIdXpath(
+      BTN_REJECT_TRANSACTION,
+    );
+    const XPATH_CANCEL_BTN = await buildXpathByElementText("button", "Cancel");
+    //handle different cancel flows
+    try {
+      await waitForElement(driver, XPATH_CANCEL_BTN);
+      await clickElement(driver, XPATH_CANCEL_BTN);
+    } catch (e) {
+      await waitForElement(driver, XPATH_BTN_REJECT_TRANSACTION);
+      await clickElement(driver, XPATH_BTN_REJECT_TRANSACTION);
+    }
+  }
+
   async closeAnyExtraWindow(driver: WebDriver) {
     const XPATH_CLOSE = "//*[@aria-label='Close']";
     await clickElement(driver, XPATH_CLOSE);
@@ -366,6 +385,10 @@ export class MetaMask {
 
   static async signTransactionInDifferentWindow(driver: WebDriver) {
     await doActionInDifferentWindow(driver, this.signTransaction);
+  }
+
+  static async rejectTransactionInDifferentWindow(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, this.rejectTransaction);
   }
 
   static async signDepositInDifferentWindow(driver: WebDriver) {
