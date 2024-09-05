@@ -2027,7 +2027,7 @@ export async function createWithdrawalsInBatch(num: number) {
 
 export async function closeL1Item(
   itemId: bigint,
-  closingItem = "close_cancel",
+  closingItem = "close_withdrawal",
   chain = "Ethereum",
 ) {
   await setupApi();
@@ -2056,11 +2056,17 @@ export async function closeL1Item(
     [rangeStart, rangeEnd],
     itemId,
   );
+  console.log(JSON.stringify(root.toHuman()));
+  console.log(JSON.stringify(proof.toHuman()));
+  console.log(JSON.stringify(encodedWithdrawal.toHuman()));
   const withdrawal = decodeAbiParameters(
     (metadata as any).output.abi.find((e: any) => e.name === closingItem)!
       .inputs[0].components,
     encodedWithdrawal.toHex(),
   );
+  console.log(withdrawal);
+
+
   //@ts-ignore
   const { request } = await publicClient.simulateContract({
     address: ROLL_DOWN_CONTRACT_ADDRESS,
