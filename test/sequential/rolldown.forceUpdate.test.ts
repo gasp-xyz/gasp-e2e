@@ -60,6 +60,32 @@ beforeEach(async () => {
   testUserAddress = testUser.keyRingPair.address;
 });
 
+it("Happy path - User can be remove from sequencer", async () => {
+  let sequencers: any;
+  await setupASequencer(testUser, chain);
+  sequencers = await SequencerStaking.activeSequencers();
+  expect(sequencers.toHuman().Ethereum).toContain(testUser.keyRingPair.address);
+
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser.keyRingPair.address,
+      await SequencerStaking.leaveSequencerStaking(chain),
+    ),
+  );
+
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser.keyRingPair.address,
+      await SequencerStaking.unstake(chain),
+    ),
+  );
+
+  sequencers = await SequencerStaking.activeSequencers();
+  expect(sequencers.toHuman().Ethereum).not.toContain(
+    testUser.keyRingPair.address,
+  );
+});
+
 it("forceUpdateL2FromL1 can be called by Sudo", async () => {
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   const update = new L2Update(api)
