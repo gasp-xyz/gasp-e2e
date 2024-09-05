@@ -71,14 +71,18 @@ it("Happy path - User can be remove from sequencer", async () => {
       testUser.keyRingPair.address,
       await SequencerStaking.leaveSequencerStaking(chain),
     ),
-  );
+  ).then(async (events) => {
+    await waitSudoOperationSuccess(events, "SudoAsDone");
+  });
 
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser.keyRingPair.address,
       await SequencerStaking.unstake(chain),
     ),
-  );
+  ).then(async (events) => {
+    await waitSudoOperationSuccess(events, "SudoAsDone");
+  });
 
   sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).not.toContain(
