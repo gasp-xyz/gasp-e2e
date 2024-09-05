@@ -17,7 +17,7 @@ import { waitForAllEventsFromMatchingBlock } from "../../utils/eventListeners";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { BN_MILLION, signTx } from "gasp-sdk";
+import { BN_MILLION, MangataGenericEvent, signTx } from "gasp-sdk";
 import {
   ExtrinsicResult,
   waitNewBlock,
@@ -35,6 +35,7 @@ let testUserAddress: string;
 let chain: any;
 
 async function setupASequencer(user: User, chain: ChainName = "Ethereum") {
+  let sudoEvent: any;
   const extrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).addn(1000),
     chain,
@@ -42,7 +43,10 @@ async function setupASequencer(user: User, chain: ChainName = "Ethereum") {
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(user),
     Sudo.sudoAs(user, extrinsic),
-  );
+  ).then(async (events) => {
+    sudoEvent = events;
+  });
+  return sudoEvent;
 }
 
 beforeAll(async () => {
@@ -62,7 +66,16 @@ beforeEach(async () => {
 
 it("Happy path - User can be remove from sequencer", async () => {
   let sequencers: any;
-  await setupASequencer(testUser, chain);
+  const events: MangataGenericEvent[] = await setupASequencer(testUser, chain);
+  const eventsFiltered = events.filter(
+    (x) => x.method === "SequencerJoinedActiveSet" || x.method === "Reserved",
+  );
+  expect(eventsFiltered[0].event.data[1].toHuman()).toContain(
+    testUser.keyRingPair.address,
+  );
+  expect(eventsFiltered[1].event.data[2]).bnGt(
+    await SequencerStaking.minimalStakeAmount(),
+  );
   sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(testUser.keyRingPair.address);
 
@@ -72,7 +85,12 @@ it("Happy path - User can be remove from sequencer", async () => {
       await SequencerStaking.leaveSequencerStaking(chain),
     ),
   ).then(async (events) => {
-    await waitSudoOperationSuccess(events, "SudoAsDone");
+    const eventFiltered = events.filter(
+      (x) => x.method === "SequencersRemovedFromActiveSet",
+    );
+    expect(eventFiltered[0].event.data[1].toHuman()).toContain(
+      testUser.keyRingPair.address,
+    );
   });
 
   await Sudo.asSudoFinalized(
@@ -81,7 +99,10 @@ it("Happy path - User can be remove from sequencer", async () => {
       await SequencerStaking.unstake(chain),
     ),
   ).then(async (events) => {
-    await waitSudoOperationSuccess(events, "SudoAsDone");
+    const eventFiltered = events.filter((x) => x.method === "Unreserved");
+    expect(eventFiltered[0].event.data[2]).bnGt(
+      await SequencerStaking.minimalStakeAmount(),
+    );
   });
 
   sequencers = await SequencerStaking.activeSequencers();

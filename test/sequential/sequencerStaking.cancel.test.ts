@@ -83,8 +83,20 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
         .build(),
     ),
   );
+  const reqId2 = Rolldown.getRequestIdFromEvents(cancelResolutionEvents);
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength + 1);
+  await waitBlockNumber((reqId2 + 1).toString(), disputePeriodLength * 2);
+  const blockHash = await api.rpc.chain.getBlockHash(reqId2 + 1);
+  const resolutionEvents = await api.query.system.events.at(blockHash);
+  const filteredEvent = resolutionEvents.filter(
+    (result: any) => result.event.method === "Slashed",
+  );
+  expect(filteredEvent[0].event.data[1].toString()).toContain(
+    testUser1.keyRingPair.address,
+  );
+  expect(filteredEvent[0].event.data[3]).toContain(
+    (await SequencerStaking.slashFineAmount()).muln(0.8),
+  );
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
