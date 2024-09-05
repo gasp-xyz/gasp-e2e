@@ -65,6 +65,7 @@ beforeEach(async () => {
 });
 
 it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
+  const slashFineAmount = await SequencerStaking.slashFineAmount();
   const { reqIdCanceled, reqId } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
@@ -94,9 +95,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   expect(filteredEvent[0].event.data[1].toString()).toContain(
     testUser1.keyRingPair.address,
   );
-  expect(filteredEvent[0].event.data[3]).toContain(
-    (await SequencerStaking.slashFineAmount()).muln(0.8),
-  );
+  expect(filteredEvent[0].event.data[3]).bnEqual(slashFineAmount.muln(0.8));
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
@@ -119,10 +118,8 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     ?.amountBefore.reserved!.sub(
       testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
-  expect(cancelerRewardValue).bnEqual(
-    (await SequencerStaking.slashFineAmount()).muln(0.2),
-  );
-  expect(updaterPenaltyValue).bnEqual(await SequencerStaking.slashFineAmount());
+  expect(cancelerRewardValue).bnEqual(slashFineAmount.muln(0.2));
+  expect(updaterPenaltyValue).bnEqual(slashFineAmount);
 });
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
