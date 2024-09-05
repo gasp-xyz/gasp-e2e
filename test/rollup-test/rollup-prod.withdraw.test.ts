@@ -54,7 +54,7 @@ describe("Gasp Prod UI withdraw tests", () => {
     acc_addr_short = acc_addr.slice(-4);
 
     await setupPage(driver);
-    await connectWallet(driver, "MetaMask", acc_addr_short);
+    await connectWallet(driver, "MetaMask", acc_addr_short, true);
   });
 
   test("User can withdraw GETH", async () => {

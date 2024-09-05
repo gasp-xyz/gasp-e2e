@@ -108,7 +108,6 @@ export class MyPositionsPage {
     await waitForElementVisible(this.driver, feeValueXpath, 12000);
   }
 
-
   async clickRemoveLiquidity() {
     const submitSwapXpath = buildDataTestIdXpath("submitSwap");
     await clickElement(this.driver, submitSwapXpath);

@@ -23,6 +23,7 @@ export async function connectWallet(
   driver: WebDriver,
   walletType: string,
   acc_addr: string,
+  prod = false,
 ) {
   const walletWrapper = new WalletWrapper(driver);
   const isWalletButton = await walletWrapper.isWalletConnectButtonDisplayed();
@@ -40,12 +41,11 @@ export async function connectWallet(
   expect(isWalletConnectModalDisplayed).toBeTruthy();
 
   await acceptPermissionsWalletExtensionInNewWindow(driver, walletType);
-  
-  if(false)
-  {
+  if (prod) {
     await acceptNetworkSwitchInNewWindow(driver);
   }
 
+  await walletConnectModal.waitForaccountsDisplayed();
   const areAccountsDisplayed = await walletConnectModal.accountsDisplayed();
   expect(areAccountsDisplayed).toBeTruthy();
 

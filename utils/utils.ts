@@ -84,9 +84,7 @@ export function getEnvironmentRequiredVars() {
     ? process.env.UI_USR_PWD
     : "mangata123";
 
-  const uiUri = process.env.UI_URL
-    ? process.env.UI_URL
-    : "https://gasp-dev-dot-direct-pixel-353917.oa.r.appspot.com/";
+  const uiUri = process.env.UI_URL ? process.env.UI_URL : "oh oh";
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
@@ -98,11 +96,11 @@ export function getEnvironmentRequiredVars() {
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
-    : "twelve insect obvious hurdle control nature search response march version cake buffalo";
+    : "oh oh";
 
   const privKeyMetaMask = process.env.PRIVKEY_META
     ? process.env.PRIVKEY_META
-    : "21ee67f57bbefbb37290e5b1f5a2ad5daab329b9e70578267538f298a59ef68f";
+    : "oh oh";
 
   const mnemonicPolkadot = process.env.MNEMONIC_POLK
     ? process.env.MNEMONIC_POLK
