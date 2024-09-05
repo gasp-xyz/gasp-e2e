@@ -88,11 +88,11 @@ export function getEnvironmentRequiredVars() {
 
   const localAddress = process.env.LOCAL_ADDRESS
     ? process.env.LOCAL_ADDRESS
-    : "http://localhost:4200/";
+    : "localhost";
 
   const stashServiceAddress = process.env.STASH_URL
     ? process.env.STASH_URL
-    : "https://mangata-stash-rollup-dev-dot-direct-pixel-353917.oa.r.appspot.com";
+    : "https://mangata-stash-prod-dot-direct-pixel-353917.oa.r.appspot.com";
 
   const mnemonicMetaMask = process.env.MNEMONIC_META
     ? process.env.MNEMONIC_META
