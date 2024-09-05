@@ -170,11 +170,6 @@ describe("Gasp UI swap tests", () => {
     await myPositionsPage.waitForAddLiqFeeVisible();
     await myPositionsPage.waitFirstTokenAmountSet(true);
 
-    //temp
-    await myPositionsPage.clickSwitchNetwork();
-    await acceptNetworkSwitchInNewWindow(driver);
-    await sleep(500);
-
     await driver.sleep(500);
     await myPositionsPage.submitAddLiq();
 
