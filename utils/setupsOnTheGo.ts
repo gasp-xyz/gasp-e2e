@@ -2009,8 +2009,6 @@ export async function create10sequencers(nw = "Ethereum") {
   await Sudo.batchAsSudoFinalized(...txs);
 }
 
-
-
 export async function closeL1Item(
   itemId: bigint,
   closingItem = "close_withdrawal",

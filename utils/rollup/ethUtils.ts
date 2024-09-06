@@ -282,4 +282,3 @@ export async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
   // Wait for the balance to change
   return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
 }
-

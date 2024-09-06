@@ -5,31 +5,23 @@
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import "jest-extended";
-import { Abi, createWalletClient, http, PrivateKeyAccount } from "viem";
 import { testLog } from "../../utils/Logger";
-import { waitForBalanceChange } from "../../utils/utils";
 import {
-  abi,
-  getAssetIdFromErc20,
+  depositAndWait,
   getBalance,
-  getL2UpdatesStorage,
-  getPublicClient,
   setupEthUser,
 } from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
-import { privateKeyToAccount } from "viem/accounts";
 import { signTxMetamask } from "../../utils/metamask";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
 import { User } from "../../utils/User";
-import { getL1, L1Type } from "../../utils/rollup/l1s";
+import { getL1 } from "../../utils/rollup/l1s";
 
 let user: User;
 jest.setTimeout(600000);
-
-
 
 describe("Rollup", () => {
   describe("ETH Deposits & withdraws", () => {

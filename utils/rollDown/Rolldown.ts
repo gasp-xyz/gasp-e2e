@@ -2,7 +2,13 @@ import { setupApi, setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { BN } from "@polkadot/util";
-import { BN_MILLION, BN_ONE, BN_ZERO, MangataGenericEvent, signTx } from "gasp-sdk";
+import {
+  BN_MILLION,
+  BN_ONE,
+  BN_ZERO,
+  MangataGenericEvent,
+  signTx,
+} from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import {
@@ -25,23 +31,33 @@ import { getAssetIdFromErc20 } from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 
 export class Rolldown {
-
-  static async createWithdrawalsInBatch(num: number, userAddress = "0x14dc79964da2c08b23698b3d3cc7ca32193d9955", erc20Address = "0x2bdcc0de6be1f7d2ee689a0342d76f52e8efaba3" , l1 : L1Type = "EthAnvil") {
-    const txs = await Rolldown.createWithdrawalTxs(num, l1, userAddress, erc20Address);
+  static async createWithdrawalsInBatch(
+    num: number,
+    userAddress = "0x14dc79964da2c08b23698b3d3cc7ca32193d9955",
+    erc20Address = "0x2bdcc0de6be1f7d2ee689a0342d76f52e8efaba3",
+    l1: L1Type = "EthAnvil",
+  ) {
+    const txs = await Rolldown.createWithdrawalTxs(
+      num,
+      l1,
+      userAddress,
+      erc20Address,
+    );
     await Sudo.batchAsSudoFinalized(...txs);
   }
 
-  static async createWithdrawalTxs(num: number, l1: "EthAnvil" | "ArbAnvil", userAddress: string, erc20Address: string, amount = BN_ONE) {
+  static async createWithdrawalTxs(
+    num: number,
+    l1: "EthAnvil" | "ArbAnvil",
+    userAddress: string,
+    erc20Address: string,
+    amount = BN_ONE,
+  ) {
     await setupApi();
     await setupUsers();
     const txs = [];
     for (let index = 0; index < num; index++) {
-      const tx = Rolldown.withdraw(
-        l1,
-        userAddress,
-        erc20Address,
-        amount
-      );
+      const tx = Rolldown.withdraw(l1, userAddress, erc20Address, amount);
       txs.push(tx);
     }
     return txs;
@@ -256,9 +272,12 @@ export class Rolldown {
     return JSON.parse(JSON.stringify(waitingResolution));
   }
 
-  static async createManualBatch(l1 : L1Type) {
+  static async createManualBatch(l1: L1Type) {
     const api = await getApi();
-    return api.tx.rolldown.createBatch( getL1(l1)!.gaspName as unknown as  PalletRolldownMessagesChain , null);
+    return api.tx.rolldown.createBatch(
+      getL1(l1)!.gaspName as unknown as PalletRolldownMessagesChain,
+      null,
+    );
   }
 }
 export class L2Update {
