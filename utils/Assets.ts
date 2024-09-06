@@ -19,6 +19,7 @@ import { MangataTypesAssetsCustomMetadata } from "@polkadot/types/lookup";
 import { SudoDB } from "./SudoDB";
 import { testLog } from "./Logger";
 import { randomBytes } from "crypto";
+import { getApi } from "./api";
 
 export class Assets {
   static legacy = false;
@@ -378,6 +379,14 @@ export class Assets {
       });
       await Sudo.asSudoFinalized(extrinsicToTokenEnable);
     }
+  }
+
+  static async getAssetAddress(assetId: BN) {
+    const api = await getApi();
+    const idToL1Asset = JSON.parse(
+      JSON.stringify(await api.query.assetRegistry.idToL1Asset(assetId)),
+    );
+    return idToL1Asset.Ethereum ? idToL1Asset.Ethereum : idToL1Asset.Arbitrum;
   }
 }
 
