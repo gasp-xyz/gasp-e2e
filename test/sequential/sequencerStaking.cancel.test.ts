@@ -92,9 +92,11 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   const filteredEvent = resolutionEvents.filter(
     (result: any) => result.event.method === "Slashed",
   );
+  expect(filteredEvent[0].event.data[0]).bnEqual(GASP_ASSET_ID);
   expect(filteredEvent[0].event.data[1].toString()).toContain(
     testUser1.keyRingPair.address,
   );
+  expect(filteredEvent[0].event.data[2]).bnEqual(BN_ZERO);
   expect(filteredEvent[0].event.data[3]).bnEqual(slashFineAmount.muln(0.8));
 
   const tokenAddress = testUser1.keyRingPair.address;

@@ -35,18 +35,15 @@ let testUserAddress: string;
 let chain: any;
 
 async function setupASequencer(user: User, chain: ChainName = "Ethereum") {
-  let sudoEvent: any;
   const extrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).addn(1000),
     chain,
   );
-  await Sudo.batchAsSudoFinalized(
+  const events = await Sudo.batchAsSudoFinalized(
     Assets.mintNative(user),
     Sudo.sudoAs(user, extrinsic),
-  ).then(async (events) => {
-    sudoEvent = events;
-  });
-  return sudoEvent;
+  );
+  return events;
 }
 
 beforeAll(async () => {
@@ -64,20 +61,22 @@ beforeEach(async () => {
   testUserAddress = testUser.keyRingPair.address;
 });
 
-it("Happy path - User can be remove from sequencer", async () => {
-  let sequencers: any;
+it("Happy path - A user can join and leave sequencing", async () => {
   const events: MangataGenericEvent[] = await setupASequencer(testUser, chain);
-  const eventsFiltered = events.filter(
-    (x) => x.method === "SequencerJoinedActiveSet" || x.method === "Reserved",
+  const eventJoining = events.filter(
+    (x) => x.method === "SequencerJoinedActiveSet",
   );
-  expect(eventsFiltered[0].event.data[1].toHuman()).toContain(
+  const eventReserved = events.filter((x) => x.method === "Reserved");
+  expect(eventJoining[0].event.data[1].toHuman()).toContain(
     testUser.keyRingPair.address,
   );
-  expect(eventsFiltered[1].event.data[2]).bnGt(
+  expect(eventReserved[0].event.data[2]).bnGt(
     await SequencerStaking.minimalStakeAmount(),
   );
-  sequencers = await SequencerStaking.activeSequencers();
-  expect(sequencers.toHuman().Ethereum).toContain(testUser.keyRingPair.address);
+  const sequencersBefore = await SequencerStaking.activeSequencers();
+  expect(sequencersBefore.toHuman().Ethereum).toContain(
+    testUser.keyRingPair.address,
+  );
 
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -88,6 +87,7 @@ it("Happy path - User can be remove from sequencer", async () => {
     const eventFiltered = events.filter(
       (x) => x.method === "SequencersRemovedFromActiveSet",
     );
+    expect(eventFiltered[0].event.data[0].toHuman()).toContain(chain);
     expect(eventFiltered[0].event.data[1].toHuman()).toContain(
       testUser.keyRingPair.address,
     );
@@ -105,8 +105,8 @@ it("Happy path - User can be remove from sequencer", async () => {
     );
   });
 
-  sequencers = await SequencerStaking.activeSequencers();
-  expect(sequencers.toHuman().Ethereum).not.toContain(
+  const sequencersAfter = await SequencerStaking.activeSequencers();
+  expect(sequencersAfter.toHuman().Ethereum).not.toContain(
     testUser.keyRingPair.address,
   );
 });
