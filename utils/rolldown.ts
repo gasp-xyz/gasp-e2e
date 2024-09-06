@@ -71,19 +71,4 @@ export class RollDown {
     }
     return sdkApi.tx.rolldown.cancelRequestsFromL1(chain, requestNumber);
   }
-  static async withdraw(
-    EthUser: EthUser | User,
-    amountValue: BN | number,
-    tokenAddress: string = "",
-    chainName: ChainName = "Ethereum",
-  ) {
-    return Withdraw(EthUser, amountValue, tokenAddress, chainName);
-  }
-  static async deposit(
-    requestNumber: number,
-    ethAddress: string,
-    amountValue: number,
-  ) {
-    return rolldownDeposit(requestNumber, ethAddress, amountValue);
-  }
 }
