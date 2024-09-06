@@ -1,7 +1,6 @@
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { User } from "../../utils/User";
-import { testLog } from "../../utils/Logger";
 import { expectExtrinsicFail } from "../../utils/utils";
 import { signTx } from "gasp-sdk";
 import { Assets } from "../../utils/Assets";
@@ -24,13 +23,10 @@ describe("Rolldown withdraw error", () => {
   });
 
   test("withdrawing token which does not exist should return correct error", async () => {
-    const api = getApi();
-    testLog
-      .getLog()
-      .info(
-        "--------------------------THE RESPONSE----------------------------",
-      );
     const nonExistingToken = "0x2bdcc0de6be1f7d2ee689a0342d76f52e8efa111";
+    const errorMsg = "TokenDoesNotExist";
+
+    const api = getApi();
 
     const withdrawTx = await Withdraw(
       user,
@@ -38,18 +34,9 @@ describe("Rolldown withdraw error", () => {
       nonExistingToken,
       "Ethereum",
     );
+
     const events = await signTx(api, withdrawTx, user.keyRingPair);
     const response = expectExtrinsicFail(events);
-    expect(response.data).toEqual("TokenDoesNotExist");
+    expect(response.data).toEqual(errorMsg);
   });
 });
-
-// function generateRandomAddress(): string {
-//   const randomBytes = crypto.getRandomValues(new Uint8Array(20));
-
-//   const address = Array.from(randomBytes)
-//     .map((byte) => byte.toString(16).padStart(2, "0"))
-//     .join("");
-
-//   return `0x${address}`;
-// }
