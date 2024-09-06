@@ -40,7 +40,7 @@ export async function getLastProcessedRequestNumber() {
   return +value;
 }
 
-export async function rolldownWithdraw(
+export async function Withdraw(
   EthUser: EthUser | User,
   amountValue: BN | number,
   tokenAddress: string = "",
@@ -77,7 +77,7 @@ export class RollDown {
     tokenAddress: string = "",
     chainName: ChainName = "Ethereum",
   ) {
-    return rolldownWithdraw(EthUser, amountValue, tokenAddress, chainName);
+    return Withdraw(EthUser, amountValue, tokenAddress, chainName);
   }
   static async deposit(
     requestNumber: number,
