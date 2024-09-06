@@ -7,6 +7,7 @@ import {
   decodeAbiParameters,
   http,
   PrivateKeyAccount,
+  PublicClient,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
@@ -239,7 +240,11 @@ export function convertEthAddressToDotAddress(ethAddress: string) {
   return encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42);
 }
 
-export async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
+export async function depositAndWait(
+  depositor: User,
+  l1: L1Type = "EthAnvil",
+  onlyContractDeposit = false,
+) {
   const updatesBefore = await getL2UpdatesStorage(l1);
   testLog.getLog().info(JSON.stringify(updatesBefore));
   const acc: PrivateKeyAccount = privateKeyToAccount(
@@ -262,6 +267,9 @@ export async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
 
   const updatesAfter = await getL2UpdatesStorage(l1);
   testLog.getLog().info(JSON.stringify(updatesAfter));
+  if (onlyContractDeposit) {
+    return;
+  }
 
   // eslint-disable-next-line no-console
   console.log(updatesAfter);
@@ -281,4 +289,25 @@ export async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
   );
   // Wait for the balance to change
   return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
+}
+
+export function waitForNClosedWithdrawals(publicClient: PublicClient, num = 1) {
+  let cont = 0;
+  return new Promise((resolve, _) => {
+    publicClient.watchContractEvent({
+      abi: abi,
+      address: ROLL_DOWN_CONTRACT_ADDRESS,
+      eventName: "WithdrawalClosed",
+      onLogs: async (logs) => {
+        for (const log of logs) {
+          cont += 1;
+          // @ts-ignore
+          testLog.getLog().info(JSON.stringify(log));
+          if (num >= cont) {
+            resolve(log);
+          }
+        }
+      },
+    });
+  });
 }
