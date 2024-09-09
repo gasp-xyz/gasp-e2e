@@ -236,7 +236,13 @@ describe.each(["mm", "upgradabilityMm"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);
-          const [extrinsic, signer] = tests[testName];
+          let signer: User;
+          const [extrinsic, testsSigner] = tests[testName];
+          if (mmMode === "mm") {
+            signer = testsSigner;
+          } else {
+            signer = users[3];
+          }
           const nonce = await getCurrentNonce(signer.keyRingPair.address);
           await signTx(api, extrinsic, signer.keyRingPair, {
             nonce: nonce,
