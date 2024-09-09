@@ -1,3 +1,7 @@
+/*
+ *
+ * @group parallel
+ */
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { User } from "../../utils/User";
