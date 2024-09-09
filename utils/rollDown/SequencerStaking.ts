@@ -24,6 +24,7 @@ export class SequencerStaking {
   static async provideSequencerStaking(
     amount: BN = BN_ZERO,
     chainName: ChainName = "Ethereum",
+    stakeAction = "StakeAndJoinActiveSet",
   ) {
     const api = await getApi();
     let amountToStake = amount;
@@ -35,6 +36,8 @@ export class SequencerStaking {
       chainName,
       stringToBN(amountToStake.toString()),
       null,
+      //@ts-ignore
+      stakeAction,
     );
   }
 
