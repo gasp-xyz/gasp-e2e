@@ -115,6 +115,7 @@ describe("sequencerStaking", () => {
       await SequencerStaking.provideSequencerStaking(
         minToBeSequencer.subn(1234),
         "Ethereum",
+        "StakeOnly",
       ),
       notYetSequencer.keyRingPair,
     ).then((events) => {
@@ -220,6 +221,7 @@ describe("sequencerStaking", () => {
       await SequencerStaking.provideSequencerStaking(
         (await SequencerStaking.minimalStakeAmount()).subn(10),
         chain,
+        "StakeOnly",
       ),
       user.keyRingPair,
     );
