@@ -33,7 +33,7 @@ import { Bytes, StorageKey } from "@polkadot/types";
 import { Codec, ITuple } from "@polkadot/types/types";
 import jsonpath from "jsonpath";
 import { AggregatorOptions, Staking, tokenOriginEnum } from "./Staking";
-import { hexToBn } from "@polkadot/util";
+import { hexToBn, nToBigInt } from "@polkadot/util";
 import { Bootstrap } from "./Bootstrap";
 import assert from "assert";
 import { Council } from "./Council";
@@ -69,7 +69,12 @@ import { L2Update, Rolldown } from "./rollDown/Rolldown";
 import { ChainName, SequencerStaking } from "./rollDown/SequencerStaking";
 import { decodeAbiParameters, PublicClient } from "viem";
 import { getL1, L1Type } from "./rollup/l1s";
+import { ApiPromise } from "@polkadot/api";
+import { privateKeyToAccount } from "viem/accounts";
+import { estimateMaxPriorityFeePerGas } from "viem/actions";
 Assets.legacy = true;
+const L1_CHAIN = "Ethereum";
+
 export async function claimForAllAvlRewards() {
   await setupApi();
   setupUsers();
@@ -2100,4 +2105,117 @@ async function findMerkleRange(publicClient: PublicClient, requestId: bigint) {
     functionName: "find_l2_batch",
     args: [requestId],
   });
+}
+
+async function getLastBatchId(api: ApiPromise) {
+  const apiAt = await api;
+  const last_batch = await apiAt.query.rolldown.l2RequestsBatchLast();
+  const specificL1LastBatch = last_batch.toHuman()[L1_CHAIN];
+  if (specificL1LastBatch === undefined) {
+    return null;
+  } else {
+    return (specificL1LastBatch as any)[1];
+  }
+}
+
+async function findBatchWithNewUpdates(
+  api: ApiPromise,
+  publicClient: PublicClient,
+) {
+  let batchId = await getLastBatchId(api);
+  if (batchId == null) {
+    return null;
+  }
+
+  const lastSubmittedId = await getLatestRequestIdSubmittedToL1(publicClient);
+  const nextRequestId = lastSubmittedId + nToBigInt(1);
+
+  while (batchId > 0) {
+    const batch = await api.query.rolldown.l2RequestsBatch([L1_CHAIN, batchId]);
+    const rangeStart = BigInt((batch.toHuman() as any)[1][0]);
+    const rangeStop = BigInt((batch.toHuman() as any)[1][1]);
+    if (rangeStart <= nextRequestId && rangeStop >= nextRequestId) {
+      return [rangeStart, rangeStop];
+    }
+    batchId -= 1;
+  }
+
+  console.log(`couldnt find any batch with requestId: ${nextRequestId}`);
+  return null;
+}
+
+export async function sendUpdateToL1() {
+  await setupApi();
+  const api = await getApi();
+  const publicClient = getPublicClient();
+  const viemClient = getWalletClient();
+  const ethAccount = privateKeyToAccount(
+    `0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133`,
+  );
+
+  const requestsRange = await findBatchWithNewUpdates(api, publicClient);
+
+  if (requestsRange == null) {
+    return null;
+  }
+  const rangeStart = requestsRange[0];
+  const rangeEnd = requestsRange[1];
+
+  const root = await api.rpc.rolldown.get_merkle_root(L1_CHAIN, [
+    rangeStart,
+    rangeEnd,
+  ]);
+  if (
+    root.toString() ==
+    "0x0000000000000000000000000000000000000000000000000000000000000000"
+  ) {
+    return null;
+  }
+
+  const { maxFeeInWei, maxPriorityFeePerGasInWei } =
+    await estimateGasInWei(publicClient);
+  const { request } = await publicClient.simulateContract({
+    account: ethAccount,
+    chain: getL1("EthAnvil")!,
+    abi: abi,
+    address: ROLL_DOWN_CONTRACT_ADDRESS,
+    functionName: "update_l1_from_l2",
+    args: [root.toHex(), [rangeStart, rangeEnd]],
+    maxFeePerGas: maxFeeInWei,
+    maxPriorityFeePerGas: maxPriorityFeePerGasInWei,
+  });
+  const txHash = await viemClient.writeContract(request);
+  const result = await publicClient.waitForTransactionReceipt({ hash: txHash });
+  console.log(
+    `#${result.blockNumber} ${result.transactionHash} : ${result.status}`,
+  );
+  return requestsRange;
+}
+export async function getLatestRequestIdSubmittedToL1(
+  publicClient: PublicClient,
+) {
+  return (await publicClient.readContract({
+    address: ROLL_DOWN_CONTRACT_ADDRESS as unknown as `0x${string}`,
+    abi: abi,
+    functionName: "lastProcessedUpdate_origin_l2",
+    args: [],
+  })) as bigint;
+}
+async function estimateGasInWei(publicClient: PublicClient) {
+  // https://www.blocknative.com/blog/eip-1559-fees
+  // We do not want VIEM estimate we would like to make our own estimate
+  // based on this equation: Max Fee = (2 * Base Fee) + Max Priority Fee
+
+  // Max Fee = maxFeePerGas (viem)
+  // Max Priority Fee = maxPriorityFeePerGas (viem)
+
+  const baseFeeInWei = await publicClient.getGasPrice();
+
+  const maxPriorityFeePerGasInWei =
+    await estimateMaxPriorityFeePerGas(publicClient);
+
+  const maxFeeInWei =
+    BigInt(2) * BigInt(baseFeeInWei) + BigInt(maxPriorityFeePerGasInWei);
+
+  return { maxFeeInWei, maxPriorityFeePerGasInWei };
 }

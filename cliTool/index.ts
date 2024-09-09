@@ -49,6 +49,7 @@ import {
   getPolkAddress,
   create10sequencers,
   closeL1Item,
+  sendUpdateToL1,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -130,10 +131,14 @@ async function app(): Promise<any> {
         "Close L1 item",
         "Close All L1 items",
         "1000 withdrawals",
+        "sync updates",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("sync updates")) {
+        await sendUpdateToL1();
+      }
       if (answers.option.includes("1000 withdrawals")) {
         await Rolldown.createWithdrawalsInBatch(1000);
       }
