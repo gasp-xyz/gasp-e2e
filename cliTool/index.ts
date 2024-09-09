@@ -49,7 +49,6 @@ import {
   getPolkAddress,
   create10sequencers,
   closeL1Item,
-  createWithdrawalsInBatch,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -69,6 +68,7 @@ import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { toNumber } from "lodash-es";
+import { Rolldown } from "../utils/rollDown/Rolldown";
 
 async function app(): Promise<any> {
   return inquirer
@@ -128,13 +128,32 @@ async function app(): Promise<any> {
         "getPolkAddress",
         "create10sequencers",
         "Close L1 item",
+        "Close All L1 items",
         "1000 withdrawals",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
       if (answers.option.includes("1000 withdrawals")) {
-        await createWithdrawalsInBatch(1000);
+        await Rolldown.createWithdrawalsInBatch(1000);
+      }
+      if (answers.option.includes("Close All L1 items")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "itemId",
+              message: "From what itemId?",
+            },
+          ])
+          .then(async (answers: { itemId: number }) => {
+            await closeL1Item(
+              BigInt(answers.itemId),
+              "close_withdrawal",
+              "Ethereum",
+              true,
+            );
+          });
       }
       if (answers.option.includes("Close L1 item")) {
         return inquirer

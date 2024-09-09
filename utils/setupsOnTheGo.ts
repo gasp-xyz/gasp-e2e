@@ -2013,67 +2013,76 @@ export async function closeL1Item(
   itemId: bigint,
   closingItem = "close_withdrawal",
   chain = "Ethereum",
+  closingAll = false,
 ) {
   await setupApi();
   const api = await getApi();
   const network = chain === "Ethereum" ? "EthAnvil" : "ArbAnvil";
   const viemClient = getWalletClient(network);
   const publicClient = getPublicClient(network);
-  const range = await findMerkleRange(publicClient, itemId);
-  const rangeStart = (range as any).start;
-  const rangeEnd = (range as any).end;
+  async function closeOnlyL1Item(item: bigint) {
+    const range = await findMerkleRange(publicClient, item);
+    const rangeStart = (range as any).start;
+    const rangeEnd = (range as any).end;
+    const chainPk = api.createType("Chain", chain);
+    const encodedWithdrawal = await api.rpc.rolldown.get_abi_encoded_l2_request(
+      chain,
+      item,
+    );
+    console.log(
+      `chain: ${chainPk} range: [${rangeStart}, ${rangeEnd}] withdrawalRequestId: ${item} `,
+    );
+    const root = await api.rpc.rolldown.get_merkle_root(chain, [
+      rangeStart,
+      rangeEnd,
+    ]);
+    const proof = await api.rpc.rolldown.get_merkle_proof(
+      chain,
+      [rangeStart, rangeEnd],
+      item,
+    );
+    const res = await api.rpc.rolldown.verify_merkle_proof(
+      chain,
+      [rangeStart, rangeEnd],
+      item,
+      root,
+      proof,
+    );
+    console.log(res);
+    const withdrawal = decodeAbiParameters(
+      (metadata as any).output.abi.find((e: any) => e.name === closingItem)!
+        .inputs[0].components,
+      encodedWithdrawal.toHex(),
+    );
+    console.log(withdrawal);
 
-  const chainPk = api.createType("Chain", chain);
-  const encodedWithdrawal = await api.rpc.rolldown.get_abi_encoded_l2_request(
-    chain,
-    itemId,
-  );
-  console.log(
-    `chain: ${chainPk} range: [${rangeStart}, ${rangeEnd}] withdrawalRequestId: ${itemId} `,
-  );
-  const root = await api.rpc.rolldown.get_merkle_root(chain, [
-    rangeStart,
-    rangeEnd,
-  ]);
-  const proof = await api.rpc.rolldown.get_merkle_proof(
-    chain,
-    [rangeStart, rangeEnd],
-    itemId,
-  );
-  const res = await api.rpc.rolldown.verify_merkle_proof(
-    chain,
-    [rangeStart, rangeEnd],
-    itemId,
-    root,
-    proof,
-  );
-  console.log(JSON.stringify(res));
-  console.log(JSON.stringify(root.toHuman()));
-  console.log(JSON.stringify(proof.toHuman()));
-  console.log(JSON.stringify(encodedWithdrawal.toHuman()));
-  const withdrawal = decodeAbiParameters(
-    (metadata as any).output.abi.find((e: any) => e.name === closingItem)!
-      .inputs[0].components,
-    encodedWithdrawal.toHex(),
-  );
-  console.log(withdrawal);
-
-  //@ts-ignore
-  const { request } = await publicClient.simulateContract({
-    address: ROLL_DOWN_CONTRACT_ADDRESS,
-    chain: getL1(network as L1Type)!,
-    abi: abi,
-    functionName: closingItem,
     //@ts-ignore
-    args: [withdrawal, root.toHuman(), proof.toHuman()],
-  });
-  const txHash = await viemClient.writeContract(request);
-  const result = await publicClient.waitForTransactionReceipt({ hash: txHash });
-  console.log(
-    `closing withdrawal ${itemId}: tx:${result.transactionHash} - ${result.status}`,
-  );
+    const { request } = await publicClient.simulateContract({
+      address: ROLL_DOWN_CONTRACT_ADDRESS,
+      chain: getL1(network as L1Type)!,
+      abi: abi,
+      functionName: closingItem,
+      //@ts-ignore
+      args: [withdrawal, root.toHuman(), proof.toHuman()],
+    });
+    const txHash = await viemClient.writeContract(request);
+    const result = await publicClient.waitForTransactionReceipt({
+      hash: txHash,
+    });
+    console.log(
+      `closing withdrawal ${itemId}: tx:${result.transactionHash} - ${result.status}`,
+    );
 
-  console.log("L1 item closed with tx", request);
+    console.log("L1 item closed with tx", request);
+  }
+
+  if (closingAll) {
+    for (let i = itemId; i > 0; i++) {
+      await closeOnlyL1Item(i);
+    }
+  } else {
+    await closeOnlyL1Item(itemId);
+  }
 }
 
 export async function getPolkAddress(address: string) {
