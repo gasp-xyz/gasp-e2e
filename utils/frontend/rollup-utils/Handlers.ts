@@ -128,6 +128,7 @@ export async function waitForActionNotification(
       await withdrawModal.waitForSuccessVisible();
       break;
     case TransactionType.AddLiquidity:
+    case TransactionType.RemoveLiquidity:
       const removeLiqToast = new NotificationToast(driver);
       await removeLiqToast.waitForToastState(
         ToastType.Confirm,
