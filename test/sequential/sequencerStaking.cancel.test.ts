@@ -98,7 +98,6 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   );
   expect(filteredEvent[0].event.data[2]).bnEqual(BN_ZERO);
   expect(filteredEvent[0].event.data[3]).bnEqual(slashFineAmount.muln(0.8));
-  await waitForNBlocks(disputePeriodLength + 1);
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
@@ -123,10 +122,6 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     );
   expect(cancelerRewardValue).bnEqual(slashFineAmount.muln(0.2));
   expect(updaterPenaltyValue).bnEqual(slashFineAmount);
-  expect(cancelerRewardValue).bnEqual(
-    (await SequencerStaking.slashFineAmount()).muln(0.2),
-  );
-  expect(updaterPenaltyValue).bnEqual(await SequencerStaking.slashFineAmount());
 });
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is burned", async () => {
@@ -463,7 +458,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   await waitForNBlocks(disputePeriodLength + 1);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
-  await Sudo.asSudoFinalized(Sudo.sudoAs(testUser2, providingExtrinsic));
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   const cancelResolutionEvent2 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
