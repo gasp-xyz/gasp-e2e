@@ -65,6 +65,7 @@ beforeEach(async () => {
 });
 
 it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slash is given to it", async () => {
+  const slashFineAmount = await SequencerStaking.slashFineAmount();
   const { reqIdCanceled, reqId } = await createAnUpdateAndCancelIt(
     testUser1,
     testUser2Address,
@@ -83,7 +84,20 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
         .build(),
     ),
   );
+  const reqId2 = Rolldown.getRequestIdFromEvents(cancelResolutionEvents);
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
+  await waitBlockNumber((reqId2 + 1).toString(), disputePeriodLength * 2);
+  const blockHash = await api.rpc.chain.getBlockHash(reqId2 + 1);
+  const resolutionEvents = await api.query.system.events.at(blockHash);
+  const filteredEvent = resolutionEvents.filter(
+    (result: any) => result.event.method === "Slashed",
+  );
+  expect(filteredEvent[0].event.data[0]).bnEqual(GASP_ASSET_ID);
+  expect(filteredEvent[0].event.data[1].toString()).toContain(
+    testUser1.keyRingPair.address,
+  );
+  expect(filteredEvent[0].event.data[2]).bnEqual(BN_ZERO);
+  expect(filteredEvent[0].event.data[3]).bnEqual(slashFineAmount.muln(0.8));
   await waitForNBlocks(disputePeriodLength + 1);
 
   const tokenAddress = testUser1.keyRingPair.address;
@@ -107,6 +121,8 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     ?.amountBefore.reserved!.sub(
       testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
+  expect(cancelerRewardValue).bnEqual(slashFineAmount.muln(0.2));
+  expect(updaterPenaltyValue).bnEqual(slashFineAmount);
   expect(cancelerRewardValue).bnEqual(
     (await SequencerStaking.slashFineAmount()).muln(0.2),
   );
@@ -344,7 +360,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
     chain,
   );
   //the cancellation is incorrectly
-  const cancelResolutionEvents = await Sudo.asSudoFinalized(
+  const cancelResolutionEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser2Address,
       new L2Update(api)
@@ -352,15 +368,19 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
         .on(chain)
         .build(),
     ),
+    Sudo.sudoAs(
+      testUser2,
+      await SequencerStaking.provideSequencerStaking(
+        (await SequencerStaking.minimalStakeAmount()).muln(2),
+        chain,
+        "StakeOnly",
+      ),
+    ),
   );
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitForNBlocks(disputePeriodLength + 1);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
-  const rightsStatusBefore = await Rolldown.sequencerRights(
-    chain,
-    testUser2.keyRingPair.address,
-  );
   await Sudo.asSudoFinalized(Sudo.sudoAs(testUser2, providingExtrinsic));
   const sequencers = await SequencerStaking.activeSequencers();
   const testUser2PenaltyValue = testUser2
@@ -368,7 +388,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
     ?.amountBefore.reserved!.sub(
       testUser2.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
-  const rightsStatusAfter = await Rolldown.sequencerRights(
+  const testUser2RightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser2.keyRingPair.address,
   );
@@ -376,10 +396,8 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
   expect(testUser2PenaltyValue).bnEqual(
     await SequencerStaking.slashFineAmount(),
   );
-  expect(rightsStatusBefore.readRights.toString()).toBe("0");
-  expect(rightsStatusBefore.cancelRights.toString()).toBe("0");
-  expect(rightsStatusAfter.readRights.toString()).toBe("1");
-  expect(rightsStatusAfter.cancelRights.toString()).toBe("1");
+  expect(testUser2RightsStatus.readRights.toString()).toBe("1");
+  expect(testUser2RightsStatus.cancelRights.toString()).toBe("1");
 });
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels AND users provide staking THEN users have read/cancel rights", async () => {
@@ -424,7 +442,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     chain,
   );
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
-  const cancelResolutionEvent1 = await Sudo.asSudoFinalized(
+  const cancelResolutionEvent1 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       judge.keyRingPair.address,
       new L2Update(api)
@@ -432,18 +450,22 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
         .on(chain)
         .build(),
     ),
+    Sudo.sudoAs(
+      testUser2,
+      await SequencerStaking.provideSequencerStaking(
+        (await SequencerStaking.minimalStakeAmount()).muln(2),
+        chain,
+        "StakeOnly",
+      ),
+    ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   await waitForNBlocks(disputePeriodLength + 1);
-  const testUser2RightsStatusBefore = await Rolldown.sequencerRights(
-    chain,
-    testUser2.keyRingPair.address,
-  );
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await Sudo.asSudoFinalized(Sudo.sudoAs(testUser2, providingExtrinsic));
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
-  const cancelResolutionEvent2 = await Sudo.asSudoFinalized(
+  const cancelResolutionEvent2 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       judge.keyRingPair.address,
       new L2Update(api)
@@ -451,21 +473,25 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
         .on(chain)
         .build(),
     ),
+    Sudo.sudoAs(
+      testUser1,
+      await SequencerStaking.provideSequencerStaking(
+        (await SequencerStaking.minimalStakeAmount()).muln(2),
+        chain,
+        "StakeOnly",
+      ),
+    ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await waitForNBlocks(disputePeriodLength + 1);
-  const testUser1RightsStatusBefore = await Rolldown.sequencerRights(
-    chain,
-    testUser1.keyRingPair.address,
-  );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await Sudo.asSudoFinalized(Sudo.sudoAs(testUser1, providingExtrinsic));
-  const testUser1RightsStatusAfter = await Rolldown.sequencerRights(
+  const testUser1RightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
   );
-  const testUser2RightsStatusAfter = await Rolldown.sequencerRights(
+  const testUser2RightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
   );
@@ -486,12 +512,8 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     await SequencerStaking.slashFineAmount(),
   );
 
-  expect(testUser1RightsStatusBefore.readRights.toString()).toBe("0");
-  expect(testUser1RightsStatusBefore.cancelRights.toString()).toBe("0");
-  expect(testUser1RightsStatusAfter.readRights.toString()).toBe("1");
-  expect(testUser1RightsStatusAfter.cancelRights.toString()).toBe("2");
-  expect(testUser2RightsStatusBefore.readRights.toString()).toBe("0");
-  expect(testUser2RightsStatusBefore.cancelRights.toString()).toBe("0");
-  expect(testUser2RightsStatusAfter.readRights.toString()).toBe("1");
-  expect(testUser2RightsStatusAfter.cancelRights.toString()).toBe("2");
+  expect(testUser1RightsStatus.readRights.toString()).toBe("1");
+  expect(testUser1RightsStatus.cancelRights.toString()).toBe("2");
+  expect(testUser2RightsStatus.readRights.toString()).toBe("1");
+  expect(testUser2RightsStatus.cancelRights.toString()).toBe("2");
 });
