@@ -60,6 +60,7 @@ describe("Rollup", () => {
       let expectedTokens = 0;
       let alltxs: SubmittableExtrinsic<any>[] = [];
       for (let i = 1; i < 50; i++) {
+        alltxs = [];
         const txs = await Rolldown.createWithdrawalTxs(
           i,
           "EthAnvil",
