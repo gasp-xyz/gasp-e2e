@@ -36,7 +36,7 @@ export class SequencerStaking {
       chainName,
       stringToBN(amountToStake.toString()),
       null,
-      stakeAction,
+      'StakeAndJoinActiveSet',
     );
   }
 
