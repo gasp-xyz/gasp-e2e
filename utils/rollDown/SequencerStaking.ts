@@ -36,7 +36,6 @@ export class SequencerStaking {
       chainName,
       stringToBN(amountToStake.toString()),
       null,
-      //@ts-ignore
       stakeAction,
     );
   }

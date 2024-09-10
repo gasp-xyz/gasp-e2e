@@ -40,6 +40,7 @@ import {
 import { getCurrentNonce } from "../../utils/tx";
 import { waitForNBlocks } from "../../utils/utils";
 import { System } from "../../utils/System";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -48,6 +49,7 @@ const users: User[] = [];
 let api: ApiPromise;
 let tests: { [K: string]: [Extrinsic, User] } = {};
 let sequencer: User;
+let user: User;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 async function setupMm() {
@@ -104,6 +106,14 @@ describe.each(["mm", "upgradabilityMm"])(
   (mmMode) => {
     let previous = "";
     // hacky trick to avoid double setup
+
+    beforeAll(async () => {
+      await setupApi();
+      api = await getApi();
+      [user] = setupUsers();
+      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
+    });
+
     beforeEach(async () => {
       if (previous !== mmMode) {
         previous = mmMode;
@@ -112,8 +122,6 @@ describe.each(["mm", "upgradabilityMm"])(
         } catch (e) {
           await initApi();
         }
-        await setupApi();
-        api = await getApi();
         sequencer = await SequencerStaking.getSequencerUser();
         users.push(...setupUsers());
         users.push(sequencer);
@@ -241,7 +249,7 @@ describe.each(["mm", "upgradabilityMm"])(
           if (mmMode === "mm") {
             signer = testsSigner;
           } else {
-            signer = users[3];
+            signer = user;
           }
           const nonce = await getCurrentNonce(signer.keyRingPair.address);
           await signTx(api, extrinsic, signer.keyRingPair, {
