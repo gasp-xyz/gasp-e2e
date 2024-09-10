@@ -8,7 +8,7 @@ import { EthUser } from "../../utils/EthUser";
 import {
   getLastProcessedRequestNumber,
   rolldownDeposit,
-  rolldownWithdraw,
+  Withdraw,
 } from "../../utils/rolldown";
 import { signTx } from "gasp-sdk";
 import { signTxMetamask } from "../../utils/metamask";
@@ -73,7 +73,7 @@ describe("Tests with rolldown functions:", () => {
     await waitForNBlocks(4);
 
     await signTxMetamask(
-      await rolldownWithdraw(testEthUser, 100),
+      await Withdraw(testEthUser, 100),
       testEthUser.ethAddress,
       testEthUser.privateKey,
     );

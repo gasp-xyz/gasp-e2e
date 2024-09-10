@@ -31,7 +31,7 @@ import { User } from "../../utils/User";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { SudoDB } from "../../utils/SudoDB";
-import { RollDown, rolldownWithdraw } from "../../utils/rolldown";
+import { RollDown, Withdraw } from "../../utils/rolldown";
 import { testLog } from "../../utils/Logger";
 import {
   checkMaintenanceStatus,
@@ -155,7 +155,7 @@ describe.each(["mm", "upgradabilityMm"])(
             sequencer,
           ],
           withdraw: [
-            await rolldownWithdraw(
+            await Withdraw(
               users[0],
               BN_HUNDRED,
               tokenAddress.toString(),
