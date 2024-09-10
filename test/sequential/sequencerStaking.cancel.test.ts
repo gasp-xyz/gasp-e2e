@@ -432,10 +432,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     chain,
     updateValue,
   );
-  providingExtrinsic = await SequencerStaking.provideSequencerStaking(
-    (await SequencerStaking.minimalStakeAmount()).muln(2),
-    chain,
-  );
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   const cancelResolutionEvent1 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -480,7 +476,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await waitForNBlocks(disputePeriodLength + 1);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
-  await Sudo.asSudoFinalized(Sudo.sudoAs(testUser1, providingExtrinsic));
   const testUser1RightsStatus = await Rolldown.sequencerRights(
     chain,
     testUser1.keyRingPair.address,
