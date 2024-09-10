@@ -502,7 +502,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
 
   expect(testUser1RightsStatus.readRights.toString()).toBe("1");
-  expect(testUser1RightsStatus.cancelRights.toString()).toBe("2");
   expect(testUser2RightsStatus.readRights.toString()).toBe("1");
+  expect(testUser1RightsStatus.cancelRights.toString()).toBe("2");
   expect(testUser2RightsStatus.cancelRights.toString()).toBe("2");
 });
