@@ -8,6 +8,7 @@ import {
   clickElement,
   elementExists,
   getText,
+  hoverElement,
   isDisplayed,
   waitForElement,
   waitForElementStateInterval,
@@ -18,7 +19,6 @@ import {
 const DIV_WALLET_WRAPPER = "wallet-wrapper";
 const DIV_WALLET_CONNECTED = "wallet-connected";
 const DIV_WALLET_ITEM = "installedWallets-walletCard";
-const DIV_WALLET_WRAPPER_HEADER_ACC = "wallet-wrapper-header-account";
 const BUTTON_WALLET_CONNECT = "wallet-notConnected-cta";
 const BUTTON_WALLET_SETTINGS = "wallet-wrapper-header-settings";
 const MY_TOKENS = "my-tokens";
@@ -27,6 +27,9 @@ const MY_TOKENS_TAB_BUTTON = "My-Tokens-item";
 const MY_TOKENS_ROW_AMOUNT = "token-amount";
 const MY_POSITIONS_TAB_BUTTON = "My-Positions-item";
 const MY_TOKENS_FIAT_VALUE = "fiat-value";
+const DIV_WALLET_STATUS = "wallet-status";
+const DIV_OPEN_WALLET = "open-wallet";
+const DIV_WALLET_STATUS_CONNECTED = "wallet-status-connected";
 
 export class WalletWrapper {
   driver: WebDriver;
@@ -40,19 +43,26 @@ export class WalletWrapper {
     return await isDisplayed(this.driver, walletWrapper);
   }
 
+  async isWalletStatusDisplayed() {
+    const xpath = buildDataTestIdXpath(DIV_WALLET_STATUS);
+    return await isDisplayed(this.driver, xpath);
+  }
+
   async isAccInfoDisplayed(accName: string) {
-    const walletWrapperHeaderAcc =
-      buildDataTestIdXpath(DIV_WALLET_WRAPPER_HEADER_ACC) +
+    const walletStatusAcc =
+      buildDataTestIdXpath(DIV_WALLET_STATUS_CONNECTED) +
       buildXpathByText(accName);
-    return await isDisplayed(this.driver, walletWrapperHeaderAcc);
+    return await isDisplayed(this.driver, walletStatusAcc);
   }
 
   async openWalletConnectionInfo() {
-    const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
+    const walletStatus = buildDataTestIdXpath(DIV_WALLET_STATUS);
     const depositButton = buildXpathByElementText("button", "Deposit");
     const isDepositDisplayed = await isDisplayed(this.driver, depositButton);
     if (!isDepositDisplayed) {
-      await clickElement(this.driver, walletWrapper);
+      await hoverElement(this.driver, walletStatus);
+      const openWalletButton = buildDataTestIdXpath(DIV_OPEN_WALLET);
+      await clickElement(this.driver, openWalletButton);
     }
   }
 
@@ -67,6 +77,13 @@ export class WalletWrapper {
   }
 
   async isWalletConnected() {
+    const walletConnectedContent = buildDataTestIdXpath(
+      DIV_WALLET_STATUS_CONNECTED,
+    );
+    return await elementExists(this.driver, walletConnectedContent);
+  }
+
+  async isWalletDetailsConnected() {
     const walletWrapper = buildDataTestIdXpath(DIV_WALLET_WRAPPER);
     const walletConnectedContent = buildDataTestIdXpath(DIV_WALLET_CONNECTED);
     return await elementExists(
@@ -95,15 +112,9 @@ export class WalletWrapper {
   }
 
   async pickWallet(wallet: string) {
-    const walletButtonXpath = buildXpathByText(wallet);
-    const walletItem = buildDataTestIdXpath(DIV_WALLET_ITEM);
-    await waitForElementStateInterval(
-      this.driver,
-      walletItem + walletButtonXpath,
-      true,
-      6000,
-    );
-    await clickElement(this.driver, walletItem + walletButtonXpath);
+    const walletItem = buildDataTestIdXpath(DIV_WALLET_ITEM + "-" + wallet);
+    await waitForElementStateInterval(this.driver, walletItem, true, 6000);
+    await clickElement(this.driver, walletItem);
   }
 
   async pickMyTokens() {
