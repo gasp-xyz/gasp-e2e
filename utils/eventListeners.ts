@@ -100,6 +100,15 @@ export function filterEventData(
     .map((event) => event.event.toHuman().data);
 }
 
+export function filterZeroEventData(
+  result: MangataGenericEvent[],
+  method: string,
+) {
+  const filteredResult = result.filter((x) => x.method === method);
+  if (filteredResult[0] === undefined){return undefined}else{
+  return (JSON.parse(JSON.stringify(filteredResult[0].event.toHuman().data)));}
+}
+
 export function findEventData(result: MangataGenericEvent[], method: string) {
   return filterEventData(result, method)[0];
 }
@@ -432,4 +441,22 @@ export async function getEventsAt(blockNo: BN) {
   const api = getApi();
   const blockHash = await api.rpc.chain.getBlockHash(blockNo);
   return await api.query.system.events.at(blockHash);
+}
+
+export async function getProvidingSeqStakeData(events: MangataGenericEvent[]) {
+  let isUserJoinedAsSeq: boolean;
+  const eventJoining = filterZeroEventData(events, "SequencerJoinedActiveSet");
+  const eventReserved = filterZeroEventData(events, "Reserved");
+  if (eventJoining !== undefined) {
+    isUserJoinedAsSeq = true;
+  } else {
+    isUserJoinedAsSeq = false;
+  }
+  const userAddress = eventReserved.who;
+  const stakeAmount = (eventReserved.amount).replaceAll(",","");
+  return {
+    isUserJoinedAsSeq: isUserJoinedAsSeq,
+    userAddress: userAddress,
+    userStakeAmount: new BN(stakeAmount),
+  };
 }

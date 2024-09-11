@@ -25,6 +25,7 @@ import {
 import { Sudo } from "../../utils/sudo";
 import {
   ExtrinsicResult,
+  filterZeroEventData,
   waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
@@ -115,7 +116,7 @@ describe("sequencerStaking", () => {
       await SequencerStaking.provideSequencerStaking(
         minToBeSequencer.subn(1234),
         "Ethereum",
-        "StakeOnly",
+        false,
       ),
       notYetSequencer.keyRingPair,
     ).then((events) => {
@@ -221,7 +222,7 @@ describe("sequencerStaking", () => {
       await SequencerStaking.provideSequencerStaking(
         (await SequencerStaking.minimalStakeAmount()).subn(10),
         chain,
-        "StakeOnly",
+        false,
       ),
       user.keyRingPair,
     );
@@ -249,18 +250,12 @@ describe("sequencerStaking", () => {
     await Rolldown.waitForReadRights(user.keyRingPair.address, 50, chain);
     await signTx(api, update, user.keyRingPair).then((events) => {
       const eventResponse = getEventResultFromMangataTx(events);
-      const eventFiltered = events.filter((x) => x.method === "L1ReadStored");
-      expect(eventFiltered[0].event.data[0].toHuman()).toContain(chain);
-      expect(eventFiltered[0].event.data[1].toHuman()).toContain(
-        user.keyRingPair.address,
-      );
-      expect(
-        JSON.parse(eventFiltered[0].event.data[3].toString()).start,
-      ).toEqual(txIndex);
-      expect(JSON.parse(eventFiltered[0].event.data[3].toString()).end).toEqual(
-        txIndex,
-      );
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      const eventFiltered = filterZeroEventData(events, "L1ReadStored");
+      expect(eventFiltered.chain).toEqual(chain);
+      expect(eventFiltered.sequencer).toEqual(user.keyRingPair.address);
+      expect(eventFiltered.range.start).toEqual(txIndex.toString());
+      expect(eventFiltered.range.end).toEqual(txIndex.toString());
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await signTx(
@@ -366,19 +361,11 @@ describe("sequencerStaking", () => {
           .build(),
       ),
     );
-    const eventFiltered = cancelResolution.filter(
-      (x) => x.method === "L1ReadStored",
-    );
-    expect(eventFiltered[0].event.data[0].toHuman()).toContain(chain);
-    expect(eventFiltered[0].event.data[1].toHuman()).toContain(
-      preSetupSequencers.Ethereum,
-    );
-    expect(JSON.parse(eventFiltered[0].event.data[3].toString()).start).toEqual(
-      txIndex,
-    );
-    expect(JSON.parse(eventFiltered[0].event.data[3].toString()).end).toEqual(
-      txIndex,
-    );
+    const eventFiltered = filterZeroEventData(cancelResolution, "L1ReadStored");
+    expect(eventFiltered.chain).toEqual(chain);
+    expect(eventFiltered.sequencer).toEqual( preSetupSequencers.Ethereum);
+    expect(eventFiltered.range.start).toEqual(txIndex.toString());
+    expect(eventFiltered.range.end).toEqual(txIndex.toString());
     await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
 

@@ -4,14 +4,20 @@
  */
 
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
-import { initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  filterZeroEventData,
+  getProvidingSeqStakeData,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { signTx } from "gasp-sdk";
 
 let chain: any;
 let testUser: User;
@@ -32,43 +38,52 @@ beforeEach(async () => {
 });
 
 it("GIVEN User provides a stake by using StakeOnly action THEN User is not a sequencer", async () => {
-  const events = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.provideSequencerStaking(
-        stakeAmount,
-        chain,
-        "StakeOnly",
-      ),
-    ),
+  const events = await signTx(
+    getApi(),
+    await SequencerStaking.provideSequencerStaking(stakeAmount, chain, false),
+    testUser.keyRingPair,
   );
-  const eventJoining = events.filter(
-    (x) => x.method === "SequencerJoinedActiveSet",
-  );
-  const eventReserved = events.filter((x) => x.method === "Reserved");
-  expect(eventJoining[0]).toBeUndefined();
-  expect(eventReserved[0].event.data[1].toHuman()).toContain(
+  const { isUserJoinedAsSeq, userAddress,  userStakeAmount } = await getProvidingSeqStakeData(events);
+  expect(isUserJoinedAsSeq).toBeFalse();
+  expect(userAddress).toEqual(
     testUser.keyRingPair.address,
   );
-  expect(eventReserved[0].event.data[2]).bnEqual(stakeAmount);
+  expect(userStakeAmount).bnGt(await SequencerStaking.minimalStakeAmount());
   const sequencersList = await SequencerStaking.activeSequencers();
   expect(sequencersList.toHuman().Ethereum).not.toContain(
     testUser.keyRingPair.address,
   );
 });
 
-it("GIVEN User provides a stake by using StakeAndJoinActiveSet action THEN User is a sequencer", async () => {
-  const events = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.provideSequencerStaking(
-        stakeAmount,
-        chain,
-        "StakeAndJoinActiveSet",
-      ),
+it("GIVEN User provides a stake by using StakeAndJoinActiveSet action AND his stake < minimalStakeAmount THEN return error", async () => {
+  await signTx(
+    getApi(),
+    await SequencerStaking.provideSequencerStaking(
+      (await SequencerStaking.minimalStakeAmount()).subn(1000),
+      chain,
+      true,
     ),
+    testUser.keyRingPair,
+  ).then((events) => {
+    const eventResponse = getEventResultFromMangataTx(events);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("NotEnoughSequencerStake");
+  });
+  const sequencersList = await SequencerStaking.activeSequencers();
+  expect(sequencersList.toHuman().Ethereum).not.toContain(
+    testUser.keyRingPair.address,
   );
-  await waitSudoOperationSuccess(events, "SudoAsDone");
+});
+
+it("GIVEN User provides a stake by using StakeAndJoinActiveSet action AND his stake > minimalStakeAmount THEN User is a sequencer", async () => {
+  await signTx(
+    getApi(),
+    await SequencerStaking.provideSequencerStaking(stakeAmount, chain, true),
+    testUser.keyRingPair,
+  ).then(async (events) => {
+    const eventResponse = getEventResultFromMangataTx(events);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
   const sequencersList = await SequencerStaking.activeSequencers();
   expect(sequencersList.toHuman().Ethereum).toContain(
     testUser.keyRingPair.address,
@@ -76,28 +91,27 @@ it("GIVEN User provides a stake by using StakeAndJoinActiveSet action THEN User 
 });
 
 it("GIVEN User provides a stake by using StakeOnly action And User use rejoinActiveSequencer function THEN User is a sequencer", async () => {
-  const provideStakingEvent = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.provideSequencerStaking(
-        stakeAmount,
-        chain,
-        "StakeOnly",
-      ),
-    ),
-  );
-  await waitSudoOperationSuccess(provideStakingEvent, "SudoAsDone");
+  await signTx(
+    getApi(),
+    await SequencerStaking.provideSequencerStaking(stakeAmount, chain, false),
+    testUser.keyRingPair,
+  ).then((events) => {
+    const eventResponse = getEventResultFromMangataTx(events);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
   const sequencersListBefore = await SequencerStaking.activeSequencers();
   expect(sequencersListBefore.toHuman().Ethereum).not.toContain(
     testUser.keyRingPair.address,
   );
-  const rejoinEvent = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.rejoinActiveSequencers(chain),
-    ),
-  );
-  await waitSudoOperationSuccess(rejoinEvent, "SudoAsDone");
+
+  await signTx(
+    getApi(),
+    await SequencerStaking.rejoinActiveSequencers(chain),
+    testUser.keyRingPair,
+  ).then((events) => {
+    const eventResponse = getEventResultFromMangataTx(events);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
   const sequencersListAfter = await SequencerStaking.activeSequencers();
   expect(sequencersListAfter.toHuman().Ethereum).toContain(
     testUser.keyRingPair.address,
@@ -105,54 +119,47 @@ it("GIVEN User provides a stake by using StakeOnly action And User use rejoinAct
 });
 
 it("Happy path - A user can join and leave sequencing", async () => {
-  const events = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.provideSequencerStaking(
-        stakeAmount,
-        chain,
-        "StakeAndJoinActiveSet",
-      ),
-    ),
+  const events = await signTx(
+    getApi(),
+    await SequencerStaking.provideSequencerStaking(stakeAmount, chain),
+    testUser.keyRingPair,
   );
-  const eventJoining = events.filter(
-    (x) => x.method === "SequencerJoinedActiveSet",
+  const eventFiltered = filterZeroEventData(events, "StakeProvided");
+  expect(eventFiltered.chain).toEqual(chain);
+  expect(new BN(eventFiltered.addedStake.replaceAll(",",""))).bnEqual(
+    stakeAmount
   );
-  const eventReserved = events.filter((x) => x.method === "Reserved");
-  expect(eventJoining[0].event.data[1].toHuman()).toContain(
+  const { isUserJoinedAsSeq, userAddress,  userStakeAmount } = await getProvidingSeqStakeData(events);
+  expect(isUserJoinedAsSeq).toBeTrue();
+  expect(userAddress).toEqual(
     testUser.keyRingPair.address,
   );
-  expect(eventReserved[0].event.data[2]).bnGt(
-    await SequencerStaking.minimalStakeAmount(),
-  );
+  expect(userStakeAmount).bnGt(await SequencerStaking.minimalStakeAmount());
   const sequencersBefore = await SequencerStaking.activeSequencers();
   expect(sequencersBefore.toHuman().Ethereum).toContain(
     testUser.keyRingPair.address,
   );
 
-  await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.leaveSequencerStaking(chain),
-    ),
+  await signTx(
+    getApi(),
+    await SequencerStaking.leaveSequencerStaking(chain),
+    testUser.keyRingPair,
   ).then(async (events) => {
-    const eventFiltered = events.filter(
-      (x) => x.method === "SequencersRemovedFromActiveSet",
-    );
-    expect(eventFiltered[0].event.data[0].toHuman()).toContain(chain);
-    expect(eventFiltered[0].event.data[1].toHuman()).toContain(
+    const eventFiltered = filterZeroEventData(events, "SequencersRemovedFromActiveSet");
+    expect(eventFiltered[0]).toEqual(chain);
+    expect(eventFiltered[1][0]).toEqual(
       testUser.keyRingPair.address,
     );
   });
 
-  await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.unstake(chain),
-    ),
+  await signTx(
+    getApi(),
+    await SequencerStaking.unstake(chain),
+    testUser.keyRingPair,
   ).then(async (events) => {
-    const eventFiltered = events.filter((x) => x.method === "Unreserved");
-    expect(eventFiltered[0].event.data[2]).bnGt(
+    const eventFiltered = filterZeroEventData(events, "Unreserved");
+    expect(eventFiltered.who).toEqual( testUser.keyRingPair.address);
+    expect(new BN(eventFiltered.amount.replaceAll(",",""))).bnGt(
       await SequencerStaking.minimalStakeAmount(),
     );
   });
