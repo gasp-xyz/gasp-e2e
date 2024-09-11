@@ -27,7 +27,7 @@ let testUser1: User;
 let testUser2: User;
 let testUser2Address: string;
 let disputePeriodLength: number;
-let providingExtrinsic: any;
+let stakeAndJoinExtrinsic: any;
 
 beforeAll(async () => {
   await initApi();
@@ -42,15 +42,15 @@ beforeEach(async () => {
   await SequencerStaking.removeAllSequencers();
   chain = "Ethereum";
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  providingExtrinsic = await SequencerStaking.provideSequencerStaking(
+  stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
     minToBeSequencer.addn(1000),
     chain,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
-    Sudo.sudoAs(testUser1, providingExtrinsic),
-    Sudo.sudoAs(testUser2, providingExtrinsic),
+    Sudo.sudoAs(testUser1, stakeAndJoinExtrinsic),
+    Sudo.sudoAs(testUser2, stakeAndJoinExtrinsic),
   );
   const sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(
@@ -235,7 +235,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   const [judge] = setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(judge),
-    Sudo.sudoAs(judge, providingExtrinsic),
+    Sudo.sudoAs(judge, stakeAndJoinExtrinsic),
   );
 
   const {
@@ -350,7 +350,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
   );
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  providingExtrinsic = await SequencerStaking.provideSequencerStaking(
+  stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).muln(2),
     chain,
   );
@@ -363,7 +363,14 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
         .on(chain)
         .build(),
     ),
-    Sudo.sudoAs(testUser2, providingExtrinsic),
+    Sudo.sudoAs(
+      testUser2,
+      await SequencerStaking.provideSequencerStaking(
+        (await SequencerStaking.minimalStakeAmount()).muln(2),
+        chain,
+        "StakeOnly",
+      ),
+    ),
   );
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
@@ -391,7 +398,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   const [judge] = setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(judge),
-    Sudo.sudoAs(judge, providingExtrinsic),
+    Sudo.sudoAs(judge, stakeAndJoinExtrinsic),
   );
 
   const { txIndex: txIndex1, reqIdCanceled: reqIdCanceled1 } =
@@ -424,10 +431,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     chain,
     updateValue,
   );
-  providingExtrinsic = await SequencerStaking.provideSequencerStaking(
-    (await SequencerStaking.minimalStakeAmount()).muln(2),
-    chain,
-  );
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   const cancelResolutionEvent1 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -437,7 +440,14 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
         .on(chain)
         .build(),
     ),
-    Sudo.sudoAs(testUser2, providingExtrinsic),
+    Sudo.sudoAs(
+      testUser2,
+      await SequencerStaking.provideSequencerStaking(
+        (await SequencerStaking.minimalStakeAmount()).muln(2),
+        chain,
+        "StakeOnly",
+      ),
+    ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -452,7 +462,14 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
         .on(chain)
         .build(),
     ),
-    Sudo.sudoAs(testUser1, providingExtrinsic),
+    Sudo.sudoAs(
+      testUser1,
+      await SequencerStaking.provideSequencerStaking(
+        (await SequencerStaking.minimalStakeAmount()).muln(2),
+        chain,
+        "StakeOnly",
+      ),
+    ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -464,7 +481,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   );
   const testUser2RightsStatus = await Rolldown.sequencerRights(
     chain,
-    testUser2.keyRingPair.address,
+    testUser1.keyRingPair.address,
   );
   const testUser1PenaltyValue = testUser1
     .getAsset(GASP_ASSET_ID)
@@ -485,6 +502,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
 
   expect(testUser1RightsStatus.readRights.toString()).toBe("1");
   expect(testUser2RightsStatus.readRights.toString()).toBe("1");
-  expect(testUser2RightsStatus.cancelRights.toString()).toBe("2");
   expect(testUser1RightsStatus.cancelRights.toString()).toBe("2");
+  expect(testUser2RightsStatus.cancelRights.toString()).toBe("2");
 });
