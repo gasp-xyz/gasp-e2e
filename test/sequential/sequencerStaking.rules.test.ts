@@ -115,6 +115,7 @@ describe("sequencerStaking", () => {
       await SequencerStaking.provideSequencerStaking(
         minToBeSequencer.subn(1234),
         "Ethereum",
+        "StakeOnly",
       ),
       notYetSequencer.keyRingPair,
     ).then((events) => {
@@ -220,6 +221,7 @@ describe("sequencerStaking", () => {
       await SequencerStaking.provideSequencerStaking(
         (await SequencerStaking.minimalStakeAmount()).subn(10),
         chain,
+        "StakeOnly",
       ),
       user.keyRingPair,
     );
@@ -247,6 +249,17 @@ describe("sequencerStaking", () => {
     await Rolldown.waitForReadRights(user.keyRingPair.address, 50, chain);
     await signTx(api, update, user.keyRingPair).then((events) => {
       const eventResponse = getEventResultFromMangataTx(events);
+      const eventFiltered = events.filter((x) => x.method === "L1ReadStored");
+      expect(eventFiltered[0].event.data[0].toHuman()).toContain(chain);
+      expect(eventFiltered[0].event.data[1].toHuman()).toContain(
+        user.keyRingPair.address,
+      );
+      expect(
+        JSON.parse(eventFiltered[0].event.data[3].toString()).start,
+      ).toEqual(txIndex);
+      expect(JSON.parse(eventFiltered[0].event.data[3].toString()).end).toEqual(
+        txIndex,
+      );
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
@@ -352,6 +365,19 @@ describe("sequencerStaking", () => {
           .on(chain)
           .build(),
       ),
+    );
+    const eventFiltered = cancelResolution.filter(
+      (x) => x.method === "L1ReadStored",
+    );
+    expect(eventFiltered[0].event.data[0].toHuman()).toContain(chain);
+    expect(eventFiltered[0].event.data[1].toHuman()).toContain(
+      preSetupSequencers.Ethereum,
+    );
+    expect(JSON.parse(eventFiltered[0].event.data[3].toString()).start).toEqual(
+      txIndex,
+    );
+    expect(JSON.parse(eventFiltered[0].event.data[3].toString()).end).toEqual(
+      txIndex,
     );
     await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());

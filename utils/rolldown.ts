@@ -40,7 +40,7 @@ export async function getLastProcessedRequestNumber() {
   return +value;
 }
 
-export async function rolldownWithdraw(
+export async function Withdraw(
   EthUser: EthUser | User,
   amountValue: BN | number,
   tokenAddress: string = "",
@@ -70,20 +70,5 @@ export class RollDown {
       return sdkApi.tx.rolldown.forceCancelRequestsFromL1(chain, requestNumber);
     }
     return sdkApi.tx.rolldown.cancelRequestsFromL1(chain, requestNumber);
-  }
-  static async withdraw(
-    EthUser: EthUser | User,
-    amountValue: BN | number,
-    tokenAddress: string = "",
-    chainName: ChainName = "Ethereum",
-  ) {
-    return rolldownWithdraw(EthUser, amountValue, tokenAddress, chainName);
-  }
-  static async deposit(
-    requestNumber: number,
-    ethAddress: string,
-    amountValue: number,
-  ) {
-    return rolldownDeposit(requestNumber, ethAddress, amountValue);
   }
 }

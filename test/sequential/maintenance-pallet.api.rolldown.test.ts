@@ -31,7 +31,7 @@ import { User } from "../../utils/User";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { SudoDB } from "../../utils/SudoDB";
-import { RollDown, rolldownWithdraw } from "../../utils/rolldown";
+import { RollDown, Withdraw } from "../../utils/rolldown";
 import { testLog } from "../../utils/Logger";
 import {
   checkMaintenanceStatus,
@@ -40,6 +40,7 @@ import {
 import { getCurrentNonce } from "../../utils/tx";
 import { waitForNBlocks } from "../../utils/utils";
 import { System } from "../../utils/System";
+import { Assets } from "../../utils/Assets";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -48,6 +49,7 @@ const users: User[] = [];
 let api: ApiPromise;
 let tests: { [K: string]: [Extrinsic, User] } = {};
 let sequencer: User;
+let user: User;
 const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 async function setupMm() {
@@ -104,6 +106,14 @@ describe.each(["mm", "upgradabilityMm"])(
   (mmMode) => {
     let previous = "";
     // hacky trick to avoid double setup
+
+    beforeAll(async () => {
+      await setupApi();
+      api = await getApi();
+      [user] = setupUsers();
+      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
+    });
+
     beforeEach(async () => {
       if (previous !== mmMode) {
         previous = mmMode;
@@ -112,8 +122,6 @@ describe.each(["mm", "upgradabilityMm"])(
         } catch (e) {
           await initApi();
         }
-        await setupApi();
-        api = await getApi();
         sequencer = await SequencerStaking.getSequencerUser();
         users.push(...setupUsers());
         users.push(sequencer);
@@ -155,7 +163,7 @@ describe.each(["mm", "upgradabilityMm"])(
             sequencer,
           ],
           withdraw: [
-            await rolldownWithdraw(
+            await Withdraw(
               users[0],
               BN_HUNDRED,
               tokenAddress.toString(),
@@ -236,7 +244,13 @@ describe.each(["mm", "upgradabilityMm"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);
-          const [extrinsic, signer] = tests[testName];
+          let signer: User;
+          const [extrinsic, testsSigner] = tests[testName];
+          if (mmMode === "mm") {
+            signer = testsSigner;
+          } else {
+            signer = user;
+          }
           const nonce = await getCurrentNonce(signer.keyRingPair.address);
           await signTx(api, extrinsic, signer.keyRingPair, {
             nonce: nonce,

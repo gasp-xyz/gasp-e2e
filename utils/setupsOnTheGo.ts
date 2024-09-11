@@ -50,7 +50,7 @@ import { MPL } from "./MPL";
 import {
   getLastProcessedRequestNumber,
   rolldownDeposit,
-  rolldownWithdraw,
+  Withdraw,
 } from "./rolldown";
 import { EthUser } from "./EthUser";
 import { signTxMetamask } from "./metamask";
@@ -1802,7 +1802,7 @@ export async function withdrawToL1(ethPrivateKey: string, amountValue: number) {
   const testEthUser = new EthUser(keyring, ethPrivateKey);
 
   await signTxMetamask(
-    await rolldownWithdraw(testEthUser, 100),
+    await Withdraw(testEthUser, 100),
     testEthUser.ethAddress,
     testEthUser.privateKey,
   );
