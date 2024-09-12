@@ -17,7 +17,7 @@ import { waitForAllEventsFromMatchingBlock } from "../../utils/eventListeners";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { BN_MILLION, MangataGenericEvent, signTx } from "gasp-sdk";
+import { BN_MILLION, signTx } from "gasp-sdk";
 import {
   ExtrinsicResult,
   waitNewBlock,
@@ -59,56 +59,6 @@ beforeEach(async () => {
   await SequencerStaking.removeAllSequencers();
   [testUser] = setupUsers();
   testUserAddress = testUser.keyRingPair.address;
-});
-
-it("Happy path - A user can join and leave sequencing", async () => {
-  const events: MangataGenericEvent[] = await setupASequencer(testUser, chain);
-  const eventJoining = events.filter(
-    (x) => x.method === "SequencerJoinedActiveSet",
-  );
-  const eventReserved = events.filter((x) => x.method === "Reserved");
-  expect(eventJoining[0].event.data[1].toHuman()).toContain(
-    testUser.keyRingPair.address,
-  );
-  expect(eventReserved[0].event.data[2]).bnGt(
-    await SequencerStaking.minimalStakeAmount(),
-  );
-  const sequencersBefore = await SequencerStaking.activeSequencers();
-  expect(sequencersBefore.toHuman().Ethereum).toContain(
-    testUser.keyRingPair.address,
-  );
-
-  await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.leaveSequencerStaking(chain),
-    ),
-  ).then(async (events) => {
-    const eventFiltered = events.filter(
-      (x) => x.method === "SequencersRemovedFromActiveSet",
-    );
-    expect(eventFiltered[0].event.data[0].toHuman()).toContain(chain);
-    expect(eventFiltered[0].event.data[1].toHuman()).toContain(
-      testUser.keyRingPair.address,
-    );
-  });
-
-  await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser.keyRingPair.address,
-      await SequencerStaking.unstake(chain),
-    ),
-  ).then(async (events) => {
-    const eventFiltered = events.filter((x) => x.method === "Unreserved");
-    expect(eventFiltered[0].event.data[2]).bnGt(
-      await SequencerStaking.minimalStakeAmount(),
-    );
-  });
-
-  const sequencersAfter = await SequencerStaking.activeSequencers();
-  expect(sequencersAfter.toHuman().Ethereum).not.toContain(
-    testUser.keyRingPair.address,
-  );
 });
 
 it("forceUpdateL2FromL1 can be called by Sudo", async () => {

@@ -368,7 +368,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
       await SequencerStaking.provideSequencerStaking(
         (await SequencerStaking.minimalStakeAmount()).muln(2),
         chain,
-        "StakeOnly",
+        false,
       ),
     ),
   );
@@ -445,7 +445,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       await SequencerStaking.provideSequencerStaking(
         (await SequencerStaking.minimalStakeAmount()).muln(2),
         chain,
-        "StakeOnly",
+        false,
       ),
     ),
   );
@@ -467,7 +467,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       await SequencerStaking.provideSequencerStaking(
         (await SequencerStaking.minimalStakeAmount()).muln(2),
         chain,
-        "StakeOnly",
+        false,
       ),
     ),
   );
