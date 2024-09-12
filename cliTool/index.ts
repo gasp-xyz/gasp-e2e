@@ -174,7 +174,7 @@ async function app(): Promise<any> {
           });
       }
       if (answers.option.includes("create10sequencers")) {
-        return inquirer
+        await inquirer
           .prompt([
             {
               type: "input",
@@ -185,6 +185,7 @@ async function app(): Promise<any> {
           ])
           .then(async (answers: { network: string }) => {
             await create10sequencers(answers.network.toString());
+            return;
           });
       }
       if (answers.option.includes("getPolkAddress")) {
