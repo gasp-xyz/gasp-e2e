@@ -127,14 +127,14 @@ jobs:
           dest: reports.zip
 
       - name: Archive report files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: ReportData ${{ matrix.command }}
           path: reports.zip
 
       - name: Archive report files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: TestReport ${{ matrix.command }}
