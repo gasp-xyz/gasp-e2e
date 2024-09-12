@@ -24,10 +24,10 @@ export class SequencerStaking {
   static async provideSequencerStaking(
     amount: BN = BN_ZERO,
     chainName: ChainName = "Ethereum",
-    isJoinActiveSet = true,
+    stakeAndJoin = true,
   ) {
     let stakeAction: any;
-    if (isJoinActiveSet === true) {
+    if (stakeAndJoin === true) {
       stakeAction = "StakeAndJoinActiveSet";
     } else {
       stakeAction = "StakeOnly";

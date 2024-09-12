@@ -363,7 +363,7 @@ describe("sequencerStaking", () => {
     );
     const eventFiltered = filterZeroEventData(cancelResolution, "L1ReadStored");
     expect(eventFiltered.chain).toEqual(chain);
-    expect(eventFiltered.sequencer).toEqual( preSetupSequencers.Ethereum);
+    expect(eventFiltered.sequencer).toEqual(preSetupSequencers.Ethereum);
     expect(eventFiltered.range.start).toEqual(txIndex.toString());
     expect(eventFiltered.range.end).toEqual(txIndex.toString());
     await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");

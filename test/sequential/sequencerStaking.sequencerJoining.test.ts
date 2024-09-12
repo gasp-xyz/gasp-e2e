@@ -18,6 +18,7 @@ import {
 import { BN } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { signTx } from "gasp-sdk";
+import { stringToBN } from "../../utils/utils";
 
 let chain: any;
 let testUser: User;
@@ -43,11 +44,10 @@ it("GIVEN User provides a stake by using StakeOnly action THEN User is not a seq
     await SequencerStaking.provideSequencerStaking(stakeAmount, chain, false),
     testUser.keyRingPair,
   );
-  const { isUserJoinedAsSeq, userAddress,  userStakeAmount } = await getProvidingSeqStakeData(events);
+  const { isUserJoinedAsSeq, userAddress, userStakeAmount } =
+    await getProvidingSeqStakeData(events);
   expect(isUserJoinedAsSeq).toBeFalse();
-  expect(userAddress).toEqual(
-    testUser.keyRingPair.address,
-  );
+  expect(userAddress).toEqual(testUser.keyRingPair.address);
   expect(userStakeAmount).bnGt(await SequencerStaking.minimalStakeAmount());
   const sequencersList = await SequencerStaking.activeSequencers();
   expect(sequencersList.toHuman().Ethereum).not.toContain(
@@ -126,14 +126,11 @@ it("Happy path - A user can join and leave sequencing", async () => {
   );
   const eventFiltered = filterZeroEventData(events, "StakeProvided");
   expect(eventFiltered.chain).toEqual(chain);
-  expect(new BN(eventFiltered.addedStake.replaceAll(",",""))).bnEqual(
-    stakeAmount
-  );
-  const { isUserJoinedAsSeq, userAddress,  userStakeAmount } = await getProvidingSeqStakeData(events);
+  expect(stringToBN(eventFiltered.addedStake)).bnEqual(stakeAmount);
+  const { isUserJoinedAsSeq, userAddress, userStakeAmount } =
+    await getProvidingSeqStakeData(events);
   expect(isUserJoinedAsSeq).toBeTrue();
-  expect(userAddress).toEqual(
-    testUser.keyRingPair.address,
-  );
+  expect(userAddress).toEqual(testUser.keyRingPair.address);
   expect(userStakeAmount).bnGt(await SequencerStaking.minimalStakeAmount());
   const sequencersBefore = await SequencerStaking.activeSequencers();
   expect(sequencersBefore.toHuman().Ethereum).toContain(
@@ -145,11 +142,12 @@ it("Happy path - A user can join and leave sequencing", async () => {
     await SequencerStaking.leaveSequencerStaking(chain),
     testUser.keyRingPair,
   ).then(async (events) => {
-    const eventFiltered = filterZeroEventData(events, "SequencersRemovedFromActiveSet");
-    expect(eventFiltered[0]).toEqual(chain);
-    expect(eventFiltered[1][0]).toEqual(
-      testUser.keyRingPair.address,
+    const eventFiltered = filterZeroEventData(
+      events,
+      "SequencersRemovedFromActiveSet",
     );
+    expect(eventFiltered[0]).toEqual(chain);
+    expect(eventFiltered[1][0]).toEqual(testUser.keyRingPair.address);
   });
 
   await signTx(
@@ -158,8 +156,8 @@ it("Happy path - A user can join and leave sequencing", async () => {
     testUser.keyRingPair,
   ).then(async (events) => {
     const eventFiltered = filterZeroEventData(events, "Unreserved");
-    expect(eventFiltered.who).toEqual( testUser.keyRingPair.address);
-    expect(new BN(eventFiltered.amount.replaceAll(",",""))).bnGt(
+    expect(eventFiltered.who).toEqual(testUser.keyRingPair.address);
+    expect(stringToBN(eventFiltered.amount)).bnGt(
       await SequencerStaking.minimalStakeAmount(),
     );
   });
