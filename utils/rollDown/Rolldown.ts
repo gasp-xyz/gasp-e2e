@@ -218,6 +218,25 @@ export class Rolldown {
     );
     return JSON.parse(JSON.stringify(waitingResolution));
   }
+
+  static async getL2Request(
+    idNumber: number,
+    chain = "Ethereum",
+    originValue = "L2",
+  ) {
+    setupUsers();
+    const api = getApi();
+    const l2Request = JSON.parse(
+      JSON.stringify(
+        await api.query.rolldown.l2Requests(chain, {
+          origin: originValue,
+          id: idNumber,
+        }),
+      ),
+    );
+
+    return l2Request[0];
+  }
 }
 export class L2Update {
   api: ApiPromise;
