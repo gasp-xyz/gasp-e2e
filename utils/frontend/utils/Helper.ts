@@ -251,6 +251,14 @@ export async function clickElement(driver: WebDriver, xpath: string) {
   await element.click();
 }
 
+export async function hoverElement(driver: WebDriver, xpath: string) {
+  await waitForElement(driver, xpath);
+  const element = await driver.findElement(By.xpath(xpath));
+  await driver.wait(until.elementIsVisible(element), timeOut);
+  const actions = driver.actions({ async: true });
+  await actions.move({ origin: element }).perform();
+}
+
 export async function scrollIntoView(driver: WebDriver, xpath: string) {
   await waitForElement(driver, xpath);
   const element = await driver.findElement(By.xpath(xpath));
