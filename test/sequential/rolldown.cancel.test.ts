@@ -134,7 +134,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
   expect(updaterRightsStatus.cancelRights.toString()).toBe("1");
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   //we approve the cancellation
-  await Rolldown.waitForReadRights(testUser2Address);
+  await Rolldown.waitForReadRights(testUser2Address, 50, chain);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser2Address,
@@ -153,7 +153,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
   const activeSequencers = (
     await SequencerStaking.activeSequencers()
   ).toHuman();
-  expect(activeSequencers.Ethereum).not.toContain(
+  expect(activeSequencers.Arbitrum).not.toContain(
     testUser1.keyRingPair.address,
   );
   expect(updaterRightsStatus.cancelRights.toString()).toBe("0");
