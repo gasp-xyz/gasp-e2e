@@ -11,7 +11,6 @@ import {
   L2Update,
   Rolldown,
   createAnUpdate,
-  createAnUpdateAndCancelIt,
   leaveSequencing,
 } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, signTx } from "gasp-sdk";
@@ -389,79 +388,6 @@ describe("sequencerStaking", () => {
     expect(otherSequencerStatus.readRights.toString()).toBe("1");
     //the other sequencer got kicked, this must be zero, since it is the only sequencer
     expect(otherSequencerStatus.cancelRights.toString()).toBe("0");
-  });
-
-  it("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
-    const chain = "Arbitrum";
-    const notYetSequencer = await findACollatorButNotSequencerUser();
-    const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    await signTx(
-      await getApi(),
-      await SequencerStaking.provideSequencerStaking(
-        minToBeSequencer.addn(1234),
-        "Arbitrum",
-      ),
-      notYetSequencer.keyRingPair,
-    ).then((events) => {
-      expectExtrinsicSucceed(events);
-    });
-    const sequencers = await SequencerStaking.activeSequencers();
-    expect(sequencers.toHuman().Arbitrum).toContain(
-      notYetSequencer.keyRingPair.address,
-    );
-    const canceler = preSetupSequencers.Arbitrum;
-    const seq = notYetSequencer;
-    const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
-      seq,
-      canceler,
-      chain,
-    );
-    await signTx(
-      api,
-      await SequencerStaking.leaveSequencerStaking("Arbitrum"),
-      seq.keyRingPair,
-    ).then((events) => {
-      expectExtrinsicSucceed(events);
-    });
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    await signTx(
-      api,
-      await SequencerStaking.unstake("Arbitrum"),
-      seq.keyRingPair,
-    ).then((events) => {
-      const res = expectExtrinsicFail(events);
-      expect(res.data.toString()).toContain(
-        "SequencerLastUpdateStillInDisputePeriod",
-      );
-    });
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    await Rolldown.waitForReadRights(canceler, 50, "Arbitrum");
-    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-    const cancelResolutionEvents = await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        canceler,
-        new L2Update(api)
-          .withCancelResolution(txIndex, reqIdCanceled, false)
-          .on("Arbitrum")
-          .build(),
-      ),
-    );
-    await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-
-    //then the user must be able to unstake and leave
-    await signTx(
-      api,
-      await SequencerStaking.unstake("Arbitrum"),
-      seq.keyRingPair,
-    ).then((events) => {
-      expectExtrinsicSucceed(events);
-    });
-    const res = await SequencerStaking.sequencerStake(
-      seq.keyRingPair.address,
-      "Arbitrum",
-    );
-    expect(res.toHuman()).toBe("0");
   });
 
   //TODO- Add a test when collating is not required.
