@@ -1,6 +1,6 @@
 /*
  *
- * @group L1RolldownUpdates
+ * @group rolldown
  */
 
 import {

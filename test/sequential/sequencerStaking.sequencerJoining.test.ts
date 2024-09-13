@@ -1,6 +1,6 @@
 /*
  *
- * @group L1RolldownUpdates
+ * @group sequencerStaking
  */
 
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
