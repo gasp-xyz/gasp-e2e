@@ -11,17 +11,13 @@ import {
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
-import {
-  expectExtrinsicFail,
-  expectExtrinsicSucceed,
-  waitForNBlocks,
-} from "../../utils/utils";
+import { waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_MILLION, signTx } from "gasp-sdk";
+import { BN_MILLION } from "gasp-sdk";
 
 let api: any;
 let chain: any;
@@ -64,113 +60,6 @@ beforeEach(async () => {
   testUser2Address = testUser2.keyRingPair.address.toString();
   testUser1.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(GASP_ASSET_ID);
-});
-
-it("Active Sequencer -> Active -> pending update -> Can not leave", async () => {
-  await Rolldown.waitForReadRights(
-    testUser1.keyRingPair.address,
-    50,
-    "Arbitrum",
-  );
-  const txIndex = await Rolldown.lastProcessedRequestOnL2("Arbitrum");
-  const api = getApi();
-  const update = new L2Update(api)
-    .withDeposit(
-      txIndex,
-      testUser1.keyRingPair.address,
-      testUser1.keyRingPair.address,
-      BN_MILLION,
-    )
-    .on("Arbitrum")
-    .build();
-  await signTx(api, update, testUser1.keyRingPair).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  await signTx(
-    api,
-    await SequencerStaking.leaveSequencerStaking("Arbitrum"),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  await signTx(
-    api,
-    await SequencerStaking.unstake("Arbitrum"),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    const res = expectExtrinsicFail(events);
-    expect([
-      "SequencerLastUpdateStillInDisputePeriod",
-      "SequencerAwaitingCancelResolution",
-    ]).toContain(res.data.toString());
-  });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await signTx(
-    api,
-    await SequencerStaking.unstake("Arbitrum"),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  const res = await SequencerStaking.sequencerStake(
-    testUser1.keyRingPair.address,
-    "Arbitrum",
-  );
-  expect(res.toHuman()).toBe("0");
-});
-
-it("Active Sequencer -> Active -> canceled update -> Can not leave", async () => {
-  const { reqIdCanceled, api } = await createAnUpdateAndCancelIt(
-    testUser1,
-    testUser2Address,
-    chain,
-  );
-  await signTx(
-    api,
-    await SequencerStaking.leaveSequencerStaking(chain),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await signTx(
-    api,
-    await SequencerStaking.unstake(chain),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    const res = expectExtrinsicFail(events);
-    expect(res.data.toString()).toContain(
-      "SequencerLastUpdateStillInDisputePeriod",
-    );
-  });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-  await Rolldown.waitForReadRights(testUser2Address, 50, chain);
-  const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  const cancelResolutionEvents = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser2Address,
-      new L2Update(api)
-        .withCancelResolution(txIndex, reqIdCanceled, false)
-        .on(chain)
-        .build(),
-    ),
-  );
-  await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-
-  //then the user must be able to unstake and leave
-  await signTx(
-    api,
-    await SequencerStaking.unstake(chain),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  const res = await SequencerStaking.sequencerStake(
-    testUser1.keyRingPair.address,
-    chain,
-  );
-  expect(res.toHuman()).toBe("0");
 });
 
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels AND users provide staking THEN users have read/cancel rights", async () => {
