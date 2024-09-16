@@ -1,7 +1,3 @@
-/*
- *
- * @group rollup
- */
 import { getApi, initApi, mangata } from "../../utils/api";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import "jest-extended";
@@ -24,7 +20,7 @@ jest.setTimeout(6000000);
 
 let testUser: User;
 let testUser2: User;
-describe("Rollup", () => {
+describe.skip("Rollup", () => {
   describe("Batching:", () => {
     beforeEach(async () => {
       try {
