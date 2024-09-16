@@ -8,7 +8,11 @@ import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
 import { getEventErrorFromSudo } from "./txHandler";
 import { User } from "./User";
-import { getEnvironmentRequiredVars, getThirdPartyRewards } from "./utils";
+import {
+  getEnvironmentRequiredVars,
+  getThirdPartyRewards,
+  stringToBN,
+} from "./utils";
 import { Codec } from "@polkadot/types/types";
 import { Call } from "@polkadot/types/interfaces";
 import { Option } from "@polkadot/types-codec";
@@ -98,6 +102,18 @@ export function filterEventData(
   return result
     .filter((event) => `${event.section}.${event.method}` === method)
     .map((event) => event.event.toHuman().data);
+}
+
+export function filterZeroEventData(
+  result: MangataGenericEvent[],
+  method: string,
+) {
+  const filteredResult = result.filter((x) => x.method === method);
+  if (filteredResult[0] === undefined) {
+    return undefined;
+  } else {
+    return JSON.parse(JSON.stringify(filteredResult[0].event.toHuman().data));
+  }
 }
 
 export function findEventData(result: MangataGenericEvent[], method: string) {
@@ -432,4 +448,22 @@ export async function getEventsAt(blockNo: BN) {
   const api = getApi();
   const blockHash = await api.rpc.chain.getBlockHash(blockNo);
   return await api.query.system.events.at(blockHash);
+}
+
+export async function getProvidingSeqStakeData(events: MangataGenericEvent[]) {
+  let isUserJoinedAsSeq: boolean;
+  const eventJoining = filterZeroEventData(events, "SequencerJoinedActiveSet");
+  const eventReserved = filterZeroEventData(events, "Reserved");
+  if (eventJoining !== undefined) {
+    isUserJoinedAsSeq = true;
+  } else {
+    isUserJoinedAsSeq = false;
+  }
+  const userAddress = eventReserved.who;
+  const stakeAmount = stringToBN(eventReserved.amount);
+  return {
+    isUserJoinedAsSeq: isUserJoinedAsSeq,
+    userAddress: userAddress,
+    userStakeAmount: new BN(stakeAmount),
+  };
 }
