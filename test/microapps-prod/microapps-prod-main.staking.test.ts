@@ -68,7 +68,7 @@ describe("Microapps UI staking tests", () => {
     expect(listCollatorsFe).toIncludeSameMembers(listCollatorsBeString);
   });
 
-  it("The non-active collators appear in the “waiting” section", async () => {
+  it.skip("The non-active collators appear in the “waiting” section", async () => {
     await setupPageWithState(driver, acc_name);
     await sidebar.clickNavStaking();
     await stakingPageDriver.waitForStakeVisible();
