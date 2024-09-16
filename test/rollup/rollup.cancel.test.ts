@@ -5,28 +5,23 @@
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import "jest-extended";
-import { testLog } from "../../utils/Logger";
-import {
-  depositAndWait,
-  getBalance,
-  setupEthUser,
-} from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
-import { signTxMetamask } from "../../utils/metamask";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { Sudo } from "../../utils/sudo";
-import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
 import { User } from "../../utils/User";
-import { getL1 } from "../../utils/rollup/l1s";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
-import { signTx } from "gasp-sdk";
+import { MangataGenericEvent, signTx } from "gasp-sdk";
+import { createAnUpdate, Rolldown } from "../../utils/rollDown/Rolldown";
+import { expectExtrinsicSucceed, waitForNBlocks } from "../../utils/utils";
+import { waitForEvents } from "../../utils/eventListeners";
+import { Assets } from "../../utils/Assets";
+import { Sudo } from "../../utils/sudo";
+import { nToBigInt } from "@polkadot/util";
 
 let user: User;
 jest.setTimeout(600000);
 
 describe("Rollup", () => {
-  describe("ETH Deposits & withdraws", () => {
+  describe("Sequencer monitors updates O_o", () => {
     beforeEach(async () => {
       try {
         getApi();
@@ -37,23 +32,50 @@ describe("Rollup", () => {
       [user] = setupUsers();
       const keyRing = new Keyring({ type: "ethereum" });
       user = new User(keyRing);
-      const params = getL1("EthAnvil");
-      await setupEthUser(
-        user,
-        params?.contracts.dummyErc20.address!,
-        params?.contracts.rollDown.address!,
-        112233445566,
-      );
+      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
     });
 
-    test("A sequencer who creates a fake deposit, is slashed", async () => {
+    test("A sequencer who creates a fake deposit, gets slashed - - -  ╾━╤デ╦︻", async () => {
       const newSequencer = user;
-      const events = await signTx(
-        await getApi(),
-        await SequencerStaking.provideSequencerStaking(),
+      await signTx(
+        getApi(),
+        await SequencerStaking.provideSequencerStaking(
+          (await SequencerStaking.minimalStakeAmount()).addn(1000),
+        ),
+        newSequencer.keyRingPair,
+      ).then(async (events) => {
+        expectExtrinsicSucceed(events);
+      });
+
+      await Rolldown.waitForReadRights(newSequencer.keyRingPair.address);
+      await createAnUpdate(newSequencer, "Ethereum");
+      const events = await waitForEvents(
+        getApi(),
+        "rolldown.L1ReadCanceled",
+        30,
+      );
+      const id = Rolldown.getRequestIdFromCancelEvent(
+        events as unknown as MangataGenericEvent[],
+      );
+      await signTx(
+        getApi(),
+        await Rolldown.createManualBatch("EthAnvil"),
         newSequencer.keyRingPair,
       );
-
+      //let`s wait for 5 blocks until the update gets into L1
+      await waitForNBlocks(5);
+      await Rolldown.closeCancelOnL1(nToBigInt(id));
+      await waitForEvents(
+        await getApi(),
+        "sequencerStaking.SequencersRemovedFromActiveSet",
+        40,
+      );
+      expect(
+        (await SequencerStaking.activeSequencers()).toHuman().Ethereum,
+      ).not.toContain(newSequencer.keyRingPair.address);
+      expect(
+        (await SequencerStaking.activeSequencers()).toHuman().Ethereum,
+      ).toHaveLength(1);
     });
   });
 });

@@ -29,6 +29,7 @@ import { User } from "../User";
 import { Sudo } from "../sudo";
 import { getAssetIdFromErc20 } from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
+import { closeL1Item } from "../setupsOnTheGo";
 
 export class Rolldown {
   static async createWithdrawalsInBatch(
@@ -278,6 +279,10 @@ export class Rolldown {
       getL1(l1)!.gaspName as unknown as PalletRolldownMessagesChain,
       null,
     );
+  }
+
+  static async closeCancelOnL1(requestId: bigint) {
+    await closeL1Item(requestId, "close_cancel");
   }
 }
 export class L2Update {
