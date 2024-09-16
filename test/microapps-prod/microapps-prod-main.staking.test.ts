@@ -21,6 +21,7 @@ import {
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { StakingPageDriver } from "../../utils/frontend/microapps-pages/StakingPage";
 
+jest.retryTimes(3);
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;

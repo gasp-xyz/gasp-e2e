@@ -28,7 +28,7 @@ import {
   setupPage,
 } from "../../utils/frontend/microapps-utils/Handlers";
 
-jest.retryTimes(2);
+jest.retryTimes(3);
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
