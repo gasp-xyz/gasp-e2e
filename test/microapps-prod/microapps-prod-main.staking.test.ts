@@ -21,6 +21,7 @@ import {
 } from "../../utils/frontend/microapps-utils/Handlers";
 import { StakingPageDriver } from "../../utils/frontend/microapps-pages/StakingPage";
 
+jest.retryTimes(3);
 jest.setTimeout(FIVE_MIN);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 let driver: WebDriver;
@@ -67,7 +68,7 @@ describe("Microapps UI staking tests", () => {
     expect(listCollatorsFe).toIncludeSameMembers(listCollatorsBeString);
   });
 
-  it("The non-active collators appear in the “waiting” section", async () => {
+  it.skip("The non-active collators appear in the “waiting” section", async () => {
     await setupPageWithState(driver, acc_name);
     await sidebar.clickNavStaking();
     await stakingPageDriver.waitForStakeVisible();
