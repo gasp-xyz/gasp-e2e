@@ -7,6 +7,7 @@ import {
   decodeAbiParameters,
   http,
   PrivateKeyAccount,
+  PublicClient,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
@@ -21,6 +22,7 @@ import { ArbAnvil, EthAnvil, getL1, L1Type } from "./l1s";
 import { encodeAddress } from "@polkadot/keyring";
 import { blake2AsU8a } from "@polkadot/util-crypto";
 import { L2Update } from "../rollDown/Rolldown";
+import { waitForBalanceChange } from "../utils";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
@@ -30,7 +32,7 @@ export const account = privateKeyToAccount(
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
 );
 
-export const { abi } = JSON.parse(
+export const { abi, metadata } = JSON.parse(
   fs.readFileSync("utils/rollup/RollDown.json").toString(),
 );
 export const erc20abi = JSON.parse(
@@ -236,4 +238,76 @@ export function getDecodedData(
 
 export function convertEthAddressToDotAddress(ethAddress: string) {
   return encodeAddress(blake2AsU8a(hexToU8a(ethAddress)), 42);
+}
+
+export async function depositAndWait(
+  depositor: User,
+  l1: L1Type = "EthAnvil",
+  onlyContractDeposit = false,
+) {
+  const updatesBefore = await getL2UpdatesStorage(l1);
+  testLog.getLog().info(JSON.stringify(updatesBefore));
+  const acc: PrivateKeyAccount = privateKeyToAccount(
+    depositor.name as `0x${string}`,
+  );
+  const publicClient = getPublicClient(l1);
+  const { request } = await publicClient.simulateContract({
+    account: acc,
+    address: getL1(l1)?.contracts?.rollDown.address!,
+    abi: abi as Abi,
+    functionName: "deposit",
+    args: [getL1(l1)?.contracts.dummyErc20.address, BigInt(112233445566)],
+  });
+  const wc = createWalletClient({
+    account: acc,
+    chain: getL1(l1),
+    transport: http(),
+  });
+  await wc.writeContract(request);
+
+  const updatesAfter = await getL2UpdatesStorage(l1);
+  testLog.getLog().info(JSON.stringify(updatesAfter));
+  if (onlyContractDeposit) {
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(updatesAfter);
+  // eslint-disable-next-line no-console
+  console.log(updatesBefore);
+  // TODO: verify that deposit is present in the pendingDeposits in l2update
+  //validate that the request got inserted.
+  // expect(
+  //   parseInt(JSON.parse(JSON.stringify(updatesAfter)).lastAcceptedRequestOnL1),
+  // ).toBeGreaterThan(
+  //   parseInt(JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1),
+  // );
+  testLog.getLog().info(depositor.keyRingPair.address);
+  const assetId = await getAssetIdFromErc20(
+    getL1(l1)?.contracts.dummyErc20.address!,
+    l1,
+  );
+  // Wait for the balance to change
+  return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
+}
+
+export function waitForNClosedWithdrawals(publicClient: PublicClient, num = 1) {
+  let cont = 0;
+  return new Promise((resolve, _) => {
+    publicClient.watchContractEvent({
+      abi: abi,
+      address: ROLL_DOWN_CONTRACT_ADDRESS,
+      eventName: "WithdrawalClosed",
+      onLogs: async (logs) => {
+        for (const log of logs) {
+          cont += 1;
+          // @ts-ignore
+          testLog.getLog().info(JSON.stringify(log));
+          if (num >= cont) {
+            resolve(log);
+          }
+        }
+      },
+    });
+  });
 }
