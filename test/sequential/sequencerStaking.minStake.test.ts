@@ -15,8 +15,14 @@ import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 
 import { expectMGAExtrinsicSuDidSuccess } from "../../utils/eventListeners";
-import { BN_HUNDRED_THOUSAND, signTx } from "gasp-sdk";
-import { Rolldown } from "../../utils/rollDown/Rolldown";
+import { BN_ONE, BN_ZERO, signTx } from "gasp-sdk";
+import {
+  createAnUpdateAndCancelIt,
+  L2Update,
+  Rolldown,
+} from "../../utils/rollDown/Rolldown";
+import { BN_TWO } from "@polkadot/util";
+import BN from "bn.js";
 
 const chain: ChainName = "Ethereum";
 let testUser: User;
@@ -40,17 +46,16 @@ beforeEach(async () => {
   await SequencerStaking.removeAllSequencers();
 });
 
-it("Given a set of sequencers, WHEN min increased, then those below will be kicked", async () => {
-  //SETUP: setup 3 sequencers
-  const newStakeValue = (await SequencerStaking.minimalStakeAmount()).addn(
-    1000,
-  );
+async function setup3sequencers(
+  newStakeValue: BN,
+  amounts: BN[] = [BN_ONE, BN_ZERO, BN_ONE.neg()],
+) {
   const activeSequencersBefore = await SequencerStaking.activeSequencers();
 
   await signTx(
     getApi(),
     await SequencerStaking.provideSequencerStaking(
-      newStakeValue.addn(1),
+      newStakeValue.add(amounts[0]),
       chain,
       true,
     ),
@@ -59,7 +64,7 @@ it("Given a set of sequencers, WHEN min increased, then those below will be kick
   await signTx(
     getApi(),
     await SequencerStaking.provideSequencerStaking(
-      newStakeValue.addn(0),
+      newStakeValue.add(amounts[1]),
       chain,
       true,
     ),
@@ -68,7 +73,7 @@ it("Given a set of sequencers, WHEN min increased, then those below will be kick
   await signTx(
     getApi(),
     await SequencerStaking.provideSequencerStaking(
-      newStakeValue.subn(1),
+      newStakeValue.add(amounts[2]),
       chain,
       true,
     ),
@@ -97,6 +102,14 @@ it("Given a set of sequencers, WHEN min increased, then those below will be kick
   expect(readRights1Before.cancelRights.toString()).toEqual("2");
   expect(activeSequencersBefore.toHuman().Ethereum).toHaveLength(0);
   expect(activeSequencersAfter.toHuman().Ethereum).toHaveLength(3);
+}
+
+it("Given a set of sequencers, WHEN min increased, then those below will be kicked", async () => {
+  //SETUP: setup 3 sequencers
+  const newStakeValue = (await SequencerStaking.minimalStakeAmount()).addn(
+    1000,
+  );
+  await setup3sequencers(newStakeValue);
 
   //ACT: increase the minimum
   const events = await Sudo.batchAsSudoFinalized(
@@ -104,7 +117,7 @@ it("Given a set of sequencers, WHEN min increased, then those below will be kick
       await SequencerStaking.setSequencerConfiguration(
         chain,
         newStakeValue,
-        BN_HUNDRED_THOUSAND,
+        newStakeValue,
       ),
     ),
   );
@@ -144,6 +157,88 @@ it("Given a set of sequencers, WHEN min increased, then those below will be kick
   expect(readRights1After).toEqual(readRights2After);
   expect(readRights1After.readRights.toString()).toEqual("1");
   expect(readRights1After.cancelRights.toString()).toEqual("1");
+  expect(readRights3After.readRights.toString()).toEqual("0");
+  expect(readRights3After.cancelRights.toString()).toEqual("0");
+});
+it("Given a set of sequencers, WHEN dispute AND min increased, then those below will be kicked", async () => {
+  //SETUP: setup 3 sequencers
+  const newStakeValue = (await SequencerStaking.minimalStakeAmount()).addn(
+    1000,
+  );
+  await setup3sequencers(newStakeValue, [BN_TWO, BN_TWO, BN_ONE.neg()]);
+
+  //ACT: dispute
+  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
+    testUser,
+    testUser2.keyRingPair.address,
+    chain,
+  );
+  //ACT: increase the minimum
+  const events = await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      await SequencerStaking.setSequencerConfiguration(
+        chain,
+        newStakeValue,
+        BN_ONE,
+      ),
+    ),
+  );
+  expectMGAExtrinsicSuDidSuccess(events);
+  //ACT: Submit resolution
+  await Rolldown.waitForReadRights(testUser2.keyRingPair.address);
+  const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+  const cancelResolutionEvents = await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser2.keyRingPair.address,
+      new L2Update(await getApi())
+        .withCancelResolution(txIndex, reqIdCanceled, true)
+        .on(chain)
+        .build(),
+    ),
+  );
+  expectMGAExtrinsicSuDidSuccess(cancelResolutionEvents);
+
+  //ASSERT: the user is not in the active set
+  const activeSequencersAfterMinIncreased =
+    await SequencerStaking.activeSequencers();
+  expect(activeSequencersAfterMinIncreased.toHuman().Ethereum).toHaveLength(2);
+  expect(activeSequencersAfterMinIncreased.toHuman().Ethereum).toContain(
+    testUser.keyRingPair.address,
+  );
+  expect(activeSequencersAfterMinIncreased.toHuman().Ethereum).toContain(
+    testUser2.keyRingPair.address,
+  );
+  expect(activeSequencersAfterMinIncreased.toHuman().Ethereum).not.toContain(
+    testUser3.keyRingPair.address,
+  );
+  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
+
+  //ASSERT: tokens are still staked
+  await testUser3.refreshAmounts(AssetWallet.AFTER);
+  expect(testUser3.getWalletDifferences()).toHaveLength(0);
+
+  //ASSET: CheckReadRights
+  const readRights1After = await Rolldown.sequencerRights(
+    chain,
+    testUser.keyRingPair.address,
+  );
+  const readRights2After = await Rolldown.sequencerRights(
+    chain,
+    testUser2.keyRingPair.address,
+  );
+  const readRights3After = await Rolldown.sequencerRights(
+    chain,
+    testUser3.keyRingPair.address,
+  );
+  //NOW:
+  //canceler (TestUser2) must be still in active set since he staked +2, slash = 1.
+  //testUser1 must be in active set
+  //testUser3 must be kicked because of the stake min amount.
+
+  expect(readRights1After.readRights.toString()).toEqual("1");
+  expect(readRights1After.cancelRights.toString()).toEqual("1");
+  expect(readRights2After.readRights.toString()).toEqual("1");
+  expect(readRights2After.cancelRights.toString()).toEqual("1");
   expect(readRights3After.readRights.toString()).toEqual("0");
   expect(readRights3After.cancelRights.toString()).toEqual("0");
 });
