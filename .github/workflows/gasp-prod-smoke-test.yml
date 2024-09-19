@@ -66,6 +66,8 @@ jobs:
             --args "-timeout 300s" --browsers 'chrome:110.0;chrome:112.0;chrome:114.0'
 
       - uses: actions/checkout@v3
+        with:
+          ref: 69ea990afdc7b1d12ffd3324b3b09e88aaa31464
 
       - uses: actions/setup-node@v3
         with:
@@ -127,14 +129,14 @@ jobs:
           dest: reports.zip
 
       - name: Archive report files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: ReportData ${{ matrix.command }}
           path: reports.zip
 
       - name: Archive report files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: TestReport ${{ matrix.command }}

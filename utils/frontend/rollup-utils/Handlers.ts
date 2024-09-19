@@ -26,11 +26,11 @@ export async function connectWallet(
   prod = false,
 ) {
   const walletWrapper = new WalletWrapper(driver);
-  const isWalletButton = await walletWrapper.isWalletConnectButtonDisplayed();
-  expect(isWalletButton).toBeTruthy();
+  const isWalletStatus = await walletWrapper.isWalletStatusDisplayed();
+  expect(isWalletStatus).toBeTruthy();
 
   await walletWrapper.openWalletConnectionInfo();
-  let isWalletConnected = await walletWrapper.isWalletConnected();
+  let isWalletConnected = await walletWrapper.isWalletDetailsConnected();
   expect(isWalletConnected).toBeFalsy();
 
   await walletWrapper.clickWalletConnect();
@@ -53,7 +53,7 @@ export async function connectWallet(
   isWalletConnectModalDisplayed = await walletConnectModal.displayed();
   expect(isWalletConnectModalDisplayed).toBeFalsy();
 
-  isWalletConnected = await walletWrapper.isWalletConnected();
+  isWalletConnected = await walletWrapper.isWalletDetailsConnected();
   expect(isWalletConnected).toBeTruthy();
 }
 

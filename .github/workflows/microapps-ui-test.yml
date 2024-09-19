@@ -159,14 +159,14 @@ jobs:
           dest: reports.zip
 
       - name: Archive report files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: ReportData
           path: reports.zip
 
       - name: Archive report files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: TestReport
