@@ -163,11 +163,7 @@ describe.each(["mm", "upgradabilityMm"])(
             sequencer,
           ],
           withdraw: [
-            await Withdraw(
-              users[0],
-              BN_HUNDRED,
-              tokenAddress.toString(),
-            ),
+            await Withdraw(users[0], BN_HUNDRED, tokenAddress.toString()),
             users[0],
           ],
           cancelRequestsFromL1: [
