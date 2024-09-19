@@ -8,21 +8,20 @@ import {
   SequencerStaking,
 } from "../../utils/rollDown/SequencerStaking";
 import {
-  L2Update,
-  Rolldown,
   createAnUpdate,
   createAnUpdateAndCancelIt,
+  L2Update,
+  Rolldown,
 } from "../../utils/rollDown/Rolldown";
-import { waitForAllEventsFromMatchingBlock } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  waitForAllEventsFromMatchingBlock,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { BN_MILLION, signTx } from "gasp-sdk";
-import {
-  ExtrinsicResult,
-  waitNewBlock,
-  waitSudoOperationSuccess,
-} from "../../utils/eventListeners";
 import { isBadOriginError } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
@@ -39,11 +38,10 @@ async function setupASequencer(user: User, chain: ChainName = "Ethereum") {
     (await SequencerStaking.minimalStakeAmount()).addn(1000),
     chain,
   );
-  const events = await Sudo.batchAsSudoFinalized(
+  return await Sudo.batchAsSudoFinalized(
     Assets.mintNative(user),
     Sudo.sudoAs(user, extrinsic),
   );
-  return events;
 }
 
 beforeAll(async () => {
@@ -187,7 +185,7 @@ describe("Seq1 do an update and seq2 cancel it", () => {
     await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
       await waitSudoOperationSuccess(events);
     });
-    await waitNewBlock();
+    await Rolldown.waitForL2UpdateExecuted(txIndex);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
     const activeSequencers = (
       await SequencerStaking.activeSequencers()
@@ -214,7 +212,7 @@ describe("Seq1 do an update and seq2 cancel it", () => {
     await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
       await waitSudoOperationSuccess(events);
     });
-    await waitNewBlock();
+    await Rolldown.waitForL2UpdateExecuted(txIndex);
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const activeSequencers = (
       await SequencerStaking.activeSequencers()
