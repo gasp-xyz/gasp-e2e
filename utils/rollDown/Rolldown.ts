@@ -69,6 +69,7 @@ export class Rolldown {
     destAddres: string,
     tokenAddres: string,
     amount: BN,
+    ferryTip = null,
   ) {
     const api = getApi();
     return api.tx.rolldown.withdraw(
@@ -76,6 +77,7 @@ export class Rolldown {
       destAddres,
       tokenAddres,
       amount,
+      ferryTip,
     );
   }
   static async lastProcessedRequestOnL2(l1 = "Ethereum") {
@@ -137,7 +139,7 @@ export class Rolldown {
   ) {
     const tx = new L2Update(getApi())
       .withDeposit(requestIdx, ethAddress, ethAddress, amount.toNumber())
-      .build();
+      .buildUnsafe();
     const api = getApi();
     return await signTx(api, tx, user.keyRingPair);
   }
@@ -301,7 +303,11 @@ export class L2Update {
     );
   }
 
-  build() {
+  buildUnsafe() {
+    return this.api.tx.rolldown.updateL2FromL1Unsafe(this.buildParams());
+  }
+  buildSafe() {
+    //@ts-ignore TODO: add the hash of this.
     return this.api.tx.rolldown.updateL2FromL1(this.buildParams());
   }
   forceBuild() {
@@ -405,7 +411,7 @@ export async function createAnUpdate(
     update = new L2Update(api)
       .withDeposit(txIndex, address, address, depositAmountValue)
       .on(chain)
-      .build();
+      .buildUnsafe();
   } else {
     update = updateValue;
   }

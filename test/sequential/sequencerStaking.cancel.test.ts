@@ -81,7 +81,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, true)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   const reqId2 = Rolldown.getRequestIdFromEvents(cancelResolutionEvents);
@@ -140,7 +140,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, false)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
@@ -212,7 +212,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, true)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
@@ -264,7 +264,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       BN_MILLION,
     )
     .on(chain)
-    .build();
+    .buildUnsafe();
   const { reqIdCanceled: reqIdCanceled2, reqId: reqId2 } =
     await createAnUpdateAndCancelIt(
       testUser2,
@@ -280,7 +280,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       new L2Update(api)
         .withCancelResolution(txIndex1, reqIdCanceled1, false)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
@@ -294,7 +294,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       new L2Update(api)
         .withCancelResolution(txIndex3, reqIdCanceled2, false)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
@@ -361,7 +361,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, false)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
     Sudo.sudoAs(
       testUser2,
@@ -424,7 +424,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       BN_MILLION,
     )
     .on(chain)
-    .build();
+    .buildUnsafe();
   const { reqIdCanceled: reqIdCanceled2 } = await createAnUpdateAndCancelIt(
     testUser2,
     testUser1.keyRingPair.address,
@@ -438,7 +438,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       new L2Update(api)
         .withCancelResolution(txIndex1, reqIdCanceled1, false)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
     Sudo.sudoAs(
       testUser2,
@@ -460,7 +460,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
       new L2Update(api)
         .withCancelResolution(txIndex3, reqIdCanceled2, false)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
     Sudo.sudoAs(
       testUser1,
