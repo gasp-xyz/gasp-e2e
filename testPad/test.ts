@@ -11,7 +11,6 @@ jest.setTimeout(1500000);
 process.env.NODE_ENV = "test";
 
 describe("L1 update", () => {
-
   beforeAll(async () => {
     try {
       getApi();
@@ -24,8 +23,7 @@ describe("L1 update", () => {
     const sequencer = await SequencerStaking.getSequencerUser();
     const depositBatch = new L2Update(await getApi())
       .withDeposit(0, sequencer.toString(), sequencer.toString(), 1001)
-      .buildUnsafe();
+      .buildParams();
     await hashL1Update(depositBatch);
   });
-
 });

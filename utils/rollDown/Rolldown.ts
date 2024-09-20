@@ -314,7 +314,7 @@ export class L2Update {
     return this.api.tx.rolldown.forceUpdateL2FromL1(this.buildParams());
   }
 
-  private buildParams() {
+  public buildParams() {
     return {
       chain: this.api.createType("PalletRolldownMessagesChain", this.chain),
       pendingDeposits: this.api.createType(

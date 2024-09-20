@@ -67,11 +67,17 @@ import {
 import Web3 from "web3";
 import { L2Update, Rolldown } from "./rollDown/Rolldown";
 import { ChainName, SequencerStaking } from "./rollDown/SequencerStaking";
-import { decodeAbiParameters, encodeFunctionData, parseAbi, PublicClient } from "viem";
+import {
+  decodeAbiParameters,
+  decodeFunctionResult,
+  keccak256,
+  PublicClient,
+} from "viem";
 import { getL1, L1Type } from "./rollup/l1s";
 import { ApiPromise } from "@polkadot/api";
 import { privateKeyToAccount } from "viem/accounts";
 import { estimateMaxPriorityFeePerGas } from "viem/actions";
+import { encodeFunctionResult } from "viem";
 Assets.legacy = true;
 const L1_CHAIN = "Ethereum";
 
@@ -2144,16 +2150,27 @@ async function findBatchWithNewUpdates(
   return null;
 }
 
-export async function hashL1Update(L2Request : any){
-  //convert L2Request to L1Update type from abi.
-  const parsedAbi = parseAbi(abi);
+export async function hashL1Update(L2Request: any) {
   // Encode the function data using the full ABI
-  const encodedData = encodeFunctionData({
-    abi: parsedAbi,
-    functionName: 'getPendingRequests',
-    args: L2Request.toHuman()
+  const json = JSON.parse(JSON.stringify(L2Request));
+  console.info(JSON.stringify(L2Request));
+  console.info(JSON.stringify(JSON.parse(JSON.stringify(abi[12])).outputs));
+  json.chain = nToBigInt(0);
+  json.pendingDeposits[0].requestId.origin = 0;
+  const encoded = encodeFunctionResult({
+    abi: abi,
+    functionName: "getPendingRequests",
+    result: json,
   });
-  console.log(encodedData);
+
+  const decoded = decodeFunctionResult({
+    abi: abi,
+    functionName: "getPendingRequests",
+    data: encoded as `0x${string}`,
+  });
+  console.log(encoded);
+  console.log(JSON.stringify(decoded));
+  return keccak256(encoded);
 }
 
 export async function sendUpdateToL1() {
