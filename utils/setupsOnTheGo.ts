@@ -67,7 +67,7 @@ import {
 import Web3 from "web3";
 import { L2Update, Rolldown } from "./rollDown/Rolldown";
 import { ChainName, SequencerStaking } from "./rollDown/SequencerStaking";
-import { decodeAbiParameters, PublicClient } from "viem";
+import { decodeAbiParameters, encodeFunctionData, parseAbi, PublicClient } from "viem";
 import { getL1, L1Type } from "./rollup/l1s";
 import { ApiPromise } from "@polkadot/api";
 import { privateKeyToAccount } from "viem/accounts";
@@ -2142,6 +2142,18 @@ async function findBatchWithNewUpdates(
 
   console.log(`couldnt find any batch with requestId: ${nextRequestId}`);
   return null;
+}
+
+export async function hashL1Update(L2Request : any){
+  //convert L2Request to L1Update type from abi.
+  const parsedAbi = parseAbi(abi);
+  // Encode the function data using the full ABI
+  const encodedData = encodeFunctionData({
+    abi: parsedAbi,
+    functionName: 'getPendingRequests',
+    args: L2Request.toHuman()
+  });
+  console.log(encodedData);
 }
 
 export async function sendUpdateToL1() {
