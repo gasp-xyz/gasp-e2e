@@ -83,47 +83,11 @@ beforeAll(async () => {
   await testUser1.addGASPTokens(sudo, toBN("1", 22));
 });
 
-test("register asset and then try to register new one with the same location, expect to conflict", async () => {
-  const assetId = (
-    await Assets.setupUserWithCurrencies(sudo, [new BN(250000)], sudo, true)
-  )[0];
-
-  await sudo.registerAsset(assetId);
-
-  const tempAssetId = await getNextAssetId();
-
-  const userRegisterNewAsset = await sudo.registerAsset(
-    tempAssetId,
-    tempAssetId,
-    {
-      V2: {
-        parents: 1,
-        interior: {
-          X3: [
-            {
-              Parachain: 3210 + assetId.toNumber(),
-            },
-            {
-              GeneralKey: "0x00834",
-            },
-            {
-              PalletInstance: 10,
-            },
-          ],
-        },
-      },
-    },
-  );
-
-  await waitSudoOperationFail(userRegisterNewAsset, ["ConflictingLocation"]);
-});
-
 test("register asset with xyk disabled and try to schedule bootstrap, expect to success", async () => {
   const register = Assets.registerAsset(
     "Disabled Xyk",
     "Disabled Xyk",
     10,
-    undefined,
     undefined,
     { operationsDisabled: true },
   );
@@ -141,7 +105,6 @@ test("register asset with xyk enabled and try to schedule bootstrap, expect to s
     "Enabled Xyk",
     "Enabled Xyk",
     10,
-    undefined,
     undefined,
     { operationsDisabled: false },
   );
