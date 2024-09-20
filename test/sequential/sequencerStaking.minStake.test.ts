@@ -347,3 +347,17 @@ it("Given a set of sequencers, WHEN dispute AND min increased + sm1 else joining
   expect(readRights4After.readRights.toString()).toEqual("1");
   expect(readRights4After.cancelRights.toString()).toEqual("2");
 });
+
+afterAll(async () => {
+  const minStake = (await SequencerStaking.minimalStakeAmount()).addn(1000);
+  const events = await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      await SequencerStaking.setSequencerConfiguration(
+        chain,
+        minStake,
+        minStake.subn(1000),
+      ),
+    ),
+  );
+  expectMGAExtrinsicSuDidSuccess(events);
+});
