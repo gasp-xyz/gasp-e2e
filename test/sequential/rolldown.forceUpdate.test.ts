@@ -31,7 +31,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 let api: any;
 let testUser: User;
 let testUserAddress: string;
-let chain: any;
+const chain = "Ethereum";
 
 async function setupASequencer(user: User, chain: ChainName = "Ethereum") {
   const extrinsic = await SequencerStaking.provideSequencerStaking(
@@ -49,7 +49,6 @@ beforeAll(async () => {
   setupUsers();
   await setupApi();
   api = getApi();
-  chain = "Ethereum";
 });
 
 beforeEach(async () => {
@@ -162,7 +161,7 @@ describe("Seq1 do an update and seq2 cancel it", () => {
   let txIndex: any;
   let reqIdValue: number;
   beforeEach(async () => {
-    [testUser2] = setupUsers();
+    [testUser,testUser2] = setupUsers();
     await setupASequencer(testUser, chain);
     await setupASequencer(testUser2, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
