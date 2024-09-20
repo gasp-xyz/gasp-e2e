@@ -11,14 +11,12 @@ import { Assets } from "../../utils/Assets";
 import {
   findEventData,
   waitSudoOperationSuccess,
-  waitSudoOperationFail,
   expectMGAExtrinsicSuDidSuccess,
 } from "../../utils/eventListeners";
 import {
   scheduleBootstrap,
   waitForBootstrapStatus,
 } from "../../utils/Bootstrap";
-import { getNextAssetId } from "../../utils/tx";
 import { BN } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ONE, toBN } from "gasp-sdk";
