@@ -5,6 +5,10 @@ import { EthUser } from "../EthUser";
 import { stringToBN } from "../utils";
 import { BN, BN_ZERO } from "@polkadot/util";
 import { leaveSequencing } from "./Rolldown";
+import { User } from "../User";
+import { Sudo } from "../sudo";
+import { Assets } from "../Assets";
+
 export type ChainName = "Ethereum" | "Arbitrum";
 const baltathar = "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0";
 export const wellKnownUsers: Record<string, string> = {
@@ -13,6 +17,17 @@ export const wellKnownUsers: Record<string, string> = {
 };
 
 export class SequencerStaking {
+  static async setupASequencer(user: User, chain: ChainName = "Ethereum") {
+    const extrinsic = await SequencerStaking.provideSequencerStaking(
+      (await SequencerStaking.minimalStakeAmount()).addn(1000),
+      chain,
+    );
+    return await Sudo.batchAsSudoFinalized(
+      Assets.mintNative(user),
+      Sudo.sudoAs(user, extrinsic),
+    );
+  }
+
   static async getSequencerUser() {
     setupUsers();
     //const api = await getApi();
@@ -27,7 +42,7 @@ export class SequencerStaking {
     stakeAndJoin = true,
   ) {
     let stakeAction: any;
-    if (stakeAndJoin === true) {
+    if (stakeAndJoin) {
       stakeAction = "StakeAndJoinActiveSet";
     } else {
       stakeAction = "StakeOnly";
@@ -86,12 +101,15 @@ export class SequencerStaking {
 
   static async removeAllSequencers() {
     const activeSequencers = await SequencerStaking.activeSequencers();
+    const allPromises = [];
     for (const chain in activeSequencers.toHuman()) {
       for (const seq of activeSequencers.toHuman()[chain] as string[]) {
         if (seq !== null) {
-          await leaveSequencing(seq);
+          const promise = leaveSequencing(seq);
+          allPromises.push(promise);
         }
       }
     }
+    await Promise.all(allPromises);
   }
 }

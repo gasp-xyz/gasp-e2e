@@ -1,7 +1,7 @@
 import { setupApi, setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
-import { BN } from "@polkadot/util";
+import { BN, nToBigInt } from "@polkadot/util";
 import {
   BN_MILLION,
   BN_ONE,
@@ -27,9 +27,10 @@ import {
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
-import { getAssetIdFromErc20 } from "../rollup/ethUtils";
+import { abi, getAssetIdFromErc20 } from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 import { closeL1Item } from "../setupsOnTheGo";
+import { encodeFunctionResult, keccak256 } from "viem";
 
 export class Rolldown {
   static async createWithdrawalsInBatch(
@@ -286,6 +287,31 @@ export class Rolldown {
   static async closeCancelOnL1(requestId: bigint) {
     await closeL1Item(requestId, "close_cancel");
   }
+  static hashL1Update(L2Request: any) {
+    // Encode the function data using the full ABI
+    const json = JSON.parse(JSON.stringify(L2Request));
+    json.chain = json.chain === "Ethereum" ? nToBigInt(0) : nToBigInt(1);
+    json.pendingDeposits.forEach(
+      (dep: any) =>
+        (dep.requestId.origin = dep.requestId.origin === "L1" ? 0 : 1),
+    );
+    json.pendingCancelResolutions.forEach(
+      (cr: any) => (cr.requestId.origin = cr.requestId.origin === "L1" ? 0 : 1),
+    );
+    const encoded = encodeFunctionResult({
+      abi: abi,
+      functionName: "getPendingRequests",
+      result: json,
+    });
+
+    // to debug JIC
+    // const decoded = decodeFunctionResult({
+    // abi: abi,
+    // functionName: "getPendingRequests",
+    // data: encoded as `0x${string}`,
+    //});
+    return keccak256(encoded);
+  }
 }
 export class L2Update {
   api: ApiPromise;
@@ -307,8 +333,9 @@ export class L2Update {
     return this.api.tx.rolldown.updateL2FromL1Unsafe(this.buildParams());
   }
   buildSafe() {
-    //@ts-ignore TODO: add the hash of this.
-    return this.api.tx.rolldown.updateL2FromL1(this.buildParams());
+    const tx = this.buildParams();
+    const hash = Rolldown.hashL1Update(tx);
+    return this.api.tx.rolldown.updateL2FromL1(this.buildParams(), hash);
   }
   forceBuild() {
     return this.api.tx.rolldown.forceUpdateL2FromL1(this.buildParams());
