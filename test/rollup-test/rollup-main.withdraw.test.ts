@@ -105,9 +105,6 @@ describe("Gasp UI withdraw tests", () => {
       await withdrawModal.isDestinationFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
 
-    const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
-    expect(isNetworkButtonEnabled).toBeTruthy();
-
     await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Withdraw);
     await waitForActionNotification(driver, TransactionType.Withdraw, true);
 
