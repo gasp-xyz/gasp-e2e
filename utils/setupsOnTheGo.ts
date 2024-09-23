@@ -2166,7 +2166,7 @@ export async function sendUpdateToL1() {
     rangeEnd,
   ]);
   if (
-    root.toString() ==
+    root.toString() ===
     "0x0000000000000000000000000000000000000000000000000000000000000000"
   ) {
     return null;

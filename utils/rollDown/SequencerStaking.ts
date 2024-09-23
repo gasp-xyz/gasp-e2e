@@ -27,7 +27,7 @@ export class SequencerStaking {
     stakeAndJoin = true,
   ) {
     let stakeAction: any;
-    if (stakeAndJoin === true) {
+    if (stakeAndJoin) {
       stakeAction = "StakeAndJoinActiveSet";
     } else {
       stakeAction = "StakeOnly";
@@ -93,5 +93,18 @@ export class SequencerStaking {
         }
       }
     }
+  }
+
+  static async setSequencerConfiguration(
+    chain: ChainName,
+    minStake: BN,
+    slashFine: BN,
+  ) {
+    const api = await getApi();
+    return api.tx.sequencerStaking.setSequencerConfiguration(
+      chain,
+      minStake,
+      slashFine,
+    );
   }
 }
