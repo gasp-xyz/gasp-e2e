@@ -64,6 +64,7 @@ export async function setupPage(driver: WebDriver) {
   expect(appLoaded).toBeTruthy();
   await mainPage.skipWelcomeMessage();
   await mainPage.skipMailerIframe();
+  await mainPage.skipLaunchMessage();
 }
 
 export async function setupPageWithState(driver: WebDriver, acc_name: string) {
@@ -71,6 +72,7 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   await mainPage.go();
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
+  await mainPage.skipLaunchMessage();
 
   const walletWrapper = new WalletWrapper(driver);
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
@@ -118,14 +120,24 @@ export async function waitForActionNotification(
     case TransactionType.Deposit:
       const depositModal = new DepositModal(driver);
       await depositModal.waitForConfirmingVisible();
-      await MetaMask.signDepositInDifferentWindow(driver);
-      await depositModal.waitForSuccessVisible();
+      if (rejection) {
+        await MetaMask.rejectDepositInDifferentWindow(driver);
+        await depositModal.waitForErrVisible();
+      } else {
+        await MetaMask.signDepositInDifferentWindow(driver);
+        await depositModal.waitForSuccessVisible();
+      }
       break;
     case TransactionType.Withdraw:
       const withdrawModal = new WithdrawModal(driver);
       await withdrawModal.waitForConfirmingVisible();
-      await MetaMask.signWithdrawInDifferentWindow(driver);
-      await withdrawModal.waitForSuccessVisible();
+      if (rejection) {
+        await MetaMask.rejectTransactionInDifferentWindow(driver);
+        await withdrawModal.waitForErrVisible();
+      } else {
+        await MetaMask.signWithdrawInDifferentWindow(driver);
+        await withdrawModal.waitForSuccessVisible();
+      }
       break;
     case TransactionType.AddLiquidity:
     case TransactionType.RemoveLiquidity:
@@ -146,6 +158,22 @@ export async function waitForActionNotification(
       } else {
         await MetaMask.signTransactionInDifferentWindow(driver);
         await removeLiqToast.waitForToastState(ToastType.Success, transaction);
+      }
+      break;
+    case TransactionType.Swap:
+      const swapToast = new NotificationToast(driver);
+      await swapToast.waitForToastState(ToastType.Confirm, transaction, 3000);
+      const isToastWaitingForSignVisible = await swapToast.istoastVisible(
+        ToastType.Confirm,
+        transaction,
+      );
+      expect(isToastWaitingForSignVisible).toBeTruthy();
+      if (rejection) {
+        await MetaMask.rejectTransactionInDifferentWindow(driver);
+        await swapToast.waitForToastState(ToastType.Error, transaction);
+      } else {
+        await MetaMask.signTransactionInDifferentWindow(driver);
+        await swapToast.waitForToastState(ToastType.Success, transaction);
       }
       break;
     default:

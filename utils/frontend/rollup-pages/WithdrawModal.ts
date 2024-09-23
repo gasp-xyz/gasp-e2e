@@ -26,6 +26,7 @@ const DESTINATION_FEE = "destination-fee";
 const FEE_VALUE = "fee-value";
 const ERR_MESSAGE = "withdrawal-error-message";
 const CONFIRMING_BLOCKING = "withdraw-status-loading";
+const WITHDRAW_ERROR = "withdraw-status-error";
 const SUCCESS_MODAL = "transfer-success";
 const CLOSE_BUTTON = "close";
 
@@ -166,6 +167,19 @@ export class WithdrawModal {
   async waitForSuccessVisible() {
     const xpath = buildDataTestIdXpath(SUCCESS_MODAL);
     await waitForElementVisible(this.driver, xpath, 50000);
+  }
+
+  async waitForErrVisible() {
+    const xpath = buildDataTestIdXpath(WITHDRAW_ERROR);
+    await waitForElementVisible(this.driver, xpath, 50000);
+  }
+
+  async getWithdrawModalText(driver: WebDriver) {
+    const xpath = buildDataTestIdXpath(WITHDRAW_MODAL_CONTENT);
+    const element = driver.findElement(By.xpath(xpath));
+    const elementText = await element.getText();
+
+    return elementText;
   }
 
   async closeSuccessModal() {

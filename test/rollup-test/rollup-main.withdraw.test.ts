@@ -83,6 +83,40 @@ describe("Gasp UI withdraw tests", () => {
     await waitForActionNotification(driver, TransactionType.Withdraw);
   });
 
+  test("User can withdraw ETH - rejected", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.openWithdraw();
+    const withdrawModal = new WithdrawModal(driver);
+    const isModalVisible = await withdrawModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await withdrawModal.openChainList();
+    await withdrawModal.selectChain(CHAIN_NAME);
+    await withdrawModal.openTokensList();
+    await withdrawModal.waitForTokenListElementsVisible(ETH_ASSET_NAME);
+    await withdrawModal.selectToken(ETH_ASSET_NAME);
+    await withdrawModal.enterValue("1");
+
+    await withdrawModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed =
+      await withdrawModal.isDestinationFeeDisplayed();
+    expect(isOriginFeeDisplayed).toBeTruthy();
+
+    const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
+    expect(isNetworkButtonEnabled).toBeTruthy();
+
+    await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Withdraw);
+    await waitForActionNotification(driver, TransactionType.Withdraw, true);
+
+    const withdrawModalText = await withdrawModal.getWithdrawModalText(driver);
+    expect(withdrawModalText).not.toContain("internal error");
+    expect(withdrawModalText).not.toContain("viem");
+    expect(withdrawModalText).toContain("rejected");
+  });
+
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(

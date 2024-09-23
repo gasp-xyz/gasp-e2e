@@ -87,6 +87,33 @@ describe("Gasp UI deposit tests", () => {
     await waitForActionNotification(driver, TransactionType.Deposit);
   });
 
+  test("User can deposit ETH - rejected", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.openDeposit();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await depositModal.openChainList();
+    await depositModal.selectChain(CHAIN_NAME);
+    await depositModal.openTokensList();
+    await depositModal.waitForTokenListElementsVisible(ETH_ASSET_NAME);
+    await depositModal.selectToken(ETH_ASSET_NAME);
+
+    const randomNum = Math.floor(Math.random() * 99) + 1;
+    await depositModal.enterValue("1." + randomNum.toString());
+
+    await depositModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    expect(isOriginFeeDisplayed).toBeTruthy();
+
+    await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
+    await waitForActionNotification(driver, TransactionType.Deposit, true);
+  });
+
   afterEach(async () => {
     const session = await driver.getSession();
     await addExtraLogs(

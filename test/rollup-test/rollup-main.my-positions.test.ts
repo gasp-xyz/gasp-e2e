@@ -102,7 +102,11 @@ describe("Gasp UI swap tests", () => {
     await sleep(500);
     await myPositionsPage.clickRemoveLiquidity();
     await myPositionsPage.clickConfirmFeeAmount();
-    await waitForActionNotification(driver, TransactionType.RemoveLiquidity, true);
+    await waitForActionNotification(
+      driver,
+      TransactionType.RemoveLiquidity,
+      true,
+    );
   });
 
   it("Cant remove 0 pc pool liquidity", async () => {

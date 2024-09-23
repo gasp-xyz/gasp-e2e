@@ -32,6 +32,7 @@ const CONFIRMING_BLOCKING = "deposit-status-loading";
 const SUCCESS_MODAL = "transfer-success";
 const CLOSE_BUTTON = "close";
 const TOKEN_LIST_AMOUNT = "token-amount";
+const DEPOSIT_ERROR = "deposit-status-error";
 
 export enum DepositActionType {
   Deposit,
@@ -67,6 +68,11 @@ export class DepositModal {
     const xpath =
       buildDataTestIdXpath(ORIGIN_FEE) + buildDataTestIdXpath(FEE_VALUE);
     return isDisplayed(this.driver, xpath);
+  }
+
+  async waitForErrVisible() {
+    const xpath = buildDataTestIdXpath(DEPOSIT_ERROR);
+    await waitForElementVisible(this.driver, xpath, 50000);
   }
 
   async isDestinationFeeDisplayed() {
