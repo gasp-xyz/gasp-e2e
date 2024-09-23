@@ -1,8 +1,7 @@
 /*
  *
- * @group rolldown
+ * @group L1RolldownUpdates
  */
-//TODO: Add the right group! ^
 import {
   ChainName,
   SequencerStaking,
@@ -68,6 +67,6 @@ describe("updateL1FromL1", () => {
       sequencer.keyRingPair,
     );
     const event = expectExtrinsicFail(res);
-    expect(event.data).toEqual("foo");
+    expect(event.data).toEqual("UpdateHashMishmatch");
   });
 });

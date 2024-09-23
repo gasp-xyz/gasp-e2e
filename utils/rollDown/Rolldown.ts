@@ -304,12 +304,15 @@ export class Rolldown {
       result: json,
     });
 
+
     // to debug JIC
     // const decoded = decodeFunctionResult({
     // abi: abi,
     // functionName: "getPendingRequests",
     // data: encoded as `0x${string}`,
     //});
+    testLog.getLog().info("Tx- encoded" + encoded);
+    testLog.getLog().info("Tx- encoded hash" + keccak256(encoded));
     return keccak256(encoded);
   }
 }
@@ -335,6 +338,7 @@ export class L2Update {
   buildSafe() {
     const tx = this.buildParams();
     const hash = Rolldown.hashL1Update(tx);
+    testLog.getLog().info("Hash:" + hash);
     return this.api.tx.rolldown.updateL2FromL1(this.buildParams(), hash);
   }
   forceBuild() {

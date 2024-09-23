@@ -101,15 +101,12 @@ export class SequencerStaking {
 
   static async removeAllSequencers() {
     const activeSequencers = await SequencerStaking.activeSequencers();
-    const allPromises = [];
     for (const chain in activeSequencers.toHuman()) {
       for (const seq of activeSequencers.toHuman()[chain] as string[]) {
         if (seq !== null) {
-          const promise = leaveSequencing(seq);
-          allPromises.push(promise);
+          await leaveSequencing(seq);
         }
       }
     }
-    await Promise.all(allPromises);
   }
 }
