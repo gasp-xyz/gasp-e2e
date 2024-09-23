@@ -48,6 +48,8 @@ import {
   depositHell,
   getPolkAddress,
   create10sequencers,
+  closeL1Item,
+  sendUpdateToL1,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -67,6 +69,7 @@ import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { toNumber } from "lodash-es";
+import { Rolldown } from "../utils/rollDown/Rolldown";
 
 async function app(): Promise<any> {
   return inquirer
@@ -125,12 +128,53 @@ async function app(): Promise<any> {
         "depositHell",
         "getPolkAddress",
         "create10sequencers",
+        "Close L1 item",
+        "Close All L1 items",
+        "1000 withdrawals",
+        "sync updates",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
-      if (answers.option.includes("create10sequencers")) {
+      if (answers.option.includes("sync updates")) {
+        await sendUpdateToL1();
+      }
+      if (answers.option.includes("1000 withdrawals")) {
+        await Rolldown.createWithdrawalsInBatch(1000);
+      }
+      if (answers.option.includes("Close All L1 items")) {
         return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "itemId",
+              message: "From what itemId?",
+            },
+          ])
+          .then(async (answers: { itemId: number }) => {
+            await closeL1Item(
+              BigInt(answers.itemId),
+              "close_withdrawal",
+              "Ethereum",
+              true,
+            );
+          });
+      }
+      if (answers.option.includes("Close L1 item")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "itemId",
+              message: "itemId",
+            },
+          ])
+          .then(async (answers: { itemId: number }) => {
+            await closeL1Item(BigInt(answers.itemId));
+          });
+      }
+      if (answers.option.includes("create10sequencers")) {
+        await inquirer
           .prompt([
             {
               type: "input",
@@ -141,6 +185,7 @@ async function app(): Promise<any> {
           ])
           .then(async (answers: { network: string }) => {
             await create10sequencers(answers.network.toString());
+            return;
           });
       }
       if (answers.option.includes("getPolkAddress")) {
