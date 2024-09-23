@@ -396,6 +396,7 @@ export class L2Update {
       tokenAddress: erc20Address,
       amount: amountValue,
       timeStamp: timestamp,
+      ferryTip: new BN(0),
     });
     this.pendingDeposits.push(deposit);
     return this;

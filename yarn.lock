@@ -9623,27 +9623,27 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-feature-ferries.1:
-  version "0.0.2-feature-ferries.1"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-ferries.1.tgz#644716069386fe6ae7bc26d5e71c221568ca48d6"
-  integrity sha512-tG+dC0plqmCPR2oSpMve2hlaHq2+wFE1b/iNHYS8gKREY9x6OsZh5AaOMt4HNydfp5TPoaGoP6XuTM99ft2G+w==
+gasp-sdk@0.0.2-feature-ferries.2:
+  version "0.0.2-feature-ferries.2"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-ferries.2.tgz#31bbce4488931af042cd2cde710f83a900a144d5"
+  integrity sha512-sR4yS/oZ2ZB8qoKC2YN6DPn9eZZ4iWN1WXP2iNWLbKnfoerLuzmdrCnVJWmDesnn3wrhVA7C7sGesDFJOMPC2Q==
   dependencies:
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-feature-ferries.1"
+    gasp-type-definitions "0.0.2-feature-ferries.2"
     tslib "^2.3.0"
     tslog "4.8.2"
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-feature-ferries.1:
-  version "0.0.2-feature-ferries.1"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-ferries.1.tgz#a5ac37b7bfb78ab018d92828df60bedab2c66960"
-  integrity sha512-XX/SQbnQ05G9d7iSTUbTKZj5vmY9CBbecXXUpvpY4KRbnw9XNGRUIeG9WdTsppwesHd8lixoCviySLWEOc8n+g==
+gasp-type-definitions@0.0.2-feature-ferries.2:
+  version "0.0.2-feature-ferries.2"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-ferries.2.tgz#ab05011e9ba6cad21309229fb4d6437440a2eabe"
+  integrity sha512-pT4bOy14l1d7aU9Djzcv6+pk7JLlphXkwf3SEuKdkbIg6N1N7a47ogwb7Tm2tt3fpAiJEWE41yFmiF6t4tUZTw==
 
-gasp-types@0.0.2-feature-ferries.1:
-  version "0.0.2-feature-ferries.1"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-ferries.1.tgz#a7ab48786762465000832f6dc4354cde3eb45a28"
-  integrity sha512-o4NJ5CQ2dVJZNyHaFsw3hM29Pfj+giIzQOqnwpTz4nmIJ275v77osdx4BzbgOyti1yOMwOks5mEayTlgprn7og==
+gasp-types@0.0.2-feature-ferries.2:
+  version "0.0.2-feature-ferries.2"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-ferries.2.tgz#325b2752be9a0aabeed04f2390ca5c180ad25ada"
+  integrity sha512-ZCu1VZYg0nDahCXyDhCDKxv8x1AJjTfwPEMWytJOxmti745tSz8CzucPX8eH2KYFR3p0Km3tjQy879V/OmSvjg==
 
 gauge@^4.0.3:
   version "4.0.4"
