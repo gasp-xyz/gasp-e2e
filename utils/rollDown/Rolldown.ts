@@ -13,6 +13,7 @@ import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import {
   getEventsAt,
+  waitForAllEventsFromMatchingBlock,
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../eventListeners";
@@ -302,6 +303,18 @@ export class Rolldown {
     );
 
     return l2Request[0];
+  }
+
+  static async waitForL2UpdateExecuted(requestId: BN) {
+    await waitForAllEventsFromMatchingBlock(
+      getApi(),
+      20,
+      (ev) =>
+        ev.method === "RequestProcessedOnL2" &&
+        ev.section === "rolldown" &&
+        (ev.data.toHuman() as any).requestId.toString() ===
+          requestId.toString(),
+    );
   }
 }
 export class L2Update {
