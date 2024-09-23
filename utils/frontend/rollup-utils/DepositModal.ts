@@ -3,6 +3,7 @@ import { FIVE_MIN } from "../../Constants";
 import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
+  buildRawDataTestIdXpath,
   buildXpathByElementText,
   buildXpathByMultiText,
   clickElement,
@@ -135,8 +136,12 @@ export class DepositModal {
       5000,
     );
     const tokenTestId = `token-icon-${assetName}`;
-    const tokenLocator = buildDataTestIdXpath(tokenTestId);
-    await waitForElementVisible(this.driver, tokenLocator, 5000);
+    const tokenLocator = buildRawDataTestIdXpath(tokenTestId);
+    await waitForElementVisible(
+      this.driver,
+      buildDataTestIdXpath(TOKEN_LIST) + "/*/*" + tokenLocator,
+      5000,
+    );
   }
 
   async getTokenListRowAmount(tokenName: string, origin = "Native") {
