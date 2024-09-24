@@ -9,7 +9,8 @@ import { Sudo } from "../../utils/sudo";
 import { Withdraw } from "../../utils/rolldown";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ApiPromise } from "@polkadot/api";
-import { waitForEvents } from "../../utils/eventListeners";
+import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
+import { Rolldown } from "../../utils/rollDown/Rolldown";
 
 let user: User;
 let api: ApiPromise;
@@ -35,8 +36,7 @@ test("Given <32> withdrawals WHEN they run successfully THEN a batch is generate
   const nextRequestId = JSON.parse(
     JSON.stringify(await api.query.rolldown.l2OriginRequestId()),
   );
-  const batchPeriod =
-    await api.consts.rolldown.merkleRootAutomaticBatchPeriod.toNumber();
+  const batchPeriod = Rolldown.merkleRootBatchPeriod();
   while (++number < 33) {
     const withdrawTx = await Withdraw(
       user,
@@ -47,15 +47,10 @@ test("Given <32> withdrawals WHEN they run successfully THEN a batch is generate
     extrinsicCall.push(withdrawTx);
   }
   await Sudo.batchAsSudoFinalized(...extrinsicCall);
-  const event: any = await waitForEvents(
-    getApi(),
-    "rolldown.TxBatchCreated",
-    batchPeriod,
-  );
-  const rolldownEvent = event[0].event.data.toHuman();
-  expect(rolldownEvent.chain).toEqual("Ethereum");
-  expect(rolldownEvent.range[0]).toEqual(nextRequestId.Ethereum.toString());
-  expect(rolldownEvent.range[1]).toEqual(
-    (nextRequestId.Ethereum + 31).toString(),
-  );
+  const event = await Rolldown.waitForNextBatchCreated("Ethereum", batchPeriod);
+  const sequencersList = await SequencerStaking.activeSequencers();
+  expect(sequencersList.toHuman().Ethereum).toContain(event.assignee);
+  expect(event.source).toEqual("AutomaticSizeReached");
+  expect(event.range.from.toNumber()).toEqual(nextRequestId.Ethereum);
+  expect(event.range.to.toNumber()).toEqual(nextRequestId.Ethereum + 31);
 });

@@ -14,6 +14,7 @@ import { stringToBN, waitBlockNumber } from "../utils";
 import {
   getEventsAt,
   waitForAllEventsFromMatchingBlock,
+  waitForEvents,
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../eventListeners";
@@ -179,6 +180,11 @@ export class Rolldown {
     return (await api.consts.rolldown.disputePeriodLength) as any as BN;
   }
 
+  static merkleRootBatchPeriod() {
+    const api = getApi();
+    return api.consts.rolldown.merkleRootAutomaticBatchPeriod.toNumber() as number;
+  }
+
   static async cancelRequestFromL1(chainId: ChainName, reqId: number) {
     const api = getApi();
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
@@ -315,6 +321,26 @@ export class Rolldown {
         (ev.data.toHuman() as any).requestId.toString() ===
           requestId.toString(),
     );
+  }
+
+  static async waitForNextBatchCreated(chain: string, blocksLimit = 25) {
+    const api = await getApi();
+    const event = (await waitForEvents(
+      api,
+      "rolldown.TxBatchCreated",
+      blocksLimit,
+      chain,
+    )) as any[];
+    const eventChain = event[0].event.data[0].toString();
+    const source = event[0].event.data[1].toString();
+    const assignee = event[0].event.data[2].toString();
+    const batchId = event[0].event.data[3];
+    const range = {
+      from: event[0].event.data[4][0],
+      to: event[0].event.data[4][1],
+    };
+    expect(chain).toEqual(eventChain);
+    return { source, assignee, batchId, range };
   }
 }
 export class L2Update {
