@@ -10,9 +10,13 @@ import { Withdraw } from "../../utils/rolldown";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ApiPromise } from "@polkadot/api";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
-import { Rolldown } from "../../utils/rollDown/Rolldown";
+import {
+  Rolldown,
+  createAnUpdateAndCancelIt,
+  leaveSequencing,
+} from "../../utils/rollDown/Rolldown";
 
-let user: User;
+let testUser: User;
 let api: ApiPromise;
 
 beforeEach(async () => {
@@ -23,8 +27,54 @@ beforeEach(async () => {
   }
   await setupApi();
   api = getApi();
-  [user] = setupUsers();
-  await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
+  [testUser] = setupUsers();
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
+});
+
+test("Given a cancel WHEN block is processed THEN it will create an update that needs to be sent through a batch to L1 for justification", async () => {
+  const chain = "Ethereum";
+  const preSetupSequencers = {
+    Ethereum: "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
+    Arbitrum: "0x798d4ba9baf0064ec19eb4f0a1a45785ae9d6dfc",
+  };
+  const activeSequencers = await SequencerStaking.activeSequencers();
+  for (const chain in activeSequencers.toHuman()) {
+    for (const seq of activeSequencers.toHuman()[chain] as string[]) {
+      if (
+        seq !== preSetupSequencers.Ethereum &&
+        seq !== preSetupSequencers.Arbitrum
+      ) {
+        await leaveSequencing(seq);
+      }
+    }
+  }
+  const [testUser2] = setupUsers();
+  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
+  const stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
+    minToBeSequencer.addn(1000),
+    chain,
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser),
+    Assets.mintNative(testUser2),
+    Sudo.sudoAs(testUser, stakeAndJoinExtrinsic),
+    Sudo.sudoAs(testUser2, stakeAndJoinExtrinsic),
+  );
+  await createAnUpdateAndCancelIt(
+    testUser,
+    testUser2.keyRingPair.address,
+    chain,
+  );
+  const batchPeriod = Rolldown.merkleRootBatchPeriod();
+  const event = await Rolldown.waitForNextBatchCreated("Ethereum", batchPeriod);
+  expect(event.source).toEqual("PeriodReached");
+  const l2Request = await Rolldown.getL2Request(
+    event.batchId.toNumber(),
+    chain,
+  );
+  expect(l2Request.cancel.requestId.id).toEqual(event.batchId.toNumber());
+  expect(l2Request.cancel.updater).toEqual(testUser.keyRingPair.address);
+  expect(l2Request.cancel.canceler).toEqual(testUser2.keyRingPair.address);
 });
 
 test("Given <32> withdrawals WHEN they run successfully THEN a batch is generated AUTOMATICALLY from that L1, from ranges of (n,n+31)", async () => {
@@ -39,7 +89,7 @@ test("Given <32> withdrawals WHEN they run successfully THEN a batch is generate
   const batchPeriod = Rolldown.merkleRootBatchPeriod();
   while (++number < 33) {
     const withdrawTx = await Withdraw(
-      user,
+      testUser,
       10,
       gaspToL1Asset.ethereum,
       "Ethereum",
