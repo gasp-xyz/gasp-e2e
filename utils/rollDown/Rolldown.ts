@@ -13,6 +13,7 @@ import { getEventResultFromMangataTx } from "../txHandler";
 import { stringToBN, waitBlockNumber } from "../utils";
 import {
   getEventsAt,
+  waitForAllEventsFromMatchingBlock,
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../eventListeners";
@@ -287,6 +288,7 @@ export class Rolldown {
   static async closeCancelOnL1(requestId: bigint) {
     await closeL1Item(requestId, "close_cancel");
   }
+
   static hashL1Update(L2Request: any) {
     // Encode the function data using the full ABI
     const json = JSON.parse(JSON.stringify(L2Request));
@@ -314,6 +316,37 @@ export class Rolldown {
     testLog.getLog().info("Tx- encoded" + encoded);
     testLog.getLog().info("Tx- encoded hash" + keccak256(encoded));
     return keccak256(encoded);
+
+
+  static async getL2Request(
+    idNumber: number,
+    chain = "Ethereum",
+    originValue = "L2",
+  ) {
+    setupUsers();
+    const api = getApi();
+    const l2Request = JSON.parse(
+      JSON.stringify(
+        await api.query.rolldown.l2Requests(chain, {
+          origin: originValue,
+          id: idNumber,
+        }),
+      ),
+    );
+
+    return l2Request[0];
+  }
+
+  static async waitForL2UpdateExecuted(requestId: BN) {
+    await waitForAllEventsFromMatchingBlock(
+      getApi(),
+      20,
+      (ev) =>
+        ev.method === "RequestProcessedOnL2" &&
+        ev.section === "rolldown" &&
+        (ev.data.toHuman() as any).requestId.toString() ===
+          requestId.toString(),
+    );
   }
 }
 export class L2Update {

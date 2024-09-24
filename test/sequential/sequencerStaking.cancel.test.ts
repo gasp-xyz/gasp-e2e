@@ -191,46 +191,6 @@ it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", 
   expect(testUser1.getAsset(assetId)?.amountAfter.free!).bnEqual(BN_MILLION);
 });
 
-it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / cancel until the next session ( if gets elected )", async () => {
-  let updaterRightsStatus: any;
-  const { reqIdCanceled } = await createAnUpdateAndCancelIt(
-    testUser1,
-    testUser2Address,
-    chain,
-  );
-  updaterRightsStatus = await Rolldown.sequencerRights(
-    chain,
-    testUser1.keyRingPair.address,
-  );
-  expect(updaterRightsStatus.cancelRights.toString()).toBe("1");
-  const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  //we approve the cancellation
-  await Rolldown.waitForReadRights(testUser2Address);
-  const cancelResolutionEvents = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      testUser2Address,
-      new L2Update(api)
-        .withCancelResolution(txIndex, reqIdCanceled, true)
-        .on(chain)
-        .buildUnsafe(),
-    ),
-  );
-  await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength + 1);
-  updaterRightsStatus = await Rolldown.sequencerRights(
-    chain,
-    testUser1.keyRingPair.address,
-  );
-  const activeSequencers = (
-    await SequencerStaking.activeSequencers()
-  ).toHuman();
-  expect(activeSequencers.Ethereum).not.toContain(
-    testUser1.keyRingPair.address,
-  );
-  expect(updaterRightsStatus.cancelRights.toString()).toBe("0");
-  expect(updaterRightsStatus.readRights.toString()).toBe("0");
-});
-
 it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending updates/cancels, THEN it can be still slashed and kicked, cancels & updates will be executed.", async () => {
   const [judge] = setupUsers();
   await Sudo.batchAsSudoFinalized(

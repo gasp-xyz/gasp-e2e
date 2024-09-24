@@ -109,4 +109,17 @@ export class SequencerStaking {
       }
     }
   }
+
+  static async setSequencerConfiguration(
+    chain: ChainName,
+    minStake: BN,
+    slashFine: BN,
+  ) {
+    const api = await getApi();
+    return api.tx.sequencerStaking.setSequencerConfiguration(
+      chain,
+      minStake,
+      slashFine,
+    );
+  }
 }

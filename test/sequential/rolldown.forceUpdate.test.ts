@@ -1,25 +1,24 @@
 /*
  *
- * @group L1RolldownUpdates
+ * @group rolldown
  */
 
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import {
-  L2Update,
-  Rolldown,
   createAnUpdate,
   createAnUpdateAndCancelIt,
+  L2Update,
+  Rolldown,
 } from "../../utils/rollDown/Rolldown";
-import { waitForAllEventsFromMatchingBlock } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  waitForAllEventsFromMatchingBlock,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { BN_MILLION, signTx } from "gasp-sdk";
-import {
-  ExtrinsicResult,
-  waitNewBlock,
-  waitSudoOperationSuccess,
-} from "../../utils/eventListeners";
 import { isBadOriginError } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
@@ -28,14 +27,14 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 let api: any;
 let testUser: User;
 let testUserAddress: string;
-let chain: any;
+const chain = "Ethereum";
+
 
 beforeAll(async () => {
   await initApi();
   setupUsers();
   await setupApi();
   api = getApi();
-  chain = "Ethereum";
 });
 
 beforeEach(async () => {
@@ -148,9 +147,10 @@ describe("Seq1 do an update and seq2 cancel it", () => {
   let txIndex: any;
   let reqIdValue: number;
   beforeEach(async () => {
-    [testUser2] = setupUsers();
-    await SequencerStaking.setupASequencer(testUser, chain);
-    await SequencerStaking.setupASequencer(testUser2, chain);
+
+    [testUser,testUser2] = setupUsers();
+    await setupASequencer(testUser, chain);
+    await setupASequencer(testUser2, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     testUser.addAsset(GASP_ASSET_ID);
     testUser2.addAsset(GASP_ASSET_ID);
@@ -171,7 +171,7 @@ describe("Seq1 do an update and seq2 cancel it", () => {
     await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
       await waitSudoOperationSuccess(events);
     });
-    await waitNewBlock();
+    await Rolldown.waitForL2UpdateExecuted(txIndex);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
     const activeSequencers = (
       await SequencerStaking.activeSequencers()
@@ -198,7 +198,7 @@ describe("Seq1 do an update and seq2 cancel it", () => {
     await Sudo.asSudoFinalized(Sudo.sudo(update)).then(async (events) => {
       await waitSudoOperationSuccess(events);
     });
-    await waitNewBlock();
+    await Rolldown.waitForL2UpdateExecuted(txIndex);
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const activeSequencers = (
       await SequencerStaking.activeSequencers()
