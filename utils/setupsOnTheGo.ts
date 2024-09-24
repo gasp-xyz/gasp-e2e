@@ -2070,15 +2070,26 @@ export async function closeL1Item(
       //@ts-ignore
       args: [withdrawal, root.toHuman(), proof.toHuman()],
     });
-    const txHash = await viemClient.writeContract(request);
-    const result = await publicClient.waitForTransactionReceipt({
-      hash: txHash,
-    });
-    console.log(
-      `closing withdrawal ${itemId}: tx:${result.transactionHash} - ${result.status}`,
-    );
-
-    console.log("L1 item closed with tx", request);
+    return viemClient
+      .writeContract(request)
+      .then(async (txHash) => {
+        const result = await publicClient.waitForTransactionReceipt({
+          hash: txHash,
+        });
+        testLog
+          .getLog()
+          .info(
+            `closing withdrawal ${itemId}: tx:${result.transactionHash} - ${result.status}`,
+          );
+        testLog.getLog().info("L1 item closed with tx", request);
+      })
+      .catch((err) => {
+        if (err.toString().includes("Already processed")) {
+          testLog.getLog().info("Aready processed", err);
+        } else {
+          throw err;
+        }
+      });
   }
 
   if (closingAll) {
@@ -2086,7 +2097,15 @@ export async function closeL1Item(
       await closeOnlyL1Item(i);
     }
   } else {
-    await closeOnlyL1Item(itemId);
+    try {
+      await closeOnlyL1Item(itemId);
+    } catch (e: any) {
+      if (e.toString().includes("Already processed")) {
+        testLog.getLog().info("Aready processed", e);
+      } else {
+        throw e;
+      }
+    }
   }
 }
 

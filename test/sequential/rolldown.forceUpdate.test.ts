@@ -161,7 +161,7 @@ describe("Seq1 do an update and seq2 cancel it", () => {
   let txIndex: any;
   let reqIdValue: number;
   beforeEach(async () => {
-    [testUser,testUser2] = setupUsers();
+    [testUser, testUser2] = setupUsers();
     await setupASequencer(testUser, chain);
     await setupASequencer(testUser2, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);

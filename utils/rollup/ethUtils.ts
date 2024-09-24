@@ -11,18 +11,18 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
-import { BN, hexToU8a } from "@polkadot/util";
+import { BN, hexToU8a, nToBigInt } from "@polkadot/util";
 import { getApi } from "../api";
 import { testLog } from "../Logger";
 import { setupApi, setupUsers } from "../setup";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 import { User } from "../User";
-import { ArbAnvil, EthAnvil, getL1, L1Type } from "./l1s";
+import { ArbAnvil, EthAnvil, getL1, L1Type, TestChain } from "./l1s";
 import { encodeAddress } from "@polkadot/keyring";
 import { blake2AsU8a } from "@polkadot/util-crypto";
 import { L2Update } from "../rollDown/Rolldown";
-import { waitForBalanceChange } from "../utils";
+import { sleep, waitForBalanceChange } from "../utils";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
@@ -291,6 +291,39 @@ export async function depositAndWait(
   return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
 }
 
+export async function waitForBatchWithRequest(
+  requestId: bigint,
+  testChain: TestChain,
+  maxEthBlocks = nToBigInt(20),
+) {
+  const publicClient = getPublicClient(testChain.name as unknown as L1Type);
+  let currBlock = await publicClient.getBlockNumber();
+  const maxBlock = currBlock + maxEthBlocks;
+  while (currBlock < maxBlock) {
+    const range = await publicClient
+      .readContract({
+        address: testChain.contracts.rollDown.address,
+        abi: abi,
+        functionName: "find_l2_batch",
+        args: [requestId],
+      })
+      .then((res) => {
+        testLog.getLog().info(res);
+        return res;
+      })
+      .catch((err) => {
+        //@ts-ignore
+        testLog.getLog().info(err.shortMessage);
+      });
+    if (range) {
+      //@ts-ignore
+      return { start: range.start, end: range.end };
+    }
+    currBlock = await publicClient.getBlockNumber();
+    await sleep(5000);
+  }
+  return { start: 0, end: 0 };
+}
 export function waitForNClosedWithdrawals(publicClient: PublicClient, num = 1) {
   let cont = 0;
   return new Promise((resolve, _) => {

@@ -15,6 +15,7 @@ import {
   getNativeBalance,
   getPublicClient,
   setupEthUser,
+  waitForBatchWithRequest,
 } from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
 import { privateKeyToAccount } from "viem/accounts";
@@ -25,6 +26,9 @@ import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
 import { User } from "../../utils/User";
 import { getL1, L1Type } from "../../utils/rollup/l1s";
+import { Rolldown } from "../../utils/rollDown/Rolldown";
+import { nToBigInt } from "@polkadot/util";
+import { closeL1Item } from "../../utils/setupsOnTheGo";
 
 let user: User;
 jest.setTimeout(600000);
@@ -64,7 +68,7 @@ async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
     l1,
   );
   // Wait for the balance to change
-  return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
+  return await waitForBalanceChange(depositor.keyRingPair.address, 60, assetId);
 }
 
 describe("Rollup", () => {
@@ -112,9 +116,23 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         user.name as string,
       );
+      await signTxMetamask(
+        await Rolldown.createManualBatch("EthAnvil"),
+        user.keyRingPair.address,
+        user.name as string,
+      );
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
 
+      const requestId = nToBigInt(Rolldown.getUpdateIdFromEvents(result));
+      //wait for the update to be in contract
+      await waitForBatchWithRequest(requestId, getL1("EthAnvil")!);
+      //run close.
+      await closeL1Item(
+        requestId,
+        "close_withdrawal",
+        getL1("EthAnvil")!.gaspName,
+      );
       let balanceAfter = await getNativeBalance(user, "EthAnvil");
       while (
         BigInt((balanceAfter as any).toString()) <=
@@ -176,8 +194,23 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         user.name as string,
       );
+      await signTxMetamask(
+        await Rolldown.createManualBatch("ArbAnvil"),
+        user.keyRingPair.address,
+        user.name as string,
+      );
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
+
+      const requestId = nToBigInt(Rolldown.getUpdateIdFromEvents(result));
+      //wait for the update to be in contract
+      await waitForBatchWithRequest(requestId, getL1("ArbAnvil")!);
+      //run close.
+      await closeL1Item(
+        requestId,
+        "close_withdrawal",
+        getL1("ArbAnvil")!.gaspName,
+      );
 
       let balanceAfter = await getNativeBalance(user, "ArbAnvil");
       while (

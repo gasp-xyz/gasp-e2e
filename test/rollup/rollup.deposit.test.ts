@@ -10,6 +10,7 @@ import {
   depositAndWait,
   getBalance,
   setupEthUser,
+  waitForBatchWithRequest,
 } from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
 import { signTxMetamask } from "../../utils/metamask";
@@ -19,6 +20,9 @@ import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
 import { User } from "../../utils/User";
 import { getL1 } from "../../utils/rollup/l1s";
+import { Rolldown } from "../../utils/rollDown/Rolldown";
+import { nToBigInt } from "@polkadot/util";
+import { closeL1Item } from "../../utils/setupsOnTheGo";
 
 let user: User;
 jest.setTimeout(600000);
@@ -150,6 +154,20 @@ describe("Rollup", () => {
       );
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
+      await signTxMetamask(
+        await Rolldown.createManualBatch("ArbAnvil"),
+        user.keyRingPair.address,
+        user.name as string,
+      );
+      const requestId = nToBigInt(Rolldown.getUpdateIdFromEvents(result));
+      //wait for the update to be in contract
+      await waitForBatchWithRequest(requestId, getL1("ArbAnvil")!);
+      //run close.
+      await closeL1Item(
+        requestId,
+        "close_withdrawal",
+        getL1("ArbAnvil")!.gaspName,
+      );
 
       let balanceAfter = await getBalance(
         arbErc20,
