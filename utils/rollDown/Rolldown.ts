@@ -306,7 +306,6 @@ export class Rolldown {
       result: json,
     });
 
-
     // to debug JIC
     // const decoded = decodeFunctionResult({
     // abi: abi,
@@ -316,8 +315,7 @@ export class Rolldown {
     testLog.getLog().info("Tx- encoded" + encoded);
     testLog.getLog().info("Tx- encoded hash" + keccak256(encoded));
     return keccak256(encoded);
-
-
+  }
   static async getL2Request(
     idNumber: number,
     chain = "Ethereum",

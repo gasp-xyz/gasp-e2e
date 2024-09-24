@@ -29,7 +29,6 @@ let testUser: User;
 let testUserAddress: string;
 const chain = "Ethereum";
 
-
 beforeAll(async () => {
   await initApi();
   setupUsers();
@@ -147,10 +146,9 @@ describe("Seq1 do an update and seq2 cancel it", () => {
   let txIndex: any;
   let reqIdValue: number;
   beforeEach(async () => {
-
-    [testUser,testUser2] = setupUsers();
-    await setupASequencer(testUser, chain);
-    await setupASequencer(testUser2, chain);
+    [testUser, testUser2] = setupUsers();
+    await SequencerStaking.setupASequencer(testUser, chain);
+    await SequencerStaking.setupASequencer(testUser2, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     testUser.addAsset(GASP_ASSET_ID);
     testUser2.addAsset(GASP_ASSET_ID);
