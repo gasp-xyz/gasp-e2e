@@ -1,7 +1,7 @@
 import { setupApi, setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
-import { BN } from "@polkadot/util";
+import { BN, nToBigInt } from "@polkadot/util";
 import {
   BN_MILLION,
   BN_ONE,
@@ -28,9 +28,10 @@ import {
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
-import { getAssetIdFromErc20 } from "../rollup/ethUtils";
+import { abi, getAssetIdFromErc20 } from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 import { closeL1Item } from "../setupsOnTheGo";
+import { encodeFunctionResult, keccak256 } from "viem";
 
 export class Rolldown {
   static async createWithdrawalsInBatch(
@@ -70,6 +71,7 @@ export class Rolldown {
     destAddres: string,
     tokenAddres: string,
     amount: BN,
+    ferryTip = null,
   ) {
     const api = getApi();
     return api.tx.rolldown.withdraw(
@@ -77,6 +79,7 @@ export class Rolldown {
       destAddres,
       tokenAddres,
       amount,
+      ferryTip,
     );
   }
   static async lastProcessedRequestOnL2(l1 = "Ethereum") {
@@ -138,7 +141,7 @@ export class Rolldown {
   ) {
     const tx = new L2Update(getApi())
       .withDeposit(requestIdx, ethAddress, ethAddress, amount.toNumber())
-      .build();
+      .buildUnsafe();
     const api = getApi();
     return await signTx(api, tx, user.keyRingPair);
   }
@@ -286,6 +289,33 @@ export class Rolldown {
     await closeL1Item(requestId, "close_cancel");
   }
 
+  static hashL1Update(L2Request: any) {
+    // Encode the function data using the full ABI
+    const json = JSON.parse(JSON.stringify(L2Request));
+    json.chain = json.chain === "Ethereum" ? nToBigInt(0) : nToBigInt(1);
+    json.pendingDeposits.forEach(
+      (dep: any) =>
+        (dep.requestId.origin = dep.requestId.origin === "L1" ? 0 : 1),
+    );
+    json.pendingCancelResolutions.forEach(
+      (cr: any) => (cr.requestId.origin = cr.requestId.origin === "L1" ? 0 : 1),
+    );
+    const encoded = encodeFunctionResult({
+      abi: abi,
+      functionName: "getPendingRequests",
+      result: json,
+    });
+
+    // to debug JIC
+    // const decoded = decodeFunctionResult({
+    // abi: abi,
+    // functionName: "getPendingRequests",
+    // data: encoded as `0x${string}`,
+    //});
+    testLog.getLog().info("Tx- encoded" + encoded);
+    testLog.getLog().info("Tx- encoded hash" + keccak256(encoded));
+    return keccak256(encoded);
+  }
   static async getL2Request(
     idNumber: number,
     chain = "Ethereum",
@@ -333,14 +363,20 @@ export class L2Update {
     );
   }
 
-  build() {
-    return this.api.tx.rolldown.updateL2FromL1(this.buildParams());
+  buildUnsafe() {
+    return this.api.tx.rolldown.updateL2FromL1Unsafe(this.buildParams());
+  }
+  buildSafe() {
+    const tx = this.buildParams();
+    const hash = Rolldown.hashL1Update(tx);
+    testLog.getLog().info("Hash:" + hash);
+    return this.api.tx.rolldown.updateL2FromL1(this.buildParams(), hash);
   }
   forceBuild() {
     return this.api.tx.rolldown.forceUpdateL2FromL1(this.buildParams());
   }
 
-  private buildParams() {
+  public buildParams() {
     return {
       chain: this.api.createType("PalletRolldownMessagesChain", this.chain),
       pendingDeposits: this.api.createType(
@@ -391,6 +427,7 @@ export class L2Update {
       tokenAddress: erc20Address,
       amount: amountValue,
       timeStamp: timestamp,
+      ferryTip: new BN(0),
     });
     this.pendingDeposits.push(deposit);
     return this;
@@ -437,7 +474,7 @@ export async function createAnUpdate(
     update = new L2Update(api)
       .withDeposit(txIndex, address, address, depositAmountValue)
       .on(chain)
-      .build();
+      .buildUnsafe();
   } else {
     update = updateValue;
   }

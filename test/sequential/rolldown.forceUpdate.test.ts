@@ -3,10 +3,7 @@
  * @group rolldown
  */
 
-import {
-  ChainName,
-  SequencerStaking,
-} from "../../utils/rollDown/SequencerStaking";
+import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import {
   createAnUpdate,
   createAnUpdateAndCancelIt,
@@ -25,24 +22,12 @@ import { BN_MILLION, signTx } from "gasp-sdk";
 import { isBadOriginError } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
-import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 
 let api: any;
 let testUser: User;
 let testUserAddress: string;
 const chain = "Ethereum";
-
-async function setupASequencer(user: User, chain: ChainName = "Ethereum") {
-  const extrinsic = await SequencerStaking.provideSequencerStaking(
-    (await SequencerStaking.minimalStakeAmount()).addn(1000),
-    chain,
-  );
-  return await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(user),
-    Sudo.sudoAs(user, extrinsic),
-  );
-}
 
 beforeAll(async () => {
   await initApi();
@@ -70,7 +55,7 @@ it("forceUpdateL2FromL1 can be called by Sudo", async () => {
 });
 
 it("forceUpdateL2FromL1 can't be called by non-sudo user", async () => {
-  await setupASequencer(testUser, chain);
+  await SequencerStaking.setupASequencer(testUser, chain);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   const update = new L2Update(api)
     .withDeposit(txIndex, testUserAddress, testUserAddress, BN_MILLION)
@@ -85,7 +70,7 @@ it("forceUpdateL2FromL1 can't be called by non-sudo user", async () => {
 });
 
 it("Validate that forceCancelRequestsFromL1 can be called by Sudo", async () => {
-  await setupASequencer(testUser, chain);
+  await SequencerStaking.setupASequencer(testUser, chain);
   const { reqId } = await createAnUpdate(testUser, chain);
   const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
   await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
@@ -94,7 +79,7 @@ it("Validate that forceCancelRequestsFromL1 can be called by Sudo", async () => 
 });
 
 it("Validate that forceCancelRequestsFromL1 can't be called by non-sudo user", async () => {
-  await setupASequencer(testUser, chain);
+  await SequencerStaking.setupASequencer(testUser, chain);
   const { reqId } = await createAnUpdate(testUser, chain);
   const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
   await signTx(api, cancel, testUser.keyRingPair).then((events) => {
@@ -135,9 +120,9 @@ it("forceUpdateL2FromL1 does not wait for a dispute period", async () => {
   expect(testUser.getAsset(assetId)?.amountAfter.free!).bnEqual(BN_MILLION);
 });
 
-it("forceCancelRequest does not need any resolution to justify the cancelation", async () => {
+it("forceCancelRequest does not need any resolution to justify the cancellation", async () => {
   testUser.addAsset(GASP_ASSET_ID);
-  await setupASequencer(testUser, chain);
+  await SequencerStaking.setupASequencer(testUser, chain);
   await testUser.refreshAmounts(AssetWallet.BEFORE);
   const { reqId } = await createAnUpdate(testUser, chain);
   const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
@@ -161,9 +146,9 @@ describe("Seq1 do an update and seq2 cancel it", () => {
   let txIndex: any;
   let reqIdValue: number;
   beforeEach(async () => {
-    [testUser,testUser2] = setupUsers();
-    await setupASequencer(testUser, chain);
-    await setupASequencer(testUser2, chain);
+    [testUser, testUser2] = setupUsers();
+    await SequencerStaking.setupASequencer(testUser, chain);
+    await SequencerStaking.setupASequencer(testUser2, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     testUser.addAsset(GASP_ASSET_ID);
     testUser2.addAsset(GASP_ASSET_ID);

@@ -3,9 +3,6 @@ import { ethers } from "ethers";
 import { randomBytes } from "crypto";
 import { User } from "./User";
 import { testLog } from "./Logger";
-import { getApi } from "./api";
-import { api, setupApi } from "./setup";
-import { OrmlTokensAccountData } from "@polkadot/types/lookup";
 
 export class EthUser extends User {
   /**
@@ -35,24 +32,6 @@ export class EthUser extends User {
                 pkey: ${this.privateKey} 
          dot address: ${this.keyRingPair.address} 
       ******************************** `,
-    );
-  }
-
-  async getBalanceForEthToken(address: string) {
-    const tokenId = await getApi().query.assetRegistry.l1AssetToId({
-      Ethereum: address,
-    });
-    if (tokenId.isNone) {
-      await setupApi();
-      return api.createType("OrmlTokensAccountData", {
-        free: 0,
-        reserved: 0,
-        frozen: 0,
-      }) as OrmlTokensAccountData;
-    }
-    return await getApi().query.tokens.accounts(
-      this.keyRingPair.address,
-      tokenId.toString(),
     );
   }
 }
