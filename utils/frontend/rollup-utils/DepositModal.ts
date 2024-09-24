@@ -3,6 +3,7 @@ import { FIVE_MIN } from "../../Constants";
 import { sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
+  buildRawDataTestIdXpath,
   buildXpathByElementText,
   buildXpathByMultiText,
   clickElement,
@@ -32,6 +33,7 @@ const CONFIRMING_BLOCKING = "deposit-status-loading";
 const SUCCESS_MODAL = "transfer-success";
 const CLOSE_BUTTON = "close";
 const TOKEN_LIST_AMOUNT = "token-amount";
+const DEPOSIT_ERROR = "deposit-status-error";
 
 export enum DepositActionType {
   Deposit,
@@ -67,6 +69,11 @@ export class DepositModal {
     const xpath =
       buildDataTestIdXpath(ORIGIN_FEE) + buildDataTestIdXpath(FEE_VALUE);
     return isDisplayed(this.driver, xpath);
+  }
+
+  async waitForErrVisible() {
+    const xpath = buildDataTestIdXpath(DEPOSIT_ERROR);
+    await waitForElementVisible(this.driver, xpath, 50000);
   }
 
   async isDestinationFeeDisplayed() {
@@ -129,8 +136,12 @@ export class DepositModal {
       5000,
     );
     const tokenTestId = `token-icon-${assetName}`;
-    const tokenLocator = buildDataTestIdXpath(tokenTestId);
-    await waitForElementVisible(this.driver, tokenLocator, 5000);
+    const tokenLocator = buildRawDataTestIdXpath(tokenTestId);
+    await waitForElementVisible(
+      this.driver,
+      buildDataTestIdXpath(TOKEN_LIST_ITEM) + "/*/*" + tokenLocator,
+      5000,
+    );
   }
 
   async getTokenListRowAmount(tokenName: string, origin = "Native") {

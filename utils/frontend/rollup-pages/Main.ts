@@ -49,6 +49,15 @@ export class Main {
     }
   }
 
+  async skipLaunchMessage() {
+    const betaButton = buildXpathByElementText("span", "Hide");
+    try {
+      await clickElement(this.driver, betaButton);
+    } catch (error) {
+      //Button not found - no action performed.
+    }
+  }
+
   async skipMailerIframe() {
     const iframeXpath = "//Iframe";
     try {

@@ -339,12 +339,20 @@ export class MetaMask {
     const XPATH_CANCEL_BTN = await buildXpathByElementText("button", "Cancel");
     //handle different cancel flows
     try {
-      await waitForElement(driver, XPATH_CANCEL_BTN);
+      await waitForElement(driver, XPATH_CANCEL_BTN, 10000);
       await clickElement(driver, XPATH_CANCEL_BTN);
     } catch (e) {
-      await waitForElement(driver, XPATH_BTN_REJECT_TRANSACTION);
+      await waitForElement(driver, XPATH_BTN_REJECT_TRANSACTION, 10000);
       await clickElement(driver, XPATH_BTN_REJECT_TRANSACTION);
     }
+  }
+
+  private static async rejectDeposit(driver: WebDriver) {
+    const XPATH_BTN_REJECT_TRANSACTION = buildDataTestIdXpath(
+      BTN_REJECT_TRANSACTION,
+    );
+    await waitForElement(driver, XPATH_BTN_REJECT_TRANSACTION, 10000);
+    await clickElement(driver, XPATH_BTN_REJECT_TRANSACTION);
   }
 
   async closeAnyExtraWindow(driver: WebDriver) {
@@ -389,6 +397,10 @@ export class MetaMask {
 
   static async rejectTransactionInDifferentWindow(driver: WebDriver) {
     await doActionInDifferentWindow(driver, this.rejectTransaction);
+  }
+
+  static async rejectDepositInDifferentWindow(driver: WebDriver) {
+    await doActionInDifferentWindow(driver, this.rejectDeposit);
   }
 
   static async signDepositInDifferentWindow(driver: WebDriver) {

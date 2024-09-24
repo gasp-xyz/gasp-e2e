@@ -155,6 +155,28 @@ describe("Gasp UI swap tests", () => {
     expect(swapFee).toEqual(0);
   });
 
+  test("User can swap with enough tokens - rejected", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    const swap = new Swap(driver);
+    const isSwapFrameDisplayed = await swap.isDisplayed();
+    expect(isSwapFrameDisplayed).toBeTruthy();
+    await swap.pickPayToken(ETH_ASSET_NAME, ETH_ORIGIN);
+    await swap.pickGetToken(GASP_ASSET_NAME);
+    await swap.setPayTokenAmount("1.01");
+    const getTokenAmount = await swap.fetchGetAssetAmount();
+    expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
+
+    await swap.waitForSwapButtonEnabled();
+    const isSwapEnabled = await swap.isSwapButtonEnabled();
+    expect(isSwapEnabled).toBeTruthy();
+
+    await swap.clickSwapButtonByAction(SwapActionType.Swap);
+    await waitForActionNotification(driver, TransactionType.Swap, true);
+  });
+
   it("Switch transaction tokens and values", async () => {
     await setupPageWithState(driver, acc_addr_short);
     const swap = new Swap(driver);

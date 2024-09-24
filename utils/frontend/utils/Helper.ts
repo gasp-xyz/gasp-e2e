@@ -573,6 +573,10 @@ export function buildDataTestIdXpath(dataTestId: string) {
   return `//*[@data-testid='${dataTestId}']`;
 }
 
+export function buildRawDataTestIdXpath(dataTestId: string) {
+  return `[@data-testid='${dataTestId}']`;
+}
+
 export function buildDataTestIdXpathFunction(
   dataTestId: string,
   xpathFunction: string,

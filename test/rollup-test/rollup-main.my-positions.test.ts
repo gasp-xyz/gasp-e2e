@@ -80,6 +80,35 @@ describe("Gasp UI swap tests", () => {
     await waitForActionNotification(driver, TransactionType.RemoveLiquidity);
   });
 
+  it("Remove pool liquidity - rejected", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    sidebar = new Sidebar(driver);
+    await sidebar.clickNavPositions();
+
+    myPositionsPage = new MyPositionsPage(driver);
+    await myPositionsPage.waitForPoolPositionsVisible();
+    const isPoolVisible = await myPositionsPage.isLiqPoolDisplayed(
+      GASP_ASSET_NAME,
+      ETH_ASSET_NAME,
+    );
+    expect(isPoolVisible).toBeTruthy();
+
+    await myPositionsPage.clickPoolPosition(GASP_ASSET_NAME, ETH_ASSET_NAME);
+    await myPositionsPage.setupRemoveLiquidityPercentage("1");
+    await myPositionsPage.waitForFeeVisible();
+
+    await sleep(500);
+    await myPositionsPage.clickRemoveLiquidity();
+    await myPositionsPage.clickConfirmFeeAmount();
+    await waitForActionNotification(
+      driver,
+      TransactionType.RemoveLiquidity,
+      true,
+    );
+  });
+
   it("Cant remove 0 pc pool liquidity", async () => {
     await setupPageWithState(driver, acc_addr_short);
     const walletWrapper = new WalletWrapper(driver);
