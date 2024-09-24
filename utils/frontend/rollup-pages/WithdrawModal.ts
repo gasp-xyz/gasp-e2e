@@ -118,7 +118,7 @@ export class WithdrawModal {
     const tokenLocator = buildRawDataTestIdXpath(tokenTestId);
     await waitForElementVisible(
       this.driver,
-      buildDataTestIdXpath(TOKEN_LIST) + "/*/*" + tokenLocator,
+      buildDataTestIdXpath(TOKEN_LIST_ITEM) + "/*/*" + tokenLocator,
       5000,
     );
   }
