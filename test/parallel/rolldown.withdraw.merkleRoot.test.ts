@@ -15,11 +15,14 @@ import {
   createAnUpdateAndCancelIt,
   leaveSequencing,
 } from "../../utils/rollDown/Rolldown";
+import { signTx } from "gasp-sdk";
 
 let testUser: User;
 let api: ApiPromise;
+let gaspToL1Asset: any;
+let batchPeriod: any;
 
-beforeEach(async () => {
+beforeAll(async () => {
   try {
     getApi();
   } catch (e) {
@@ -27,8 +30,20 @@ beforeEach(async () => {
   }
   await setupApi();
   api = getApi();
+  gaspToL1Asset = JSON.parse(
+    JSON.stringify(await api.query.assetRegistry.idToL1Asset(GASP_ASSET_ID)),
+  );
+  batchPeriod = Rolldown.merkleRootBatchPeriod();
+});
+
+beforeEach(async () => {
   [testUser] = setupUsers();
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
+  await signTx(
+    getApi(),
+    await Withdraw(testUser, 10, gaspToL1Asset.ethereum, "Ethereum"),
+    testUser.keyRingPair,
+  );
 });
 
 test("Given a cancel WHEN block is processed THEN it will create an update that needs to be sent through a batch to L1 for justification", async () => {
@@ -72,17 +87,27 @@ test("Given a cancel WHEN block is processed THEN it will create an update that 
     event.batchId.toNumber(),
     chain,
   );
-  expect(l2Request.cancel.requestId.id).toEqual(event.batchId.toNumber());
+  expect(l2Request.cancel.requestId.id).toEqual(event.range.to.toNumber());
   expect(l2Request.cancel.updater).toEqual(testUser.keyRingPair.address);
   expect(l2Request.cancel.canceler).toEqual(testUser2.keyRingPair.address);
+});
+
+test("Given a withdraw extrinsic run WHEN tokens are available THEN a withdraw will happen and l2Requests will be stored waiting for batch", async () => {
+  await signTx(
+    getApi(),
+    await Withdraw(testUser, 10, gaspToL1Asset.ethereum, "Ethereum"),
+    testUser.keyRingPair,
+  );
+  const event = await Rolldown.waitForNextBatchCreated("Ethereum", batchPeriod);
+  const l2Request = await Rolldown.getL2Request(event.range.to.toNumber());
+  const sequencersList = await SequencerStaking.activeSequencers();
+  expect(l2Request.withdrawal.tokenAddress).toEqual(gaspToL1Asset.ethereum);
+  expect(sequencersList).toContain(l2Request.withdrawal.withdrawalRecipient);
 });
 
 test("Given <32> withdrawals WHEN they run successfully THEN a batch is generated AUTOMATICALLY from that L1, from ranges of (n,n+31)", async () => {
   let number = 0;
   const extrinsicCall: Extrinsic[] = [];
-  const gaspToL1Asset = JSON.parse(
-    JSON.stringify(await api.query.assetRegistry.idToL1Asset(GASP_ASSET_ID)),
-  );
   const nextRequestId = JSON.parse(
     JSON.stringify(await api.query.rolldown.l2OriginRequestId()),
   );
