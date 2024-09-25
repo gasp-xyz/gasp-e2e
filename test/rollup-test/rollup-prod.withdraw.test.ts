@@ -89,6 +89,7 @@ describe("Gasp Prod UI withdraw tests", () => {
     await withdrawModal.enterValue("1");
 
     await withdrawModal.waitForContinueState(true, 60000);
+    await withdrawModal.waitForFeeCalculation();
     const isOriginFeeDisplayed =
       await withdrawModal.isDestinationFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
@@ -169,6 +170,7 @@ describe("Gasp Prod UI withdraw tests", () => {
     await withdrawModal.enterValue("0.0011");
 
     await withdrawModal.waitForContinueState(true, 60000);
+    await withdrawModal.waitForFeeCalculation();
     const isOriginFeeDisplayed =
       await withdrawModal.isDestinationFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();

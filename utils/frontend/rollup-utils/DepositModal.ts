@@ -69,6 +69,13 @@ export class DepositModal {
     return isDisplayed(this.driver, xpath);
   }
 
+  async waitForFeeCalculation() {
+    const xpath =
+      buildDataTestIdXpath(ORIGIN_FEE) + buildDataTestIdXpath(FEE_VALUE);
+
+    await waitForElementVisible(this.driver, xpath, 15000);
+  }
+
   async isDestinationFeeDisplayed() {
     const xpath =
       buildDataTestIdXpath(DESTINATION_FEE) + buildDataTestIdXpath(FEE_VALUE);

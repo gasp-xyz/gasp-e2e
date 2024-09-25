@@ -78,6 +78,7 @@ describe("Gasp Prod UI deposit tests", () => {
     await depositModal.enterValue("0.001" + randomNum.toString());
 
     await depositModal.waitForContinueState(true, 60000);
+    await depositModal.waitForFeeCalculation();
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
 
@@ -133,6 +134,7 @@ describe("Gasp Prod UI deposit tests", () => {
     await depositModal.enterValue("0.001" + randomNum.toString());
 
     await depositModal.waitForContinueState(true, 60000);
+    await depositModal.waitForFeeCalculation();
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
 
