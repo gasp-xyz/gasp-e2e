@@ -109,6 +109,8 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         erc20Address,
         1122,
+        //@ts-ignore
+        null,
       );
       const balanceBefore = await getNativeBalance(user, "EthAnvil");
       const result = await signTxMetamask(

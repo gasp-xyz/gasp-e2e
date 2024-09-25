@@ -4784,9 +4784,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "22.7.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.7.0.tgz#670aa1874bc836863e5c116f9f2c32416ff27e1f"
-  integrity sha512-MOdOibwBs6KW1vfqz2uKMlxq5xAfAZ98SZjO8e3XnAbFnTJtAspqhWk7hrdSAs9/Y14ZWMiy7/MxMUzAOadYEw==
+  version "22.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.6.1.tgz#e531a45f4d78f14a8468cb9cdc29dc9602afc7ac"
+  integrity sha512-V48tCfcKb/e6cVUigLAaJDAILdMP0fUW6BidkPK4GpGjXcfbnoHasCZDwz3N3yVt5we2RHm4XTQCpv0KJz9zqw==
   dependencies:
     undici-types "~6.19.2"
 
@@ -4806,9 +4806,9 @@
   integrity sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==
 
 "@types/node@^18.11.18", "@types/node@^18.14.6":
-  version "18.19.51"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.51.tgz#bebfb2f282de467f556a1a85aa74878b6ca0ab3a"
-  integrity sha512-IIMkWEIVQDlBpi6pPeGqTqOx7KbzGC3EgIyH8NrxplXOwWw0uVl9vthJUMFrxD7kcEfcRp7jIkgpB28M6JnfWA==
+  version "18.19.50"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.50.tgz#8652b34ee7c0e7e2004b3f08192281808d41bf5a"
+  integrity sha512-xonK+NRrMBRtkL1hVCc3G+uXtjh1Al4opBLjqVmipe5ZAaBYWW6cNAiBVZ1BvmkBhep698rP3UM3aRAdSALuhg==
   dependencies:
     undici-types "~5.26.4"
 
@@ -5190,10 +5190,10 @@
     http-proxy "^1.18.1"
     ws "^8.13.0"
 
-"@wagmi/connectors@5.1.13":
-  version "5.1.13"
-  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-5.1.13.tgz#82b152060668e740a868268b66b27fdc878982d4"
-  integrity sha512-Lvw3ClOQL8lJGn2cY2QJbqo0Gb6P30QtDCBMtpXwLUSnKnLvHq0d/aErJXEU3LdHtVJC9qwx9Siug4AUHtTK6w==
+"@wagmi/connectors@5.1.12":
+  version "5.1.12"
+  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-5.1.12.tgz#a4345eeeda69942b002dd2710a3f755a30738e2c"
+  integrity sha512-w/MCH+J/sdqfy9ZFoEA3YKnJWlaExTCjMN4qjVNGsRtvy4ADz//zjQsmOZx51oa5xt42hv3fITN36aYZe/rO7g==
   dependencies:
     "@coinbase/wallet-sdk" "4.0.4"
     "@metamask/sdk" "0.28.4"
@@ -5203,10 +5203,10 @@
     "@walletconnect/modal" "2.6.2"
     cbw-sdk "npm:@coinbase/wallet-sdk@3.9.3"
 
-"@wagmi/core@2.13.7":
-  version "2.13.7"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-2.13.7.tgz#d1ad8e82aee79cd36a07cec7b6de0c0195578ca1"
-  integrity sha512-vuoy4Qct5A5pzsmbd5D265NV5qcybQM9n03h+fyljZF368T7FfgmMgOfcO8ZElVqhPsc13JS84drxcQPT4yjIg==
+"@wagmi/core@2.13.6":
+  version "2.13.6"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-2.13.6.tgz#532118e60fcb3abde9cabf5318c8986c4ddcacff"
+  integrity sha512-5QkYd9dWntUJMH3EFQqPJRDBwc0+PVPmuMQF09wKXCFvTIdTLFnEI3itPIoMwO4ULtvsrftDzpT71lqpu1EJJQ==
   dependencies:
     eventemitter3 "5.0.1"
     mipd "0.0.7"
@@ -6515,12 +6515,12 @@ browserify-aes@^1.2.0:
     safe-buffer "^5.0.1"
 
 browserslist@^4.23.1, browserslist@^4.23.3:
-  version "4.24.0"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.24.0.tgz#a1325fe4bc80b64fda169629fc01b3d6cecd38d4"
-  integrity sha512-Rmb62sR1Zpjql25eSanFGEhAxcFwfA1K0GuQcLoaJBAcENegrQut3hYdhXFF1obQfiDyqIW/cLM5HSJ/9k884A==
+  version "4.23.3"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.23.3.tgz#debb029d3c93ebc97ffbc8d9cbb03403e227c800"
+  integrity sha512-btwCFJVjI4YWDNfau8RhZ+B1Q/VLoUITrm3RlP6y1tYGWIOa+InuYiRGXUBXo8nA1qKmHMyLB/iVQg5TT4eFoA==
   dependencies:
-    caniuse-lite "^1.0.30001663"
-    electron-to-chromium "^1.5.28"
+    caniuse-lite "^1.0.30001646"
+    electron-to-chromium "^1.5.4"
     node-releases "^2.0.18"
     update-browserslist-db "^1.1.0"
 
@@ -6721,7 +6721,7 @@ camelcase@^6.0.0, camelcase@^6.2.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-6.3.0.tgz#5685b95eb209ac9c0c177467778c9c84df58ba9a"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
-caniuse-lite@^1.0.30001663:
+caniuse-lite@^1.0.30001646:
   version "1.0.30001663"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001663.tgz#1529a723505e429fdfd49532e9fc42273ba7fed7"
   integrity sha512-o9C3X27GLKbLeTYZ6HBOLU1tsAcBZsLis28wrVzddShCS16RujjHp9GDHKZqrB3meE0YjhawvMFsGb/igqiPzA==
@@ -7917,7 +7917,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
-electron-to-chromium@^1.5.28:
+electron-to-chromium@^1.5.4:
   version "1.5.28"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.28.tgz#aee074e202c6ee8a0030a9c2ef0b3fe9f967d576"
   integrity sha512-VufdJl+rzaKZoYVUijN13QcXVF5dWPZANeFTLNy+OSpHdDL5ynXTF35+60RSBbaQYB1ae723lQXHCrf4pyLsMw==
@@ -9623,27 +9623,27 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-eth-rollup-develop.40:
-  version "0.0.2-eth-rollup-develop.40"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-eth-rollup-develop.40.tgz#cdf8530c0982f2085c3d24b46865260bcc0dce0e"
-  integrity sha512-mr9S8G9J6C6HjIJWbptLBjFjrlNrfmHpGkAF5dRWabJJDsfRAFB263UM3wkqKapVFmjpQ9p971emh+lCGr0Ugw==
+gasp-sdk@0.0.2-feature-ferries.1:
+  version "0.0.2-feature-ferries.1"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-ferries.1.tgz#644716069386fe6ae7bc26d5e71c221568ca48d6"
+  integrity sha512-tG+dC0plqmCPR2oSpMve2hlaHq2+wFE1b/iNHYS8gKREY9x6OsZh5AaOMt4HNydfp5TPoaGoP6XuTM99ft2G+w==
   dependencies:
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-eth-rollup-develop.42"
+    gasp-type-definitions "0.0.2-feature-ferries.1"
     tslib "^2.3.0"
     tslog "4.8.2"
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-eth-rollup-develop.42:
-  version "0.0.2-eth-rollup-develop.42"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-eth-rollup-develop.42.tgz#de4577f9f0995fb775cb93cccc28ca2ca1319c89"
-  integrity sha512-Dt5/xGXStJq/RsUr4VoKK6l14BMfD6ULYqoJwTaNSkpLWye7076CsOJImNYa47XGPHtOYrl956HnwXW8VOv3kA==
+gasp-type-definitions@0.0.2-feature-ferries.1:
+  version "0.0.2-feature-ferries.1"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-ferries.1.tgz#a5ac37b7bfb78ab018d92828df60bedab2c66960"
+  integrity sha512-XX/SQbnQ05G9d7iSTUbTKZj5vmY9CBbecXXUpvpY4KRbnw9XNGRUIeG9WdTsppwesHd8lixoCviySLWEOc8n+g==
 
-gasp-types@0.0.2-eth-rollup-develop.40:
-  version "0.0.2-eth-rollup-develop.40"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-eth-rollup-develop.40.tgz#783ac5860b77281a367443c2a82ceff7c42b33b8"
-  integrity sha512-F7KaZ0xit0+2b1fJvmzqmJPy9jHafVCjB1r+T5nd8WQJ0VijhWKQi4UjzbEtNsWBt7o9lwrgvgfHUESdmLMrLg==
+gasp-types@0.0.2-feature-ferries.1:
+  version "0.0.2-feature-ferries.1"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-ferries.1.tgz#a7ab48786762465000832f6dc4354cde3eb45a28"
+  integrity sha512-o4NJ5CQ2dVJZNyHaFsw3hM29Pfj+giIzQOqnwpTz4nmIJ275v77osdx4BzbgOyti1yOMwOks5mEayTlgprn7og==
 
 gauge@^4.0.3:
   version "4.0.4"
@@ -13934,9 +13934,9 @@ pouchdb@7.3.0:
     vuvuzela "1.0.3"
 
 preact@^10.16.0:
-  version "10.24.1"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.24.1.tgz#501e206d0a46667b6d0d8b780c7a65172239b2d0"
-  integrity sha512-PnBAwFI3Yjxxcxw75n6VId/5TFxNW/81zexzWD9jn1+eSrOP84NdsS38H5IkF/UH3frqRPT+MvuCoVHjTDTnDw==
+  version "10.24.0"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.24.0.tgz#bd8139bee35aafede3c6de96d2453982610dfeef"
+  integrity sha512-aK8Cf+jkfyuZ0ZZRG9FbYqwmEiGQ4y/PUO4SuTWoyWL244nZZh7bd5h2APd4rSNDYTBNghg1L+5iJN3Skxtbsw==
 
 prebuild-install@^7.1.1:
   version "7.1.2"
@@ -16615,12 +16615,12 @@ w-json@1.3.10:
   integrity sha512-XadVyw0xE+oZ5FGApXsdswv96rOhStzKqL53uSe5UaTadABGkWIg1+DTx8kiZ/VqTZTBneoL0l65RcPe4W3ecw==
 
 wagmi@^2.10.10:
-  version "2.12.14"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-2.12.14.tgz#bec465fb2924008eb870e981a01623db3cfe122c"
-  integrity sha512-D9pCL3D/+Ph8k6SVi1aWcmnnw7gWyPiFlSovBplpsFgKT613csfXQDp+VslVR8onB+nkFikakxZNKcZgbLHU6A==
+  version "2.12.13"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-2.12.13.tgz#bc3c6ac0480a652c4b81c9beb69507de9b5383fd"
+  integrity sha512-zgTb2Sb8Yq69X5bxLLIRn2+HjjxU57d7mfCKA2kPo5+RSWsSstj57CncTeVjoR+gKhvLEEl2mmusSzQjT2p5lA==
   dependencies:
-    "@wagmi/connectors" "5.1.13"
-    "@wagmi/core" "2.13.7"
+    "@wagmi/connectors" "5.1.12"
+    "@wagmi/core" "2.13.6"
     use-sync-external-store "1.2.0"
 
 walker@^1.0.8:

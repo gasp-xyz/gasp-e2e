@@ -12,7 +12,7 @@ export async function rolldownDeposit(
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
 
-  return sdkApi.tx.rolldown.updateL2FromL1({
+  return sdkApi.tx.rolldown.updateL2FromL1Unsafe({
     pendingDeposits: sdkApi.createType("Vec<PalletRolldownMessagesDeposit>", [
       {
         requestId: sdkApi.createType("PalletRolldownMessagesRequestId", [
@@ -45,6 +45,7 @@ export async function Withdraw(
   amountValue: BN | number,
   tokenAddress: string = "",
   chain: ChainName = "Ethereum",
+  ferryTip: BN | null = null,
 ) {
   const mangata = await getMangataInstance();
   const sdkApi = await mangata.api();
@@ -55,6 +56,7 @@ export async function Withdraw(
     EthUser.toString(),
     address,
     amountValue,
+    ferryTip,
   );
 }
 

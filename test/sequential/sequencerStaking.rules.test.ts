@@ -157,7 +157,7 @@ describe("sequencerStaking", () => {
         BN_MILLION,
       )
       .on("Arbitrum")
-      .build();
+      .buildUnsafe();
     await signTx(api, update, seq.keyRingPair).then((events) => {
       expectExtrinsicSucceed(events);
     });
@@ -208,7 +208,7 @@ describe("sequencerStaking", () => {
         BN_MILLION,
       )
       .on(chain)
-      .build();
+      .buildUnsafe();
 
     // A user that did not provide stake -> can not submit update
     await signTx(api, update, user.keyRingPair).then((events) => {
@@ -288,7 +288,7 @@ describe("sequencerStaking", () => {
         BN_MILLION,
       )
       .on()
-      .build();
+      .buildUnsafe();
 
     await signTx(api, update, sequencer.keyRingPair).then((events) => {
       const eventResponse = getEventResultFromMangataTx(events);
@@ -361,7 +361,7 @@ describe("sequencerStaking", () => {
         new L2Update(api)
           .withCancelResolution(txIndex, cancelReqId, false)
           .on(chain)
-          .build(),
+          .buildUnsafe(),
       ),
     );
     const eventFiltered = filterZeroEventData(cancelResolution, "L1ReadStored");
