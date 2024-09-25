@@ -159,7 +159,7 @@ describe.each(["mm", "upgradabilityMm"])(
                 users[0].keyRingPair.address,
                 BN_HUNDRED,
               )
-              .build(),
+              .buildUnsafe(),
             sequencer,
           ],
           withdraw: [

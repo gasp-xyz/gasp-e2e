@@ -196,7 +196,7 @@ it("Given a set of sequencers, WHEN dispute AND min increased, then those below 
       new L2Update(await getApi())
         .withCancelResolution(txIndex, reqIdCanceled, true)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   expectMGAExtrinsicSuDidSuccess(cancelResolutionEvents);
@@ -289,7 +289,7 @@ it("Given a set of sequencers, WHEN dispute AND min increased + sm1 else joining
       new L2Update(await getApi())
         .withCancelResolution(txIndex, reqIdCanceled, true)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   expectMGAExtrinsicSuDidSuccess(cancelResolutionEvents);

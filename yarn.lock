@@ -4747,9 +4747,9 @@
     "@types/lodash" "*"
 
 "@types/lodash@*":
-  version "4.17.7"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.7.tgz#2f776bcb53adc9e13b2c0dfd493dfcbd7de43612"
-  integrity sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==
+  version "4.17.9"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.9.tgz#0dc4902c229f6b8e2ac5456522104d7b1a230290"
+  integrity sha512-w9iWudx1XWOHW5lQRS9iKpK/XuRhnN+0T7HvdCCd802FYkT1AMTnxndJHGrNJwRoRHkslGr4S29tjm1cT7x/7w==
 
 "@types/long@^4.0.0":
   version "4.0.2"
@@ -4784,9 +4784,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "22.5.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.5.tgz#52f939dd0f65fc552a4ad0b392f3c466cc5d7a44"
-  integrity sha512-Xjs4y5UPO/CLdzpgR6GirZJx36yScjh73+2NlLlkFRSoQN8B0DpfXPdZGnvVmLRLOsqDpOfTNv7D9trgGhmOIA==
+  version "22.6.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.6.1.tgz#e531a45f4d78f14a8468cb9cdc29dc9602afc7ac"
+  integrity sha512-V48tCfcKb/e6cVUigLAaJDAILdMP0fUW6BidkPK4GpGjXcfbnoHasCZDwz3N3yVt5we2RHm4XTQCpv0KJz9zqw==
   dependencies:
     undici-types "~6.19.2"
 
@@ -5190,10 +5190,10 @@
     http-proxy "^1.18.1"
     ws "^8.13.0"
 
-"@wagmi/connectors@5.1.11":
-  version "5.1.11"
-  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-5.1.11.tgz#828fd8764c4e632efe215d2b3b75415d8e601836"
-  integrity sha512-k6IfxYHG0MqJWt2KY6UhrNt4mPSmCLq0tQG3h+uB5em1oioX9V902geoik+KoF6Sa0oqAq5UTJVA1IT5lAjOkQ==
+"@wagmi/connectors@5.1.12":
+  version "5.1.12"
+  resolved "https://registry.yarnpkg.com/@wagmi/connectors/-/connectors-5.1.12.tgz#a4345eeeda69942b002dd2710a3f755a30738e2c"
+  integrity sha512-w/MCH+J/sdqfy9ZFoEA3YKnJWlaExTCjMN4qjVNGsRtvy4ADz//zjQsmOZx51oa5xt42hv3fITN36aYZe/rO7g==
   dependencies:
     "@coinbase/wallet-sdk" "4.0.4"
     "@metamask/sdk" "0.28.4"
@@ -5203,10 +5203,10 @@
     "@walletconnect/modal" "2.6.2"
     cbw-sdk "npm:@coinbase/wallet-sdk@3.9.3"
 
-"@wagmi/core@2.13.5":
-  version "2.13.5"
-  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-2.13.5.tgz#20764d88d36c31c4557511309eef7d23fa60c98e"
-  integrity sha512-lvX/hApJTSA/H2kOklokjIYiUpnT8CpBH80GeOiKxU0CGK1wNHTu20GRTCy0GF1t7jkNwPSG3m0SmnXmgYMmHw==
+"@wagmi/core@2.13.6":
+  version "2.13.6"
+  resolved "https://registry.yarnpkg.com/@wagmi/core/-/core-2.13.6.tgz#532118e60fcb3abde9cabf5318c8986c4ddcacff"
+  integrity sha512-5QkYd9dWntUJMH3EFQqPJRDBwc0+PVPmuMQF09wKXCFvTIdTLFnEI3itPIoMwO4ULtvsrftDzpT71lqpu1EJJQ==
   dependencies:
     eventemitter3 "5.0.1"
     mipd "0.0.7"
@@ -6722,9 +6722,9 @@ camelcase@^6.0.0, camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001646:
-  version "1.0.30001662"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001662.tgz#3574b22dfec54a3f3b6787331da1040fe8e763ec"
-  integrity sha512-sgMUVwLmGseH8ZIrm1d51UbrhqMCH3jvS7gF/M6byuHOnKyLOBL7W8yz5V02OHwgLGA36o/AFhWzzh4uc5aqTA==
+  version "1.0.30001663"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001663.tgz#1529a723505e429fdfd49532e9fc42273ba7fed7"
+  integrity sha512-o9C3X27GLKbLeTYZ6HBOLU1tsAcBZsLis28wrVzddShCS16RujjHp9GDHKZqrB3meE0YjhawvMFsGb/igqiPzA==
 
 capture-stack-trace@^1.0.0:
   version "1.0.2"
@@ -7918,9 +7918,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.5.4:
-  version "1.5.26"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.26.tgz#449b4fa90e83ab98abbe3b6a96c8ee395de94452"
-  integrity sha512-Z+OMe9M/V6Ep9n/52+b7lkvYEps26z4Yz3vjWL1V61W0q+VLF1pOHhMY17sa4roz4AWmULSI8E6SAojZA5L0YQ==
+  version "1.5.28"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.28.tgz#aee074e202c6ee8a0030a9c2ef0b3fe9f967d576"
+  integrity sha512-VufdJl+rzaKZoYVUijN13QcXVF5dWPZANeFTLNy+OSpHdDL5ynXTF35+60RSBbaQYB1ae723lQXHCrf4pyLsMw==
 
 elliptic@6.5.4:
   version "6.5.4"
@@ -8039,16 +8039,16 @@ engine.io-client@~6.0.1:
     xmlhttprequest-ssl "~2.0.0"
     yeast "0.1.2"
 
-engine.io-client@~6.5.2:
-  version "6.5.4"
-  resolved "https://registry.yarnpkg.com/engine.io-client/-/engine.io-client-6.5.4.tgz#b8bc71ed3f25d0d51d587729262486b4b33bd0d0"
-  integrity sha512-GeZeeRjpD2qf49cZQ0Wvh/8NJNfeXkXXcoGh+F77oEAgo9gUHwT1fCRxSNU+YEEaysOJTnsFHmM5oAcPy4ntvQ==
+engine.io-client@~6.6.1:
+  version "6.6.1"
+  resolved "https://registry.yarnpkg.com/engine.io-client/-/engine.io-client-6.6.1.tgz#28a9cc4e90d448e1d0ba9369ad08a7af82f9956a"
+  integrity sha512-aYuoak7I+R83M/BBPIOs2to51BmFIpC1wZe6zZzMrT2llVsHy5cvcmdsJgP2Qz6smHu+sD9oexiSUAVd8OfBPw==
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
     engine.io-parser "~5.2.1"
     ws "~8.17.1"
-    xmlhttprequest-ssl "~2.0.0"
+    xmlhttprequest-ssl "~2.1.1"
 
 engine.io-parser@~5.0.0:
   version "5.0.7"
@@ -8336,9 +8336,9 @@ eslint-import-resolver-node@^0.3.9:
     resolve "^1.22.4"
 
 eslint-module-utils@^2.9.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/eslint-module-utils/-/eslint-module-utils-2.11.0.tgz#b99b211ca4318243f09661fae088f373ad5243c4"
-  integrity sha512-gbBE5Hitek/oG6MUVj6sFuzEjA/ClzNflVrLovHi/JgLdC7fiN5gLAY1WIPW1a0V5I999MnsrvVrCOGmmVqDBQ==
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/eslint-module-utils/-/eslint-module-utils-2.11.1.tgz#6d5a05f09af98f4d238a819ae4c23626a75fa65b"
+  integrity sha512-EwcbfLOhwVMAfatfqLecR2yv3dE5+kQ8kx+Rrt0DvDXEVwW86KQ/xbMDQhtp5l42VXukD5SOF8mQQHbaNtO0CQ==
   dependencies:
     debug "^3.2.7"
 
@@ -9623,27 +9623,27 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-eth-rollup-develop.40:
-  version "0.0.2-eth-rollup-develop.40"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-eth-rollup-develop.40.tgz#cdf8530c0982f2085c3d24b46865260bcc0dce0e"
-  integrity sha512-mr9S8G9J6C6HjIJWbptLBjFjrlNrfmHpGkAF5dRWabJJDsfRAFB263UM3wkqKapVFmjpQ9p971emh+lCGr0Ugw==
+gasp-sdk@0.0.2-feature-ferries.1:
+  version "0.0.2-feature-ferries.1"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-ferries.1.tgz#644716069386fe6ae7bc26d5e71c221568ca48d6"
+  integrity sha512-tG+dC0plqmCPR2oSpMve2hlaHq2+wFE1b/iNHYS8gKREY9x6OsZh5AaOMt4HNydfp5TPoaGoP6XuTM99ft2G+w==
   dependencies:
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-eth-rollup-develop.42"
+    gasp-type-definitions "0.0.2-feature-ferries.1"
     tslib "^2.3.0"
     tslog "4.8.2"
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-eth-rollup-develop.42:
-  version "0.0.2-eth-rollup-develop.42"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-eth-rollup-develop.42.tgz#de4577f9f0995fb775cb93cccc28ca2ca1319c89"
-  integrity sha512-Dt5/xGXStJq/RsUr4VoKK6l14BMfD6ULYqoJwTaNSkpLWye7076CsOJImNYa47XGPHtOYrl956HnwXW8VOv3kA==
+gasp-type-definitions@0.0.2-feature-ferries.1:
+  version "0.0.2-feature-ferries.1"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-ferries.1.tgz#a5ac37b7bfb78ab018d92828df60bedab2c66960"
+  integrity sha512-XX/SQbnQ05G9d7iSTUbTKZj5vmY9CBbecXXUpvpY4KRbnw9XNGRUIeG9WdTsppwesHd8lixoCviySLWEOc8n+g==
 
-gasp-types@0.0.2-eth-rollup-develop.40:
-  version "0.0.2-eth-rollup-develop.40"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-eth-rollup-develop.40.tgz#783ac5860b77281a367443c2a82ceff7c42b33b8"
-  integrity sha512-F7KaZ0xit0+2b1fJvmzqmJPy9jHafVCjB1r+T5nd8WQJ0VijhWKQi4UjzbEtNsWBt7o9lwrgvgfHUESdmLMrLg==
+gasp-types@0.0.2-feature-ferries.1:
+  version "0.0.2-feature-ferries.1"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-ferries.1.tgz#a7ab48786762465000832f6dc4354cde3eb45a28"
+  integrity sha512-o4NJ5CQ2dVJZNyHaFsw3hM29Pfj+giIzQOqnwpTz4nmIJ275v77osdx4BzbgOyti1yOMwOks5mEayTlgprn7og==
 
 gauge@^4.0.3:
   version "4.0.4"
@@ -12810,7 +12810,7 @@ node-domexception@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
   integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
 
-node-fetch-native@^1.6.3, node-fetch-native@^1.6.4:
+node-fetch-native@^1.6.4:
   version "1.6.4"
   resolved "https://registry.yarnpkg.com/node-fetch-native/-/node-fetch-native-1.6.4.tgz#679fc8fd8111266d47d7e72c379f1bed9acff06e"
   integrity sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==
@@ -13118,13 +13118,13 @@ oboe@2.1.5:
     http-https "^1.0.0"
 
 ofetch@^1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/ofetch/-/ofetch-1.3.4.tgz#7ea65ced3c592ec2b9906975ae3fe1d26a56f635"
-  integrity sha512-KLIET85ik3vhEfS+3fDlc/BAZiAp+43QEC/yCo5zkNoY2YaKvNkOaFr/6wCFgFH1kuYQM5pMNi0Tg8koiIemtw==
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/ofetch/-/ofetch-1.4.0.tgz#89ef58fb673fbe2a87250973d4586ce7725e8399"
+  integrity sha512-MuHgsEhU6zGeX+EMh+8mSMrYTnsqJQQrpM00Q6QHMKNqQ0bKy0B43tk8tL1wg+CnsSTy1kg4Ir2T5Ig6rD+dfQ==
   dependencies:
     destr "^2.0.3"
-    node-fetch-native "^1.6.3"
-    ufo "^1.5.3"
+    node-fetch-native "^1.6.4"
+    ufo "^1.5.4"
 
 ohash@^1.1.3:
   version "1.1.4"
@@ -14856,9 +14856,9 @@ secure-json-parse@^2.4.0:
   integrity sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==
 
 selenium-webdriver@^4.10.0:
-  version "4.24.1"
-  resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-4.24.1.tgz#4315214420cc26dddaa21ae26863dd452aec2829"
-  integrity sha512-fcK5BTI/54cSqIhiVtrd9li1YL6LW109yIwuVw6V+FlVE6y4riGiX2qdZxVzHq+sm2TJyps+D2sjzXrpDZe1Og==
+  version "4.25.0"
+  resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-4.25.0.tgz#3562b49668817974bb1d13d25a50e8bc0264fcf3"
+  integrity sha512-zl9IX93caOT8wbcCpZzAkEtYa+hNgJ4C5GUN8uhpzggqRLvsg1asfKi0p1uNZC8buYVvsBZbx8S+9MjVAjs4oA==
   dependencies:
     "@bazel/runfiles" "^5.8.1"
     jszip "^3.10.1"
@@ -15145,13 +15145,13 @@ socket.io-client@4.3.2:
     socket.io-parser "~4.1.1"
 
 socket.io-client@^4.5.1:
-  version "4.7.5"
-  resolved "https://registry.yarnpkg.com/socket.io-client/-/socket.io-client-4.7.5.tgz#919be76916989758bdc20eec63f7ee0ae45c05b7"
-  integrity sha512-sJ/tqHOCe7Z50JCBCXrsY3I2k03iOiUe+tj1OmKeD2lXPiGH/RUCdTZFoqVyN7l1MnpIzPrGtLcijffmeouNlQ==
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/socket.io-client/-/socket.io-client-4.8.0.tgz#2ea0302d0032d23422bd2860f78127a800cad6a2"
+  integrity sha512-C0jdhD5yQahMws9alf/yvtsMGTaIDBnZ8Rb5HU56svyq0l5LIrGzIDZZD5pHQlmzxLuU91Gz+VpQMKgCTNYtkw==
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.2"
-    engine.io-client "~6.5.2"
+    engine.io-client "~6.6.1"
     socket.io-parser "~4.2.4"
 
 socket.io-parser@~4.1.1:
@@ -16590,9 +16590,9 @@ verror@1.10.0:
     extsprintf "^1.2.0"
 
 viem@^2.1.1, viem@^2.17.4, viem@^2.7.15:
-  version "2.21.10"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-2.21.10.tgz#a6c6fb201512320946f1266321df74ac2e6b1d2a"
-  integrity sha512-n+BKNabWI0k2i7PB4UEdxgHHpQmMeDk+2X9093l/yU0NLUjIgiazybfD1BksGwbiIRk/WXr+aoRqKOExxRDxWA==
+  version "2.21.14"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.21.14.tgz#2ce78d52d43dd97103102fcb0852b973a911f478"
+  integrity sha512-uM6XmY9Q/kJRVSopJAGsakmtNDpk/EswqXUzwOp9DzhGuwgpWtw2MgwpfFdIyqBDFIw+TTypCIUTcwJSgEYSzA==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.4.0"
@@ -16615,12 +16615,12 @@ w-json@1.3.10:
   integrity sha512-XadVyw0xE+oZ5FGApXsdswv96rOhStzKqL53uSe5UaTadABGkWIg1+DTx8kiZ/VqTZTBneoL0l65RcPe4W3ecw==
 
 wagmi@^2.10.10:
-  version "2.12.12"
-  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-2.12.12.tgz#0780267ac473f7dfe25d887ae5186e1e3790c087"
-  integrity sha512-BgB8GprWJzWuq3V6vCr12kP9a+ta9AWEkoM/fjQWE90yD9YWEgYmpK/uqXNnZLymsuSfxyIFn7JhYIs+mwo/yA==
+  version "2.12.13"
+  resolved "https://registry.yarnpkg.com/wagmi/-/wagmi-2.12.13.tgz#bc3c6ac0480a652c4b81c9beb69507de9b5383fd"
+  integrity sha512-zgTb2Sb8Yq69X5bxLLIRn2+HjjxU57d7mfCKA2kPo5+RSWsSstj57CncTeVjoR+gKhvLEEl2mmusSzQjT2p5lA==
   dependencies:
-    "@wagmi/connectors" "5.1.11"
-    "@wagmi/core" "2.13.5"
+    "@wagmi/connectors" "5.1.12"
+    "@wagmi/core" "2.13.6"
     use-sync-external-store "1.2.0"
 
 walker@^1.0.8:
@@ -17453,6 +17453,11 @@ xmlhttprequest-ssl@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-2.0.0.tgz#91360c86b914e67f44dce769180027c0da618c67"
   integrity sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==
+
+xmlhttprequest-ssl@~2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-2.1.1.tgz#0d045c3b2babad8e7db1af5af093f5d0d60df99a"
+  integrity sha512-ptjR8YSJIXoA3Mbv5po7RtSYHO6mZr8s7i5VGmEk7QY2pQWyT1o0N+W1gKbOyJPUCGXGnuw0wqe8f0L6Y0ny7g==
 
 xmlhttprequest@1.8.0:
   version "1.8.0"

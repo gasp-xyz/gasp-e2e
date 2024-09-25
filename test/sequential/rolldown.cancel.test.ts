@@ -99,7 +99,7 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, false)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
@@ -141,7 +141,7 @@ it("GIVEN a slashed sequencer, WHEN slashed it can not provide any update / canc
       new L2Update(api)
         .withCancelResolution(txIndex, reqIdCanceled, true)
         .on(chain)
-        .build(),
+        .buildUnsafe(),
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
@@ -168,12 +168,7 @@ it.each(["justified", "not justified"])(
       testUser2Address,
       chain,
     );
-    let cancelJustified: boolean;
-    if (resolutionType === "justified") {
-      cancelJustified = true;
-    } else {
-      cancelJustified = false;
-    }
+    const cancelJustified = resolutionType === "justified";
     await Rolldown.waitForReadRights(testUser2Address, 50, chain);
     const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -184,7 +179,7 @@ it.each(["justified", "not justified"])(
         new L2Update(api)
           .withCancelResolution(txIndex, reqIdCanceled, cancelJustified)
           .on(chain)
-          .build(),
+          .buildUnsafe(),
       ),
     );
     await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");

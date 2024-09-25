@@ -35,7 +35,7 @@ describe.skip("updateL1FromL1", () => {
     const update = new L2Update(api)
       .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
       .withCancelResolution(txIndex + 1, txIndexForL2Request, false, Date.now())
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
@@ -52,7 +52,7 @@ describe.skip("updateL1FromL1", () => {
     const update = new L2Update(api)
       .withDeposit(txIndex + 1, userAddr, userAddr, BN_MILLION)
       .withCancelResolution(txIndex + 2, txIndexForL2Request, false, Date.now())
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("WrongRequestId");
   });
@@ -66,7 +66,7 @@ describe.skip("updateL1FromL1", () => {
       .withDeposit(txIndex + 1, userAddr, userAddr, BN_MILLION)
       .withDeposit(txIndex, userAddr, userAddr, BN_MILLION)
       .withCancelResolution(txIndex - 1, txIndexForL2Request, false, Date.now())
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
   });
@@ -131,7 +131,7 @@ describe.skip("updateL1FromL1", () => {
           sequencer.keyRingPair.address,
           BN_THOUSAND,
         )
-        .build(),
+        .buildUnsafe(),
       sequencer.keyRingPair,
     );
     expectExtrinsicSucceed(res);
@@ -152,7 +152,7 @@ describe.skip("updateL1FromL1", () => {
           sequencer.keyRingPair.address,
           BN_THOUSAND.muln(2),
         )
-        .build(),
+        .buildUnsafe(),
       sequencer.keyRingPair,
     );
 
@@ -185,7 +185,7 @@ describe.skip("updateL1FromL1", () => {
         otherUser.ethAddress,
         BN_THOUSAND,
       )
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     const events = await Rolldown.untilL2Processed(res);
@@ -225,7 +225,7 @@ describe.skip("updateL1FromL1", () => {
         otherUser.ethAddress,
         BN_MILLION,
       )
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     const events = await Rolldown.untilL2Processed(res);
@@ -260,7 +260,7 @@ describe.skip("updateL1FromL1", () => {
         otherUser.keyRingPair.address,
         BN_MILLION,
       )
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     const events = await Rolldown.untilL2Processed(res);
@@ -299,7 +299,7 @@ describe.skip("updateL1FromL1", () => {
         otherUser.ethAddress,
         BN_MILLION,
       )
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicFail(res);
   });
@@ -326,7 +326,7 @@ describe.skip("updateL1FromL1", () => {
         otherUser.ethAddress,
         BN_MILLION,
       )
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicFail(res);
   });
@@ -353,7 +353,7 @@ describe.skip("updateL1FromL1", () => {
         otherUser.ethAddress,
         BN_MILLION,
       )
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expect(expectExtrinsicFail(res).data).toEqual("InvalidUpdate");
   });
@@ -380,7 +380,7 @@ describe.skip("updateL1FromL1", () => {
         otherUser.keyRingPair.address,
         BN_MILLION,
       )
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
@@ -401,7 +401,7 @@ describe.skip("updateL1FromL1", () => {
       .withDeposit(txIndex - 1, userAddr, userAddr, BN_MILLION)
       .withDeposit(txIndex - 3, userAddr, userAddr, BN_MILLION)
       .withCancelResolution(txIndex - 4, txIndexForL2Request, false, Date.now())
-      .build();
+      .buildUnsafe();
     const res = await signTx(api, update, sequencer.keyRingPair);
     expectExtrinsicSucceed(res);
     await Rolldown.untilL2Processed(res);
@@ -445,7 +445,7 @@ describe.skip("updateL1FromL1 - errors", () => {
             false,
             Date.now(),
           )
-          .build();
+          .buildUnsafe();
         const result = await signTx(api, update, sequencer.keyRingPair);
         if (withGap) {
           expectExtrinsicFail(result);
