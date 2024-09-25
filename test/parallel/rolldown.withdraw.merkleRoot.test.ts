@@ -2,7 +2,12 @@
  *
  */
 import { getApi, initApi } from "../../utils/api";
-import { Extrinsic, setupApi, setupUsers } from "../../utils/setup";
+import {
+  Extrinsic,
+  getSudoUser,
+  setupApi,
+  setupUsers,
+} from "../../utils/setup";
 import { User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
@@ -16,8 +21,11 @@ import {
   leaveSequencing,
 } from "../../utils/rollDown/Rolldown";
 import { signTx } from "gasp-sdk";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ExtrinsicResult, filterEventData } from "../../utils/eventListeners";
 
 let testUser: User;
+let sudo: User;
 let api: ApiPromise;
 let gaspToL1Asset: any;
 let batchPeriod: any;
@@ -30,20 +38,43 @@ beforeAll(async () => {
   }
   await setupApi();
   api = getApi();
+  sudo = getSudoUser();
+  await setupUsers();
   gaspToL1Asset = JSON.parse(
     JSON.stringify(await api.query.assetRegistry.idToL1Asset(GASP_ASSET_ID)),
   );
   batchPeriod = Rolldown.merkleRootBatchPeriod();
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(sudo));
 });
 
 beforeEach(async () => {
   [testUser] = setupUsers();
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
-  await signTx(
-    getApi(),
-    await Withdraw(testUser, 10, gaspToL1Asset.ethereum, "Ethereum"),
-    testUser.keyRingPair,
+});
+
+test("Given <32> withdrawals WHEN they run successfully THEN a batch is generated AUTOMATICALLY from that L1, from ranges of (n,n+31)", async () => {
+  let number = 0;
+  const extrinsicCall: Extrinsic[] = [];
+  const nextRequestId = JSON.parse(
+    JSON.stringify(await api.query.rolldown.l2OriginRequestId()),
   );
+  const batchPeriod = Rolldown.merkleRootBatchPeriod();
+  while (++number < 33) {
+    const withdrawTx = await Withdraw(
+      testUser,
+      10,
+      gaspToL1Asset.ethereum,
+      "Ethereum",
+    );
+    extrinsicCall.push(withdrawTx);
+  }
+  await Sudo.batchAsSudoFinalized(...extrinsicCall);
+  const event = await Rolldown.waitForNextBatchCreated("Ethereum", batchPeriod);
+  const sequencersList = await SequencerStaking.activeSequencers();
+  expect(sequencersList.toHuman().Ethereum).toContain(event.assignee);
+  expect(event.source).toEqual("AutomaticSizeReached");
+  expect(event.range.from.toNumber()).toEqual(nextRequestId.Ethereum);
+  expect(event.range.to.toNumber()).toEqual(nextRequestId.Ethereum + 31);
 });
 
 test("Given a cancel WHEN block is processed THEN it will create an update that needs to be sent through a batch to L1 for justification", async () => {
@@ -84,7 +115,7 @@ test("Given a cancel WHEN block is processed THEN it will create an update that 
   const event = await Rolldown.waitForNextBatchCreated("Ethereum", batchPeriod);
   expect(event.source).toEqual("PeriodReached");
   const l2Request = await Rolldown.getL2Request(
-    event.batchId.toNumber(),
+    event.range.to.toNumber(),
     chain,
   );
   expect(l2Request.cancel.requestId.id).toEqual(event.range.to.toNumber());
@@ -92,40 +123,57 @@ test("Given a cancel WHEN block is processed THEN it will create an update that 
   expect(l2Request.cancel.canceler).toEqual(testUser2.keyRingPair.address);
 });
 
-test("Given a withdraw extrinsic run WHEN tokens are available THEN a withdraw will happen and l2Requests will be stored waiting for batch", async () => {
-  await signTx(
-    getApi(),
-    await Withdraw(testUser, 10, gaspToL1Asset.ethereum, "Ethereum"),
-    testUser.keyRingPair,
-  );
-  const event = await Rolldown.waitForNextBatchCreated("Ethereum", batchPeriod);
-  const l2Request = await Rolldown.getL2Request(event.range.to.toNumber());
-  const sequencersList = await SequencerStaking.activeSequencers();
-  expect(l2Request.withdrawal.tokenAddress).toEqual(gaspToL1Asset.ethereum);
-  expect(sequencersList).toContain(l2Request.withdrawal.withdrawalRecipient);
-});
-
-test("Given <32> withdrawals WHEN they run successfully THEN a batch is generated AUTOMATICALLY from that L1, from ranges of (n,n+31)", async () => {
+test("Given a withdraw extrinsic run WHEN token address does not exist THEN a withdraw fail and no l2update is stored", async () => {
   let number = 0;
-  const extrinsicCall: Extrinsic[] = [];
-  const nextRequestId = JSON.parse(
-    JSON.stringify(await api.query.rolldown.l2OriginRequestId()),
-  );
-  const batchPeriod = Rolldown.merkleRootBatchPeriod();
-  while (++number < 33) {
-    const withdrawTx = await Withdraw(
+  let nonExistedToken: any;
+  nonExistedToken = await api.query.assetRegistry.idToL1Asset(number);
+  while (nonExistedToken.isEmprty === false) {
+    ++number;
+    nonExistedToken = await api.query.assetRegistry.idToL1Asset(number);
+  }
+  const events = await signTx(
+    getApi(),
+    await Withdraw(
       testUser,
       10,
-      gaspToL1Asset.ethereum,
+      nonExistedToken.toHuman().ethereum,
       "Ethereum",
+    ),
+    testUser.keyRingPair,
+  );
+  const filteredEvent = filterEventData(events, "WithdrawalRequestCreated");
+  expect(filteredEvent[0]).toBeUndefined();
+  const res = getEventResultFromMangataTx(events);
+  expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  expect(res.data).toEqual("TokenDoesNotExist");
+});
+
+describe("Pre-operation withdrawal tests", () => {
+  beforeEach(async () => {
+    await signTx(
+      getApi(),
+      await Withdraw(sudo, 10, gaspToL1Asset.ethereum, "Ethereum"),
+      sudo.keyRingPair,
     );
-    extrinsicCall.push(withdrawTx);
-  }
-  await Sudo.batchAsSudoFinalized(...extrinsicCall);
-  const event = await Rolldown.waitForNextBatchCreated("Ethereum", batchPeriod);
-  const sequencersList = await SequencerStaking.activeSequencers();
-  expect(sequencersList.toHuman().Ethereum).toContain(event.assignee);
-  expect(event.source).toEqual("AutomaticSizeReached");
-  expect(event.range.from.toNumber()).toEqual(nextRequestId.Ethereum);
-  expect(event.range.to.toNumber()).toEqual(nextRequestId.Ethereum + 31);
+  });
+
+  test("Given a withdraw extrinsic run WHEN tokens are available THEN a withdraw will happen and l2Requests will be stored waiting for batch", async () => {
+    await signTx(
+      getApi(),
+      await Withdraw(testUser, 10, gaspToL1Asset.ethereum, "Ethereum"),
+      testUser.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    const event = await Rolldown.waitForNextBatchCreated(
+      "Ethereum",
+      batchPeriod,
+    );
+    const l2Request = await Rolldown.getL2Request(event.range.to.toNumber());
+    expect(l2Request.withdrawal.tokenAddress).toEqual(gaspToL1Asset.ethereum);
+    expect(l2Request.withdrawal.withdrawalRecipient).toEqual(
+      testUser.keyRingPair.address,
+    );
+  });
 });
