@@ -25,6 +25,7 @@ import {
   PalletRolldownMessagesChain,
   PalletRolldownSequencerRights,
   SpRuntimeAccountAccountId20,
+  PalletRolldownMessagesDeposit,
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
@@ -356,6 +357,22 @@ export class Rolldown {
           requestId.toString(),
     );
   }
+
+  static depositFerryUnsafe(
+    deposit: PalletRolldownMessagesDeposit,
+    l1: L1Type,
+  ) {
+    return getApi().tx.rolldown.ferryDepositUnsafe(
+      //@ts-ignore
+      getL1(l1)!.gaspName,
+      deposit.requestId,
+      deposit.depositRecipient,
+      deposit.tokenAddress,
+      deposit.amount,
+      deposit.timeStamp,
+      deposit.ferryTip,
+    );
+  }
 }
 export class L2Update {
   api: ApiPromise;
@@ -372,7 +389,6 @@ export class L2Update {
       "Vec<PalletRolldownMessagesCancelResolution>",
     );
   }
-
   buildUnsafe() {
     return this.api.tx.rolldown.updateL2FromL1Unsafe(this.buildParams());
   }
@@ -427,6 +443,7 @@ export class L2Update {
     erc20Address: string,
     amountValue: number | BN,
     timestamp: number = Date.now(),
+    ferryTip: BN = BN_ZERO,
   ) {
     const deposit = this.api.createType("PalletRolldownMessagesDeposit", {
       requestId: this.api.createType("PalletRolldownMessagesRequestId", [
@@ -437,7 +454,7 @@ export class L2Update {
       tokenAddress: erc20Address,
       amount: amountValue,
       timeStamp: timestamp,
-      ferryTip: new BN(0),
+      ferryTip: ferryTip,
     });
     this.pendingDeposits.push(deposit);
     return this;

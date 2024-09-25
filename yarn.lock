@@ -1326,6 +1326,11 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@bundled-es-modules/deep-diff@^1.0.2-rc.1":
+  version "1.0.2-rc.1"
+  resolved "https://registry.yarnpkg.com/@bundled-es-modules/deep-diff/-/deep-diff-1.0.2-rc.1.tgz#1f84d1ee9d8ec707618ac80070f1e20e2e975168"
+  integrity sha512-O0WgekGUIBXdjTxhOWStTJPYdg8k5WaAa9+QvpWA/l8ceS+cJAVGqnjYpdzRPa1zxGR/cfjM7yBTrUONxfEvxg==
+
 "@coinbase/wallet-sdk@4.0.4":
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-4.0.4.tgz#634cd89bac93eeaf381a1f026476794e53431ed6"
@@ -11455,6 +11460,13 @@ json-buffer@3.0.1:
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
   integrity sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==
 
+json-diff-ts@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/json-diff-ts/-/json-diff-ts-4.0.1.tgz#0dc9455c452e72b1135ec43941b3c4f9ad0e4ffc"
+  integrity sha512-FEuq+gv4DXI+nL7oF/trBQIBQYDVcJe5Kqe3mYUZAkDtHBY/cdWmVZpV9BLZFp+wThMClajYp0fmNVmB81FsmA==
+  dependencies:
+    lodash "4.x"
+
 json-parse-even-better-errors@^2.3.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz#7c47805a94319928e05777405dc12e1f7a4ee02d"
@@ -12074,7 +12086,7 @@ lodash.upperfirst@^4.3.1:
   resolved "https://registry.yarnpkg.com/lodash.upperfirst/-/lodash.upperfirst-4.3.1.tgz#1365edf431480481ef0d1c68957a5ed99d49f7ce"
   integrity sha512-sReKOYJIJf74dhJONhU4e0/shzi1trVbSWDOhKYE5XV2O+H7Sb2Dihwuc7xWxVl+DgFPyTqIN3zMfT9cq5iWDg==
 
-lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.2.1:
+lodash@4.x, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.2.1:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
