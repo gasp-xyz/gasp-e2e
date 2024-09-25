@@ -186,6 +186,8 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         arbErc20,
         1122,
+        //@ts-ignore
+        null,
       );
 
       const balanceBefore = await getNativeBalance(user, "ArbAnvil");

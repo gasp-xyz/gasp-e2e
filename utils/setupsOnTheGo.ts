@@ -2026,7 +2026,7 @@ export async function closeL1Item(
   const viemClient = getWalletClient(network);
   const publicClient = getPublicClient(network);
   async function closeOnlyL1Item(item: bigint) {
-    const range = await findMerkleRange(publicClient, item);
+    const range = await findMerkleRange(publicClient, item, network);
     const rangeStart = (range as any).start;
     const rangeEnd = (range as any).end;
     const chainPk = api.createType("Chain", chain);
@@ -2053,7 +2053,7 @@ export async function closeL1Item(
       root,
       proof,
     );
-    console.log(res);
+    console.log(res.toHuman());
     const withdrawal = decodeAbiParameters(
       (metadata as any).output.abi.find((e: any) => e.name === closingItem)!
         .inputs[0].components,
@@ -2063,7 +2063,7 @@ export async function closeL1Item(
 
     //@ts-ignore
     const { request } = await publicClient.simulateContract({
-      address: ROLL_DOWN_CONTRACT_ADDRESS,
+      address: getL1(network as L1Type)!.contracts.rollDown.address,
       chain: getL1(network as L1Type)!,
       abi: abi,
       functionName: closingItem,
@@ -2117,9 +2117,13 @@ BigInt.prototype["toJSON"] = function () {
   return this.toString();
 };
 
-async function findMerkleRange(publicClient: PublicClient, requestId: bigint) {
+async function findMerkleRange(
+  publicClient: PublicClient,
+  requestId: bigint,
+  network: L1Type,
+) {
   return await publicClient.readContract({
-    address: ROLL_DOWN_CONTRACT_ADDRESS,
+    address: getL1(network)!.contracts.rollDown.address,
     abi: abi,
     functionName: "find_l2_batch",
     args: [requestId],
