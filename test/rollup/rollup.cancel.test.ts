@@ -11,11 +11,13 @@ import { User } from "../../utils/User";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { createAnUpdate, Rolldown } from "../../utils/rollDown/Rolldown";
-import { expectExtrinsicSucceed, waitForNBlocks } from "../../utils/utils";
+import { expectExtrinsicSucceed } from "../../utils/utils";
 import { waitForEvents } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { nToBigInt } from "@polkadot/util";
+import { waitForBatchWithRequest } from "../../utils/rollup/ethUtils";
+import { getL1 } from "../../utils/rollup/l1s";
 
 let user: User;
 jest.setTimeout(600000);
@@ -35,7 +37,7 @@ describe("Rollup", () => {
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
     });
 
-    test("A sequencer who creates a fake deposit, gets slashed - - -  ╾━╤デ╦︻", async () => {
+    test("A sequencer who creates a fake deposit, gets slashed", async () => {
       const newSequencer = user;
       await signTx(
         getApi(),
@@ -62,9 +64,13 @@ describe("Rollup", () => {
         await Rolldown.createManualBatch("EthAnvil"),
         newSequencer.keyRingPair,
       );
-      //let`s wait for 5 blocks until the update gets into L1
-      await waitForNBlocks(5);
-      await Rolldown.closeCancelOnL1(nToBigInt(id));
+      //wait for the update to be in contract
+      await waitForBatchWithRequest(nToBigInt(id), getL1("EthAnvil")!);
+      //run close.
+      await Rolldown.closeCancelOnL1(
+        nToBigInt(id),
+        getL1("EthAnvil")!.gaspName,
+      );
       await waitForEvents(
         await getApi(),
         "sequencerStaking.SequencersRemovedFromActiveSet",

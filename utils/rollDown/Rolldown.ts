@@ -295,8 +295,8 @@ export class Rolldown {
     );
   }
 
-  static async closeCancelOnL1(requestId: bigint) {
-    await closeL1Item(requestId, "close_cancel");
+  static async closeCancelOnL1(requestId: bigint, chainName = "Ethereum") {
+    await closeL1Item(requestId, "close_cancel", chainName);
   }
 
   static hashL1Update(L2Request: any) {
