@@ -99,7 +99,7 @@ describe("Rollup", () => {
     });
 
     test("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user);
+      const anyChange = await depositAndWait(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
       const erc20Address = getL1("EthAnvil")?.contracts.native.address!;
