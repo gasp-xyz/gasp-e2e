@@ -339,6 +339,13 @@ export async function depositAndWait(
       ferrier.keyRingPair,
     );
     expectExtrinsicSucceed(res);
+    const userBalanceExpectedAmount = new BN(amount.toString()).sub(
+      new BN(newDeposit.ferryTip.toString()),
+    );
+    const balance = await depositor.getBalanceForEthToken(
+      getL1(l1)!.contracts.dummyErc20.address,
+    );
+    expect(balance.free).bnEqual(userBalanceExpectedAmount);
   }
   if (onlyContractDeposit) {
     return;
