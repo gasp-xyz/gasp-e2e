@@ -350,18 +350,6 @@ export async function depositAndWait(
   if (onlyContractDeposit) {
     return;
   }
-
-  // eslint-disable-next-line no-console
-  console.log(updatesAfter);
-  // eslint-disable-next-line no-console
-  console.log(updatesBefore);
-  // TODO: verify that deposit is present in the pendingDeposits in l2update
-  //validate that the request got inserted.
-  // expect(
-  //   parseInt(JSON.parse(JSON.stringify(updatesAfter)).lastAcceptedRequestOnL1),
-  // ).toBeGreaterThan(
-  //   parseInt(JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1),
-  // );
   testLog.getLog().info(depositor.keyRingPair.address);
   // Wait for the balance to change
   return await pWaiter;
