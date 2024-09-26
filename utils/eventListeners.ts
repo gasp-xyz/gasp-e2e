@@ -201,31 +201,41 @@ export const waitForEvents = async (
   method: string,
   blocks: number = 10,
   withData: string = "",
+  startBlock: number = 0,
 ): Promise<CodecOrArray> => {
   return new Promise(async (resolve, reject) => {
     let counter = 0;
     const unsub = await api.rpc.chain.subscribeFinalizedHeads(async (head) => {
-      const events = await (await api.at(head.hash)).query.system.events();
       counter++;
-      testLog
-        .getLog()
-        .info(
-          `→ find on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`,
+      const events = await (await api.at(head.hash)).query.system.events();
+      if (head.number.toNumber() >= startBlock) {
+        testLog
+          .getLog()
+          .info(
+            `→ find on ${api.runtimeChain} for '${method}' event, attempt ${counter}, head ${head.hash}`,
+          );
+
+        events.forEach((e) => logEvent(api.runtimeChain, e));
+
+        const filtered = _.filter(
+          events,
+          ({ event }) =>
+            `${event.section}.${event.method}` === method &&
+            (withData.length > 0
+              ? JSON.stringify(event.data.toHuman()).includes(withData)
+              : true),
         );
 
-      events.forEach((e) => logEvent(api.runtimeChain, e));
-
-      const filtered = _.filter(
-        events,
-        ({ event }) =>
-          `${event.section}.${event.method}` === method &&
-          (withData.length > 0
-            ? JSON.stringify(event.data.toHuman()).includes(withData)
-            : true),
-      );
-      if (filtered.length > 0) {
-        resolve(filtered);
-        unsub();
+        if (filtered.length > 0) {
+          resolve(filtered);
+          unsub();
+        }
+      } else {
+        testLog
+          .getLog()
+          .info(
+            `→ wait by finalization for block ${startBlock}, the current finalized block is ${head.number}`,
+          );
       }
       if (counter === blocks) {
         reject(`method ${method} not found within blocks limit`);

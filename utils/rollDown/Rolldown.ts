@@ -10,7 +10,7 @@ import {
   signTx,
 } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
-import { stringToBN, waitBlockNumber } from "../utils";
+import { getBlockNumber, stringToBN, waitBlockNumber } from "../utils";
 import {
   getEventsAt,
   waitForAllEventsFromMatchingBlock,
@@ -355,11 +355,13 @@ export class Rolldown {
 
   static async waitForNextBatchCreated(chain: string, blocksLimit = 25) {
     const api = await getApi();
+    const startBlock = await getBlockNumber();
     const event = (await waitForEvents(
       api,
       "rolldown.TxBatchCreated",
       blocksLimit,
       chain,
+      startBlock,
     )) as any[];
     const eventChain = event[0].event.data[0].toString();
     const source = event[0].event.data[1].toString();

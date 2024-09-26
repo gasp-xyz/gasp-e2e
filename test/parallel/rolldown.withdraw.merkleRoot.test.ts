@@ -166,9 +166,10 @@ describe("Pre-operation withdrawal tests", () => {
       const res = getEventResultFromMangataTx(events);
       expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
+    //we need tp add 3 blocks to batchPeriod due to the peculiarities of Polkadot's processing of subscribeFinalizedHeads
     const event = await Rolldown.waitForNextBatchCreated(
       "Ethereum",
-      batchPeriod,
+      batchPeriod + 3,
     );
     const l2Request = await Rolldown.getL2Request(event.range.to.toNumber());
     expect(l2Request.withdrawal.tokenAddress).toEqual(gaspToL1Asset.ethereum);
