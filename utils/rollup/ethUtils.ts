@@ -280,6 +280,18 @@ export async function depositAndWait(
   });
   await wc.writeContract(request);
   const updatesAfter = await getL2UpdatesStorage(l1);
+
+  const assetId = await getAssetIdFromErc20(
+    getL1(l1)?.contracts.dummyErc20.address!,
+    l1,
+  );
+
+  const pWaiter = waitForBalanceChange(
+    depositor.keyRingPair.address,
+    40,
+    assetId,
+  );
+
   if (withFerry) {
     const [ferrier] = setupUsers();
     let id = await getAssetIdFromErc20(
@@ -321,7 +333,6 @@ export async function depositAndWait(
       )
       .buildParams()
       .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
-
     const res = await signTx(
       getApi(),
       Rolldown.depositFerryUnsafe(deposit, l1),
@@ -345,12 +356,8 @@ export async function depositAndWait(
   //   parseInt(JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1),
   // );
   testLog.getLog().info(depositor.keyRingPair.address);
-  const assetId = await getAssetIdFromErc20(
-    getL1(l1)?.contracts.dummyErc20.address!,
-    l1,
-  );
   // Wait for the balance to change
-  return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
+  return await pWaiter;
 }
 
 export async function waitForBatchWithRequest(
