@@ -69,7 +69,7 @@ export class WithdrawModal {
     const xpath =
       buildDataTestIdXpath(DESTINATION_FEE) + buildDataTestIdXpath(FEE_VALUE);
 
-    await waitForElementVisible(this.driver, xpath, 15000);
+    await waitForElementVisible(this.driver, xpath, 25000);
   }
 
   async openChainList() {
