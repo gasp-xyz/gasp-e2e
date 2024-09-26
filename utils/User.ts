@@ -357,29 +357,8 @@ export class User {
     } while (amount.eq(amountBefore));
   }
 
-  async registerAsset(
-    assetId: BN,
-    locMarker = assetId,
-    location = {
-      V2: {
-        parents: 1,
-        interior: {
-          X3: [
-            {
-              Parachain: 3210 + assetId.toNumber(),
-            },
-            {
-              GeneralKey: "0x00834",
-            },
-            {
-              PalletInstance: 10,
-            },
-          ],
-        },
-      },
-    },
-  ) {
-    return await registerAsset(this, assetId, location, locMarker, null);
+  async registerAsset(assetId: BN, locMarker = assetId) {
+    return await registerAsset(this, assetId, locMarker, null);
   }
 
   async registerL1Asset(
@@ -397,26 +376,8 @@ export class User {
         feePerSecond: 53760000000001,
       },
     },
-    location = {
-      V2: {
-        parents: 1,
-        interior: {
-          X3: [
-            {
-              Parachain: 3210 + assetId.toNumber(),
-            },
-            {
-              GeneralKey: "0x00834",
-            },
-            {
-              PalletInstance: 10,
-            },
-          ],
-        },
-      },
-    },
   ) {
-    return await updateAsset(this, assetId, location, additional);
+    return await updateAsset(this, assetId, additional);
   }
 
   async updateL1Asset(
