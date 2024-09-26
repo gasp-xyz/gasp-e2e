@@ -1990,7 +1990,7 @@ export async function depositHell(num: number, txIndexer = 0) {
   const depositBatch = new L2Update(api)
     .withDeposit(txIndex, sequencer.toString(), sequencer.toString(), 1001)
     .clone(txIndex, num)
-    .build();
+    .buildUnsafe();
   await signTx(api, depositBatch, sequencer.keyRingPair);
   return txIndex + num;
 }
@@ -2166,7 +2166,7 @@ export async function sendUpdateToL1() {
     rangeEnd,
   ]);
   if (
-    root.toString() ==
+    root.toString() ===
     "0x0000000000000000000000000000000000000000000000000000000000000000"
   ) {
     return null;

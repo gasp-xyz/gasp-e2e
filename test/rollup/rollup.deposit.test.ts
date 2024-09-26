@@ -61,6 +61,7 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         erc20Address,
         1122,
+        null,
       );
       const balanceBefore = await getBalance(
         erc20Address,
@@ -136,6 +137,7 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         arbErc20,
         1122,
+        null,
       );
 
       const balanceBefore = await getBalance(

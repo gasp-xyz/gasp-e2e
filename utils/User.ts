@@ -33,6 +33,9 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import Keyring from "@polkadot/keyring";
 import { randomBytes } from "crypto";
 import { ethers } from "ethers";
+import { getApi } from "./api";
+import { api, setupApi } from "./setup";
+import { OrmlTokensAccountData } from "@polkadot/types/lookup";
 export enum AssetWallet {
   BEFORE,
   AFTER,
@@ -383,6 +386,23 @@ export class User {
     l1AssetChain = "Ethereum",
   ) {
     return await updateL1Asset(this, assetId, l1AssetChain, tokenAddress);
+  }
+  async getBalanceForEthToken(address: string) {
+    const tokenId = await getApi().query.assetRegistry.l1AssetToId({
+      Ethereum: address,
+    });
+    if (tokenId.isNone) {
+      await setupApi();
+      return api.createType("OrmlTokensAccountData", {
+        free: 0,
+        reserved: 0,
+        frozen: 0,
+      }) as OrmlTokensAccountData;
+    }
+    return await getApi().query.tokens.accounts(
+      this.keyRingPair.address,
+      tokenId.toString(),
+    );
   }
 }
 export class Asset {
