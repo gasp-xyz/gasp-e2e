@@ -53,7 +53,6 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   [testUser] = setupUsers();
-  testUser.addAsset(ETH_ASSET_ID);
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
 });
 
