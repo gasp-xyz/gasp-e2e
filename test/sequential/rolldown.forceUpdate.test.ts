@@ -129,8 +129,8 @@ it("forceCancelRequest does not need any resolution to justify the cancellation"
   await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
     await waitSudoOperationSuccess(events);
   });
-  const cancelResolution = await Rolldown.waitCancelResolution(testUser, chain);
-  expect(cancelResolution[0]).toBe(undefined);
+  const cancelResolution = await Rolldown.waitCancelResolution(chain);
+  expect(cancelResolution.length).toBe(0);
   await testUser.refreshAmounts(AssetWallet.AFTER);
   // TODO: We need to slash the user whose update was force-canceled without justification. Link to bug https://mangatafinance.atlassian.net/browse/MGX-1365
   // const penaltyValue = testUser

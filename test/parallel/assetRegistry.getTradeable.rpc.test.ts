@@ -45,7 +45,6 @@ describe("AssetRegistry RPC -", () => {
         "symbol3",
         4,
         undefined,
-        undefined,
         {
           operationsDisabled: true,
         },
@@ -54,7 +53,6 @@ describe("AssetRegistry RPC -", () => {
         "Name&Symbol&Enabled",
         "symbol3",
         6,
-        undefined,
         undefined,
         {
           operationsDisabled: false,

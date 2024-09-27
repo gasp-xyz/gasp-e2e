@@ -9623,6 +9623,7 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
+
 gasp-sdk@0.0.2-eth-rollup-develop.43:
   version "0.0.2-eth-rollup-develop.43"
   resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-eth-rollup-develop.43.tgz#04c36c156a4f22e37b3a06a71d31cc8ed34f77cb"
@@ -9635,15 +9636,15 @@ gasp-sdk@0.0.2-eth-rollup-develop.43:
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-eth-rollup-develop.45:
-  version "0.0.2-eth-rollup-develop.45"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-eth-rollup-develop.45.tgz#871ea9f42b937500c564342cd63beff36862b8ed"
-  integrity sha512-Yr6Rst0M0Ua0zBd12v4/PzthjJ4xfAUNDNJVKDatFSUAzWIb1e+8aTKcNOKYXzNO8EIWePOmwNNvzBQ4xp3HKw==
+gasp-type-definitions@0.0.2-feature-mgx-1465.0:
+  version "0.0.2-feature-mgx-1465.0"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-mgx-1465.0.tgz#49ff862bf568cab49e62db05eb7d19ddd844903d"
+  integrity sha512-5D8enzG5Bmk7gNmtfL48bklHuPkOGBAsXzqyrXGCbYihrBUCOycjlbHHm0vzXWcQxjoWhU9pbVFVQmhtfLEZ6Q==
 
-gasp-types@0.0.2-eth-rollup-develop.43:
-  version "0.0.2-eth-rollup-develop.43"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-eth-rollup-develop.43.tgz#9271dbd6030b4ddbb29ea179cc90135b5db04928"
-  integrity sha512-w2Sc0wx3QDC8L6u4QfoyaOIhtbItkxtBqe4lVo43AzuIB1gvVJlZtzbhxdMLO1hTYEiqaLAiZM/dzSYcu07FXg==
+gasp-types@0.0.2-feature-mgx-1465.0:
+  version "0.0.2-feature-mgx-1465.0"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-mgx-1465.0.tgz#c43435f84080691647a39e797aa88564413c18d9"
+  integrity sha512-5xs/kfLbCM0YMqMjfSUkC2nrT40fSZKbnzSEk7bPWMohfXGUCXIS9CZOInOdQF81gIqO+0uzjZvhnEmi3qw0NA==
 
 gauge@^4.0.3:
   version "4.0.4"
