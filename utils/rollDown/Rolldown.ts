@@ -188,6 +188,11 @@ export class Rolldown {
     return api.consts.rolldown.merkleRootAutomaticBatchPeriod.toNumber() as number;
   }
 
+  static merkleRootBatchSize() {
+    const api = getApi();
+    return api.consts.rolldown.merkleRootAutomaticBatchSize.toNumber() as number;
+  }
+
   static async cancelRequestFromL1(chainId: ChainName, reqId: number) {
     const api = getApi();
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);

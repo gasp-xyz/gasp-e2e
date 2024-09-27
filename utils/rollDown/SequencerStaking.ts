@@ -99,6 +99,12 @@ export class SequencerStaking {
     return await api.consts.sequencerStaking.maxSequencers;
   }
 
+  static async blocksForSequencerUpdate() {
+    const api = getApi();
+    return await api.consts.sequencerStaking.blocksForSequencerUpdate.toNumber();
+  }
+
+
   static async removeAllSequencers() {
     const activeSequencers = await SequencerStaking.activeSequencers();
     for (const chain in activeSequencers.toHuman()) {
