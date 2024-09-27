@@ -14,7 +14,7 @@ import fs from "fs";
 import { BN, hexToU8a, nToBigInt } from "@polkadot/util";
 import { getApi } from "../api";
 import { testLog } from "../Logger";
-import { setupApi, setupUsers} from "../setup";
+import { setupApi, setupUsers } from "../setup";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 import { User } from "../User";
@@ -28,7 +28,10 @@ import {
   stringToBN,
   waitForBalanceChange,
 } from "../utils";
-import { PalletRolldownMessagesDeposit } from "@polkadot/types/lookup";
+import {
+  OrmlTokensAccountData,
+  PalletRolldownMessagesDeposit,
+} from "@polkadot/types/lookup";
 import { diff } from "json-diff-ts";
 import { Ferry } from "../rollDown/Ferry";
 export const ROLL_DOWN_CONTRACT_ADDRESS =
@@ -377,16 +380,23 @@ export async function depositAndWaitNative(
   console.log(updatesBefore);
 
   testLog.getLog().info(depositor.keyRingPair.address);
+  let ferrier;
+  if(withFerry){
+    ferrier = await Ferry.setupFerrier(
+      l1,
+      getL1(l1)?.contracts?.native.address!,
+    );
+  }
   const assetId = await getAssetIdFromErc20(
     getL1(l1)?.contracts.native.address!,
     l1,
   );
-  const pWaiter = waitForBalanceChange(depositor.keyRingPair.address, 60, assetId);
+  const pWaiter = waitForBalanceChange(
+    depositor.keyRingPair.address,
+    60,
+    assetId,
+  );
   if (withFerry) {
-    const ferrier = await Ferry.setupFerrier(
-      l1,
-      getL1(l1)?.contracts?.native.address!,
-    );
     const diffStorage = diff(
       JSON.parse(JSON.stringify(updatesBefore)),
       JSON.parse(JSON.stringify(updatesAfter)),
@@ -406,16 +416,23 @@ export async function depositAndWaitNative(
       .buildParams()
       .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
 
-    const res = await Ferry.ferryThisDeposit(ferrier, deposit, l1);
+    const res = await Ferry.ferryThisDeposit(ferrier!, deposit, l1);
     expectExtrinsicSucceed(res);
     const userBalanceExpectedAmount = new BN(amount.toString()).sub(
       new BN(newDeposit.ferryTip.toString()),
     );
-    const balance = await depositor.getBalanceForEthToken(
-      getL1(l1)!.contracts.native.address,
-    );
-    expect(balance.free).bnEqual(userBalanceExpectedAmount);
+    let balance: OrmlTokensAccountData;
+    if (getL1(l1).gaspName === "Ethereum") {
+      balance = await depositor.getBalanceForEthToken(
+        getL1(l1)!.contracts.native.address,
+      );
+    } else {
+      balance = await depositor.getBalanceForArbToken(
+        getL1(l1)!.contracts.native.address,
+      );
+    }
 
+    expect(balance.free).bnEqual(userBalanceExpectedAmount);
   }
   return await pWaiter;
 }

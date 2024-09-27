@@ -282,9 +282,8 @@ export class Rolldown {
   static async waitCancelResolution(chain = "Ethereum") {
     setupUsers();
     const api = getApi();
-    const waitingResolution = await api.query.rolldown.awaitingCancelResolution(
-      chain,
-    );
+    const waitingResolution =
+      await api.query.rolldown.awaitingCancelResolution(chain);
     return JSON.parse(JSON.stringify(waitingResolution));
   }
 

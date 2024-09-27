@@ -976,6 +976,10 @@ async function app(): Promise<any> {
     });
 }
 const main = async () => {
-  await app();
+  try {
+    await app();
+  } catch (e) {
+    console.log(e);
+  }
 };
 main();
