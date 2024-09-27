@@ -959,7 +959,6 @@ export class FeeTxs {
 export async function registerAsset(
   sudoUser: User,
   assetId: BN,
-  addressLocation: any,
   locMarker: BN,
   additional: any,
 ) {
@@ -973,7 +972,6 @@ export async function registerAsset(
           name: "TEST_TOKEN-" + locMarker.toString(),
           symbol: "TEST" + locMarker.toString(),
           existentialDeposit: 0,
-          location: addressLocation,
           additional,
         },
         //@ts-ignore
@@ -1035,7 +1033,6 @@ export async function registerL1Asset(
 export async function updateAsset(
   sudoUser: User,
   assetId: any,
-  location: any,
   additional: any,
 ) {
   const api = getApi();
@@ -1049,7 +1046,6 @@ export async function updateAsset(
         api!.createType("Vec<u8>", "TESTUPDT-" + assetId.toString()),
         api!.createType("Vec<u8>", "TSTUPD" + assetId.toString()),
         "0",
-        location,
         additional,
       ),
     ),

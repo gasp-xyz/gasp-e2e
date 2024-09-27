@@ -55,7 +55,7 @@ describe("Rollup", () => {
     });
 
     test("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user);
+      const anyChange = await depositAndWait(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
       const erc20Address = getL1("EthAnvil")?.contracts.dummyErc20.address!;
@@ -77,9 +77,23 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         user.name as string,
       );
+      await signTxMetamask(
+        await Rolldown.createManualBatch("EthAnvil"),
+        user.keyRingPair.address,
+        user.name as string,
+      );
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
 
+      const requestId = nToBigInt(Rolldown.getUpdateIdFromEvents(result));
+      //wait for the update to be in contract
+      await waitForBatchWithRequest(requestId, getL1("EthAnvil")!);
+      //run close.
+      await closeL1Item(
+        requestId,
+        "close_withdrawal",
+        getL1("EthAnvil")!.gaspName,
+      );
       let balanceAfter = await getBalance(
         erc20Address,
         user.keyRingPair.address,

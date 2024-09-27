@@ -57,7 +57,7 @@ describe("Identity pallet tests: Main use cases", () => {
     await testUser.refreshAmounts();
     await setUserIdentity(testUser, name);
     const identity = await getUserIdentity(testUser);
-    expect(identity.info.display.Raw).toEqual(name);
+    expect(identity[0].info.display.Raw).toEqual(name);
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const reserved = testUser.getWalletDifferences()[0].diff.reserved;
     const free = testUser.getWalletDifferences()[0].diff.free;
@@ -71,7 +71,7 @@ describe("Identity pallet tests: Main use cases", () => {
     testUser.addAsset(GASP_ASSET_ID);
     await testUser.refreshAmounts();
     const identity = await getUserIdentity(testUser);
-    expect(identity.info.display.Raw).toEqual(name);
+    expect(identity[0].info.display.Raw).toEqual(name);
     await clearUserIdentity(testUser);
     await testUser.refreshAmounts(AssetWallet.AFTER);
     const identityAfterClear = await getUserIdentity(testUser);
@@ -91,7 +91,7 @@ describe("Identity pallet tests: Main use cases", () => {
     await addUserIdentitySub(testUser, userToSub, "CookiesSub4");
     const identity = await getUserIdentity(testUser);
     const subIdentity = await getUserSubIdentity(userToSub);
-    expect(identity.info.display.Raw).toEqual(name);
+    expect(identity[0].info.display.Raw).toEqual(name);
     expect(subIdentity[1].Raw).toEqual(subName);
   });
 });

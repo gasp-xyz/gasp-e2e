@@ -81,7 +81,6 @@ export class Assets {
               new BN(18),
               undefined,
               undefined,
-              undefined,
               assetId,
             ),
           );
@@ -272,8 +271,6 @@ export class Assets {
     name: string,
     symbol: string,
     decimals: number | BN,
-    // location?: MultiLocation,
-    location?: object,
     xcmMetadata?: XcmMetadata,
     xykMetadata?: XykMetadata,
     assetId?: number | BN,
@@ -285,7 +282,6 @@ export class Assets {
           name: api.createType("Vec<u8>", name),
           symbol: api.createType("Vec<u8>", symbol),
           existentialDeposit: 0,
-          location: location ? { V1: location } : null,
           additional: {
             xcm: xcmMetadata,
             xyk: xykMetadata,
@@ -316,11 +312,6 @@ export class Assets {
         api.createType("Vec<u8>", update.name),
         api.createType("Vec<u8>", update.symbol),
         null,
-        update.location
-          ? update.location.location
-            ? { V2: update.location } // Some(location)
-            : api.createType("Vec<u8>", "0x0100") // Some(None)
-          : null, // None
         update.metadata!,
       ),
     );
@@ -335,7 +326,6 @@ export class Assets {
         "testAsset" + tokenId.toString(),
         "testSymbol",
         18,
-        undefined,
         undefined,
         {
           operationsDisabled: true,
@@ -403,20 +393,10 @@ interface XykMetadata {
   operationsDisabled: boolean;
 }
 
-// API expects Option<Option<Location>>, we need to wrap it so we can pass
-// undefined in UpdateAsset - no update
-// { location: undefined } - update with no location
-// { location: { ... } } - update with some location
-interface UpdateLocation {
-  location?: object;
-}
-
 // if the value is undefined, it will not be updated
 interface UpdateAsset {
   name?: string;
   symbol?: string;
   decimals?: number;
-  // location?: MultiLocation,
-  location?: UpdateLocation;
   metadata?: MangataTypesAssetsCustomMetadata;
 }
