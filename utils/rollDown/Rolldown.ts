@@ -34,6 +34,16 @@ import { closeL1Item } from "../setupsOnTheGo";
 import { encodeFunctionResult, keccak256 } from "viem";
 
 export class Rolldown {
+  static getUpdateIdFromEvents(
+    events: MangataGenericEvent[],
+    module = "rolldown",
+    method = "WithdrawalRequestCreated",
+  ): BN {
+    //rolldown.WithdrawalRequestCreated
+    const event = getEventResultFromMangataTx(events, [module, method]);
+    // @ts-ignore
+    return stringToBN(event.data.requestId.id);
+  }
   static async createWithdrawalsInBatch(
     num: number,
     userAddress = "0x14dc79964da2c08b23698b3d3cc7ca32193d9955",
@@ -285,8 +295,8 @@ export class Rolldown {
     );
   }
 
-  static async closeCancelOnL1(requestId: bigint) {
-    await closeL1Item(requestId, "close_cancel");
+  static async closeCancelOnL1(requestId: bigint, chainName = "Ethereum") {
+    await closeL1Item(requestId, "close_cancel", chainName);
   }
 
   static hashL1Update(L2Request: any) {

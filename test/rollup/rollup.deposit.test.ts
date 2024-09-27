@@ -10,6 +10,7 @@ import {
   depositAndWait,
   getBalance,
   setupEthUser,
+  waitForBatchWithRequest,
 } from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
 import { signTxMetamask } from "../../utils/metamask";
@@ -19,6 +20,9 @@ import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
 import { User } from "../../utils/User";
 import { getL1 } from "../../utils/rollup/l1s";
+import { Rolldown } from "../../utils/rollDown/Rolldown";
+import { nToBigInt } from "@polkadot/util";
+import { closeL1Item } from "../../utils/setupsOnTheGo";
 
 let user: User;
 jest.setTimeout(600000);
@@ -51,7 +55,7 @@ describe("Rollup", () => {
     });
 
     test("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user);
+      const anyChange = await depositAndWait(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
       const erc20Address = getL1("EthAnvil")?.contracts.dummyErc20.address!;
@@ -73,9 +77,23 @@ describe("Rollup", () => {
         user.keyRingPair.address,
         user.name as string,
       );
+      await signTxMetamask(
+        await Rolldown.createManualBatch("EthAnvil"),
+        user.keyRingPair.address,
+        user.name as string,
+      );
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
 
+      const requestId = nToBigInt(Rolldown.getUpdateIdFromEvents(result));
+      //wait for the update to be in contract
+      await waitForBatchWithRequest(requestId, getL1("EthAnvil")!);
+      //run close.
+      await closeL1Item(
+        requestId,
+        "close_withdrawal",
+        getL1("EthAnvil")!.gaspName,
+      );
       let balanceAfter = await getBalance(
         erc20Address,
         user.keyRingPair.address,
@@ -152,6 +170,20 @@ describe("Rollup", () => {
       );
       const res = getEventResultFromMangataTx(result);
       expect(res).toBeTruthy();
+      await signTxMetamask(
+        await Rolldown.createManualBatch("ArbAnvil"),
+        user.keyRingPair.address,
+        user.name as string,
+      );
+      const requestId = nToBigInt(Rolldown.getUpdateIdFromEvents(result));
+      //wait for the update to be in contract
+      await waitForBatchWithRequest(requestId, getL1("ArbAnvil")!);
+      //run close.
+      await closeL1Item(
+        requestId,
+        "close_withdrawal",
+        getL1("ArbAnvil")!.gaspName,
+      );
 
       let balanceAfter = await getBalance(
         arbErc20,
