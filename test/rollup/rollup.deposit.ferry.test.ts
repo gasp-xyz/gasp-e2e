@@ -7,10 +7,10 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import "jest-extended";
 import { testLog } from "../../utils/Logger";
 import {
-  depositAndWait,
+  depositAndWait, depositAndWaitNative,
   getBalance,
   setupEthUser,
-  waitForBatchWithRequest,
+  waitForBatchWithRequest
 } from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
 import { signTxMetamask } from "../../utils/metamask";
@@ -49,59 +49,16 @@ describe("Rollup-Ferry", () => {
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
     });
 
-    test("A user who deposits a token ferried will have them on the node soonish", async () => {
+    test("A user who deposits a token ferried will have them on the node soonish - eth erc20", async () => {
       const anyChange = await depositAndWait(user, "EthAnvil", false, true);
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
 
-    test.skip("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user);
+    test("A user who deposits a token ferried will have them on the node soonish- arb Native", async () => {
+      const anyChange = await depositAndWaitNative(user, "ArbAnvil", true);
       // Check that got updated.
       expect(anyChange).toBeTruthy();
-      const erc20Address = getL1("EthAnvil")?.contracts.dummyErc20.address!;
-      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
-      const tx = getApi().tx.rolldown.withdraw(
-        "Ethereum",
-        user.keyRingPair.address,
-        erc20Address,
-        1122,
-        null,
-      );
-      const balanceBefore = await getBalance(
-        erc20Address,
-        user.keyRingPair.address,
-        "EthAnvil",
-      );
-      const result = await signTxMetamask(
-        tx,
-        user.keyRingPair.address,
-        user.name as string,
-      );
-      const res = getEventResultFromMangataTx(result);
-      expect(res).toBeTruthy();
-
-      let balanceAfter = await getBalance(
-        erc20Address,
-        user.keyRingPair.address,
-        "EthAnvil",
-      );
-      while (
-        BigInt((balanceAfter as any).toString()) <=
-        BigInt((balanceBefore as any).toString())
-      ) {
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        balanceAfter = await getBalance(
-          erc20Address,
-          user.keyRingPair.address,
-          "EthAnvil",
-        );
-        testLog.getLog().info(balanceAfter);
-      }
-      const diff =
-        BigInt((balanceAfter as any).toString()) -
-        BigInt((balanceBefore as any).toString());
-      expect(diff).toBe(BigInt(1122));
     });
   });
   describe.skip("ARB Deposits & withdraws", () => {

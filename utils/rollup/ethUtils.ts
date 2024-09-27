@@ -14,24 +14,23 @@ import fs from "fs";
 import { BN, hexToU8a, nToBigInt } from "@polkadot/util";
 import { getApi } from "../api";
 import { testLog } from "../Logger";
-import { setupApi, setupUsers, sudo } from "../setup";
+import { setupApi, setupUsers} from "../setup";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 import { User } from "../User";
 import { ArbAnvil, EthAnvil, getL1, L1Type, TestChain } from "./l1s";
 import { encodeAddress } from "@polkadot/keyring";
 import { blake2AsU8a } from "@polkadot/util-crypto";
-import { L2Update, Rolldown } from "../rollDown/Rolldown";
+import { L2Update } from "../rollDown/Rolldown";
 import {
   expectExtrinsicSucceed,
   sleep,
   stringToBN,
   waitForBalanceChange,
 } from "../utils";
-import { signTx } from "gasp-sdk";
 import { PalletRolldownMessagesDeposit } from "@polkadot/types/lookup";
 import { diff } from "json-diff-ts";
-import { registerL1Asset } from "../tx";
+import { Ferry } from "../rollDown/Ferry";
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
 
@@ -293,26 +292,9 @@ export async function depositAndWait(
   );
 
   if (withFerry) {
-    const [ferrier] = setupUsers();
-    let id = await getAssetIdFromErc20(
-      getL1(l1)?.contracts.dummyErc20.address,
+    const ferrier = await Ferry.setupFerrier(
       l1,
-    );
-    if (id.isZero()) {
-      await registerL1Asset(
-        sudo,
-        null,
-        getL1(l1)?.gaspName,
-        getL1(l1)?.contracts.dummyErc20.address,
-      );
-      id = await getAssetIdFromErc20(
-        getL1(l1)?.contracts.dummyErc20.address,
-        l1,
-      );
-    }
-    await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(ferrier),
-      Assets.mintToken(id, ferrier),
+      getL1(l1)?.contracts.dummyErc20.address!,
     );
     const diffStorage = diff(
       JSON.parse(JSON.stringify(updatesBefore)),
@@ -333,11 +315,10 @@ export async function depositAndWait(
       )
       .buildParams()
       .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
-    const res = await signTx(
-      getApi(),
-      Rolldown.depositFerryUnsafe(deposit, l1),
-      ferrier.keyRingPair,
-    );
+
+    const res = await Ferry.ferryThisDeposit(ferrier, deposit, l1);
+
+    //Assert: Op when t fine & user got his tokens.
     expectExtrinsicSucceed(res);
     const userBalanceExpectedAmount = new BN(amount.toString()).sub(
       new BN(newDeposit.ferryTip.toString()),
@@ -352,6 +333,90 @@ export async function depositAndWait(
   }
   testLog.getLog().info(depositor.keyRingPair.address);
   // Wait for the balance to change
+  return await pWaiter;
+}
+
+export async function depositAndWaitNative(
+  depositor: User,
+  l1: L1Type = "EthAnvil",
+  withFerry = false,
+) {
+  const updatesBefore = await getL2UpdatesStorage(l1);
+  testLog.getLog().info(JSON.stringify(updatesBefore));
+  const acc: PrivateKeyAccount = privateKeyToAccount(
+    depositor.name as `0x${string}`,
+  );
+  const publicClient = getPublicClient(l1);
+
+  const args = [];
+  if (withFerry) {
+    args.push(BigInt(6666));
+  }
+  const amount = BigInt(112233445566);
+  const { request } = await publicClient.simulateContract({
+    account: acc,
+    address: getL1(l1)?.contracts?.rollDown.address!,
+    abi: abi as Abi,
+    functionName: "deposit_native",
+    value: amount,
+    args: args,
+  });
+  const wc = createWalletClient({
+    account: acc,
+    chain: getL1(l1),
+    transport: http(),
+  });
+  await wc.writeContract(request);
+
+  const updatesAfter = await getL2UpdatesStorage(l1);
+  testLog.getLog().info(JSON.stringify(updatesAfter));
+
+  // eslint-disable-next-line no-console
+  console.log(updatesAfter);
+  // eslint-disable-next-line no-console
+  console.log(updatesBefore);
+
+  testLog.getLog().info(depositor.keyRingPair.address);
+  const assetId = await getAssetIdFromErc20(
+    getL1(l1)?.contracts.native.address!,
+    l1,
+  );
+  const pWaiter = waitForBalanceChange(depositor.keyRingPair.address, 60, assetId);
+  if (withFerry) {
+    const ferrier = await Ferry.setupFerrier(
+      l1,
+      getL1(l1)?.contracts?.native.address!,
+    );
+    const diffStorage = diff(
+      JSON.parse(JSON.stringify(updatesBefore)),
+      JSON.parse(JSON.stringify(updatesAfter)),
+    );
+    testLog.getLog().info(JSON.stringify(diffStorage));
+    const newDeposit = diffStorage[0]!.changes![0].value!;
+    const deposit = new L2Update(getApi())
+      .withDeposit(
+        newDeposit.requestId.id,
+        depositor.keyRingPair.address,
+        //@ts-ignore
+        getL1(l1)!.contracts.native.address,
+        new BN(amount.toString()),
+        newDeposit.timeStamp,
+        new BN(newDeposit.ferryTip.toString()),
+      )
+      .buildParams()
+      .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
+
+    const res = await Ferry.ferryThisDeposit(ferrier, deposit, l1);
+    expectExtrinsicSucceed(res);
+    const userBalanceExpectedAmount = new BN(amount.toString()).sub(
+      new BN(newDeposit.ferryTip.toString()),
+    );
+    const balance = await depositor.getBalanceForEthToken(
+      getL1(l1)!.contracts.native.address,
+    );
+    expect(balance.free).bnEqual(userBalanceExpectedAmount);
+
+  }
   return await pWaiter;
 }
 

@@ -33,44 +33,6 @@ import { closeL1Item } from "../../utils/setupsOnTheGo";
 let user: User;
 jest.setTimeout(600000);
 
-async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
-  const updatesBefore = await getL2UpdatesStorage(l1);
-  testLog.getLog().info(JSON.stringify(updatesBefore));
-  const acc: PrivateKeyAccount = privateKeyToAccount(
-    depositor.name as `0x${string}`,
-  );
-  const publicClient = getPublicClient(l1);
-  const { request } = await publicClient.simulateContract({
-    account: acc,
-    address: getL1(l1)?.contracts?.rollDown.address!,
-    abi: abi as Abi,
-    functionName: "deposit_native",
-    value: BigInt(112233445566),
-  });
-  const wc = createWalletClient({
-    account: acc,
-    chain: getL1(l1),
-    transport: http(),
-  });
-  await wc.writeContract(request);
-
-  const updatesAfter = await getL2UpdatesStorage(l1);
-  testLog.getLog().info(JSON.stringify(updatesAfter));
-
-  // eslint-disable-next-line no-console
-  console.log(updatesAfter);
-  // eslint-disable-next-line no-console
-  console.log(updatesBefore);
-
-  testLog.getLog().info(depositor.keyRingPair.address);
-  const assetId = await getAssetIdFromErc20(
-    getL1(l1)?.contracts.native.address!,
-    l1,
-  );
-  // Wait for the balance to change
-  return await waitForBalanceChange(depositor.keyRingPair.address, 60, assetId);
-}
-
 describe("Rollup", () => {
   describe("ETH Deposits & withdraws - native", () => {
     beforeEach(async () => {
