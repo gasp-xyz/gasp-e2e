@@ -5,27 +5,21 @@
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import "jest-extended";
-import { Abi, createWalletClient, http, PrivateKeyAccount } from "viem";
 import { testLog } from "../../utils/Logger";
-import { waitForBalanceChange } from "../../utils/utils";
 import {
-  abi,
-  getAssetIdFromErc20,
-  getL2UpdatesStorage,
+  depositAndWait,
   getNativeBalance,
-  getPublicClient,
   setupEthUser,
   waitForBatchWithRequest,
 } from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
-import { privateKeyToAccount } from "viem/accounts";
 import { signTxMetamask } from "../../utils/metamask";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
 import { User } from "../../utils/User";
-import { getL1, L1Type } from "../../utils/rollup/l1s";
+import { getL1 } from "../../utils/rollup/l1s";
 import { Rolldown } from "../../utils/rollDown/Rolldown";
 import { nToBigInt } from "@polkadot/util";
 import { closeL1Item } from "../../utils/setupsOnTheGo";

@@ -29,10 +29,23 @@ import {
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
-import { abi, getAssetIdFromErc20 } from "../rollup/ethUtils";
+import {
+  abi,
+  getAssetIdFromErc20,
+  getPublicClient,
+  getWalletClient,
+} from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 import { closeL1Item } from "../setupsOnTheGo";
-import { encodeFunctionResult, keccak256 } from "viem";
+import {
+  Abi,
+  decodeFunctionData,
+  encodeFunctionData,
+  encodeFunctionResult,
+  keccak256,
+  PrivateKeyAccount,
+} from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 
 export class Rolldown {
   static getUpdateIdFromEvents(
@@ -82,7 +95,7 @@ export class Rolldown {
     destAddres: string,
     tokenAddres: string,
     amount: BN,
-    ferryTip = null,
+    ferryTip: null | number = null,
   ) {
     const api = getApi();
     return api.tx.rolldown.withdraw(
@@ -372,6 +385,64 @@ export class Rolldown {
       deposit.timeStamp,
       deposit.ferryTip,
     );
+  }
+
+  static async ferryWithdrawal(
+    l1: L1Type,
+    user: User,
+    tokenAddress: "0x${string}",
+    amount: number,
+    tip: number,
+    requestId: any,
+  ) {
+    const publicClient = getPublicClient(l1);
+    const walletClient = getWalletClient(l1);
+    const account: PrivateKeyAccount = privateKeyToAccount(
+      user.name as `0x${string}`,
+    );
+    const withdrawal = {
+      requestId: {
+        origin: requestId.origin,
+        id: requestId.id,
+      },
+      recipient: user.keyRingPair.address,
+      tokenAddress: tokenAddress,
+      amount: nToBigInt(amount),
+      ferryTip: nToBigInt(tip),
+    };
+    const encodedData = encodeFunctionData({
+      abi,
+      functionName: "ferry_withdrawal",
+      args: [withdrawal],
+    });
+
+    const decoded = decodeFunctionData({
+      abi,
+      data: encodedData,
+    });
+
+    console.log("Encoded Data:", encodedData);
+    console.log("Decoded Data:", JSON.stringify(decoded));
+    const { request } = await publicClient.simulateContract({
+      account,
+      address: getL1(l1).contracts.rollDown.address as unknown as `0x${string}`,
+      abi: abi as Abi,
+      functionName: "ferry_withdrawal",
+      args: [withdrawal],
+      value: withdrawal.amount - withdrawal.ferryTip,
+    });
+
+    return await walletClient.writeContract(request).then(async (txHash) => {
+      const result = await publicClient.waitForTransactionReceipt({
+        hash: txHash,
+      });
+      testLog
+        .getLog()
+        .info(
+          `ferrying withdrawal ${withdrawal.requestId.id}: tx:${result.transactionHash} - ${result.status}`,
+        );
+      testLog.getLog().info("L1 item ferried with tx", request);
+    });
   }
 }
 export class L2Update {

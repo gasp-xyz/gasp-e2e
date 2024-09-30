@@ -14,7 +14,7 @@ import fs from "fs";
 import { BN, hexToU8a, nToBigInt } from "@polkadot/util";
 import { getApi } from "../api";
 import { testLog } from "../Logger";
-import { setupApi, setupUsers} from "../setup";
+import { setupApi, setupUsers } from "../setup";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 import { User } from "../User";
@@ -28,7 +28,10 @@ import {
   stringToBN,
   waitForBalanceChange,
 } from "../utils";
-import { PalletRolldownMessagesDeposit } from "@polkadot/types/lookup";
+import {
+  PalletRolldownMessagesDeposit,
+  OrmlTokensAccountData,
+} from "@polkadot/types/lookup";
 import { diff } from "json-diff-ts";
 import { Ferry } from "../rollDown/Ferry";
 export const ROLL_DOWN_CONTRACT_ADDRESS =
@@ -381,7 +384,11 @@ export async function depositAndWaitNative(
     getL1(l1)?.contracts.native.address!,
     l1,
   );
-  const pWaiter = waitForBalanceChange(depositor.keyRingPair.address, 60, assetId);
+  const pWaiter = waitForBalanceChange(
+    depositor.keyRingPair.address,
+    60,
+    assetId,
+  );
   if (withFerry) {
     const ferrier = await Ferry.setupFerrier(
       l1,
@@ -411,11 +418,17 @@ export async function depositAndWaitNative(
     const userBalanceExpectedAmount = new BN(amount.toString()).sub(
       new BN(newDeposit.ferryTip.toString()),
     );
-    const balance = await depositor.getBalanceForEthToken(
-      getL1(l1)!.contracts.native.address,
-    );
+    let balance: OrmlTokensAccountData;
+    if (l1 === "EthAnvil") {
+      balance = await depositor.getBalanceForEthToken(
+        getL1(l1)!.contracts.native.address,
+      );
+    } else {
+      balance = await depositor.getBalanceForArbToken(
+        getL1(l1)!.contracts.native.address,
+      );
+    }
     expect(balance.free).bnEqual(userBalanceExpectedAmount);
-
   }
   return await pWaiter;
 }
