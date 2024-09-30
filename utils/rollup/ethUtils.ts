@@ -397,10 +397,6 @@ export async function depositAndWaitNative(
     assetId,
   );
   if (withFerry) {
-    const ferrier = await Ferry.setupFerrier(
-      l1,
-      getL1(l1)?.contracts?.native.address!,
-    );
     const diffStorage = diff(
       JSON.parse(JSON.stringify(updatesBefore)),
       JSON.parse(JSON.stringify(updatesAfter)),
@@ -420,7 +416,7 @@ export async function depositAndWaitNative(
       .buildParams()
       .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
 
-    const res = await Ferry.ferryThisDeposit(ferrier, deposit, l1);
+    const res = await Ferry.ferryThisDeposit(ferrier!, deposit, l1);
     expectExtrinsicSucceed(res);
     const userBalanceExpectedAmount = new BN(amount.toString()).sub(
       new BN(newDeposit.ferryTip.toString()),
