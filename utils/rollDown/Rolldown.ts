@@ -292,12 +292,11 @@ export class Rolldown {
     return new BN(filteredEvent[0].event.data.assetId.toString());
   }
 
-  static async waitCancelResolution(user: User, chain = "Ethereum") {
+  static async waitCancelResolution(chain = "Ethereum") {
     setupUsers();
     const api = getApi();
-    const waitingResolution = await api.query.rolldown.awaitingCancelResolution(
-      [chain, user.keyRingPair.address],
-    );
+    const waitingResolution =
+      await api.query.rolldown.awaitingCancelResolution(chain);
     return JSON.parse(JSON.stringify(waitingResolution));
   }
 
@@ -309,8 +308,8 @@ export class Rolldown {
     );
   }
 
-  static async closeCancelOnL1(requestId: bigint) {
-    await closeL1Item(requestId, "close_cancel");
+  static async closeCancelOnL1(requestId: bigint, chainName = "Ethereum") {
+    await closeL1Item(requestId, "close_cancel", chainName);
   }
 
   static hashL1Update(L2Request: any) {

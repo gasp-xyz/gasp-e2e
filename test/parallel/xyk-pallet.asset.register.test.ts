@@ -41,7 +41,7 @@ async function setupUserAssetRegister(
 
   const assetTotalIssuance = await api.query.tokens.totalIssuance(assetId);
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
-  if (extrinsicSuccess === true) {
+  if (extrinsicSuccess) {
     expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess,
     );
@@ -129,29 +129,6 @@ test("register new asset and then update it by non sudo user, expect to fail", a
   );
 });
 
-test("register new asset and then update it without the location", async () => {
-  const api = getApi();
-
-  const assetId = await setupUserAssetRegister(sudo, true);
-
-  const userUpdateAsset = await sudo.updateAsset(
-    assetId,
-    {
-      xcm: {
-        feePerSecond: 53760000000001,
-      },
-    },
-    //@ts-ignore
-    api!.createType("Vec<u8>", "0x0100"),
-  );
-
-  expect(getEventResultFromMangataTx(userUpdateAsset).state).toEqual(
-    ExtrinsicResult.ExtrinsicSuccess,
-  );
-  const assetMetadata = await api.query.assetRegistry.metadata(assetId);
-  expect(assetMetadata.value.location.toHuman()).toEqual(null);
-});
-
 test("register new asset and then update it without fee", async () => {
   const api = getApi();
 
@@ -191,7 +168,6 @@ test("register asset with xyk disabled and try to create a pool, expect to fail"
     "Disabled Xyk",
     "Disabled Xyk",
     10,
-    undefined,
     undefined,
     { operationsDisabled: true },
   );
@@ -239,14 +215,9 @@ test("register asset with xyk undefined and try to create a pool, expect success
 });
 
 test("register asset with xyk enabled and try to create a pool, expect success", async () => {
-  const register = Assets.registerAsset(
-    "None Xyk",
-    "None Xyk",
-    10,
-    undefined,
-    undefined,
-    { operationsDisabled: false },
-  );
+  const register = Assets.registerAsset("None Xyk", "None Xyk", 10, undefined, {
+    operationsDisabled: false,
+  });
   const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,

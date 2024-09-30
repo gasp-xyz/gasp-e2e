@@ -380,6 +380,13 @@ export async function depositAndWaitNative(
   console.log(updatesBefore);
 
   testLog.getLog().info(depositor.keyRingPair.address);
+  let ferrier;
+  if(withFerry){
+    ferrier = await Ferry.setupFerrier(
+      l1,
+      getL1(l1)?.contracts?.native.address!,
+    );
+  }
   const assetId = await getAssetIdFromErc20(
     getL1(l1)?.contracts.native.address!,
     l1,
