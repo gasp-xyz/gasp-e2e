@@ -6,7 +6,8 @@
     "utils/cluster/workers",
     "test/ui/**/*",
     "utils/**/**/*",
-    "performance/**/*"
+    "performance/**/*",
+    "cliTool/*"
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {
