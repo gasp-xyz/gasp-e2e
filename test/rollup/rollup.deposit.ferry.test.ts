@@ -127,6 +127,7 @@ describe("Rollup-Ferry", () => {
       await Rolldown.ferryWithdrawal(
         l1,
         l1Ferrier,
+        user,
         tokenAddress,
         11223344,
         668,
@@ -188,6 +189,7 @@ describe("Rollup-Ferry", () => {
       await Rolldown.ferryWithdrawal(
         l1,
         l1Ferrier,
+        user,
         tokenAddress,
         11223344,
         668,

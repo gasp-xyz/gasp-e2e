@@ -388,6 +388,7 @@ export class Rolldown {
 
   static async ferryWithdrawal(
     l1: L1Type,
+    ferry: User, 
     user: User,
     tokenAddress: "0x${string}",
     amount: number,
@@ -397,7 +398,7 @@ export class Rolldown {
     const publicClient = getPublicClient(l1);
     const walletClient = getWalletClient(l1);
     const account: PrivateKeyAccount = privateKeyToAccount(
-      user.name as `0x${string}`,
+      ferry.name as `0x${string}`,
     );
     const withdrawal = {
       requestId: {
@@ -420,8 +421,9 @@ export class Rolldown {
       data: encodedData,
     });
 
-    console.log("Encoded Data:", encodedData);
-    console.log("Decoded Data:", JSON.stringify(decoded));
+    testLog.getLog().info(`Encoded Data: ${encodedData}`);
+    testLog.getLog().info(`Decoded Data:${JSON.stringify(decoded)}`);
+
     const { request } = await publicClient.simulateContract({
       account,
       address: getL1(l1).contracts.rollDown.address as unknown as `0x${string}`,
