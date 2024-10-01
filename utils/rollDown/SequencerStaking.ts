@@ -2,9 +2,8 @@ import { getApi } from "../api";
 import { setupUsers } from "../setup";
 import { Keyring } from "@polkadot/api";
 import { EthUser } from "../EthUser";
-import { stringToBN } from "../utils";
+import { stringToBN, waitForNBlocks } from "../utils";
 import { BN, BN_ZERO } from "@polkadot/util";
-import { leaveSequencing } from "./Rolldown";
 import { User } from "../User";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
@@ -104,6 +103,28 @@ export class SequencerStaking {
     return await api.consts.sequencerStaking.blocksForSequencerUpdate.toNumber();
   }
 
+  static async removeAddedSequencers(waitPeriod: number = 0) {
+    const preSetupSequencers = {
+      Ethereum: "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0",
+      Arbitrum: "0x798d4ba9baf0064ec19eb4f0a1a45785ae9d6dfc",
+    };
+    const activeSequencers = await SequencerStaking.activeSequencers();
+    let anysequencerGone = false;
+    for (const chain in activeSequencers.toHuman()) {
+      for (const seq of activeSequencers.toHuman()[chain] as string[]) {
+        if (
+          seq !== preSetupSequencers.Ethereum &&
+          seq !== preSetupSequencers.Arbitrum
+        ) {
+          await leaveSequencing(seq);
+          anysequencerGone = true;
+        }
+      }
+    }
+    if (anysequencerGone) {
+      await waitForNBlocks(waitPeriod);
+    }
+  }
 
   static async removeAllSequencers() {
     const activeSequencers = await SequencerStaking.activeSequencers();
@@ -126,6 +147,31 @@ export class SequencerStaking {
       chain,
       minStake,
       slashFine,
+    );
+  }
+}
+
+export async function leaveSequencing(userAddr: string) {
+  const stakedEth = await SequencerStaking.sequencerStake(userAddr, "Ethereum");
+  const stakedArb = await SequencerStaking.sequencerStake(userAddr, "Arbitrum");
+  let chain = "";
+  if (stakedEth.toHuman() !== "0") {
+    chain = "Ethereum";
+  } else if (stakedArb.toHuman() !== "0") {
+    chain = "Arbitrum";
+  }
+  if (chain !== "") {
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        userAddr,
+        await SequencerStaking.leaveSequencerStaking(chain as ChainName),
+      ),
+    );
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        userAddr,
+        await SequencerStaking.unstake(chain as ChainName),
+      ),
     );
   }
 }

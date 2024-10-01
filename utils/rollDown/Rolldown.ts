@@ -1,4 +1,4 @@
-import { setupApi, setupUsers } from "../setup";
+import { Extrinsic, setupApi, setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { BN, nToBigInt } from "@polkadot/util";
@@ -19,7 +19,7 @@ import {
   waitSudoOperationSuccess,
 } from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
-import { ChainName, SequencerStaking } from "./SequencerStaking";
+import { ChainName } from "./SequencerStaking";
 import { testLog } from "../Logger";
 import { BTreeMap } from "@polkadot/types-codec";
 import {
@@ -33,6 +33,7 @@ import { abi, getAssetIdFromErc20 } from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 import { closeL1Item } from "../setupsOnTheGo";
 import { encodeFunctionResult, keccak256 } from "viem";
+import { Withdraw } from "../rolldown";
 
 export class Rolldown {
   static async createWithdrawalsInBatch(
@@ -379,6 +380,22 @@ export class Rolldown {
     expect(chain).toEqual(eventChain);
     return { source, assignee, batchId, range };
   }
+
+  static async createABatchWithWithdrawals(
+    user: User,
+    tokenAddress: string,
+    batchSize: number,
+    chain: ChainName = "Ethereum",
+    amountValue = 100,
+  ) {
+    let number = 0;
+    const extrinsicCall: Extrinsic[] = [];
+    while (++number <= batchSize) {
+      const withdrawTx = await Withdraw(user, amountValue, tokenAddress, chain);
+      extrinsicCall.push(withdrawTx);
+    }
+    return extrinsicCall;
+  }
 }
 export class L2Update {
   api: ApiPromise;
@@ -543,29 +560,4 @@ export async function createAnUpdateAndCancelIt(
   await waitSudoOperationSuccess(cancel, "SudoAsDone");
   const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
   return { txIndex, api, reqId, reqIdCanceled };
-}
-
-export async function leaveSequencing(userAddr: string) {
-  const stakedEth = await SequencerStaking.sequencerStake(userAddr, "Ethereum");
-  const stakedArb = await SequencerStaking.sequencerStake(userAddr, "Arbitrum");
-  let chain = "";
-  if (stakedEth.toHuman() !== "0") {
-    chain = "Ethereum";
-  } else if (stakedArb.toHuman() !== "0") {
-    chain = "Arbitrum";
-  }
-  if (chain !== "") {
-    await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        userAddr,
-        await SequencerStaking.leaveSequencerStaking(chain as ChainName),
-      ),
-    );
-    await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        userAddr,
-        await SequencerStaking.unstake(chain as ChainName),
-      ),
-    );
-  }
 }
