@@ -1,6 +1,6 @@
 /*
  *
- * @group rolldownWithdrawal
+ * @group withdrawal-rolldown
  */
 import { getApi, initApi } from "../../utils/api";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
@@ -258,7 +258,6 @@ describe("Pre-operation withdrawal tests -", () => {
   });
 
   test("Given <batchSize> withdrawals WHEN they run successfully THEN a batch is generated AUTOMATICALLY from that L1, from ranges of (n,n+<batchSize>-1)", async () => {
-    await waitForNBlocks(3);
     const nextRequestId = JSON.parse(
       JSON.stringify(await api.query.rolldown.l2OriginRequestId()),
     );
