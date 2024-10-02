@@ -7,7 +7,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import "jest-extended";
 import { testLog } from "../../utils/Logger";
 import {
-  depositAndWait,
+  depositAndWaitNative,
   getNativeBalance,
   setupEthUser,
   waitForBatchWithRequest,
@@ -49,13 +49,13 @@ describe("Rollup", () => {
     });
 
     test("A user who deposits a token will have them on the node", async () => {
-      const anyChange = await depositAndWait(user, "EthAnvil");
+      const anyChange = await depositAndWaitNative(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
 
     test("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user, "EthAnvil");
+      const anyChange = await depositAndWaitNative(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
       const erc20Address = getL1("EthAnvil")?.contracts.native.address!;
@@ -128,13 +128,13 @@ describe("Rollup", () => {
     });
 
     test("A user who deposits a token will have them on the node", async () => {
-      const anyChange = await depositAndWait(user, "ArbAnvil");
+      const anyChange = await depositAndWaitNative(user, "ArbAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
 
     test("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user, "ArbAnvil");
+      const anyChange = await depositAndWaitNative(user, "ArbAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
       const arbErc20 = getL1("ArbAnvil")?.contracts.native.address!;
