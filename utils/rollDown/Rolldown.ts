@@ -194,12 +194,12 @@ export class Rolldown {
     return (await api.consts.rolldown.disputePeriodLength) as any as BN;
   }
 
-  static merkleRootBatchPeriod() {
+  static getMerkleRootBatchPeriod() {
     const api = getApi();
     return api.consts.rolldown.merkleRootAutomaticBatchPeriod.toNumber() as number;
   }
 
-  static merkleRootBatchSize() {
+  static getMerkleRootBatchSize() {
     const api = getApi();
     return api.consts.rolldown.merkleRootAutomaticBatchSize.toNumber() as number;
   }

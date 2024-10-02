@@ -98,7 +98,7 @@ export class SequencerStaking {
     return await api.consts.sequencerStaking.maxSequencers;
   }
 
-  static async blocksForSequencerUpdate() {
+  static async getBlocksNumberForSeqUpdate() {
     const api = getApi();
     return await api.consts.sequencerStaking.blocksForSequencerUpdate.toNumber();
   }

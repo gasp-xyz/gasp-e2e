@@ -136,7 +136,7 @@
     "test-rolldown": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=rolldown --group=-rollup --forceExit ",
     "test-sequencerStaking": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=sequencerStaking --forceExit ",
     "test-sequencerCancellation": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=sequencerCancellation --forceExit ",
-    "test-rolldownWithdrawal": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --group=withdrawal-rolldown --forceExit ",
+    "test-rolldownWithdrawal": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=withdrawal-rolldown --forceExit ",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
   },
   "devDependencies": {
