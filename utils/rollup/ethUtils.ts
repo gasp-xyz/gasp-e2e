@@ -35,6 +35,7 @@ import {
   PalletRolldownMessagesDeposit,
 } from "@polkadot/types/lookup";
 import { Ferry } from "../rollDown/Ferry";
+
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
 
@@ -493,4 +494,16 @@ export function waitForNClosedWithdrawals(publicClient: PublicClient, num = 1) {
       },
     });
   });
+}
+export async function getTransactionFees(
+  transactionHash: `0x${string}`,
+  client: PublicClient,
+) {
+  // Get the transaction receipt
+  const receipt = await client.getTransactionReceipt({
+    hash: transactionHash,
+  });
+  const gasUsed = receipt.gasUsed; // The gas used for the transaction
+  const gasPrice = receipt.effectiveGasPrice; // The gas price used (wei)
+  return gasUsed * gasPrice;
 }

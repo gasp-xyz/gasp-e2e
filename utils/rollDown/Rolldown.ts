@@ -33,6 +33,7 @@ import {
   abi,
   getAssetIdFromErc20,
   getPublicClient,
+  getTransactionFees,
   getWalletClient,
 } from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
@@ -388,8 +389,9 @@ export class Rolldown {
 
   static async ferryWithdrawal(
     l1: L1Type,
-    ferry: User, 
+    ferry: User,
     user: User,
+    // eslint-disable-next-line no-template-curly-in-string
     tokenAddress: "0x${string}",
     amount: number,
     tip: number,
@@ -443,6 +445,7 @@ export class Rolldown {
           `ferrying withdrawal ${withdrawal.requestId.id}: tx:${result.transactionHash} - ${result.status}`,
         );
       testLog.getLog().info("L1 item ferried with tx", request);
+      return getTransactionFees(txHash, publicClient);
     });
   }
 }

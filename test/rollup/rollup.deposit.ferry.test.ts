@@ -125,7 +125,7 @@ describe("Rollup-Ferry", () => {
 
       const balanceBefore = await getNativeBalance(user, l1);
       const ferrierBefore = await getNativeBalance(l1Ferrier, l1);
-      await Rolldown.ferryWithdrawal(
+      const fees = await Rolldown.ferryWithdrawal(
         l1,
         l1Ferrier,
         user,
@@ -149,7 +149,7 @@ describe("Rollup-Ferry", () => {
       const diffFerry =
         BigInt((ferrierBefore as any).toString()) -
         BigInt((ferrierAfter as any).toString());
-      expect(diffFerry).toBe(BigInt(11223344 - 668));
+      expect(diffFerry - fees).toBe(BigInt(11223344 - 668));
     });
     test("A user who deposits a ferried erc20 token Can ferry-withdraw", async () => {
       const l1 = "EthAnvil";
