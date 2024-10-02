@@ -36,6 +36,16 @@ import { encodeFunctionResult, keccak256 } from "viem";
 import { Withdraw } from "../rolldown";
 
 export class Rolldown {
+  static getUpdateIdFromEvents(
+    events: MangataGenericEvent[],
+    module = "rolldown",
+    method = "WithdrawalRequestCreated",
+  ): BN {
+    //rolldown.WithdrawalRequestCreated
+    const event = getEventResultFromMangataTx(events, [module, method]);
+    // @ts-ignore
+    return stringToBN(event.data.requestId.id);
+  }
   static async createWithdrawalsInBatch(
     num: number,
     userAddress = "0x14dc79964da2c08b23698b3d3cc7ca32193d9955",
@@ -280,11 +290,11 @@ export class Rolldown {
     return new BN(filteredEvent[0].event.data.assetId.toString());
   }
 
-  static async waitCancelResolution(user: User, chain = "Ethereum") {
+  static async waitCancelResolution(chain = "Ethereum") {
     setupUsers();
     const api = getApi();
     const waitingResolution = await api.query.rolldown.awaitingCancelResolution(
-      [chain, user.keyRingPair.address],
+      chain,
     );
     return JSON.parse(JSON.stringify(waitingResolution));
   }
@@ -297,8 +307,8 @@ export class Rolldown {
     );
   }
 
-  static async closeCancelOnL1(requestId: bigint) {
-    await closeL1Item(requestId, "close_cancel");
+  static async closeCancelOnL1(requestId: bigint, chainName = "Ethereum") {
+    await closeL1Item(requestId, "close_cancel", chainName);
   }
 
   static hashL1Update(L2Request: any) {

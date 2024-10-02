@@ -1,6 +1,6 @@
 import { Chain, defineChain } from "viem";
 
-interface TestChain extends Chain {
+export interface TestChain extends Chain {
   contracts: {
     rollDown: {
       address: `0x{string}`;
