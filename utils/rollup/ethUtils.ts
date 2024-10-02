@@ -11,28 +11,29 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
-import { BN, hexToU8a, nToBigInt } from "@polkadot/util";
-import { getApi } from "../api";
-import { testLog } from "../Logger";
-import { setupApi, setupUsers } from "../setup";
-import { Sudo } from "../sudo";
-import { Assets } from "../Assets";
-import { User } from "../User";
 import { ArbAnvil, EthAnvil, getL1, L1Type, TestChain } from "./l1s";
-import { encodeAddress } from "@polkadot/keyring";
-import { blake2AsU8a } from "@polkadot/util-crypto";
-import { L2Update } from "../rollDown/Rolldown";
+import { User } from "../User";
+import { getApi } from "../api";
 import {
   expectExtrinsicSucceed,
   sleep,
   stringToBN,
   waitForBalanceChange,
 } from "../utils";
-import {
-  PalletRolldownMessagesDeposit,
-  OrmlTokensAccountData,
-} from "@polkadot/types/lookup";
+import { testLog } from "../Logger";
+import BN from "bn.js";
+import { setupApi, setupUsers } from "../setup";
+import { Sudo } from "../sudo";
+import { Assets } from "../Assets";
+import { L2Update } from "../rollDown/Rolldown";
+import { blake2AsU8a, encodeAddress } from "@polkadot/util-crypto";
+//import { Ferry } from "../rollDown/Ferry";
+import { hexToU8a, nToBigInt } from "@polkadot/util";
 import { diff } from "json-diff-ts";
+import {
+  OrmlTokensAccountData,
+  PalletRolldownMessagesDeposit,
+} from "@polkadot/types/lookup";
 import { Ferry } from "../rollDown/Ferry";
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
@@ -329,7 +330,9 @@ export async function depositAndWait(
     const balance = await depositor.getBalanceForEthToken(
       getL1(l1)!.contracts.dummyErc20.address,
     );
-    expect(balance.free).bnEqual(userBalanceExpectedAmount);
+    expect(balance.free.toString()).toEqual(
+      userBalanceExpectedAmount.toString(),
+    );
   }
   if (onlyContractDeposit) {
     return;
@@ -381,7 +384,7 @@ export async function depositAndWaitNative(
 
   testLog.getLog().info(depositor.keyRingPair.address);
   let ferrier;
-  if(withFerry){
+  if (withFerry) {
     ferrier = await Ferry.setupFerrier(
       l1,
       getL1(l1)?.contracts?.native.address!,
@@ -431,7 +434,9 @@ export async function depositAndWaitNative(
         getL1(l1)!.contracts.native.address,
       );
     }
-    expect(balance.free).bnEqual(userBalanceExpectedAmount);
+    expect(balance.free.toString()).toEqual(
+      userBalanceExpectedAmount.toString(),
+    );
   }
   return await pWaiter;
 }
@@ -476,7 +481,7 @@ export function waitForNClosedWithdrawals(publicClient: PublicClient, num = 1) {
       abi: abi,
       address: ROLL_DOWN_CONTRACT_ADDRESS,
       eventName: "WithdrawalClosed",
-      onLogs: async (logs) => {
+      onLogs: async (logs: any) => {
         for (const log of logs) {
           cont += 1;
           // @ts-ignore
