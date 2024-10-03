@@ -88,11 +88,11 @@ export class MetaMask {
     const XPATH_FIRST_WORD = buildDataTestIdXpath(IMPUT_MNEMONIC_FIELD + 0);
     await waitForElement(this.driver, XPATH_FIRST_WORD);
 
-    try {
-      await this.closeAnyExtraWindow(this.driver);
-    } catch (e) {
-      //no window to close
-    }
+    // try {
+    //   await this.closeAnyExtraWindow(this.driver);
+    // } catch (e) {
+    //   //no window to close
+    // }
 
     await this.fillPassPhrase(mnemonicKeys);
 
