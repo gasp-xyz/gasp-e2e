@@ -11,7 +11,6 @@ import {
   L2Update,
   Rolldown,
   createAnUpdate,
-  leaveSequencing,
 } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
@@ -82,22 +81,7 @@ describe("sequencerStaking", () => {
   beforeEach(async () => {
     //TODO: Replace this by some monitoring of the active queue.
     await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    const activeSequencers = await SequencerStaking.activeSequencers();
-    let anysequencerGone = false;
-    for (const chain in activeSequencers.toHuman()) {
-      for (const seq of activeSequencers.toHuman()[chain] as string[]) {
-        if (
-          seq !== preSetupSequencers.Ethereum &&
-          seq !== preSetupSequencers.Arbitrum
-        ) {
-          await leaveSequencing(seq);
-          anysequencerGone = true;
-        }
-      }
-    }
-    if (anysequencerGone) {
-      await waitForNBlocks(10);
-    }
+    await SequencerStaking.removeAddedSequencers(10);
   });
 
   it("An already collator joining as sequencer - On Active", async () => {

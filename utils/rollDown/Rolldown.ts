@@ -1,4 +1,4 @@
-import { setupApi, setupUsers } from "../setup";
+import { Extrinsic, setupApi, setupUsers } from "../setup";
 import { getApi } from "../api";
 import { EthUser } from "../EthUser";
 import { BN, nToBigInt } from "@polkadot/util";
@@ -10,15 +10,16 @@ import {
   signTx,
 } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../txHandler";
-import { stringToBN, waitBlockNumber } from "../utils";
+import { getBlockNumber, stringToBN, waitBlockNumber } from "../utils";
 import {
   getEventsAt,
   waitForAllEventsFromMatchingBlock,
+  waitForEvents,
   waitNewBlock,
   waitSudoOperationSuccess,
 } from "../eventListeners";
 import { ApiPromise } from "@polkadot/api";
-import { ChainName, SequencerStaking } from "./SequencerStaking";
+import { ChainName } from "./SequencerStaking";
 import { testLog } from "../Logger";
 import { BTreeMap } from "@polkadot/types-codec";
 import {
@@ -38,6 +39,7 @@ import {
 } from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 import { closeL1Item } from "../setupsOnTheGo";
+import { Withdraw } from "../rolldown";
 import {
   Abi,
   decodeFunctionData,
@@ -207,6 +209,19 @@ export class Rolldown {
     return (await api.consts.rolldown.disputePeriodLength) as any as BN;
   }
 
+  static getMerkleRootBatchPeriod(extraBlocksNumber = 0) {
+    const api = getApi();
+    const batchPeriod =
+      api.consts.rolldown.merkleRootAutomaticBatchPeriod.toNumber() +
+      extraBlocksNumber;
+    return batchPeriod as number;
+  }
+
+  static getMerkleRootBatchSize() {
+    const api = getApi();
+    return api.consts.rolldown.merkleRootAutomaticBatchSize.toNumber() as number;
+  }
+
   static async cancelRequestFromL1(chainId: ChainName, reqId: number) {
     const api = getApi();
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
@@ -370,6 +385,43 @@ export class Rolldown {
           requestId.toString(),
     );
   }
+
+  static async waitForNextBatchCreated(chain: string, blocksLimit = 25) {
+    const api = await getApi();
+    const startBlock = await getBlockNumber();
+    const event = (await waitForEvents(
+      api,
+      "rolldown.TxBatchCreated",
+      blocksLimit,
+      chain,
+      startBlock,
+    )) as any[];
+    const eventChain = event[0].event.data[0].toString();
+    const source = event[0].event.data[1].toString();
+    const assignee = event[0].event.data[2].toString();
+    const batchId = event[0].event.data[3];
+    const range = {
+      from: event[0].event.data[4][0],
+      to: event[0].event.data[4][1],
+    };
+    expect(chain).toEqual(eventChain);
+    return { source, assignee, batchId, range };
+  }
+
+  static async createABatchWithWithdrawals(
+    user: User,
+    tokenAddress: string,
+    batchSize: number,
+    chain: ChainName = "Ethereum",
+    amountValue = 100,
+  ) {
+    let number = 0;
+    const extrinsicCall: Extrinsic[] = [];
+    while (++number <= batchSize) {
+      const withdrawTx = await Withdraw(user, amountValue, tokenAddress, chain);
+      extrinsicCall.push(withdrawTx);
+    }
+    return extrinsicCall;
 
   static depositFerryUnsafe(
     deposit: PalletRolldownMessagesDeposit,
@@ -612,29 +664,4 @@ export async function createAnUpdateAndCancelIt(
   await waitSudoOperationSuccess(cancel, "SudoAsDone");
   const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
   return { txIndex, api, reqId, reqIdCanceled };
-}
-
-export async function leaveSequencing(userAddr: string) {
-  const stakedEth = await SequencerStaking.sequencerStake(userAddr, "Ethereum");
-  const stakedArb = await SequencerStaking.sequencerStake(userAddr, "Arbitrum");
-  let chain = "";
-  if (stakedEth.toHuman() !== "0") {
-    chain = "Ethereum";
-  } else if (stakedArb.toHuman() !== "0") {
-    chain = "Arbitrum";
-  }
-  if (chain !== "") {
-    await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        userAddr,
-        await SequencerStaking.leaveSequencerStaking(chain as ChainName),
-      ),
-    );
-    await Sudo.asSudoFinalized(
-      Sudo.sudoAsWithAddressString(
-        userAddr,
-        await SequencerStaking.unstake(chain as ChainName),
-      ),
-    );
-  }
 }
