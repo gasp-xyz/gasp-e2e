@@ -8,7 +8,7 @@
  * or:
  * node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules  ./index.ts --runInBand
  */
-import inquirer from "inquirer";
+
 import {
   giveTokensToUser,
   joinAFewCandidates,
@@ -70,6 +70,7 @@ import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { toNumber } from "lodash-es";
 import { Rolldown } from "../utils/rollDown/Rolldown";
+import inquirer from "inquirer";
 
 async function app(): Promise<any> {
   return inquirer
@@ -975,7 +976,29 @@ async function app(): Promise<any> {
       return app();
     });
 }
+/**
+async function app(): Promise<any> {
+  return inquirer
+    .prompt({
+      type: "list",
+      message: "Select setup",
+      name: "option",
+      choices: ["Setup rewards with default users"],
+    })
+    .then(async (answers: { option: string | string[] }) => {
+      if (answers.option.includes("Setup rewards with default users")) {
+        await setupPoolWithRewardsForDefaultUsers();
+        //await swapEachNBlocks(1);
+        console.log("liq Id = ");
+      }
+    });
+}
+*/
 const main = async () => {
-  await app();
+  try {
+    await app();
+  } catch (e) {
+    console.log(e);
+  }
 };
 main();

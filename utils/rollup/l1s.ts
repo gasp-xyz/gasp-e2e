@@ -78,7 +78,7 @@ export function getL1(type: L1Type) {
     case "ArbAnvil":
       return ArbAnvil;
     default:
-      return undefined;
+      throw Error("unexpected name");
   }
 }
 export function getL1FromName(name: string): L1Type | undefined {

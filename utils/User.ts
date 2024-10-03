@@ -404,6 +404,23 @@ export class User {
       tokenId.toString(),
     );
   }
+  async getBalanceForArbToken(address: string) {
+    const tokenId = await getApi().query.assetRegistry.l1AssetToId({
+      Arbitrum: address,
+    });
+    if (tokenId.isNone) {
+      await setupApi();
+      return api.createType("OrmlTokensAccountData", {
+        free: 0,
+        reserved: 0,
+        frozen: 0,
+      }) as OrmlTokensAccountData;
+    }
+    return await getApi().query.tokens.accounts(
+      this.keyRingPair.address,
+      tokenId.toString(),
+    );
+  }
 }
 export class Asset {
   amountBefore: TokenBalance;

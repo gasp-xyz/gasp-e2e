@@ -2214,6 +2214,7 @@ export async function sendUpdateToL1() {
   );
   return requestsRange;
 }
+
 export async function getLatestRequestIdSubmittedToL1(
   publicClient: PublicClient,
 ) {
