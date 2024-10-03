@@ -194,9 +194,12 @@ export class Rolldown {
     return (await api.consts.rolldown.disputePeriodLength) as any as BN;
   }
 
-  static getMerkleRootBatchPeriod() {
+  static getMerkleRootBatchPeriod(extraBlocksNumber = 0) {
     const api = getApi();
-    return api.consts.rolldown.merkleRootAutomaticBatchPeriod.toNumber() as number;
+    const batchPeriod =
+      api.consts.rolldown.merkleRootAutomaticBatchPeriod.toNumber() +
+      extraBlocksNumber;
+    return batchPeriod as number;
   }
 
   static getMerkleRootBatchSize() {
@@ -293,9 +296,8 @@ export class Rolldown {
   static async waitCancelResolution(chain = "Ethereum") {
     setupUsers();
     const api = getApi();
-    const waitingResolution = await api.query.rolldown.awaitingCancelResolution(
-      chain,
-    );
+    const waitingResolution =
+      await api.query.rolldown.awaitingCancelResolution(chain);
     return JSON.parse(JSON.stringify(waitingResolution));
   }
 
