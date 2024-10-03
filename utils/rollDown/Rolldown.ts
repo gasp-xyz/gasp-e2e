@@ -422,6 +422,7 @@ export class Rolldown {
       extrinsicCall.push(withdrawTx);
     }
     return extrinsicCall;
+  }
 
   static depositFerryUnsafe(
     deposit: PalletRolldownMessagesDeposit,
