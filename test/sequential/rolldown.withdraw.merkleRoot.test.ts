@@ -55,7 +55,7 @@ describe("Withdraw & Batches tests -", () => {
     ethIdL1Asset = JSON.parse(
       JSON.stringify(await api.query.assetRegistry.idToL1Asset(ETH_ASSET_ID)),
     );
-    //we need tp add 3 blocks to batchPeriod due to the peculiarities of Polkadot's processing of subscribeFinalizedHeads
+    //we need to add 3 blocks to batchPeriod due to the peculiarities of Polkadot's processing of subscribeFinalizedHeads
     waitingBatchPeriod = Rolldown.getMerkleRootBatchPeriod() + 3;
     batchSize = Rolldown.getMerkleRootBatchSize();
     await Sudo.batchAsSudoFinalized(Assets.mintNative(sudo));
