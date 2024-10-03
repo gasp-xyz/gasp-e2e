@@ -41,7 +41,7 @@ async function setupUserAssetRegister(
 
   const assetTotalIssuance = await api.query.tokens.totalIssuance(assetId);
   const assetMetadata = await api.query.assetRegistry.metadata(assetId);
-  if (extrinsicSuccess === true) {
+  if (extrinsicSuccess) {
     expect(getEventResultFromMangataTx(userRegisterAsset).state).toEqual(
       ExtrinsicResult.ExtrinsicSuccess,
     );
@@ -215,13 +215,9 @@ test("register asset with xyk undefined and try to create a pool, expect success
 });
 
 test("register asset with xyk enabled and try to create a pool, expect success", async () => {
-  const register = Assets.registerAsset(
-    "None Xyk",
-    "None Xyk",
-    10,
-    undefined,
-    { operationsDisabled: false },
-  );
+  const register = Assets.registerAsset("None Xyk", "None Xyk", 10, undefined, {
+    operationsDisabled: false,
+  });
   const result = await Sudo.asSudoFinalized(register);
   const assetId = findEventData(
     result,

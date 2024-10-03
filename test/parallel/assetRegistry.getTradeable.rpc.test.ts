@@ -40,24 +40,12 @@ describe("AssetRegistry RPC -", () => {
       Assets.registerAsset("", "", 2),
       Assets.registerAsset("onlyName", "", 3),
       Assets.registerAsset("Name&Symbol", "symbol", 5),
-      Assets.registerAsset(
-        "Name&Symbol&Disabled",
-        "symbol3",
-        4,
-        undefined,
-        {
-          operationsDisabled: true,
-        },
-      ),
-      Assets.registerAsset(
-        "Name&Symbol&Enabled",
-        "symbol3",
-        6,
-        undefined,
-        {
-          operationsDisabled: false,
-        },
-      ),
+      Assets.registerAsset("Name&Symbol&Disabled", "symbol3", 4, undefined, {
+        operationsDisabled: true,
+      }),
+      Assets.registerAsset("Name&Symbol&Enabled", "symbol3", 6, undefined, {
+        operationsDisabled: false,
+      }),
     );
     expectMGAExtrinsicSuDidSuccess(events);
     noRegistered = filterEventData(events, "tokens.Created").map(

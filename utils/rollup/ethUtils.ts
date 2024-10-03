@@ -11,18 +11,30 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
-import { BN, hexToU8a, nToBigInt } from "@polkadot/util";
+import { ArbAnvil, EthAnvil, getL1, L1Type, TestChain } from "./l1s";
+import { User } from "../User";
 import { getApi } from "../api";
+import {
+  expectExtrinsicSucceed,
+  sleep,
+  stringToBN,
+  waitForBalanceChange,
+} from "../utils";
 import { testLog } from "../Logger";
+import BN from "bn.js";
 import { setupApi, setupUsers } from "../setup";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
-import { User } from "../User";
-import { ArbAnvil, EthAnvil, getL1, L1Type, TestChain } from "./l1s";
-import { encodeAddress } from "@polkadot/keyring";
-import { blake2AsU8a } from "@polkadot/util-crypto";
 import { L2Update } from "../rollDown/Rolldown";
-import { sleep, waitForBalanceChange } from "../utils";
+import { blake2AsU8a, encodeAddress } from "@polkadot/util-crypto";
+//import { Ferry } from "../rollDown/Ferry";
+import { hexToU8a, nToBigInt } from "@polkadot/util";
+import { diff } from "json-diff-ts";
+import {
+  OrmlTokensAccountData,
+  PalletRolldownMessagesDeposit,
+} from "@polkadot/types/lookup";
+import { Ferry } from "../rollDown/Ferry";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
   "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
@@ -99,7 +111,7 @@ export async function getAssetIdFromErc20(ethTokenAddress: string, l1: L1Type) {
     `{"${getL1(l1)?.gaspName}" : "${ethTokenAddress}" }`,
   );
   const assetId = await getApi().query.assetRegistry.l1AssetToId(param);
-  return new BN(assetId.toString());
+  return stringToBN(assetId.toString());
 }
 
 export async function mintERC20TokensOnEthL1(
@@ -244,6 +256,7 @@ export async function depositAndWait(
   depositor: User,
   l1: L1Type = "EthAnvil",
   onlyContractDeposit = false,
+  withFerry = false,
 ) {
   const updatesBefore = await getL2UpdatesStorage(l1);
   testLog.getLog().info(JSON.stringify(updatesBefore));
@@ -251,12 +264,109 @@ export async function depositAndWait(
     depositor.name as `0x${string}`,
   );
   const publicClient = getPublicClient(l1);
+  const amount = BigInt(112233445566);
+  const args = [getL1(l1)?.contracts.dummyErc20.address, amount];
+  if (withFerry) {
+    args.push(BigInt(6666));
+  }
+
   const { request } = await publicClient.simulateContract({
     account: acc,
     address: getL1(l1)?.contracts?.rollDown.address!,
     abi: abi as Abi,
     functionName: "deposit",
-    args: [getL1(l1)?.contracts.dummyErc20.address, BigInt(112233445566)],
+    args: args,
+  });
+  const wc = createWalletClient({
+    account: acc,
+    chain: getL1(l1),
+    transport: http(),
+  });
+  await wc.writeContract(request);
+  const updatesAfter = await getL2UpdatesStorage(l1);
+
+  const assetId = await getAssetIdFromErc20(
+    getL1(l1)?.contracts.dummyErc20.address!,
+    l1,
+  );
+
+  const pWaiter = waitForBalanceChange(
+    depositor.keyRingPair.address,
+    40,
+    assetId,
+  );
+
+  if (withFerry) {
+    const ferrier = await Ferry.setupFerrier(
+      l1,
+      getL1(l1)?.contracts.dummyErc20.address!,
+    );
+    const diffStorage = diff(
+      JSON.parse(JSON.stringify(updatesBefore)),
+      JSON.parse(JSON.stringify(updatesAfter)),
+    );
+    testLog.getLog().info(JSON.stringify(diffStorage));
+    const newDeposit = diffStorage[0]!.changes![0].value!;
+
+    const deposit = new L2Update(getApi())
+      .withDeposit(
+        newDeposit.requestId.id,
+        depositor.keyRingPair.address,
+        //@ts-ignore
+        getL1(l1)!.contracts.dummyErc20.address,
+        new BN(amount.toString()),
+        newDeposit.timeStamp,
+        new BN(newDeposit.ferryTip.toString()),
+      )
+      .buildParams()
+      .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
+
+    const res = await Ferry.ferryThisDeposit(ferrier, deposit, l1);
+
+    //Assert: Op when t fine & user got his tokens.
+    expectExtrinsicSucceed(res);
+    const userBalanceExpectedAmount = new BN(amount.toString()).sub(
+      new BN(newDeposit.ferryTip.toString()),
+    );
+    const balance = await depositor.getBalanceForEthToken(
+      getL1(l1)!.contracts.dummyErc20.address,
+    );
+    expect(balance.free.toString()).toEqual(
+      userBalanceExpectedAmount.toString(),
+    );
+  }
+  if (onlyContractDeposit) {
+    return;
+  }
+  testLog.getLog().info(depositor.keyRingPair.address);
+  // Wait for the balance to change
+  return await pWaiter;
+}
+
+export async function depositAndWaitNative(
+  depositor: User,
+  l1: L1Type = "EthAnvil",
+  withFerry = false,
+) {
+  const updatesBefore = await getL2UpdatesStorage(l1);
+  testLog.getLog().info(JSON.stringify(updatesBefore));
+  const acc: PrivateKeyAccount = privateKeyToAccount(
+    depositor.name as `0x${string}`,
+  );
+  const publicClient = getPublicClient(l1);
+
+  const args = [];
+  if (withFerry) {
+    args.push(BigInt(6666));
+  }
+  const amount = BigInt(112233445566);
+  const { request } = await publicClient.simulateContract({
+    account: acc,
+    address: getL1(l1)?.contracts?.rollDown.address!,
+    abi: abi as Abi,
+    functionName: "deposit_native",
+    value: amount,
+    args: args,
   });
   const wc = createWalletClient({
     account: acc,
@@ -267,28 +377,69 @@ export async function depositAndWait(
 
   const updatesAfter = await getL2UpdatesStorage(l1);
   testLog.getLog().info(JSON.stringify(updatesAfter));
-  if (onlyContractDeposit) {
-    return;
-  }
 
   // eslint-disable-next-line no-console
   console.log(updatesAfter);
   // eslint-disable-next-line no-console
   console.log(updatesBefore);
-  // TODO: verify that deposit is present in the pendingDeposits in l2update
-  //validate that the request got inserted.
-  // expect(
-  //   parseInt(JSON.parse(JSON.stringify(updatesAfter)).lastAcceptedRequestOnL1),
-  // ).toBeGreaterThan(
-  //   parseInt(JSON.parse(JSON.stringify(updatesBefore)).lastAcceptedRequestOnL1),
-  // );
+
   testLog.getLog().info(depositor.keyRingPair.address);
+  let ferrier;
+  if (withFerry) {
+    ferrier = await Ferry.setupFerrier(
+      l1,
+      getL1(l1)?.contracts?.native.address!,
+    );
+  }
   const assetId = await getAssetIdFromErc20(
-    getL1(l1)?.contracts.dummyErc20.address!,
+    getL1(l1)?.contracts.native.address!,
     l1,
   );
-  // Wait for the balance to change
-  return await waitForBalanceChange(depositor.keyRingPair.address, 40, assetId);
+  const pWaiter = waitForBalanceChange(
+    depositor.keyRingPair.address,
+    60,
+    assetId,
+  );
+  if (withFerry) {
+    const diffStorage = diff(
+      JSON.parse(JSON.stringify(updatesBefore)),
+      JSON.parse(JSON.stringify(updatesAfter)),
+    );
+    testLog.getLog().info(JSON.stringify(diffStorage));
+    const newDeposit = diffStorage[0]!.changes![0].value!;
+    const deposit = new L2Update(getApi())
+      .withDeposit(
+        newDeposit.requestId.id,
+        depositor.keyRingPair.address,
+        //@ts-ignore
+        getL1(l1)!.contracts.native.address,
+        new BN(amount.toString()),
+        newDeposit.timeStamp,
+        new BN(newDeposit.ferryTip.toString()),
+      )
+      .buildParams()
+      .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
+
+    const res = await Ferry.ferryThisDeposit(ferrier!, deposit, l1);
+    expectExtrinsicSucceed(res);
+    const userBalanceExpectedAmount = new BN(amount.toString()).sub(
+      new BN(newDeposit.ferryTip.toString()),
+    );
+    let balance: OrmlTokensAccountData;
+    if (l1 === "EthAnvil") {
+      balance = await depositor.getBalanceForEthToken(
+        getL1(l1)!.contracts.native.address,
+      );
+    } else {
+      balance = await depositor.getBalanceForArbToken(
+        getL1(l1)!.contracts.native.address,
+      );
+    }
+    expect(balance.free.toString()).toEqual(
+      userBalanceExpectedAmount.toString(),
+    );
+  }
+  return await pWaiter;
 }
 
 export async function waitForBatchWithRequest(
@@ -331,7 +482,7 @@ export function waitForNClosedWithdrawals(publicClient: PublicClient, num = 1) {
       abi: abi,
       address: ROLL_DOWN_CONTRACT_ADDRESS,
       eventName: "WithdrawalClosed",
-      onLogs: async (logs) => {
+      onLogs: async (logs: any) => {
         for (const log of logs) {
           cont += 1;
           // @ts-ignore
@@ -343,4 +494,16 @@ export function waitForNClosedWithdrawals(publicClient: PublicClient, num = 1) {
       },
     });
   });
+}
+export async function getTransactionFees(
+  transactionHash: `0x${string}`,
+  client: PublicClient,
+) {
+  // Get the transaction receipt
+  const receipt = await client.getTransactionReceipt({
+    hash: transactionHash,
+  });
+  const gasUsed = receipt.gasUsed; // The gas used for the transaction
+  const gasPrice = receipt.effectiveGasPrice; // The gas price used (wei)
+  return gasUsed * gasPrice;
 }

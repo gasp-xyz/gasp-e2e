@@ -26,14 +26,29 @@ import {
   PalletRolldownMessagesChain,
   PalletRolldownSequencerRights,
   SpRuntimeAccountAccountId20,
+  PalletRolldownMessagesDeposit,
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
-import { abi, getAssetIdFromErc20 } from "../rollup/ethUtils";
+import {
+  abi,
+  getAssetIdFromErc20,
+  getPublicClient,
+  getTransactionFees,
+  getWalletClient,
+} from "../rollup/ethUtils";
 import { getL1, getL1FromName, L1Type } from "../rollup/l1s";
 import { closeL1Item } from "../setupsOnTheGo";
-import { encodeFunctionResult, keccak256 } from "viem";
 import { Withdraw } from "../rolldown";
+import {
+  Abi,
+  decodeFunctionData,
+  encodeFunctionData,
+  encodeFunctionResult,
+  keccak256,
+  PrivateKeyAccount,
+} from "viem";
+import { privateKeyToAccount } from "viem/accounts";
 
 export class Rolldown {
   static getUpdateIdFromEvents(
@@ -83,7 +98,7 @@ export class Rolldown {
     destAddres: string,
     tokenAddres: string,
     amount: BN,
-    ferryTip = null,
+    ferryTip: null | number = null,
   ) {
     const api = getApi();
     return api.tx.rolldown.withdraw(
@@ -407,6 +422,83 @@ export class Rolldown {
       extrinsicCall.push(withdrawTx);
     }
     return extrinsicCall;
+
+  static depositFerryUnsafe(
+    deposit: PalletRolldownMessagesDeposit,
+    l1: L1Type,
+  ) {
+    return getApi().tx.rolldown.ferryDepositUnsafe(
+      //@ts-ignore
+      getL1(l1)!.gaspName,
+      deposit.requestId,
+      deposit.depositRecipient,
+      deposit.tokenAddress,
+      deposit.amount,
+      deposit.timeStamp,
+      deposit.ferryTip,
+    );
+  }
+
+  static async ferryWithdrawal(
+    l1: L1Type,
+    ferry: User,
+    user: User,
+    // eslint-disable-next-line no-template-curly-in-string
+    tokenAddress: "0x${string}",
+    amount: number,
+    tip: number,
+    requestId: any,
+  ) {
+    const publicClient = getPublicClient(l1);
+    const walletClient = getWalletClient(l1);
+    const account: PrivateKeyAccount = privateKeyToAccount(
+      ferry.name as `0x${string}`,
+    );
+    const withdrawal = {
+      requestId: {
+        origin: requestId.origin,
+        id: requestId.id,
+      },
+      recipient: user.keyRingPair.address,
+      tokenAddress: tokenAddress,
+      amount: nToBigInt(amount),
+      ferryTip: nToBigInt(tip),
+    };
+    const encodedData = encodeFunctionData({
+      abi,
+      functionName: "ferry_withdrawal",
+      args: [withdrawal],
+    });
+
+    const decoded = decodeFunctionData({
+      abi,
+      data: encodedData,
+    });
+
+    testLog.getLog().info(`Encoded Data: ${encodedData}`);
+    testLog.getLog().info(`Decoded Data:${JSON.stringify(decoded)}`);
+
+    const { request } = await publicClient.simulateContract({
+      account,
+      address: getL1(l1).contracts.rollDown.address as unknown as `0x${string}`,
+      abi: abi as Abi,
+      functionName: "ferry_withdrawal",
+      args: [withdrawal],
+      value: withdrawal.amount - withdrawal.ferryTip,
+    });
+
+    return await walletClient.writeContract(request).then(async (txHash) => {
+      const result = await publicClient.waitForTransactionReceipt({
+        hash: txHash,
+      });
+      testLog
+        .getLog()
+        .info(
+          `ferrying withdrawal ${withdrawal.requestId.id}: tx:${result.transactionHash} - ${result.status}`,
+        );
+      testLog.getLog().info("L1 item ferried with tx", request);
+      return getTransactionFees(txHash, publicClient);
+    });
   }
 }
 export class L2Update {
@@ -424,7 +516,6 @@ export class L2Update {
       "Vec<PalletRolldownMessagesCancelResolution>",
     );
   }
-
   buildUnsafe() {
     return this.api.tx.rolldown.updateL2FromL1Unsafe(this.buildParams());
   }
@@ -479,6 +570,7 @@ export class L2Update {
     erc20Address: string,
     amountValue: number | BN,
     timestamp: number = Date.now(),
+    ferryTip: BN = BN_ZERO,
   ) {
     const deposit = this.api.createType("PalletRolldownMessagesDeposit", {
       requestId: this.api.createType("PalletRolldownMessagesRequestId", [
@@ -489,7 +581,7 @@ export class L2Update {
       tokenAddress: erc20Address,
       amount: amountValue,
       timeStamp: timestamp,
-      ferryTip: new BN(0),
+      ferryTip: ferryTip,
     });
     this.pendingDeposits.push(deposit);
     return this;

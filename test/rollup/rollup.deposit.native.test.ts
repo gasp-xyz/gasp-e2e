@@ -5,71 +5,27 @@
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import "jest-extended";
-import { Abi, createWalletClient, http, PrivateKeyAccount } from "viem";
 import { testLog } from "../../utils/Logger";
-import { waitForBalanceChange } from "../../utils/utils";
 import {
-  abi,
-  getAssetIdFromErc20,
-  getL2UpdatesStorage,
+  depositAndWaitNative,
   getNativeBalance,
-  getPublicClient,
   setupEthUser,
   waitForBatchWithRequest,
 } from "../../utils/rollup/ethUtils";
 import { Keyring } from "@polkadot/api";
-import { privateKeyToAccount } from "viem/accounts";
 import { signTxMetamask } from "../../utils/metamask";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { jest } from "@jest/globals";
 import { User } from "../../utils/User";
-import { getL1, L1Type } from "../../utils/rollup/l1s";
+import { getL1 } from "../../utils/rollup/l1s";
 import { Rolldown } from "../../utils/rollDown/Rolldown";
 import { nToBigInt } from "@polkadot/util";
 import { closeL1Item } from "../../utils/setupsOnTheGo";
 
 let user: User;
 jest.setTimeout(600000);
-
-async function depositAndWait(depositor: User, l1: L1Type = "EthAnvil") {
-  const updatesBefore = await getL2UpdatesStorage(l1);
-  testLog.getLog().info(JSON.stringify(updatesBefore));
-  const acc: PrivateKeyAccount = privateKeyToAccount(
-    depositor.name as `0x${string}`,
-  );
-  const publicClient = getPublicClient(l1);
-  const { request } = await publicClient.simulateContract({
-    account: acc,
-    address: getL1(l1)?.contracts?.rollDown.address!,
-    abi: abi as Abi,
-    functionName: "deposit_native",
-    value: BigInt(112233445566),
-  });
-  const wc = createWalletClient({
-    account: acc,
-    chain: getL1(l1),
-    transport: http(),
-  });
-  await wc.writeContract(request);
-
-  const updatesAfter = await getL2UpdatesStorage(l1);
-  testLog.getLog().info(JSON.stringify(updatesAfter));
-
-  // eslint-disable-next-line no-console
-  console.log(updatesAfter);
-  // eslint-disable-next-line no-console
-  console.log(updatesBefore);
-
-  testLog.getLog().info(depositor.keyRingPair.address);
-  const assetId = await getAssetIdFromErc20(
-    getL1(l1)?.contracts.native.address!,
-    l1,
-  );
-  // Wait for the balance to change
-  return await waitForBalanceChange(depositor.keyRingPair.address, 60, assetId);
-}
 
 describe("Rollup", () => {
   describe("ETH Deposits & withdraws - native", () => {
@@ -93,13 +49,13 @@ describe("Rollup", () => {
     });
 
     test("A user who deposits a token will have them on the node", async () => {
-      const anyChange = await depositAndWait(user, "EthAnvil");
+      const anyChange = await depositAndWaitNative(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
 
     test("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user, "EthAnvil");
+      const anyChange = await depositAndWaitNative(user, "EthAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
       const erc20Address = getL1("EthAnvil")?.contracts.native.address!;
@@ -172,13 +128,13 @@ describe("Rollup", () => {
     });
 
     test("A user who deposits a token will have them on the node", async () => {
-      const anyChange = await depositAndWait(user, "ArbAnvil");
+      const anyChange = await depositAndWaitNative(user, "ArbAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
     });
 
     test("withdrawing tokens from the rollup contract", async () => {
-      const anyChange = await depositAndWait(user, "ArbAnvil");
+      const anyChange = await depositAndWaitNative(user, "ArbAnvil");
       // Check that got updated.
       expect(anyChange).toBeTruthy();
       const arbErc20 = getL1("ArbAnvil")?.contracts.native.address!;
