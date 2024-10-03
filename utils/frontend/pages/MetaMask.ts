@@ -38,7 +38,6 @@ const BTN_ACCOUNT_DETAILS = "account-list-menu-details";
 const BTN_ACCOUNT_LABEL = "editable-label-button";
 const DIV_ACCOUNT_LABEL_INPUT = "editable-input";
 const BTN_CONNECT_ACCOUNT = "page-container-footer-next";
-const BTN_COPY_ADDRESS = "address-copy-button-text";
 const BTN_ACC_SELECTION = "account-menu-icon";
 const BTN_IMPORT_ACCOUNT = "multichain-account-menu-popover-action-button";
 const BTN_IMPORT_ACCOUNT_CONFIRM = "import-account-confirm-button";
@@ -49,7 +48,7 @@ const BTN_REJECT_TRANSACTION = "page-container-footer-cancel";
 
 export class MetaMask {
   WEB_UI_ACCESS_URL =
-    "chrome-extension://ibkogccjfnojapecnljinaondndgildg/home.html";
+    "chrome-extension://mgmaidbjhpkihbbdppiimfibmgehjkgb/home.html";
 
   private static instance: MetaMask;
   private constructor(driver: WebDriver) {
@@ -126,7 +125,11 @@ export class MetaMask {
       "button",
       "Don't enable enhanced protection",
     );
-    await clickElement(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION);
+
+    if (await isDisplayed(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION)) {
+      await clickElement(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION);
+    }
+
     await this.acceptTNC();
     await this.skipPopup();
 
@@ -148,11 +151,12 @@ export class MetaMask {
     const XPATH_FIRST_WORD = buildDataTestIdXpath(IMPUT_MNEMONIC_FIELD + 0);
     await waitForElement(this.driver, XPATH_FIRST_WORD);
 
-    try {
-      await this.closeAnyExtraWindow(this.driver);
-    } catch (e) {
-      //no window to close
-    }
+    // not needed anymore
+    // try {
+    //   await this.closeAnyExtraWindow(this.driver);
+    // } catch (e) {
+    //   //no window to close
+    // }
 
     await this.fillPassPhrase(mnemonicKeys);
 
@@ -185,7 +189,11 @@ export class MetaMask {
       "button",
       "Don't enable enhanced protection",
     );
-    await clickElement(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION);
+
+    if (await isDisplayed(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION)) {
+      await clickElement(this.driver, XPATH_BTN_NO_ENCHANCED_PROTECTION);
+    }
+
     await this.acceptTNC();
     await this.skipPopup();
 
@@ -219,8 +227,7 @@ export class MetaMask {
   }
 
   async getAddress(): Promise<string> {
-    const XPATH_BTN_COPY_ADDRESS = buildDataTestIdXpath(BTN_COPY_ADDRESS);
-    return await getText(this.driver, XPATH_BTN_COPY_ADDRESS);
+    return await getText(this.driver, "//*[@class='qr-code']/*[2]");
   }
 
   async openAccountDetails() {

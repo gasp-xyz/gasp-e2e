@@ -36,7 +36,7 @@ describe("Gasp UI wallet tests", () => {
     }
 
     driver = await DriverBuilder.getInstance();
-    acc_addr = await importMetamaskExtension(driver);
+    acc_addr = await importMetamaskExtension(driver, true);
     acc_addr_short = acc_addr.slice(-4);
 
     await setupPage(driver);
