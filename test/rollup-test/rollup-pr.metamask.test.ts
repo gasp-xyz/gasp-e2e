@@ -50,6 +50,7 @@ describe("Gasp UI wallet tests", () => {
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
     await MetaMask.openMetaMaskInNewTab(driver);
+    await MetaMask.switchBackToOriginalTab(driver);
 
     await walletWrapper.openWalletSettings();
 
