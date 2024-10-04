@@ -18,6 +18,7 @@ import {
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletConnectModal } from "../../utils/frontend/rollup-pages/WalletConnectModal";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
+import { MetaMask } from "../../utils/frontend/pages/MetaMask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -48,6 +49,8 @@ describe("Gasp UI wallet tests", () => {
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
+    await MetaMask.openMetaMaskInNewTab(driver);
+
     await walletWrapper.openWalletSettings();
 
     const walletModal = new WalletConnectModal(driver);

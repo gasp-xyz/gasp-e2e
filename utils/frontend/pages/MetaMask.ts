@@ -80,6 +80,14 @@ export class MetaMask {
     await this.driver.get(this.WEB_UI_ACCESS_URL);
   }
 
+  static async openMetaMaskInNewTab(driver: WebDriver) {
+    await driver.executeScript("window.open()");
+    const handles = await driver.getAllWindowHandles();
+    // Switch to the newly opened tab (last in the list of handles)
+    await driver.switchTo().window(handles[handles.length - 1]);
+    await MetaMask.getInstance(driver).go();
+  }
+
   async setupAccount(mnemonicKeys = this.mnemonicMetaMask): Promise<string> {
     await this.driver.get(
       `${this.WEB_UI_ACCESS_URL}#onboarding/import-with-recovery-phrase`,
