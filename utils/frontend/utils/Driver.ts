@@ -31,7 +31,7 @@ export const DriverBuilder = (function () {
 
     let caps: Capabilities = new Capabilities();
     caps = Capabilities.chrome();
-    caps.set("version", "114.0");
+    caps.set("version", "128.0");
     caps.set("selenoid:options", {
       enableVNC: true,
       enableVideo: true,
