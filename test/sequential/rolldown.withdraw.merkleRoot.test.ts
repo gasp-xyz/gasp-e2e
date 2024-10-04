@@ -20,6 +20,7 @@ import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, filterEventData } from "../../utils/eventListeners";
 import { waitForNBlocks } from "../../utils/utils";
+import { Maintenance } from "../../utils/Maintenance";
 
 let testUser: User;
 let sudo: User;
@@ -496,5 +497,120 @@ describe("Pre-operation withdrawal tests -", () => {
     expect(event.source).toEqual("AutomaticSizeReached");
     expect(event.range.from.toNumber()).toEqual(nextRequestId);
     expect(event.range.to.toNumber()).toEqual(nextRequestId + (batchSize - 1));
+  });
+
+  test("GIVEN a manually generated batch, from A,B, WHEN timed happen THEN automatic batch will skip those manual ids", async () => {
+    await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        batchSize - 1,
+      )),
+    );
+    await signTx(
+      getApi(),
+      await Rolldown.createManualBatch("EthAnvil"),
+      testUser.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    const eventManually = await Rolldown.waitForNextBatchCreated(
+      "Ethereum",
+      waitingBatchPeriod,
+    );
+    expect(eventManually.assignee).toEqual(testUser.keyRingPair.address);
+    expect(eventManually.source).toEqual("Manual");
+    await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        batchSize,
+      )),
+    );
+    const eventAutomatically = await Rolldown.waitForNextBatchCreated(
+      "Ethereum",
+      waitingBatchPeriod,
+    );
+    const sequencersList = await SequencerStaking.activeSequencers();
+    expect(sequencersList.toHuman().Ethereum).toContain(
+      eventAutomatically.assignee,
+    );
+    expect(eventAutomatically.source).toEqual("AutomaticSizeReached");
+    expect(eventAutomatically.range.from.toNumber()).toBeGreaterThan(
+      eventManually.range.to.toNumber(),
+    );
+  });
+
+  test("GIVEN a manually generated batch, from A,B, WHEN up to 32 withdrawals happen THEN another automatic batch will run only including that missing id", async () => {
+    const nextRequestId = await getNextRolldownRequestId();
+    await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        batchSize - 1,
+      )),
+    );
+    await signTx(
+      getApi(),
+      await Rolldown.createManualBatch("EthAnvil"),
+      testUser.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    const eventManually = await Rolldown.waitForNextBatchCreated(
+      "Ethereum",
+      waitingBatchPeriod,
+    );
+    expect(eventManually.assignee).toEqual(testUser.keyRingPair.address);
+    expect(eventManually.source).toEqual("Manual");
+    expect(eventManually.range.from.toNumber()).toEqual(nextRequestId);
+    expect(eventManually.range.to.toNumber()).toEqual(
+      nextRequestId + (batchSize - 2),
+    );
+    await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        1,
+      )),
+    );
+    const eventAutomatically = await Rolldown.waitForNextBatchCreated(
+      "Ethereum",
+      waitingBatchPeriod,
+    );
+    const sequencersList = await SequencerStaking.activeSequencers();
+    expect(sequencersList.toHuman().Ethereum).toContain(
+      eventAutomatically.assignee,
+    );
+    expect(eventAutomatically.source).toEqual("PeriodReached");
+    expect(eventAutomatically.range.from.toNumber()).toEqual(
+      nextRequestId + (batchSize - 1),
+    );
+    expect(eventAutomatically.range.to.toNumber()).toEqual(
+      nextRequestId + (batchSize - 1),
+    );
+  });
+
+  test("GIven a utility.batch ( batched tx of 35 and last item in the utility.batch is the mm_on ) When maintenance mode, THEN No automatic batch can happen", async () => {
+    await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        batchSize,
+      )),
+      Maintenance.switchMaintenanceModeOn(),
+    );
+    let error: any;
+    try {
+      await Rolldown.waitForNextBatchCreated("Ethereum", 10);
+    } catch (err) {
+      error = err;
+    }
+    expect(error).toEqual(
+      "method rolldown.TxBatchCreated not found within blocks limit",
+    );
+    await Sudo.batchAsSudoFinalized(Maintenance.switchMaintenanceModeOff());
   });
 });
