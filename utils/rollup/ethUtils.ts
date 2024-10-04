@@ -282,7 +282,8 @@ export async function depositAndWait(
     chain: getL1(l1),
     transport: http(),
   });
-  await wc.writeContract(request);
+  const txHash = await wc.writeContract(request);
+  await publicClient.waitForTransactionReceipt({ hash: txHash });
   const updatesAfter = await getL2UpdatesStorage(l1);
 
   const assetId = await getAssetIdFromErc20(
@@ -373,8 +374,8 @@ export async function depositAndWaitNative(
     chain: getL1(l1),
     transport: http(),
   });
-  await wc.writeContract(request);
-
+  const txHash = await wc.writeContract(request);
+  await publicClient.waitForTransactionReceipt({ hash: txHash });
   const updatesAfter = await getL2UpdatesStorage(l1);
   testLog.getLog().info(JSON.stringify(updatesAfter));
 
