@@ -57,10 +57,10 @@ export const ArbAnvil: TestChain = defineChain({
   },
   contracts: {
     rollDown: {
-      address: "0x21dF544947ba3E8b3c32561399E88B52Dc8b2823",
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
     },
     dummyErc20: {
-      address: "0x04C89607413713Ec9775E14b954286519d836FEf",
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
     },
     native: {
       address: "0x0000000000000000000000000000000000000001",
