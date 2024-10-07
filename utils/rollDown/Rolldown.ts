@@ -324,6 +324,16 @@ export class Rolldown {
     );
   }
 
+  static async createForceManualBatch(
+    from: number,
+    to: number,
+    sequencer: any,
+    chain: ChainName = "Ethereum",
+  ) {
+    const api = await getApi();
+    return api.tx.rolldown.forceCreateBatch(chain, [from, to], sequencer);
+  }
+
   static async closeCancelOnL1(requestId: bigint, chainName = "Ethereum") {
     await closeL1Item(requestId, "close_cancel", chainName);
   }

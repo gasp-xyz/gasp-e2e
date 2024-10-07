@@ -39,6 +39,15 @@ async function getNextRolldownRequestId() {
   return nextId;
 }
 
+async function getLastBatchId() {
+  api = getApi();
+  const l2RequestsBatchLast = JSON.parse(
+    JSON.stringify(await api.query.rolldown.l2RequestsBatchLast()),
+  );
+  const batchId = l2RequestsBatchLast!.Ethereum[1];
+  return batchId;
+}
+
 describe("Withdraw & Batches tests -", () => {
   beforeAll(async () => {
     try {
@@ -612,5 +621,96 @@ describe("Pre-operation withdrawal tests -", () => {
       "method rolldown.TxBatchCreated not found within blocks limit",
     );
     await Sudo.batchAsSudoFinalized(Maintenance.switchMaintenanceModeOff());
+  });
+
+  test("Creating two merkle trees generates the same output", async () => {
+    const batchIdBefore = await getLastBatchId();
+    const withEvent = await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        10,
+      )),
+    );
+    const filteredEvent = JSON.parse(
+      JSON.stringify(
+        withEvent.filter(
+          (event) => event.method === "WithdrawalRequestCreated",
+        ),
+      ),
+    );
+    const idFromNumber = filteredEvent[0].event.data[1].id;
+    const idToNumber = filteredEvent[9].event.data[1].id;
+    const sequencer = JSON.parse(
+      JSON.stringify(await SequencerStaking.activeSequencers()),
+    ).Ethereum[0];
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudo(
+        await Rolldown.createForceManualBatch(
+          idFromNumber,
+          idToNumber,
+          sequencer,
+          "Ethereum",
+        ),
+      ),
+      Sudo.sudo(
+        await Rolldown.createForceManualBatch(
+          idFromNumber,
+          idToNumber,
+          sequencer,
+          "Ethereum",
+        ),
+      ),
+    );
+    const batchIdAfter = await getLastBatchId();
+    expect(batchIdAfter).toEqual(batchIdBefore + 2);
+  });
+
+  test("Given a manually batch generation, WHEN is not the forced, THEN start-end will be calculated automatically", async () => {
+    const requestIdBefore = await getNextRolldownRequestId();
+    const events = await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        2,
+      )),
+      await Rolldown.createManualBatch("EthAnvil"),
+    );
+    const filteredEvent = JSON.parse(
+      JSON.stringify(
+        events.filter((event) => event.method === "TxBatchCreated"),
+      ),
+    );
+    expect(filteredEvent[0].event.data[4][0]).toEqual(requestIdBefore);
+    expect(filteredEvent[0].event.data[4][1]).toEqual(requestIdBefore + 1);
+  });
+
+  test("Given a manually batch generation, WHEN is the forced ( sudo ) , THEN start-end must be set manually", async () => {
+    const sequencer = JSON.parse(
+      JSON.stringify(await SequencerStaking.activeSequencers()),
+    ).Ethereum[0];
+    const requestIdBefore = await getNextRolldownRequestId();
+    const events = await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        2,
+      )),
+      Sudo.sudo(
+        await Rolldown.createForceManualBatch(
+          requestIdBefore,
+          requestIdBefore + 1,
+          sequencer,
+          "Ethereum",
+        ),
+      ),
+    );
+    const filteredEvent = JSON.parse(
+      JSON.stringify(
+        events.filter((event) => event.method === "TxBatchCreated"),
+      ),
+    );
+    expect(filteredEvent[0].event.data[4][0]).toEqual(requestIdBefore);
+    expect(filteredEvent[0].event.data[4][1]).toEqual(requestIdBefore + 1);
   });
 });
