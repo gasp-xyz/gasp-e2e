@@ -30,10 +30,10 @@ export const EthAnvil: TestChain = defineChain({
   },
   contracts: {
     rollDown: {
-      address: "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc",
+      address: "0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f",
     },
     dummyErc20: {
-      address: "0x7a2088a1bFc9d81c55368AE168C2C02570cB814F",
+      address: "0xFD471836031dc5108809D173A067e8486B9047A3",
     },
     native: {
       address: "0x0000000000000000000000000000000000000001",
@@ -57,10 +57,10 @@ export const ArbAnvil: TestChain = defineChain({
   },
   contracts: {
     rollDown: {
-      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
     },
     dummyErc20: {
-      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
     },
     native: {
       address: "0x0000000000000000000000000000000000000001",
