@@ -244,7 +244,7 @@ async function app(): Promise<any> {
           });
       }
       if (answers.option.includes("Vote")) {
-        return inquirer
+        await inquirer
           .prompt([
             {
               type: "input",

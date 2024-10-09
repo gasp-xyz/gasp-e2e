@@ -58,10 +58,10 @@ export function getEnvironmentRequiredVars() {
     : "";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
-    : "//Alith";
+    : "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133";
   const testUserName = process.env.TEST_USER_NAME
     ? process.env.TEST_USER_NAME
-    : "//Alice";
+    : "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133";
   // if (
   //   (palletAddress.length === 0 && xykPalletAddress.length === 0) ||
   //   sudoUserName.length === 0 ||

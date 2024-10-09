@@ -2,9 +2,9 @@
 import Keyring from "@polkadot/keyring";
 import BN from "bn.js";
 import { Assets } from "./Assets";
-import { KSM_ASSET_ID, MAX_BALANCE, GASP_ASSET_ID } from "./Constants";
+import { MAX_BALANCE, GASP_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { Extrinsic, setupApi, setupUsers, sudo } from "./setup";
+import { alice, Extrinsic, setupApi, setupUsers, sudo } from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
 import { SudoDB } from "./SudoDB";
@@ -171,7 +171,7 @@ export async function vote(motionId: number) {
   const api = await getApi();
   const allProposals = await api.query.council.voting.entries();
   const allMembers = await api.query.council.members();
-
+  //const halfMembers = allMembers.slice(0, -3);
   const proposal = allProposals.find(
     (x) =>
       JSON.parse(JSON.stringify(x[1].toHuman())).index === motionId.toString(),
@@ -192,7 +192,7 @@ export async function vote(motionId: number) {
   await Sudo.batchAsSudoFinalized(...txs);
 }
 export async function close(motionId: number) {
-  const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
+  const fundAcc = "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac";
   await setupApi();
   await setupUsers();
   await initApi();
@@ -231,12 +231,13 @@ export async function setupACouncilWithDefaultUsers() {
     1000,
   )!;
   const keyring = new Keyring({ type: "ethereum" });
-  const testUser1 = new User(keyring, "//Bob");
-  const testUser2 = new User(keyring, "//Alice");
-  const testUser3 = new User(keyring, "//Charlie");
-  const testUser4 = new User(keyring, "//Eve");
-  const testUser5 = new User(keyring, "//Ferdie");
-  const testUser6 = new User(keyring, "//Dave");
+  const testUser1 = new User(keyring, "0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b");
+  const testUser2 = new User(keyring, "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133");
+  const testUser3 = new User(keyring, "0x0b6e18cafb6ed99687ec547bd28139cafdd2bffe70e6b688025de6b445aa5c5b");
+  const testUser4 = new User(keyring, "0x7dce9bc8babb68fec1409be38c8e1a52650206a7ed90ff956ae8a6d15eeaaef4");
+  const testUser5 = new User(keyring, "0xb9d2ea9a615f3165812e8d44de0d24da9bbd164b65c4f0573e1ce2c8dbd9c8df");
+  const testUser6 = new User(keyring, "0x39539ab1876910bbf3a223d84a29e28f1cb4e2e456503e7e91ed39b2e7223d68");
+  const testUser7 = new User(keyring, "0x908c52ac6642f632a58d3497052be12925dd3def565d0c4f0bfb9c0164f648a6");
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const token2 = await Assets.issueAssetToUser(sudo, amount, sudo, true);
   await Sudo.batchAsSudoFinalized(
@@ -246,12 +247,14 @@ export async function setupACouncilWithDefaultUsers() {
     Assets.mintToken(token2, testUser4, amount),
     Assets.mintToken(token2, testUser5, amount),
     Assets.mintToken(token2, testUser6, amount),
+    Assets.mintToken(token2, testUser7, amount),
     Assets.mintNative(testUser1, amount),
     Assets.mintNative(testUser2, amount),
     Assets.mintNative(testUser3, amount),
     Assets.mintNative(testUser4, amount),
     Assets.mintNative(testUser5, amount),
     Assets.mintNative(testUser6, amount),
+    Assets.mintNative(testUser7, amount),
   );
   await Sudo.asSudoFinalized(
     Sudo.sudo(
@@ -263,6 +266,7 @@ export async function setupACouncilWithDefaultUsers() {
           testUser4.keyRingPair.address,
           testUser5.keyRingPair.address,
           testUser6.keyRingPair.address,
+          testUser7.keyRingPair.address,
         ],
         testUser1.keyRingPair.address,
         0,
@@ -278,12 +282,12 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     1000,
   )!;
   const keyring = new Keyring({ type: "ethereum" });
-  const testUser1 = new User(keyring, "//Bob");
-  const testUser2 = new User(keyring, "//Alice");
-  const testUser3 = new User(keyring, "//Charlie");
-  const testUser4 = new User(keyring, "//Eve");
-  const testUser5 = new User(keyring, "//Dave");
-  const testUser6 = new User(keyring, "//Ferdie");
+  const testUser1 = new User(keyring, "0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b");
+  const testUser2 = new User(keyring, "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133");
+  const testUser3 = new User(keyring, "0x0b6e18cafb6ed99687ec547bd28139cafdd2bffe70e6b688025de6b445aa5c5b");
+  const testUser4 = new User(keyring, "0x7dce9bc8babb68fec1409be38c8e1a52650206a7ed90ff956ae8a6d15eeaaef4");
+  const testUser5 = new User(keyring, "0x39539ab1876910bbf3a223d84a29e28f1cb4e2e456503e7e91ed39b2e7223d68");
+  const testUser6 = new User(keyring, "0xb9d2ea9a615f3165812e8d44de0d24da9bbd164b65c4f0573e1ce2c8dbd9c8df");
   const users = [
     testUser1,
     testUser2,
@@ -1192,43 +1196,22 @@ export async function testTokensForUsers(userName = "//Eve") {
 export async function createProposal() {
   await setupApi();
   await setupUsers();
-  const dict = {
-    "5G22cv9fT5RNVm2AV4MKgagmKH9aoZL4289UDcYrToP9K6hQ": 2000000000000,
-    "5GbtrMJi2MV3oDMpXnkCjNHErDHfmwN6AS4E7JCtsqsABU86": 2000000000000,
-    "5HKgtV7xNbKQyX4RZeTA5gtpZZZb67fay4kfjDhgjzdPe6ap": 100000000000,
-    "5FZKwNzhMiKzqAmSepiTQSSxx8cfM5kJmnAJT4R5a99LZvRh": 600000000000,
-    "5EAP8iPdRrPA6qjqcVZm7LobYd7Qy9r3JddaEs4uLKVChzC6": 2245583936554,
-    "5HnHFaFWkVkHfxf4J6Pwh7xyjJFHTjm78kC29oALhG1WkRK5": 2264063755235,
-    "5FTexk7oF68CohbR2DDyr2k6sBEyktNLFVZCCzGEfrcheCXM": 361400000000,
-    "5E2KX6jQi2w63MS4srza3nCMRkVwLnWYT1yp9gB6rPY9JAFa": 235000000000,
-    "5CZpuyTyEGBKFBRu7ebyTp9q97jxKuyejrAGXZJwUQ17PHAk": 20000000000,
-    "5CzMGHQAz9LT2CmuNTRAmvbwsdeJzCAvQYDmj3K6h6pLcUXK": 9361013561421,
-    "5H92NmUsAvVRpc6UC38SnU2RDX1fMyxAxzLL65uvqAFBynkH": 183051308897,
-    "5GYknXBBRKfRXYYBc1f8xhm15UrR3kLV9kMayqYr86sKRfT5": 1242738580000,
-  };
-  const dict2 = {
-    "5CZpuyTyEGBKFBRu7ebyTp9q97jxKuyejrAGXZJwUQ17PHAk": 1286000000000,
-    "5G22cv9fT5RNVm2AV4MKgagmKH9aoZL4289UDcYrToP9K6hQ": 9000000000000,
-    "5FZKwNzhMiKzqAmSepiTQSSxx8cfM5kJmnAJT4R5a99LZvRh": 53000000000000,
-  };
-  const txs: Extrinsic[] = [];
-  Object.keys(dict).forEach((account) => {
-    txs.push(
-      Assets.mintTokenAddress(
-        KSM_ASSET_ID,
-        account,
-        //@ts-ignore
-        new BN(dict[account]!),
+  const api = getApi();
+  const randnum = Math.floor(Math.random() * 1000000);
+  const tx = Council.propose(
+    4,
+    api.tx.sudoOrigin.sudo(
+      api.tx.tokens.mint(
+        GASP_ASSET_ID,
+        alice.keyRingPair.address,
+        new BN(randnum).addn(1),
       ),
-    );
-  });
-  Object.keys(dict2).forEach((account) => {
-    txs.push(
-      //@ts-ignore
-      Assets.mintTokenAddress(KSM_ASSET_ID, account, new BN(dict2[account]!)),
-    );
-  });
-  await Sudo.batch(...txs);
+    ),
+    44,
+  );
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAs(alice, tx),
+  );
 }
 export async function migrate() {
   await setupApi();
