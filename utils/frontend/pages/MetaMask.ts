@@ -368,7 +368,9 @@ export class MetaMask {
   }
 
   private static async signDeposit(driver: WebDriver) {
-    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(BTN_CONFIRM_TRANSACTION);
+    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(
+      BTN_CONFIRM_TRANSACTION,
+    );
     await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
     await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
     await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
