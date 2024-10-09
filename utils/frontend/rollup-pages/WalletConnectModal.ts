@@ -71,7 +71,7 @@ export class WalletConnectModal {
   private getAccountItemXpath(type: ModalType, buttonString: string) {
     return (
       this.modalStage[type] +
-      `//*[@data-testid="accountList-item" and contains(.,'${buttonString}')]`
+      `//*[@data-testid="accountList-item" or contains(.,'${buttonString}')]`
     );
   }
 
