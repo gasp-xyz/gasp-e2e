@@ -1,5 +1,5 @@
 import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import { getEnvironmentRequiredVars } from "../../utils";
 import {
   appendText,
   buildClassXpath,
@@ -45,7 +45,6 @@ const BTN_FOOTER_NEXT = "page-container-footer-next";
 const BTN_GENERIC_CONFIRMATION = "confirmation-submit-button";
 const BTN_CONFIRM_TRANSACTION = "confirm-footer-button";
 const BTN_REJECT_TRANSACTION = "page-container-footer-cancel";
-let originalWindowHandle: string;
 
 export class MetaMask {
   WEB_UI_ACCESS_URL =
@@ -79,24 +78,6 @@ export class MetaMask {
   }
   async go() {
     await this.driver.get(this.WEB_UI_ACCESS_URL);
-  }
-
-  static async openMetaMaskInNewTab(driver: WebDriver) {
-    originalWindowHandle = await driver.getWindowHandle();
-    await driver.executeScript("window.open()");
-    const handles = await driver.getAllWindowHandles();
-    // Switch to the newly opened tab (last in the list of handles)
-    await driver.switchTo().window(handles[handles.length - 1]);
-    await MetaMask.getInstance(driver).go();
-    await sleep(3000);
-  }
-
-  static async switchBackToOriginalTab(driver: WebDriver) {
-    if (originalWindowHandle) {
-      await driver.switchTo().window(originalWindowHandle);
-    } else {
-      console.warn("Original window handle not found.");
-    }
   }
 
   async setupAccount(mnemonicKeys = this.mnemonicMetaMask): Promise<string> {
