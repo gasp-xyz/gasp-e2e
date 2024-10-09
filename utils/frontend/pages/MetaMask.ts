@@ -93,11 +93,11 @@ export class MetaMask {
 
   static async switchBackToOriginalTab(driver: WebDriver) {
     if (originalWindowHandle) {
-        await driver.switchTo().window(originalWindowHandle);
+      await driver.switchTo().window(originalWindowHandle);
     } else {
-        console.warn('Original window handle not found.');
+      console.warn("Original window handle not found.");
     }
-}
+  }
 
   async setupAccount(mnemonicKeys = this.mnemonicMetaMask): Promise<string> {
     await this.driver.get(
