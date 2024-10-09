@@ -14,6 +14,7 @@ import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import {
   L2Update,
   Rolldown,
+  createAnUpdate,
   createAnUpdateAndCancelIt,
 } from "../../utils/rollDown/Rolldown";
 import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
@@ -21,6 +22,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, filterEventData } from "../../utils/eventListeners";
 import { waitForNBlocks } from "../../utils/utils";
 import { Maintenance } from "../../utils/Maintenance";
+import { BN } from "@polkadot/util";
 
 let testUser: User;
 let sudo: User;
@@ -29,15 +31,7 @@ let gaspIdL1Asset: any;
 let ethIdL1Asset: any;
 let waitingBatchPeriod: number;
 let batchSize: number;
-
-async function getNextRolldownRequestId() {
-  api = getApi();
-  const l2RequestsBatchLast = JSON.parse(
-    JSON.stringify(await api.query.rolldown.l2RequestsBatchLast()),
-  );
-  const nextId = l2RequestsBatchLast!.Ethereum[2][1] + 1;
-  return nextId;
-}
+let nextRequestIdEth: number;
 
 async function getLastBatchId() {
   api = getApi();
@@ -233,6 +227,46 @@ describe("Withdraw & Batches tests -", () => {
       "method rolldown.TxBatchCreated not found within blocks limit",
     );
   });
+
+  test("Given a failed deposit TX, then a withdrawal can be created by `refundFailedDeposit", async () => {
+    const sequencer = JSON.parse(
+      JSON.stringify(await SequencerStaking.activeSequencers()),
+    ).Ethereum[0];
+    const u128Max = new BN("340282366920938463463374607431768211455");
+    const txIndex = await Rolldown.lastProcessedRequestOnL2("Ethereum");
+    const update = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        testUser.keyRingPair.address,
+        testUser.keyRingPair.address,
+        u128Max.addn(1),
+      )
+      .on("Ethereum")
+      .buildUnsafe();
+    const depositEvent = await createAnUpdate(
+      sequencer,
+      "Ethereum",
+      txIndex,
+      update,
+    );
+
+    const event = JSON.parse(
+      JSON.stringify(
+        await Rolldown.waitForL2UpdateExecuted(new BN(depositEvent.txIndex)),
+      ),
+    );
+    expect(event[0].data[2].err).toEqual("Overflow");
+
+    await signTx(
+      getApi(),
+      await Rolldown.refundFailedDeposit(depositEvent.txIndex),
+      testUser.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    await Rolldown.waitForNextBatchCreated("Ethereum", waitingBatchPeriod);
+  });
 });
 
 describe("Pre-operation withdrawal tests -", () => {
@@ -274,10 +308,10 @@ describe("Pre-operation withdrawal tests -", () => {
       waitingBatchPeriod,
     );
     expect(event.source).toEqual("AutomaticSizeReached");
+    nextRequestIdEth = event.range.to.toNumber() + 1;
   });
 
   test("Given <batchSize> withdrawals WHEN they run successfully THEN a batch is generated AUTOMATICALLY from that L1, from ranges of (n,n+<batchSize>-1)", async () => {
-    const nextRequestId = await getNextRolldownRequestId();
     await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
         testUser,
@@ -292,8 +326,10 @@ describe("Pre-operation withdrawal tests -", () => {
     const sequencersList = await SequencerStaking.activeSequencers();
     expect(sequencersList.toHuman().Ethereum).toContain(event.assignee);
     expect(event.source).toEqual("AutomaticSizeReached");
-    expect(event.range.from.toNumber()).toEqual(nextRequestId);
-    expect(event.range.to.toNumber()).toEqual(nextRequestId + (batchSize - 1));
+    expect(event.range.from.toNumber()).toEqual(nextRequestIdEth);
+    expect(event.range.to.toNumber()).toEqual(
+      nextRequestIdEth + (batchSize - 1),
+    );
   });
 
   test("Given a withdraw extrinsic run WHEN tokens are available THEN a withdraw will happen and l2Requests will be stored waiting for batch", async () => {
@@ -368,9 +404,6 @@ describe("Pre-operation withdrawal tests -", () => {
   });
 
   test("Given <3> withdrawals WHEN they run successfully and we wait <batchPeriod> blocks, a batch is created upon reaching the period", async () => {
-    const nextRequestId = JSON.parse(
-      JSON.stringify(await api.query.rolldown.l2OriginRequestId()),
-    );
     await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
         testUser,
@@ -385,8 +418,8 @@ describe("Pre-operation withdrawal tests -", () => {
     const sequencersList = await SequencerStaking.activeSequencers();
     expect(sequencersList.toHuman().Ethereum).toContain(event.assignee);
     expect(event.source).toEqual("PeriodReached");
-    expect(event.range.from.toNumber()).toEqual(nextRequestId.Ethereum);
-    expect(event.range.to.toNumber()).toEqual(nextRequestId.Ethereum + 2);
+    expect(event.range.from.toNumber()).toEqual(nextRequestIdEth);
+    expect(event.range.to.toNumber()).toEqual(nextRequestIdEth + 2);
   });
 
   test("Given <1> withdrawal WHEN we manually generate a batch for it THEN a batch is generated", async () => {
@@ -412,7 +445,6 @@ describe("Pre-operation withdrawal tests -", () => {
   });
 
   test("GIVEN <batchSize - 1> withdraws and create manualBatch And wait for a timed generation WHEN another withdrawal is submitted THEN a batch is generated", async () => {
-    const nextRequestId = await getNextRolldownRequestId();
     let event: any;
     await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
@@ -435,8 +467,10 @@ describe("Pre-operation withdrawal tests -", () => {
     );
     expect(event.assignee).toEqual(testUser.keyRingPair.address);
     expect(event.source).toEqual("Manual");
-    expect(event.range.from.toNumber()).toEqual(nextRequestId);
-    expect(event.range.to.toNumber()).toEqual(nextRequestId + (batchSize - 2));
+    expect(event.range.from.toNumber()).toEqual(nextRequestIdEth);
+    expect(event.range.to.toNumber()).toEqual(
+      nextRequestIdEth + (batchSize - 2),
+    );
     await signTx(
       getApi(),
       await Withdraw(testUser, BN_HUNDRED, gaspIdL1Asset.ethereum, "Ethereum"),
@@ -453,9 +487,11 @@ describe("Pre-operation withdrawal tests -", () => {
     expect(sequencersList.toHuman().Ethereum).toContain(event.assignee);
     expect(event.source).toEqual("PeriodReached");
     expect(event.range.from.toNumber()).toEqual(
-      nextRequestId + (batchSize - 1),
+      nextRequestIdEth + (batchSize - 1),
     );
-    expect(event.range.to.toNumber()).toEqual(nextRequestId + (batchSize - 1));
+    expect(event.range.to.toNumber()).toEqual(
+      nextRequestIdEth + (batchSize - 1),
+    );
   });
 
   test("GIVEN <batchSize - 1> withdraws and create manualBatch And wait for a timed generation WHEN create batch with <batchSize - 1> withdrawal and add another one THEN a batch is generated automatically", async () => {
@@ -481,7 +517,7 @@ describe("Pre-operation withdrawal tests -", () => {
     );
     expect(event.assignee).toEqual(testUser.keyRingPair.address);
     expect(event.source).toEqual("Manual");
-    const nextRequestId = await getNextRolldownRequestId();
+    const nextRequestId = (await Rolldown.getL2RequestsBatchLast()).rangeTo + 1;
     await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
         testUser,
@@ -552,7 +588,6 @@ describe("Pre-operation withdrawal tests -", () => {
   });
 
   test("GIVEN a manually generated batch, from A,B, WHEN up to 32 withdrawals happen THEN another automatic batch will run only including that missing id", async () => {
-    const nextRequestId = await getNextRolldownRequestId();
     await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
         testUser,
@@ -574,9 +609,9 @@ describe("Pre-operation withdrawal tests -", () => {
     );
     expect(eventManually.assignee).toEqual(testUser.keyRingPair.address);
     expect(eventManually.source).toEqual("Manual");
-    expect(eventManually.range.from.toNumber()).toEqual(nextRequestId);
+    expect(eventManually.range.from.toNumber()).toEqual(nextRequestIdEth);
     expect(eventManually.range.to.toNumber()).toEqual(
-      nextRequestId + (batchSize - 2),
+      nextRequestIdEth + (batchSize - 2),
     );
     await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
@@ -595,10 +630,10 @@ describe("Pre-operation withdrawal tests -", () => {
     );
     expect(eventAutomatically.source).toEqual("PeriodReached");
     expect(eventAutomatically.range.from.toNumber()).toEqual(
-      nextRequestId + (batchSize - 1),
+      nextRequestIdEth + (batchSize - 1),
     );
     expect(eventAutomatically.range.to.toNumber()).toEqual(
-      nextRequestId + (batchSize - 1),
+      nextRequestIdEth + (batchSize - 1),
     );
   });
 
@@ -667,7 +702,6 @@ describe("Pre-operation withdrawal tests -", () => {
   });
 
   test("Given a manually batch generation, WHEN is not the forced, THEN start-end will be calculated automatically", async () => {
-    const requestIdBefore = await getNextRolldownRequestId();
     const events = await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
         testUser,
@@ -681,15 +715,14 @@ describe("Pre-operation withdrawal tests -", () => {
         events.filter((event) => event.method === "TxBatchCreated"),
       ),
     );
-    expect(filteredEvent[0].event.data[4][0]).toEqual(requestIdBefore);
-    expect(filteredEvent[0].event.data[4][1]).toEqual(requestIdBefore + 1);
+    expect(filteredEvent[0].event.data[4][0]).toEqual(nextRequestIdEth);
+    expect(filteredEvent[0].event.data[4][1]).toEqual(nextRequestIdEth + 1);
   });
 
   test("Given a manually batch generation, WHEN is the forced ( sudo ) , THEN start-end must be set manually", async () => {
     const sequencer = JSON.parse(
       JSON.stringify(await SequencerStaking.activeSequencers()),
     ).Ethereum[0];
-    const requestIdBefore = await getNextRolldownRequestId();
     const events = await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
         testUser,
@@ -698,8 +731,8 @@ describe("Pre-operation withdrawal tests -", () => {
       )),
       Sudo.sudo(
         await Rolldown.createForceManualBatch(
-          requestIdBefore,
-          requestIdBefore + 1,
+          nextRequestIdEth,
+          nextRequestIdEth + 1,
           sequencer,
           "Ethereum",
         ),
@@ -710,7 +743,70 @@ describe("Pre-operation withdrawal tests -", () => {
         events.filter((event) => event.method === "TxBatchCreated"),
       ),
     );
-    expect(filteredEvent[0].event.data[4][0]).toEqual(requestIdBefore);
-    expect(filteredEvent[0].event.data[4][1]).toEqual(requestIdBefore + 1);
+    expect(filteredEvent[0].event.data[4][0]).toEqual(nextRequestIdEth);
+    expect(filteredEvent[0].event.data[4][1]).toEqual(nextRequestIdEth + 1);
+  });
+
+  test("Given a non-forced manually generation, WHEN triggered, start will be the latest index from the last generated MAX( manual or automatically ) and last will be the latest requestId", async () => {
+    await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        2,
+      )),
+    );
+    await signTx(
+      getApi(),
+      await Rolldown.createManualBatch("EthAnvil"),
+      testUser.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+    const event = await Rolldown.waitForNextBatchCreated(
+      "Ethereum",
+      waitingBatchPeriod,
+    );
+    expect(event.range.from.toNumber()).toEqual(nextRequestIdEth);
+    expect(event.range.to.toNumber()).toEqual(nextRequestIdEth + 1);
+  });
+
+  test("GIVEN a manual batch WHEN no pending requests THEN no batch is generated BUT tokens are subtracted", async () => {
+    testUser.addAsset(GASP_ASSET_ID);
+    await testUser.refreshAmounts(AssetWallet.BEFORE);
+    await signTx(
+      getApi(),
+      await Rolldown.createManualBatch("EthAnvil"),
+      testUser.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(res.data).toEqual("EmptyBatch");
+    });
+    await testUser.refreshAmounts(AssetWallet.AFTER);
+    expect(testUser.getAsset(GASP_ASSET_ID)!.amountBefore.free!).bnGt(
+      testUser.getAsset(GASP_ASSET_ID)!.amountAfter.free!,
+    );
+  });
+
+  test("GIVEN manual batch THEN requires as parameter of the Chain", async () => {
+    const l2RequestsBatchBefore = await Rolldown.getL2RequestsBatchLast();
+    await Sudo.batchAsSudoFinalized(
+      ...(await Rolldown.createABatchWithWithdrawals(
+        testUser,
+        gaspIdL1Asset.ethereum,
+        2,
+      )),
+      await Rolldown.createManualBatch("EthAnvil"),
+    );
+    const l2RequestsBatchAfter = await Rolldown.getL2RequestsBatchLast();
+    expect(l2RequestsBatchBefore.chain).toBe("Ethereum");
+    expect(l2RequestsBatchAfter.chain).toBe("Ethereum");
+    expect(l2RequestsBatchAfter.batchId).toBe(
+      l2RequestsBatchBefore.batchId + 1,
+    );
+    expect(l2RequestsBatchAfter.rangeTo).toBe(
+      l2RequestsBatchBefore.rangeTo + 2,
+    );
   });
 });
