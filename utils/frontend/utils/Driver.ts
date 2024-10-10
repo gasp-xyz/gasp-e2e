@@ -55,7 +55,7 @@ export const DriverBuilder = (function () {
     await driver.wait(
       async () => {
         const handles = await driver.getAllWindowHandles();
-        return handles.length > 2;
+        return handles.length > 1;
       },
       10000,
       "Waiting for all extensions tabs to open",
