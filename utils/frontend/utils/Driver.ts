@@ -4,8 +4,6 @@ import "chromedriver";
 import { Builder } from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome";
 const path = "utils/frontend/utils/extensions";
-const polkadotExtensionPath = `${path}/polkadot_v0.44.1.0.crx`;
-const talismanExtensionPath = `${path}/talisman_v1.15.1.crx`;
 const metamaskExtensionPath = `${path}/meatamask_12.3.1.crx`;
 
 // Singleton constructor
@@ -13,8 +11,6 @@ export const DriverBuilder = (function () {
   async function buildChromeDriver(addExtensions = true, debugLogs = false) {
     const options = new chrome.Options();
     if (addExtensions) {
-      options.addExtensions(polkadotExtensionPath);
-      options.addExtensions(talismanExtensionPath);
       options.addExtensions(metamaskExtensionPath);
     }
     options
