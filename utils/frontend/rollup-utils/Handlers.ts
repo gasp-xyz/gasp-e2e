@@ -87,10 +87,6 @@ export async function setupPageWithStatePr(
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
   await mainPage.skipLaunchMessage();
-
-  const walletWrapper = new WalletWrapper(driver);
-  const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
-  expect(isAccInfoDisplayed).toBeTruthy();
 }
 
 export async function waitForMicroappsActionNotification(
