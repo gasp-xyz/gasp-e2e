@@ -14,7 +14,7 @@ import "dotenv/config";
 import {
   connectWallet,
   setupPage,
-  setupPageWithState,
+  setupPageWithStatePr,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletConnectModal } from "../../utils/frontend/rollup-pages/WalletConnectModal";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
@@ -45,7 +45,7 @@ describe("Gasp UI wallet tests", () => {
   });
 
   test("User can connect and disconnect Metamask wallet", async () => {
-    await setupPageWithState(driver, acc_addr_short);
+    await setupPageWithStatePr(driver, acc_addr_short);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
