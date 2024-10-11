@@ -79,10 +79,7 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   expect(isAccInfoDisplayed).toBeTruthy();
 }
 
-export async function setupPageWithStatePr(
-  driver: WebDriver,
-  acc_name: string,
-) {
+export async function setupPageWithStatePr(driver: WebDriver) {
   const mainPage = new Main(driver);
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();

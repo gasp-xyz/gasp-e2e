@@ -45,7 +45,7 @@ describe("Gasp UI wallet tests", () => {
   });
 
   test("User can connect and disconnect Metamask wallet", async () => {
-    await setupPageWithStatePr(driver, acc_addr_short);
+    await setupPageWithStatePr(driver);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
