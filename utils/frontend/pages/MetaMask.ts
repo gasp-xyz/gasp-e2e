@@ -41,10 +41,10 @@ const BTN_CONNECT_ACCOUNT = "page-container-footer-next";
 const BTN_ACC_SELECTION = "account-menu-icon";
 const BTN_IMPORT_ACCOUNT = "multichain-account-menu-popover-action-button";
 const BTN_IMPORT_ACCOUNT_CONFIRM = "import-account-confirm-button";
-const BTN_FOOTER_NEXT = "page-container-footer-next";
+const BTN_FOOTER_NEXT = "confirm-footer-button";
 const BTN_GENERIC_CONFIRMATION = "confirmation-submit-button";
-const BTN_CONFIRM_TRANSACTION = "confirm-footer-confirm-button";
-const BTN_REJECT_TRANSACTION = "page-container-footer-cancel";
+const BTN_CONFIRM_TRANSACTION = "confirm-footer-button";
+const BTN_REJECT_TRANSACTION = "confirm-footer-cancel-button";
 let originalWindowHandle: string;
 
 export class MetaMask {
@@ -385,6 +385,10 @@ export class MetaMask {
   }
 
   private static async signDeposit(driver: WebDriver) {
+    const XPATH_SCROLL_DOWN = "//*[@aria-label='Scroll down']";
+    await waitForElement(driver, XPATH_SCROLL_DOWN);
+    await clickElement(driver, XPATH_SCROLL_DOWN);
+
     const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(BTN_FOOTER_NEXT);
     await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
     await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
