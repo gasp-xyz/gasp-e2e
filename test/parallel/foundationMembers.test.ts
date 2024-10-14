@@ -1,3 +1,8 @@
+/*
+ *
+ * @group governance
+ */
+
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
