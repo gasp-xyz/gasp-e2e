@@ -79,6 +79,13 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   expect(isAccInfoDisplayed).toBeTruthy();
 }
 
+export async function setupPageWithStatePr(driver: WebDriver) {
+  const mainPage = new Main(driver);
+  const appLoaded = await mainPage.isAppLoaded();
+  expect(appLoaded).toBeTruthy();
+  await mainPage.skipLaunchMessage();
+}
+
 export async function waitForMicroappsActionNotification(
   driver: WebDriver,
   chainOne: ApiContext,
@@ -141,11 +148,12 @@ export async function waitForActionNotification(
       break;
     case TransactionType.AddLiquidity:
     case TransactionType.RemoveLiquidity:
+    case TransactionType.CreatePool:
       const removeLiqToast = new NotificationToast(driver);
       await removeLiqToast.waitForToastState(
         ToastType.Confirm,
         transaction,
-        3000,
+        5000,
       );
       const isWaitingForSignVisible = await removeLiqToast.istoastVisible(
         ToastType.Confirm,

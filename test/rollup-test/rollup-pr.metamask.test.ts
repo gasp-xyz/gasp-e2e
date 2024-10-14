@@ -14,10 +14,11 @@ import "dotenv/config";
 import {
   connectWallet,
   setupPage,
-  setupPageWithState,
+  setupPageWithStatePr,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletConnectModal } from "../../utils/frontend/rollup-pages/WalletConnectModal";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
+import { MetaMask } from "../../utils/frontend/pages/MetaMask";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -36,18 +37,21 @@ describe("Gasp UI wallet tests", () => {
     }
 
     driver = await DriverBuilder.getInstance();
-    acc_addr = await importMetamaskExtension(driver);
-    acc_addr_short = acc_addr.slice(-4);
+    acc_addr = await importMetamaskExtension(driver, true);
+    acc_addr_short = acc_addr.slice(-3).toUpperCase();
 
     await setupPage(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short);
   });
 
   test("User can connect and disconnect Metamask wallet", async () => {
-    await setupPageWithState(driver, acc_addr_short);
+    await setupPageWithStatePr(driver);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
+    await MetaMask.openMetaMaskInNewTab(driver);
+    await MetaMask.switchBackToOriginalTab(driver);
+
     await walletWrapper.openWalletSettings();
 
     const walletModal = new WalletConnectModal(driver);
