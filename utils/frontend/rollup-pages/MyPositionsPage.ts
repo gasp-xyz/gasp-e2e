@@ -12,6 +12,7 @@ import {
   writeText,
   getAttribute,
   isEnabled,
+  waitForElementEnabled,
 } from "../utils/Helper";
 import toNumber from "lodash-es/toNumber";
 
@@ -287,5 +288,13 @@ export class MyPositionsPage {
     const text = await getAttribute(this.driver, itemXpath);
     const floatValue = parseFloat(text);
     return floatValue;
+  }
+
+  async waitForAddPoolFieldsVisible() {
+    const firstItemXpath = buildDataTestIdXpath(DIV_FIRST_TOKEN_CONTAINER);
+    const secondItemXpath = buildDataTestIdXpath(DIV_SECOND_TOKEN_CONTAINER);
+    await waitForElementVisible(this.driver, firstItemXpath);
+    await waitForElementEnabled(this.driver, firstItemXpath);
+    await waitForElementEnabled(this.driver, secondItemXpath);
   }
 }

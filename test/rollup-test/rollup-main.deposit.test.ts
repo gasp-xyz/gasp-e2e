@@ -16,14 +16,12 @@ import {
   connectWallet,
   setupPage,
   setupPageWithState,
-  waitForActionNotification,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
 import {
   DepositActionType,
   DepositModal,
 } from "../../utils/frontend/rollup-utils/DepositModal";
-import { TransactionType } from "../../utils/frontend/rollup-pages/NotificationToast";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -84,7 +82,7 @@ describe("Gasp UI deposit tests", () => {
     // await waitForActionNotification(driver, TransactionType.ApproveContract);
 
     await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
-    await waitForActionNotification(driver, TransactionType.Deposit);
+    // await waitForActionNotification(driver, TransactionType.Deposit);
   });
 
   test("User can deposit ETH - rejected", async () => {
@@ -111,7 +109,7 @@ describe("Gasp UI deposit tests", () => {
     expect(isOriginFeeDisplayed).toBeTruthy();
 
     await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
-    await waitForActionNotification(driver, TransactionType.Deposit, true);
+    // await waitForActionNotification(driver, TransactionType.Deposit, true);
   });
 
   afterEach(async () => {

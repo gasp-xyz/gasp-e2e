@@ -150,6 +150,7 @@ describe("Gasp UI swap tests", () => {
     await myPositionsPage.clickPoolPosition(GASP_ASSET_NAME, ETH_ASSET_NAME);
 
     await myPositionsPage.clickAddLiquidity();
+    await myPositionsPage.waitForAddPoolFieldsVisible();
     const isFirstTokenNameSet =
       await myPositionsPage.isFirstTokenNameSet(GASP_ASSET_NAME);
     expect(isFirstTokenNameSet).toBeTruthy();
@@ -187,6 +188,7 @@ describe("Gasp UI swap tests", () => {
     await myPositionsPage.clickPoolPosition(GASP_ASSET_NAME, ETH_ASSET_NAME);
 
     await myPositionsPage.clickAddLiquidity();
+    await myPositionsPage.waitForAddPoolFieldsVisible();
     const isFirstTokenNameSet =
       await myPositionsPage.isFirstTokenNameSet(GASP_ASSET_NAME);
     expect(isFirstTokenNameSet).toBeTruthy();
