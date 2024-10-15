@@ -394,7 +394,7 @@ export class MetaMask {
     const XPATH_SCROLL_DOWN = "//*[@aria-label='Scroll down']";
 
     await waitForElement(driver, XPATH_SCROLL_DOWN, 5000);
-    if(await isDisplayed(driver, XPATH_SCROLL_DOWN)){
+    if (await isDisplayed(driver, XPATH_SCROLL_DOWN)) {
       await clickElement(driver, XPATH_SCROLL_DOWN);
     }
 
