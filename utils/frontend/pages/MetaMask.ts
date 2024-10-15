@@ -398,7 +398,11 @@ export class MetaMask {
       await clickElement(driver, XPATH_SCROLL_DOWN);
     }
 
-    const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(BTN_FOOTER_NEXT);
+    //const XPATH_BTN_SIGN_TRANSACTION = buildDataTestIdXpath(BTN_FOOTER_NEXT);
+    const XPATH_BTN_SIGN_TRANSACTION = buildXpathByElementText(
+      "button",
+      "Confirm",
+    );
     await waitForElement(driver, XPATH_BTN_SIGN_TRANSACTION);
     await waitForElementEnabled(driver, XPATH_BTN_SIGN_TRANSACTION);
     await clickElement(driver, XPATH_BTN_SIGN_TRANSACTION);
