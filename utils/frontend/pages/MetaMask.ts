@@ -256,7 +256,13 @@ export class MetaMask {
 
   async openAccountSelection() {
     const XPATH_BTN_ACC_SELECTIONS = buildDataTestIdXpath(BTN_ACC_SELECTION);
-    await clickElement(this.driver, XPATH_BTN_ACC_SELECTIONS);
+    try {
+      await waitForElementEnabled(this.driver, XPATH_BTN_ACC_SELECTIONS, 10000);
+      await clickElement(this.driver, XPATH_BTN_ACC_SELECTIONS);
+    } catch (e) {
+      await sleep(3000);
+      await clickElement(this.driver, XPATH_BTN_ACC_SELECTIONS);
+    }
   }
 
   async importAccount(privKey: string) {
