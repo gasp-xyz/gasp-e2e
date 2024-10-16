@@ -11,7 +11,7 @@ import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
   ExtrinsicResult,
-  waitSudoOperationFail,
+  filterZeroEventData,
 } from "../../utils/eventListeners";
 import { BN_HUNDRED, BN_THOUSAND } from "gasp-sdk";
 import { Council } from "../../utils/Council";
@@ -92,15 +92,17 @@ test("Council can not execute this extrinsic", async () => {
   ).index;
   const closingEvent = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
-      councilUsers[0].keyRingPair.address,
-      Council.close(hash[0], propIndex),
+      foundationAddress,
+      api.tx.council.close(
+        hash[0],
+        propIndex,
+        { refTime: "100000000000", proofSize: "1000000" },
+        10000,
+      ),
     ),
   );
-  await waitSudoOperationFail(
-    closingEvent,
-    ["TooEarlyToCloseByNonFoundationAccount"],
-    "SudoAsDone",
-  );
+  const filteredEvent = await filterZeroEventData(closingEvent, "SuOriginDid");
+  expect(filteredEvent[0].Err).toEqual("BadOrigin");
 });
 
 test("Extrinsic must fail if sudo request any foundation modification", async () => {
