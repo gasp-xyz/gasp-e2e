@@ -8,11 +8,11 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { User } from "../../utils/User";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
-  getEventErrorFromSudo,
-  getEventResultFromMangataTx,
-} from "../../utils/txHandler";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+  ExtrinsicResult,
+  waitSudoOperationFail,
+} from "../../utils/eventListeners";
 import { BN_HUNDRED, BN_THOUSAND } from "gasp-sdk";
 import { Council } from "../../utils/Council";
 import { FoundationMembers } from "../../utils/FoundationMembers";
@@ -50,19 +50,57 @@ test("A founder can update his own foundation address", async () => {
 });
 
 test("Council can not execute this extrinsic", async () => {
-  const [councilUser] = await setupUsers();
+  const api = getApi();
+  const councilUsers = await setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(
-      councilUser,
+      councilUsers[0],
       BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
     ),
-    Sudo.sudo(Council.setMembers([councilUser])),
+    Assets.mintNative(
+      councilUsers[1],
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+    ),
+    Assets.mintNative(
+      councilUsers[2],
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+    ),
+    Assets.mintNative(
+      councilUsers[3],
+      BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
+    ),
+    Sudo.sudo(Council.setMembers(councilUsers)),
   );
-  const events = await Sudo.asSudoFinalized(
-    Sudo.sudoAs(councilUser, FoundationMembers.changeKey(testUser)),
+  const propEvents = await Sudo.asSudoFinalized(
+    Sudo.sudoAs(
+      councilUsers[0],
+      Sudo.batch(
+        Council.propose(
+          councilUsers.length,
+          api.tx.sudoOrigin.sudo(FoundationMembers.changeKey(testUser)),
+          44,
+        ),
+      ),
+    ),
   );
-  const error = await getEventErrorFromSudo(events);
-  expect(error.data).toEqual("NotMember");
+  const hash = propEvents
+    .filter((x) => x.event.method === "Proposed")
+    .flatMap((x) => x.eventData[2].data.toString());
+  await Council.voteProposal(hash[0], councilUsers);
+  const propIndex = JSON.parse(
+    JSON.stringify(await Council.getVotes(hash[0])),
+  ).index;
+  const closingEvent = await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      councilUsers[0].keyRingPair.address,
+      Council.close(hash[0], propIndex),
+    ),
+  );
+  await waitSudoOperationFail(
+    closingEvent,
+    ["TooEarlyToCloseByNonFoundationAccount"],
+    "SudoAsDone",
+  );
 });
 
 test("Extrinsic must fail if sudo request any foundation modification", async () => {
