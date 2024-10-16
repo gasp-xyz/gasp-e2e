@@ -322,6 +322,9 @@ export async function depositAndWait(
       .buildParams()
       .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
 
+    const balanceBefore = await depositor.getBalanceForEthToken(
+        getL1(l1)!.contracts.dummyErc20.address,
+    );
     const res = await Ferry.ferryThisDeposit(ferrier, deposit, l1);
 
     //Assert: Op when t fine & user got his tokens.
@@ -332,7 +335,8 @@ export async function depositAndWait(
     const balance = await depositor.getBalanceForEthToken(
       getL1(l1)!.contracts.dummyErc20.address,
     );
-    expect(balance.free.toString()).toEqual(
+    const balanceDiff: BN = balance.free.sub(balanceBefore.free);
+    expect(balanceDiff.toString()).toEqual(
       userBalanceExpectedAmount.toString(),
     );
   }

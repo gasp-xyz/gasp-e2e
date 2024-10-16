@@ -1,6 +1,7 @@
 /*
  *
  * @group rollup
+ * @group ferry
  */
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
