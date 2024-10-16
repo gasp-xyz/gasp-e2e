@@ -8,8 +8,6 @@ on:
         type: string
         required: false
         default: "main"
-  schedule:
-    - cron: "5 9 * * *"
 
 jobs:
   e2e-tm:

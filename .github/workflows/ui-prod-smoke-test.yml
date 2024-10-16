@@ -65,6 +65,8 @@ jobs:
             --args "-timeout 300s" --browsers 'chrome:110.0;chrome:112.0;chrome:114.0'
 
       - uses: actions/checkout@v3
+        with:
+          ref: ci/mangata-tests-fe-branch
       - uses: actions/setup-node@v3
         with:
           node-version: 18
