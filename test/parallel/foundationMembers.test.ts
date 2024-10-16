@@ -77,7 +77,10 @@ test("Council can not execute this extrinsic", async () => {
       Sudo.batch(
         Council.propose(
           councilUsers.length,
-          api.tx.sudoOrigin.sudo(FoundationMembers.changeKey(testUser)),
+          api.tx.sudo.sudoAs(
+            foundationAddress,
+            FoundationMembers.changeKey(testUser),
+          ),
           44,
         ),
       ),
@@ -101,8 +104,8 @@ test("Council can not execute this extrinsic", async () => {
       ),
     ),
   );
-  const filteredEvent = await filterZeroEventData(closingEvent, "SuOriginDid");
-  expect(filteredEvent[0].Err).toEqual("BadOrigin");
+  const filteredEvent = await filterZeroEventData(closingEvent, "Executed");
+  expect(filteredEvent.result.Err).toEqual("BadOrigin");
 });
 
 test("Extrinsic must fail if sudo request any foundation modification", async () => {
