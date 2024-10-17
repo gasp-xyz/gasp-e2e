@@ -64,7 +64,7 @@ export class Rolldown {
   static async createWithdrawalsInBatch(
     num: number,
     userAddress = "0x14dc79964da2c08b23698b3d3cc7ca32193d9955",
-    erc20Address = "0x2bdcc0de6be1f7d2ee689a0342d76f52e8efaba3",
+    erc20Address = "0xc351628eb244ec633d5f21fbd6621e1a683b1181",
     l1: L1Type = "EthAnvil",
   ) {
     const txs = await Rolldown.createWithdrawalTxs(
