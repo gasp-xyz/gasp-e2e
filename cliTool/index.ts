@@ -66,11 +66,13 @@ import { BN_ZERO, Mangata } from "gasp-sdk";
 import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
-import { setupApi, setupUsers } from "../utils/setup";
+import { setupApi, setupUsers, sudo } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { toNumber } from "lodash-es";
 import { Rolldown } from "../utils/rollDown/Rolldown";
 import inquirer from "inquirer";
+import { randomBytes } from "crypto";
+import { getAssetIdFromErc20 } from "../utils/rollup/ethUtils";
 
 async function app(): Promise<any> {
   return inquirer
@@ -141,7 +143,17 @@ async function app(): Promise<any> {
         await sendUpdateToL1();
       }
       if (answers.option.includes("1000 withdrawals")) {
-        await Rolldown.createWithdrawalsInBatch(1000);
+        await setupApi();
+        await setupUsers();
+        const addr = "0x" + randomBytes(20).toString("hex");
+        await sudo.registerL1Asset(null,addr, "Arbitrum");
+        await Sudo.asSudoFinalized(
+          Sudo.sudo(
+            Assets.mintTokenAddress(await getAssetIdFromErc20(addr,"ArbAnvil"), "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac" )
+          )
+        );
+        await Rolldown.createWithdrawalsInBatch(500, "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac", addr, "ArbAnvil");
+        //await Rolldown.createWithdrawalsInBatch(500);
       }
       if (answers.option.includes("Close All L1 items")) {
         return inquirer
