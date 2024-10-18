@@ -18,6 +18,8 @@ import {
   filterZeroEventData,
 } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { stringToBN } from "../../utils/utils";
+import { getTokensAccountInfo } from "../../utils/tx";
 
 let api: ApiPromise;
 let testUser: User;
@@ -53,73 +55,120 @@ beforeEach(async () => {
 });
 
 test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing GASP, some fees goes to treasury", async () => {
-  const treasuryBalanceBefore = await api.query.tokens.accounts(
-    treasuryAccount,
-    GASP_ASSET_ID,
+  const treasuryBalanceBefore = stringToBN(
+    (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
   );
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
+  const userBalanceBefore = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
+      .free,
+  );
+
   const events = await signTx(
     getApi(),
     await Withdraw(testUser, withdrawalAmount, gaspIdL1Asset.ethereum, chain),
     testUser.keyRingPair,
   );
-  const eventFiltered = filterZeroEventData(events, "Transfer");
-  const transferAmountBefore = eventFiltered.amount.replaceAll(",", "");
-  const transferAmount = new BN(transferAmountBefore);
-  expect(eventFiltered.from).toEqual(testUser.keyRingPair.address);
-  expect(eventFiltered.to).toEqual(treasuryAccount);
-  const treasuryBalanceAfter = await api.query.tokens.accounts(
-    treasuryAccount,
-    GASP_ASSET_ID,
+  const eventResponse = getEventResultFromMangataTx(events);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  const transferEvent = filterZeroEventData(events, "Transfer");
+  const withdrawalFee = stringToBN(transferEvent.amount);
+  expect(transferEvent.from).toEqual(testUser.keyRingPair.address);
+  expect(transferEvent.to).toEqual(treasuryAccount);
+  const depositEvent = filterZeroEventData(events, "Deposited");
+  const networkFees = stringToBN(depositEvent.amount);
+
+  const treasuryBalanceAfter = stringToBN(
+    (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
   );
-  expect(treasuryBalanceAfter.free).bnEqual(
-    treasuryBalanceBefore.free.add(transferAmount),
+  const userBalanceAfter = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
+      .free,
+  );
+  expect(treasuryBalanceAfter).bnEqual(
+    treasuryBalanceBefore.add(withdrawalFee),
+  );
+  expect(userBalanceBefore).bnEqual(
+    userBalanceAfter.add(withdrawalFee).add(withdrawalAmount).add(networkFees),
   );
 });
 
 test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing Eth, some fees goes to treasury", async () => {
-  const treasuryBalanceBefore = await api.query.tokens.accounts(
-    treasuryAccount,
-    GASP_ASSET_ID,
+  const treasuryBalanceBefore = stringToBN(
+    (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
   );
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser),
     Assets.mintToken(ETH_ASSET_ID, testUser, DEFAULT_AMOUNT),
   );
+  const userGaspBalanceBefore = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
+      .free,
+  );
+  const userEthBalanceBefore = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, ETH_ASSET_ID))
+      .free,
+  );
+
   const events = await signTx(
     getApi(),
     await Withdraw(testUser, withdrawalAmount, ethIdL1Asset.ethereum, chain),
     testUser.keyRingPair,
   );
-  const eventFiltered = filterZeroEventData(events, "Transfer");
-  const transferAmountBefore = eventFiltered.amount.replaceAll(",", "");
-  const transferAmount = new BN(transferAmountBefore);
-  expect(eventFiltered.from).toEqual(testUser.keyRingPair.address);
-  expect(eventFiltered.to).toEqual(treasuryAccount);
-  const treasuryBalanceAfter = await api.query.tokens.accounts(
-    treasuryAccount,
-    GASP_ASSET_ID,
+  const eventResponse = getEventResultFromMangataTx(events);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+
+  const transferEvent = filterZeroEventData(events, "Transfer");
+  const withdrawalFee = stringToBN(transferEvent.amount);
+  expect(transferEvent.from).toEqual(testUser.keyRingPair.address);
+  expect(transferEvent.to).toEqual(treasuryAccount);
+  const depositEvent = filterZeroEventData(events, "Deposited");
+  const networkFees = stringToBN(depositEvent.amount);
+
+  const treasuryBalanceAfter = stringToBN(
+    (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
   );
-  expect(treasuryBalanceAfter.free).bnEqual(
-    treasuryBalanceBefore.free.add(transferAmount),
+  const userGaspBalanceAfter = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
+      .free,
+  );
+  const userEthBalanceAfter = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, ETH_ASSET_ID))
+      .free,
+  );
+  expect(treasuryBalanceAfter).bnEqual(
+    treasuryBalanceBefore.add(withdrawalFee),
+  );
+  expect(userGaspBalanceBefore).bnEqual(
+    userGaspBalanceAfter.add(withdrawalFee).add(networkFees),
+  );
+  expect(userEthBalanceBefore).bnEqual(
+    userEthBalanceAfter.add(withdrawalAmount),
   );
 });
 
 test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing ALL GASP, extrinsic fail", async () => {
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
-  const tokenAmount = await api.query.tokens.accounts(
-    testUser.keyRingPair.address,
-    GASP_ASSET_ID,
+  const userBalanceBefore = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
+      .free,
   );
-  await signTx(
+  const events = await signTx(
     getApi(),
-    await Withdraw(testUser, tokenAmount.free, gaspIdL1Asset.ethereum, chain),
+    await Withdraw(testUser, userBalanceBefore, gaspIdL1Asset.ethereum, chain),
     testUser.keyRingPair,
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NotEnoughAssets");
-  });
+  );
+  const eventResponse = getEventResultFromMangataTx(events);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  expect(eventResponse.data).toEqual("NotEnoughAssets");
+  const userBalanceAfter = stringToBN(
+    (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
+      .free,
+  );
+  const depositEvent = filterZeroEventData(events, "Deposited");
+  const networkFees = stringToBN(depositEvent.amount);
+  expect(userBalanceBefore).bnEqual(userBalanceAfter.add(networkFees));
 });
 
 test("GIVEN a withdrawal, WHEN user having only Eth and withdrawing Eth, extrinsic fail", async () => {
@@ -139,26 +188,40 @@ test("GIVEN a withdrawal, WHEN user having only Eth and withdrawing Eth, extrins
 
 test("Given a fee withdrawal payment, tokens go to Treasury", async () => {
   const [testUser2] = setupUsers();
-  const treasuryBalanceBefore = await api.query.tokens.accounts(
-    treasuryAccount,
-    GASP_ASSET_ID,
-  );
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser2));
+  const treasuryBalanceBefore = stringToBN(
+    (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
+  );
+  const testUser2BalanceBefore = stringToBN(
+    (await getTokensAccountInfo(testUser2.keyRingPair.address, GASP_ASSET_ID))
+      .free,
+  );
   const events = await signTx(
     getApi(),
     await Withdraw(testUser, withdrawalAmount, gaspIdL1Asset.ethereum, chain),
     testUser2.keyRingPair,
   );
   const transferEvent = filterZeroEventData(events, "Transfer");
-  const transferAmountBefore = transferEvent.amount.replaceAll(",", "");
-  const transferAmount = new BN(transferAmountBefore);
+  const withdrawalFee = stringToBN(transferEvent.amount);
+  const depositEvent = filterZeroEventData(events, "Deposited");
+  const networkFees = stringToBN(depositEvent.amount);
   expect(transferEvent.from).toEqual(testUser2.keyRingPair.address);
   expect(transferEvent.to).toEqual(treasuryAccount);
-  const treasuryBalanceAfter = await api.query.tokens.accounts(
-    treasuryAccount,
-    GASP_ASSET_ID,
+
+  const treasuryBalanceAfter = stringToBN(
+    (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
   );
-  expect(treasuryBalanceAfter.free).bnEqual(
-    treasuryBalanceBefore.free.add(transferAmount),
+  const testUser2BalanceAfter = stringToBN(
+    (await getTokensAccountInfo(testUser2.keyRingPair.address, GASP_ASSET_ID))
+      .free,
+  );
+  expect(treasuryBalanceAfter).bnEqual(
+    treasuryBalanceBefore.add(withdrawalFee),
+  );
+  expect(testUser2BalanceBefore).bnEqual(
+    testUser2BalanceAfter
+      .add(withdrawalFee)
+      .add(withdrawalAmount)
+      .add(networkFees),
   );
 });
