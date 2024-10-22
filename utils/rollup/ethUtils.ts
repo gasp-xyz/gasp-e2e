@@ -456,7 +456,7 @@ export async function waitForBatchWithRequest(
   let currBlock = await publicClient.getBlockNumber();
   const maxBlock = currBlock + maxEthBlocks;
   while (currBlock < maxBlock) {
-    const range = await publicClient
+    const root = await publicClient
       .readContract({
         address: testChain.contracts.rollDown.address,
         abi: abi,
@@ -471,9 +471,16 @@ export async function waitForBatchWithRequest(
         //@ts-ignore
         testLog.getLog().info(err.shortMessage);
       });
-    if (range) {
-      //@ts-ignore
-      return { start: range.start, end: range.end };
+
+    if (root) {
+      const range = await publicClient.readContract({ 
+        address: testChain.contracts.rollDown.address,
+        abi: abi,
+        functionName: "merkleRootRange",
+        args: [root as string],
+        blockTag: "latest"
+      });
+      return { start: (range as any).start, end: (range as any).end};
     }
     currBlock = await publicClient.getBlockNumber();
     await sleep(5000);
