@@ -1,4 +1,4 @@
-import { BN_HUNDRED_BILLIONS, signTx } from "gasp-sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { filterZeroEventData } from "../../utils/eventListeners";
@@ -39,7 +39,7 @@ it("Sequencer budget is set when initializing issuance config", async () => {
   expect(filteredEvent[0].sequencersSplit).not.toBeEmpty();
 });
 
-it("Sequencers get paid on every session BUT only when they submit valid updates ( Suceeded extrinsics )", async () => {
+it("Sequencers get paid on every session BUT only when they submit valid updates ( Succeeded extrinsics )", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
   const [testUser] = setupUsers();
   testUser.addAsset(GASP_ASSET_ID);
@@ -57,12 +57,11 @@ it("Sequencers get paid on every session BUT only when they submit valid updates
     Sudo.sudoAs(testUser, stakeAndJoinExtrinsic),
   );
   const { reqId } = await createAnUpdate(testUser, chain);
-  const registrationBlock = reqId + 1;
-  await waitBlockNumber(registrationBlock.toString(), disputePeriodLength * 2);
   const rewardsSessionNumber = (
     await api.query.session.currentIndex()
   ).toNumber();
-  await waitNewStakingRound();
+  const registrationBlock = reqId + 1;
+  await waitBlockNumber(registrationBlock.toString(), disputePeriodLength * 2);
   await waitNewStakingRound();
   await testUser.refreshAmounts(AssetWallet.BEFORE);
   const rewardInfo1 = await SequencerStaking.roundSequencerRewardInfo(
@@ -73,8 +72,6 @@ it("Sequencers get paid on every session BUT only when they submit valid updates
     testUser.keyRingPair.address,
     rewardsSessionNumber + 1,
   );
-  expect(rewardInfo1).bnEqual(BN_HUNDRED_BILLIONS);
-  expect(rewardInfo2).bnEqual(BN_HUNDRED_BILLIONS);
   const payoutEvent = await signTx(
     api,
     SequencerStaking.payoutRewards(testUser.keyRingPair.address, 2),
@@ -82,8 +79,10 @@ it("Sequencers get paid on every session BUT only when they submit valid updates
   );
   const filteredEvent = await filterZeroEventData(payoutEvent, "Rewarded");
   const sequencerRewards = stringToBN(filteredEvent[2]);
-  expect(filteredEvent[0]).toEqual(rewardsSessionNumber.toString());
   await testUser.refreshAmounts(AssetWallet.AFTER);
   const diff = testUser.getWalletDifferences()[0].diff.free;
+  expect(filteredEvent[0]).toEqual(rewardsSessionNumber.toString());
   expect(diff).bnEqual(sequencerRewards);
+  expect(rewardInfo1).bnEqual(sequencerRewards);
+  expect(rewardInfo2).bnEqual(BN_ZERO);
 });
