@@ -73,9 +73,30 @@ export class SequencerStaking {
     const api = getApi();
     return api.tx.sequencerStaking.unstake(chainName);
   }
+
+  static payoutRewards(sequencerAddress: string, numberOfSession: any = null) {
+    const api = getApi();
+    return api.tx.sequencerStaking.payoutSequencerRewards(
+      sequencerAddress,
+      numberOfSession,
+    );
+  }
+
   static async minimalStakeAmount() {
     const api = getApi();
     return (await api.query.sequencerStaking.minimalStakeAmount()) as any as BN;
+  }
+
+  static async roundSequencerRewardInfo(
+    address: string,
+    sessionNumber: number,
+  ) {
+    const api = getApi();
+    const rewards = await api.query.sequencerStaking.roundSequencerRewardInfo(
+      address,
+      [sessionNumber],
+    );
+    return new BN(rewards.toString());
   }
 
   static async activeSequencers() {
