@@ -34,7 +34,7 @@ let acc_addr_short = "";
 const ETH_ASSET_NAME = "ETH";
 const GASP_ASSET_NAME = "GASPV2";
 
-describe("Gasp UI swap tests", () => {
+describe("Gasp UI my positions tests", () => {
   let sidebar: Sidebar;
   let myPositionsPage: MyPositionsPage;
 
