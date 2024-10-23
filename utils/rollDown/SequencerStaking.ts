@@ -114,6 +114,16 @@ export class SequencerStaking {
     return await api.query.sequencerStaking.slashFineAmount();
   }
 
+  static async awardedPts(roundNumber: number, address: string) {
+    const api = getApi();
+    return await api.query.sequencerStaking.awardedPts(roundNumber, address);
+  }
+
+  static async points(roundNumber: number) {
+    const api = getApi();
+    return await api.query.sequencerStaking.points(roundNumber);
+  }
+
   static async maxSequencers() {
     const api = getApi();
     return await api.consts.sequencerStaking.maxSequencers;
