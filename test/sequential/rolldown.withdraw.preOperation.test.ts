@@ -23,7 +23,7 @@ import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
   ExtrinsicResult,
-  filterZeroEventData,
+  filterAndStringifyFirstEvent,
 } from "../../utils/eventListeners";
 import { Maintenance } from "../../utils/Maintenance";
 import { L1Type } from "../../utils/rollup/l1s";
@@ -531,7 +531,7 @@ describe("Pre-operation withdrawal tests -", () => {
       )),
       await Rolldown.createManualBatch(l1Eth),
     );
-    const filteredEvent = await filterZeroEventData(events, "TxBatchCreated");
+    const filteredEvent = await filterAndStringifyFirstEvent(events, "TxBatchCreated");
     expect(filteredEvent.range[0].replace(",", "")).toEqual(
       nextRequestIdEth.toString(),
     );
@@ -559,7 +559,7 @@ describe("Pre-operation withdrawal tests -", () => {
         ),
       ),
     );
-    const filteredEvent = await filterZeroEventData(events, "TxBatchCreated");
+    const filteredEvent = await filterAndStringifyFirstEvent(events, "TxBatchCreated");
     expect(filteredEvent.range[0].replace(",", "")).toEqual(
       nextRequestIdEth.toString(),
     );

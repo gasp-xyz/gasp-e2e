@@ -11,7 +11,7 @@ import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
   ExtrinsicResult,
-  filterZeroEventData,
+  filterAndStringifyFirstEvent,
 } from "../../utils/eventListeners";
 import { BN_HUNDRED, BN_THOUSAND } from "gasp-sdk";
 import { Council } from "../../utils/Council";
@@ -104,7 +104,10 @@ test("Council can not execute this extrinsic", async () => {
       ),
     ),
   );
-  const filteredEvent = await filterZeroEventData(closingEvent, "Executed");
+  const filteredEvent = await filterAndStringifyFirstEvent(
+    closingEvent,
+    "Executed",
+  );
   expect(filteredEvent.result.Err).toEqual("BadOrigin");
 });
 

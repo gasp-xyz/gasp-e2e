@@ -104,7 +104,7 @@ export function filterEventData(
     .map((event) => event.event.toHuman().data);
 }
 
-export function filterZeroEventData(
+export function filterAndStringifyFirstEvent(
   result: MangataGenericEvent[],
   method: string,
 ) {
@@ -462,8 +462,11 @@ export async function getEventsAt(blockNo: BN) {
 
 export async function getProvidingSeqStakeData(events: MangataGenericEvent[]) {
   let isUserJoinedAsSeq: boolean;
-  const eventJoining = filterZeroEventData(events, "SequencerJoinedActiveSet");
-  const eventReserved = filterZeroEventData(events, "Reserved");
+  const eventJoining = filterAndStringifyFirstEvent(
+    events,
+    "SequencerJoinedActiveSet",
+  );
+  const eventReserved = filterAndStringifyFirstEvent(events, "Reserved");
   if (eventJoining !== undefined) {
     isUserJoinedAsSeq = true;
   } else {
