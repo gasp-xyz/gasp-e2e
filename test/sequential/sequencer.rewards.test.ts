@@ -1,3 +1,8 @@
+/*
+ *
+ * @group sequencerRewards
+ */
+
 import { BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
@@ -7,7 +12,10 @@ import {
   L2Update,
   Rolldown,
 } from "../../utils/rollDown/Rolldown";
-import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
+import {
+  leaveSequencing,
+  SequencerStaking,
+} from "../../utils/rollDown/SequencerStaking";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -17,8 +25,13 @@ import {
 } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { GASP_ASSET_ID } from "../../utils/Constants";
+import { ApiPromise } from "@polkadot/api";
 
 let sudo: User;
+let testUser: User;
+let api: ApiPromise;
+const chainEth: string = "Ethereum";
+const chainArb: string = "Arbitrum";
 
 async function getUpdate(txIndex: number, userAddress: string, chain: string) {
   const api = getApi();
@@ -41,6 +54,30 @@ beforeAll(async () => {
   setupUsers();
 });
 
+beforeEach(async () => {
+  try {
+    getApi();
+  } catch (e) {
+    await initApi();
+  }
+  await setupApi();
+  sudo = getSudoUser();
+  [testUser] = setupUsers();
+  testUser.addAsset(GASP_ASSET_ID);
+  api = getApi();
+  await SequencerStaking.removeAllSequencers();
+  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
+  const stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
+    minToBeSequencer.addn(1000),
+    chainEth,
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser),
+    Sudo.sudoAs(testUser, stakeAndJoinExtrinsic),
+  );
+  testUser.addAsset(GASP_ASSET_ID);
+});
+
 it("Sequencer budget is set when initializing issuance config", async () => {
   const events = await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
@@ -55,22 +92,8 @@ it("Sequencer budget is set when initializing issuance config", async () => {
 
 it("Sequencers get paid on every session BUT only when they submit valid updates ( Succeeded extrinsics )", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
-  const [testUser] = setupUsers();
-  testUser.addAsset(GASP_ASSET_ID);
-  const api = getApi();
-  const chain = "Ethereum";
-  await SequencerStaking.removeAddedSequencers();
-  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  const stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
-    minToBeSequencer.addn(1000),
-    chain,
-  );
   const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(testUser),
-    Sudo.sudoAs(testUser, stakeAndJoinExtrinsic),
-  );
-  const { reqId } = await createAnUpdate(testUser, chain);
+  const { reqId } = await createAnUpdate(testUser, chainEth);
   const rewardsSessionNumber = (
     await api.query.session.currentIndex()
   ).toNumber();
@@ -110,21 +133,7 @@ it("Sequencers get paid on every session BUT only when they submit valid updates
 
 it("When a sequencer brings an update It will get some points", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
-  const [testUser] = setupUsers();
-  testUser.addAsset(GASP_ASSET_ID);
-  const api = getApi();
-  const chain = "Ethereum";
-  await SequencerStaking.removeAllSequencers();
-  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  const stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
-    minToBeSequencer.addn(1000),
-    chain,
-  );
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(testUser),
-    Sudo.sudoAs(testUser, stakeAndJoinExtrinsic),
-  );
-  await createAnUpdate(testUser, chain);
+  await createAnUpdate(testUser, chainEth);
   const rewardsSessionNumber = (
     await api.query.session.currentIndex()
   ).toNumber();
@@ -138,36 +147,29 @@ it("When a sequencer brings an update It will get some points", async () => {
 
 it("When session ends, tokens will be distributed according the points obtained", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
-  const [testUser, testUser2, testUser3] = setupUsers();
+  const [testUser2, testUser3] = setupUsers();
   testUser3.addAsset(GASP_ASSET_ID);
-  const api = getApi();
   await SequencerStaking.removeAllSequencers();
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
   const stakeAndJoinExtrinsicEth =
     await SequencerStaking.provideSequencerStaking(
       minToBeSequencer.addn(1000),
-      "Ethereum",
+      chainEth,
     );
   const stakeAndJoinExtrinsicArb =
     await SequencerStaking.provideSequencerStaking(
       minToBeSequencer.addn(1000),
-      "Arbitrum",
+      chainArb,
     );
   await Sudo.batchAsSudoFinalized(
-    Assets.mintNative(testUser),
     Assets.mintNative(testUser2),
     Assets.mintNative(testUser3),
-    Sudo.sudoAs(testUser, stakeAndJoinExtrinsicEth),
     Sudo.sudoAs(testUser2, stakeAndJoinExtrinsicEth),
     Sudo.sudoAs(testUser3, stakeAndJoinExtrinsicArb),
   );
-  const txIndexEth = await Rolldown.lastProcessedRequestOnL2("Ethereum");
-  const txIndexArb = await Rolldown.lastProcessedRequestOnL2("Arbitrum");
-  await Rolldown.waitForReadRights(
-    testUser3.keyRingPair.address,
-    50,
-    "Arbitrum",
-  );
+  const txIndexEth = await Rolldown.lastProcessedRequestOnL2(chainEth);
+  const txIndexArb = await Rolldown.lastProcessedRequestOnL2(chainArb);
+  await Rolldown.waitForReadRights(testUser3.keyRingPair.address, 50, chainArb);
   await waitNewStakingRound();
   const selectedSequencerEth = (
     await getApi().query.sequencerStaking.selectedSequencer()
@@ -186,11 +188,11 @@ it("When session ends, tokens will be distributed according the points obtained"
   const updateEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       ethUser1.keyRingPair.address,
-      await getUpdate(txIndexEth, ethUser1.keyRingPair.address, "Ethereum"),
+      await getUpdate(txIndexEth, ethUser1.keyRingPair.address, chainEth),
     ),
     Sudo.sudoAsWithAddressString(
       testUser3.keyRingPair.address,
-      await getUpdate(txIndexArb, testUser3.keyRingPair.address, "Arbitrum"),
+      await getUpdate(txIndexArb, testUser3.keyRingPair.address, chainArb),
     ),
   );
   const waitingBlockNumber =
@@ -202,11 +204,7 @@ it("When session ends, tokens will be distributed according the points obtained"
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser3.keyRingPair.address,
-      await getUpdate(
-        txIndexArb + 1,
-        testUser3.keyRingPair.address,
-        "Arbitrum",
-      ),
+      await getUpdate(txIndexArb + 1, testUser3.keyRingPair.address, chainArb),
     ),
   );
   const pointsValue = await SequencerStaking.points(rewardsSessionNumber);
@@ -265,4 +263,30 @@ it("When session ends, tokens will be distributed according the points obtained"
   expect(diff3).bnEqual(sequencerRewards3);
   expect(filteredEvent2).toEqual(undefined);
   expect(sequencerRewards3).bnEqual(sequencerRewards1.muln(2));
+});
+
+it("Regardless joining , slash, join or leaving sequencer set, Sequencer will be paid if points", async () => {
+  await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
+  await createAnUpdate(testUser, chainEth);
+  const rewardsSessionNumber = (
+    await api.query.session.currentIndex()
+  ).toNumber();
+  await leaveSequencing(testUser.keyRingPair.address);
+  const sequencersList = await SequencerStaking.activeSequencers();
+  expect(sequencersList.toHuman().Ethereum).not.toContain(
+    testUser.keyRingPair.address,
+  );
+  let currentSessionIndex = (await api.query.session.currentIndex()).toNumber();
+  while (currentSessionIndex <= rewardsSessionNumber + 1) {
+    await waitNewStakingRound();
+    currentSessionIndex = (await api.query.session.currentIndex()).toNumber();
+  }
+  const payoutEvent = await signTx(
+    api,
+    SequencerStaking.payoutRewards(testUser.keyRingPair.address, 2),
+    sudo.keyRingPair,
+  );
+  const filteredEvent = await filterZeroEventData(payoutEvent, "Rewarded");
+  const sequencerRewards = stringToBN(filteredEvent[2]);
+  expect(sequencerRewards).bnGt(BN_ZERO);
 });
