@@ -25,6 +25,9 @@ let api: ApiPromise;
 let testUser: User;
 let gaspIdL1Asset: any;
 let ethIdL1Asset: any;
+const treasuryAccount = "0x6d6f646c70792f74727372790000000000000000";
+const mintingAmount = BN_THOUSAND.mul(BN_TEN.pow(new BN(18)));
+const chain = "Ethereum";
 
 beforeAll(async () => {
   try {
@@ -47,8 +50,6 @@ beforeEach(async () => {
 });
 
 test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing GASP, some fees goes to treasury", async () => {
-  const treasuryAccount = "0x6d6f646c70792f74727372790000000000000000";
-  const chain = "Ethereum";
   const treasuryBalanceBefore = stringToBN(
     (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
   );
@@ -92,9 +93,6 @@ test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing GASP, some fees 
 });
 
 test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing Eth, some fees goes to treasury", async () => {
-  const treasuryAccount = "0x6d6f646c70792f74727372790000000000000000";
-  const mintingAmount = BN_THOUSAND.mul(BN_TEN.pow(new BN(18)));
-  const chain = "Ethereum";
   const treasuryBalanceBefore = stringToBN(
     (await getTokensAccountInfo(treasuryAccount, GASP_ASSET_ID)).free,
   );
@@ -150,7 +148,6 @@ test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing Eth, some fees g
 });
 
 test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing ALL GASP, extrinsic fail", async () => {
-  const chain = "Ethereum";
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser));
   const userBalanceBefore = stringToBN(
     (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
@@ -177,8 +174,6 @@ test("GIVEN a withdrawal, WHEN paying with GASP and withdrawing ALL GASP, extrin
 });
 
 test("GIVEN a withdrawal, WHEN user having only Eth and withdrawing Eth, extrinsic fail", async () => {
-  const chain = "Ethereum";
-  const mintingAmount = BN_THOUSAND.mul(BN_TEN.pow(new BN(18)));
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(ETH_ASSET_ID, testUser, mintingAmount),
   );
@@ -194,8 +189,6 @@ test("GIVEN a withdrawal, WHEN user having only Eth and withdrawing Eth, extrins
 });
 
 test("Given a fee withdrawal payment WHEN withdrawal is sent from another account THEN the fee is deducted from from sender's account", async () => {
-  const chain = "Ethereum";
-  const treasuryAccount = "0x6d6f646c70792f74727372790000000000000000";
   const [testUser2] = setupUsers();
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser2));
   const treasuryBalanceBefore = stringToBN(
