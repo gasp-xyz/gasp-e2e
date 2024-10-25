@@ -1,10 +1,7 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
 import { Polkadot } from "../pages/Polkadot";
-import {
-  acceptNetworkSwitchInNewWindow,
-  acceptPermissionsWalletExtensionInNewWindow,
-} from "../utils/Helper";
+import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { Main } from "../rollup-pages/Main";
@@ -42,7 +39,7 @@ export async function connectWallet(
 
   await acceptPermissionsWalletExtensionInNewWindow(driver, walletType);
   if (prod) {
-    await acceptNetworkSwitchInNewWindow(driver);
+    // await acceptNetworkSwitchInNewWindow(driver);
   }
 
   await walletConnectModal.waitForaccountsDisplayed();
