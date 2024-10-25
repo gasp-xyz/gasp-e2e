@@ -23,7 +23,7 @@ import {
 import { Sudo } from "../../utils/sudo";
 import {
   ExtrinsicResult,
-  filterZeroEventData,
+  filterAndStringifyFirstEvent,
   waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
@@ -237,7 +237,10 @@ describe("sequencerStaking", () => {
     await signTx(api, update, user.keyRingPair).then((events) => {
       const eventResponse = getEventResultFromMangataTx(events);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-      const eventFiltered = filterZeroEventData(events, "L1ReadStored");
+      const eventFiltered = filterAndStringifyFirstEvent(
+        events,
+        "L1ReadStored",
+      );
       expect(eventFiltered.chain).toEqual(chain);
       expect(eventFiltered.sequencer).toEqual(user.keyRingPair.address);
       expect(eventFiltered.range.start).toEqual(txIndex.toString());
@@ -348,7 +351,10 @@ describe("sequencerStaking", () => {
           .buildUnsafe(),
       ),
     );
-    const eventFiltered = filterZeroEventData(cancelResolution, "L1ReadStored");
+    const eventFiltered = filterAndStringifyFirstEvent(
+      cancelResolution,
+      "L1ReadStored",
+    );
     expect(eventFiltered.chain).toEqual(chain);
     expect(eventFiltered.sequencer).toEqual(preSetupSequencers.Ethereum);
     expect(eventFiltered.range.start).toEqual(txIndex.toString());
