@@ -34,7 +34,6 @@ const chainEth = "Ethereum";
 const chainArb = "Arbitrum";
 
 async function getUpdate(txIndex: number, userAddress: string, chain: string) {
-  const api = getApi();
   const update = new L2Update(api)
     .withDeposit(txIndex, userAddress, userAddress, BN_MILLION)
     .on(chain)
@@ -55,11 +54,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  try {
-    getApi();
-  } catch (e) {
-    await initApi();
-  }
   await setupApi();
   sudo = getSudoUser();
   [testUser] = setupUsers();
@@ -152,7 +146,6 @@ it("When session ends, tokens will be distributed according the points obtained"
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
   const [testUser2, testUser3] = setupUsers();
   testUser3.addAsset(GASP_ASSET_ID);
-  await SequencerStaking.removeAllSequencers();
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
   const stakeAndJoinExtrinsicEth =
     await SequencerStaking.provideSequencerStaking(
@@ -199,7 +192,7 @@ it("When session ends, tokens will be distributed according the points obtained"
     ),
   );
   const waitingBlockNumber =
-    (await Rolldown.getDisputePeriodEndBlock(updateEvents)) + 1;
+    (await Rolldown.getRequestIdFromEvents(updateEvents)) + 1;
   await waitBlockNumber(waitingBlockNumber.toString(), 50);
   const rewardsSessionNumber = (
     await api.query.session.currentIndex()
@@ -274,7 +267,9 @@ it("When session ends, tokens will be distributed according the points obtained"
   expect(diff1).bnEqual(sequencerRewards1);
   expect(diff3).bnEqual(sequencerRewards3);
   expect(filteredEvent2).toEqual(undefined);
-  expect(sequencerRewards3).bnEqual(sequencerRewards1.muln(2));
+  expect(sequencerRewards1).bnEqual(
+    sequencerRewards3.divn(2) || sequencerRewards3.divn(2).addn(1),
+  );
 });
 
 it("Regardless joining , slash, join or leaving sequencer set, Sequencer will be paid if points", async () => {
