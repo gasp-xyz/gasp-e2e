@@ -6,7 +6,7 @@
 import { BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { filterZeroEventData } from "../../utils/eventListeners";
+import { filterAndStringifyFirstEvent } from "../../utils/eventListeners";
 import {
   createAnUpdate,
   L2Update,
@@ -30,8 +30,8 @@ import { ApiPromise } from "@polkadot/api";
 let sudo: User;
 let testUser: User;
 let api: ApiPromise;
-const chainEth: string = "Ethereum";
-const chainArb: string = "Arbitrum";
+const chainEth = "Ethereum";
+const chainArb = "Arbitrum";
 
 async function getUpdate(txIndex: number, userAddress: string, chain: string) {
   const api = getApi();
@@ -83,7 +83,7 @@ it("Sequencer budget is set when initializing issuance config", async () => {
     Assets.FinalizeTge(),
     Assets.initIssuance(),
   );
-  const filteredEvent = await filterZeroEventData(
+  const filteredEvent = await filterAndStringifyFirstEvent(
     events,
     "IssuanceConfigInitialized",
   );
@@ -121,7 +121,10 @@ it("Sequencers get paid on every session BUT only when they submit valid updates
     SequencerStaking.payoutRewards(testUser.keyRingPair.address, 2),
     sudo.keyRingPair,
   );
-  const filteredEvent = await filterZeroEventData(payoutEvent, "Rewarded");
+  const filteredEvent = await filterAndStringifyFirstEvent(
+    payoutEvent,
+    "Rewarded",
+  );
   const sequencerRewards = stringToBN(filteredEvent[2]);
   await testUser.refreshAmounts(AssetWallet.AFTER);
   const diff = testUser.getWalletDifferences()[0].diff.free;
@@ -236,20 +239,29 @@ it("When session ends, tokens will be distributed according the points obtained"
     SequencerStaking.payoutRewards(ethUser1.keyRingPair.address, 2),
     sudo.keyRingPair,
   );
-  const filteredEvent1 = await filterZeroEventData(payoutEvent1, "Rewarded");
+  const filteredEvent1 = await filterAndStringifyFirstEvent(
+    payoutEvent1,
+    "Rewarded",
+  );
   const sequencerRewards1 = stringToBN(filteredEvent1[2]);
   const payoutEvent2 = await signTx(
     api,
     SequencerStaking.payoutRewards(ethUser2.keyRingPair.address, 2),
     sudo.keyRingPair,
   );
-  const filteredEvent2 = await filterZeroEventData(payoutEvent2, "Rewarded");
+  const filteredEvent2 = await filterAndStringifyFirstEvent(
+    payoutEvent2,
+    "Rewarded",
+  );
   const payoutEvent3 = await signTx(
     api,
     SequencerStaking.payoutRewards(testUser3.keyRingPair.address, 2),
     sudo.keyRingPair,
   );
-  const filteredEvent3 = await filterZeroEventData(payoutEvent3, "Rewarded");
+  const filteredEvent3 = await filterAndStringifyFirstEvent(
+    payoutEvent3,
+    "Rewarded",
+  );
   const sequencerRewards3 = stringToBN(filteredEvent3[2]);
   await ethUser1.refreshAmounts(AssetWallet.AFTER);
   await ethUser2.refreshAmounts(AssetWallet.AFTER);
@@ -286,7 +298,10 @@ it("Regardless joining , slash, join or leaving sequencer set, Sequencer will be
     SequencerStaking.payoutRewards(testUser.keyRingPair.address, 2),
     sudo.keyRingPair,
   );
-  const filteredEvent = await filterZeroEventData(payoutEvent, "Rewarded");
+  const filteredEvent = await filterAndStringifyFirstEvent(
+    payoutEvent,
+    "Rewarded",
+  );
   const sequencerRewards = stringToBN(filteredEvent[2]);
   expect(sequencerRewards).bnGt(BN_ZERO);
 });
