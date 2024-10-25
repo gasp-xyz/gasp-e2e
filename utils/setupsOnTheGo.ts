@@ -2010,8 +2010,8 @@ export async function closeL1Item(
   const publicClient = getPublicClient(network);
   async function closeOnlyL1Item(item: bigint) {
     const range = await findMerkleRange(publicClient, item, network);
-    const rangeStart = (range as any).start;
-    const rangeEnd = (range as any).end;
+    const rangeStart = range[0];
+    const rangeEnd = range[1];
     const chainPk = api.createType("Chain", chain);
     const encodedWithdrawal = await api.rpc.rolldown.get_abi_encoded_l2_request(
       chain,
@@ -2105,12 +2105,23 @@ async function findMerkleRange(
   requestId: bigint,
   network: L1Type,
 ) {
-  return await publicClient.readContract({
-    address: getL1(network)!.contracts.rollDown.address,
-    abi: abi,
-    functionName: "find_l2_batch",
-    args: [requestId],
-  });
+
+    const root = await publicClient.readContract({
+      address: getL1(network)!.contracts.rollDown.address,
+      abi: abi,
+      functionName: "find_l2_batch",
+      args: [requestId],
+      blockTag: "latest"
+    }) as any;
+    testLog.getLog().info(`root: ${root}`);
+
+    const range = await publicClient.readContract({ address: getL1(network)!.contracts.rollDown.address,
+      abi: abi,
+      functionName: "merkleRootRange",
+      args: [root],
+      blockTag: "latest"
+    });
+    return range as [bigint, bigint];
 }
 
 async function getLastBatchId(api: ApiPromise) {

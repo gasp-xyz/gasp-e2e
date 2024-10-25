@@ -12,7 +12,7 @@ import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   ExtrinsicResult,
-  filterZeroEventData,
+  filterAndStringifyFirstEvent,
   getProvidingSeqStakeData,
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -124,7 +124,7 @@ it("Happy path - A user can join and leave sequencing", async () => {
     await SequencerStaking.provideSequencerStaking(stakeAmount, chain),
     testUser.keyRingPair,
   );
-  const eventFiltered = filterZeroEventData(events, "StakeProvided");
+  const eventFiltered = filterAndStringifyFirstEvent(events, "StakeProvided");
   expect(eventFiltered.chain).toEqual(chain);
   expect(stringToBN(eventFiltered.addedStake)).bnEqual(stakeAmount);
   const { isUserJoinedAsSeq, userAddress, userStakeAmount } =
@@ -142,7 +142,7 @@ it("Happy path - A user can join and leave sequencing", async () => {
     await SequencerStaking.leaveSequencerStaking(chain),
     testUser.keyRingPair,
   ).then(async (events) => {
-    const eventFiltered = filterZeroEventData(
+    const eventFiltered = filterAndStringifyFirstEvent(
       events,
       "SequencersRemovedFromActiveSet",
     );
@@ -155,7 +155,7 @@ it("Happy path - A user can join and leave sequencing", async () => {
     await SequencerStaking.unstake(chain),
     testUser.keyRingPair,
   ).then(async (events) => {
-    const eventFiltered = filterZeroEventData(events, "Unreserved");
+    const eventFiltered = filterAndStringifyFirstEvent(events, "Unreserved");
     expect(eventFiltered.who).toEqual(testUser.keyRingPair.address);
     expect(stringToBN(eventFiltered.amount)).bnGt(
       await SequencerStaking.minimalStakeAmount(),
