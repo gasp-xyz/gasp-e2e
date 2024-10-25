@@ -141,7 +141,7 @@ export class Rolldown {
   }
   static async untilL2Processed(txResult: MangataGenericEvent[]) {
     const blockNo = stringToBN(
-      this.getDisputePeriodEndBlock(txResult).toString(),
+      this.getRequestIdFromEvents(txResult).toString(),
     );
     await waitBlockNumber(blockNo.toString(), 10);
     let events = await getEventsAt(blockNo);
@@ -232,7 +232,7 @@ export class Rolldown {
     return api.tx.rolldown.forceCancelRequestsFromL1(chainId, reqId);
   }
 
-  static getDisputePeriodEndBlock(
+  static getRequestIdFromEvents(
     events: MangataGenericEvent[],
     method = "L1ReadStored",
   ) {
@@ -695,7 +695,7 @@ export async function createAnUpdate(
     Sudo.sudoAsWithAddressString(address, update),
   ).then(async (events) => {
     await waitSudoOperationSuccess(events, "SudoAsDone");
-    reqId = Rolldown.getDisputePeriodEndBlock(events);
+    reqId = Rolldown.getRequestIdFromEvents(events);
   });
   return { txIndex, api, reqId };
 }

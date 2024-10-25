@@ -84,7 +84,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
         .buildUnsafe(),
     ),
   );
-  const reqId2 = Rolldown.getDisputePeriodEndBlock(cancelResolutionEvents);
+  const reqId2 = Rolldown.getRequestIdFromEvents(cancelResolutionEvents);
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitBlockNumber((reqId2 + 1).toString(), disputePeriodLength * 2);
   const blockHash = await api.rpc.chain.getBlockHash(reqId2 + 1);
