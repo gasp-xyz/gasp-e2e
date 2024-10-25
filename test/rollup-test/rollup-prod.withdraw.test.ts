@@ -7,6 +7,7 @@ import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
+  acceptNetworkSwitchInNewWindow,
   addExtraLogs,
   importMetamaskExtension,
   uiStringToNumber,
@@ -50,7 +51,7 @@ describe("Gasp Prod UI withdraw tests", () => {
 
     driver = await DriverBuilder.getInstance();
     acc_addr = await importMetamaskExtension(driver, true);
-    acc_addr_short = acc_addr.slice(-4);
+    acc_addr_short = acc_addr.slice(-4).toUpperCase();
 
     await setupPage(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short, true);
@@ -94,11 +95,11 @@ describe("Gasp Prod UI withdraw tests", () => {
     expect(isOriginFeeDisplayed).toBeTruthy();
 
     // Skip until we have same behaviour on dev and prod
-    // const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
-    // expect(isNetworkButtonEnabled).toBeTruthy();
+    const isNetworkButtonEnabled = await withdrawModal.isNetworkButtonEnabled();
+    expect(isNetworkButtonEnabled).toBeTruthy();
 
-    // await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Network);
-    // await acceptNetworkSwitchInNewWindow(driver);
+    await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Network);
+    await acceptNetworkSwitchInNewWindow(driver);
 
     await withdrawModal.clickWithdrawButtonByText(WithdrawActionType.Withdraw);
     await waitForActionNotification(driver, TransactionType.Withdraw);
