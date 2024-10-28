@@ -243,7 +243,7 @@ export class Rolldown {
     const event = getEventResultFromMangataTx(events, [module, method]);
     const disputeEndBlockNumber = JSON.parse(
       JSON.stringify(event.data),
-    ).disputeEndBlockNumber;
+    ).disputePeriodEnd;
     return stringToBN(disputeEndBlockNumber).toNumber();
   }
   static getRequestIdFromCancelEvent(
