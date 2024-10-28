@@ -10,6 +10,7 @@ import {
   expectMGAExtrinsicSuDidFailed,
   expectMGAExtrinsicSuDidSuccess,
   filterAndStringifyFirstEvent,
+  getSessionIndex,
 } from "../../utils/eventListeners";
 import {
   createAnUpdate,
@@ -89,17 +90,13 @@ it("Sequencers get paid on every session BUT only when they submit valid updates
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
   const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
   const { reqId } = await createAnUpdate(testUser, chainEth);
-  const rewardsSessionNumber = (
-    await api.query.session.currentIndex()
-  ).toNumber();
+  const rewardsSessionNumber = await getSessionIndex();
   const registrationBlock = reqId + 1;
   await waitBlockNumber(registrationBlock.toString(), disputePeriodLength * 2);
   await waitNewStakingRound();
   //We receive rewards data only two rounds after the update
-  const currentSessionIndex = (
-    await api.query.session.currentIndex()
-  ).toNumber();
-  if (currentSessionIndex <= rewardsSessionNumber + 1) {
+  const sessionIndex = await getSessionIndex();
+  if (sessionIndex <= rewardsSessionNumber + 1) {
     await waitNewStakingRound();
   }
   await testUser.refreshAmounts(AssetWallet.BEFORE);
@@ -134,9 +131,7 @@ it("Sequencers get paid on every session BUT only when they submit valid updates
 it("When a sequencer brings an update It will get some points", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
   await createAnUpdate(testUser, chainEth);
-  const rewardsSessionNumber = (
-    await api.query.session.currentIndex()
-  ).toNumber();
+  const rewardsSessionNumber = await getSessionIndex();
   const pointsValue = await SequencerStaking.points(rewardsSessionNumber);
   const userAwardedPts = await SequencerStaking.awardedPts(
     rewardsSessionNumber,
@@ -197,9 +192,7 @@ it("When session ends, tokens will be distributed according the points obtained"
   const waitingBlockNumber =
     (await Rolldown.getRequestIdFromEvents(updateEvents)) + 1;
   await waitBlockNumber(waitingBlockNumber.toString(), 50);
-  const rewardsSessionNumber = (
-    await api.query.session.currentIndex()
-  ).toNumber();
+  const rewardsSessionNumber = await getSessionIndex();
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser3.keyRingPair.address,
@@ -222,10 +215,10 @@ it("When session ends, tokens will be distributed according the points obtained"
   expect(user1AwardedPts).bnEqual(pointsValue.divn(3));
   expect(user2AwardedPts).bnEqual(BN_ZERO);
   expect(user3AwardedPts).bnEqual(pointsValue.divn(3).muln(2));
-  let currentSessionIndex = (await api.query.session.currentIndex()).toNumber();
-  while (currentSessionIndex <= rewardsSessionNumber + 1) {
+  let sessionIndex = await getSessionIndex();
+  while (sessionIndex <= rewardsSessionNumber + 1) {
     await waitNewStakingRound();
-    currentSessionIndex = (await api.query.session.currentIndex()).toNumber();
+    sessionIndex = await getSessionIndex();
   }
   await ethUser1.refreshAmounts(AssetWallet.BEFORE);
   await ethUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -279,18 +272,16 @@ it("When session ends, tokens will be distributed according the points obtained"
 it("Regardless joining , slash, join or leaving sequencer set, Sequencer will be paid if points", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
   await createAnUpdate(testUser, chainEth);
-  const rewardsSessionNumber = (
-    await api.query.session.currentIndex()
-  ).toNumber();
+  const rewardsSessionNumber = await getSessionIndex();
   await leaveSequencing(testUser.keyRingPair.address);
   const sequencersList = await SequencerStaking.activeSequencers();
   expect(sequencersList.toHuman().Ethereum).not.toContain(
     testUser.keyRingPair.address,
   );
-  let currentSessionIndex = (await api.query.session.currentIndex()).toNumber();
-  while (currentSessionIndex <= rewardsSessionNumber + 1) {
+  let sessionIndex = await getSessionIndex();
+  while (sessionIndex <= rewardsSessionNumber + 1) {
     await waitNewStakingRound();
-    currentSessionIndex = (await api.query.session.currentIndex()).toNumber();
+    sessionIndex = await getSessionIndex();
   }
   const payoutEvent = await Sudo.asSudoFinalized(
     Sudo.sudoAs(
