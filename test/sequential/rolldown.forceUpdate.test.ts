@@ -71,8 +71,11 @@ it("forceUpdateL2FromL1 can't be called by non-sudo user", async () => {
 
 it("Validate that forceCancelRequestsFromL1 can be called by Sudo", async () => {
   await SequencerStaking.setupASequencer(testUser, chain);
-  const { reqId } = await createAnUpdate(testUser, chain);
-  const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
+  const { disputeEndBlockNumber } = await createAnUpdate(testUser, chain);
+  const cancel = await Rolldown.forceCancelRequestFromL1(
+    chain,
+    disputeEndBlockNumber,
+  );
   await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
     await waitSudoOperationSuccess(events);
   });
@@ -80,8 +83,11 @@ it("Validate that forceCancelRequestsFromL1 can be called by Sudo", async () => 
 
 it("Validate that forceCancelRequestsFromL1 can't be called by non-sudo user", async () => {
   await SequencerStaking.setupASequencer(testUser, chain);
-  const { reqId } = await createAnUpdate(testUser, chain);
-  const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
+  const { disputeEndBlockNumber } = await createAnUpdate(testUser, chain);
+  const cancel = await Rolldown.forceCancelRequestFromL1(
+    chain,
+    disputeEndBlockNumber,
+  );
   await signTx(api, cancel, testUser.keyRingPair).then((events) => {
     const res = getEventResultFromMangataTx(events);
     expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -124,8 +130,11 @@ it("forceCancelRequest does not need any resolution to justify the cancellation"
   testUser.addAsset(GASP_ASSET_ID);
   await SequencerStaking.setupASequencer(testUser, chain);
   await testUser.refreshAmounts(AssetWallet.BEFORE);
-  const { reqId } = await createAnUpdate(testUser, chain);
-  const cancel = await Rolldown.forceCancelRequestFromL1(chain, reqId);
+  const { disputeEndBlockNumber } = await createAnUpdate(testUser, chain);
+  const cancel = await Rolldown.forceCancelRequestFromL1(
+    chain,
+    disputeEndBlockNumber,
+  );
   await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
     await waitSudoOperationSuccess(events);
   });

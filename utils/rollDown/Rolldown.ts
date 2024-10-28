@@ -141,7 +141,7 @@ export class Rolldown {
   }
   static async untilL2Processed(txResult: MangataGenericEvent[]) {
     const blockNo = stringToBN(
-      this.getRequestIdFromEvents(txResult).toString(),
+      this.getDisputeEndBlockNumber(txResult).toString(),
     );
     await waitBlockNumber(blockNo.toString(), 10);
     let events = await getEventsAt(blockNo);
@@ -222,26 +222,29 @@ export class Rolldown {
     return api.consts.rolldown.merkleRootAutomaticBatchSize.toNumber() as number;
   }
 
-  static async cancelRequestFromL1(chainId: ChainName, reqId: number) {
+  static async cancelRequestFromL1(chainId: ChainName, reqBlockNumber: number) {
     const api = getApi();
-    return api.tx.rolldown.cancelRequestsFromL1(chainId, reqId);
+    return api.tx.rolldown.cancelRequestsFromL1(chainId, reqBlockNumber);
   }
 
-  static async forceCancelRequestFromL1(chainId: ChainName, reqId: number) {
+  static async forceCancelRequestFromL1(
+    chainId: ChainName,
+    reqBlockNumber: number,
+  ) {
     const api = getApi();
-    return api.tx.rolldown.forceCancelRequestsFromL1(chainId, reqId);
+    return api.tx.rolldown.forceCancelRequestsFromL1(chainId, reqBlockNumber);
   }
 
-  static getRequestIdFromEvents(
+  static getDisputeEndBlockNumber(
     events: MangataGenericEvent[],
     module = "rolldown",
     method = "L1ReadStored",
   ) {
     const event = getEventResultFromMangataTx(events, [module, method]);
-    const disputePeriodEnd = JSON.parse(
+    const disputeEndBlockNumber = JSON.parse(
       JSON.stringify(event.data),
-    ).disputePeriodEnd;
-    return stringToBN(disputePeriodEnd).toNumber();
+    ).disputeEndBlockNumber;
+    return stringToBN(disputeEndBlockNumber).toNumber();
   }
   static getRequestIdFromCancelEvent(
     cancel: MangataGenericEvent[],
@@ -691,14 +694,14 @@ export async function createAnUpdate(
   } else {
     update = updateValue;
   }
-  let reqId = 0;
+  let disputeEndBlockNumber = 0;
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(address, update),
   ).then(async (events) => {
     await waitSudoOperationSuccess(events, "SudoAsDone");
-    reqId = Rolldown.getRequestIdFromEvents(events);
+    disputeEndBlockNumber = Rolldown.getDisputeEndBlockNumber(events);
   });
-  return { txIndex, api, reqId };
+  return { txIndex, api, disputeEndBlockNumber };
 }
 
 export async function createAnUpdateAndCancelIt(
@@ -708,7 +711,7 @@ export async function createAnUpdateAndCancelIt(
   updateValue: any = null,
   forcedIndex = 0,
 ) {
-  const { txIndex, api, reqId } = await createAnUpdate(
+  const { txIndex, api, disputeEndBlockNumber } = await createAnUpdate(
     seq,
     chain,
     forcedIndex,
@@ -717,10 +720,10 @@ export async function createAnUpdateAndCancelIt(
   const cancel = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       cancelerAddress,
-      await Rolldown.cancelRequestFromL1(chain, reqId),
+      await Rolldown.cancelRequestFromL1(chain, disputeEndBlockNumber),
     ),
   );
   await waitSudoOperationSuccess(cancel, "SudoAsDone");
   const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
-  return { txIndex, api, reqId, reqIdCanceled };
+  return { txIndex, api, disputeEndBlockNumber, reqIdCanceled };
 }
