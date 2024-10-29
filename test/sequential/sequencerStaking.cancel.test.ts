@@ -81,10 +81,17 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
         .buildUnsafe(),
     ),
   );
-  const reqId2 = Rolldown.getDisputeEndBlockNumber(cancelResolutionEvents);
+  const disputeEndBlockNumber2 = Rolldown.getDisputeEndBlockNumber(
+    cancelResolutionEvents,
+  );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitBlockNumber((reqId2 + 1).toString(), disputePeriodLength * 2);
-  const blockHash = await api.rpc.chain.getBlockHash(reqId2 + 1);
+  await waitBlockNumber(
+    (disputeEndBlockNumber2 + 1).toString(),
+    disputePeriodLength * 2,
+  );
+  const blockHash = await api.rpc.chain.getBlockHash(
+    disputeEndBlockNumber2 + 1,
+  );
   const resolutionEvents = await api.query.system.events.at(blockHash);
   const filteredEvent = resolutionEvents.filter(
     (result: any) => result.event.method === "Slashed",
