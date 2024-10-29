@@ -48,7 +48,7 @@ describe("Gasp Prod UI deposit tests", () => {
 
     driver = await DriverBuilder.getInstance();
     acc_addr = await importMetamaskExtension(driver, true);
-    acc_addr_short = acc_addr.slice(-4);
+    acc_addr_short = acc_addr.slice(-4).toUpperCase();
 
     await setupPage(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short, true);
@@ -82,11 +82,11 @@ describe("Gasp Prod UI deposit tests", () => {
     expect(isOriginFeeDisplayed).toBeTruthy();
 
     // Skip until we have same behaviour on dev and prod
-    // const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled();
-    // expect(isNetworkButtonEnabled).toBeTruthy();
+    const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled();
+    expect(isNetworkButtonEnabled).toBeTruthy();
 
-    // await depositModal.clickDepositButtonByText(DepositActionType.Network);
-    // await acceptNetworkSwitchInNewWindow(driver);
+    await depositModal.clickDepositButtonByText(DepositActionType.Network);
+    await acceptNetworkSwitchInNewWindow(driver);
 
     // await depositModal.clickDepositButtonByText(DepositActionType.Approve);
     // await waitForActionNotification(driver, TransactionType.ApproveContract);
