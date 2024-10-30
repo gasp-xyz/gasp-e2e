@@ -47,6 +47,12 @@ export class MyPositionsPage {
   }
 
   async isLiqPoolDisplayed(firstTokenName: string, secondTokenName: string) {
+    const PoolName = firstTokenName + " / " + secondTokenName;
+    const xpath = buildXpathByElementText("span", PoolName);
+    return isDisplayed(this.driver, xpath);
+  }
+
+  async isLiqPoolDisplayedIds(firstTokenName: string, secondTokenName: string) {
     const PoolName = "pool-" + firstTokenName + "-" + secondTokenName;
     const itemXpath = buildDataTestIdXpath(PoolName);
     return isDisplayed(this.driver, itemXpath);
@@ -73,6 +79,12 @@ export class MyPositionsPage {
   }
 
   async clickPoolPosition(firstTokenName: string, secondTokenName: string) {
+    const PoolName = firstTokenName + " / " + secondTokenName;
+    const xpath = buildXpathByElementText("span", PoolName);
+    await clickElement(this.driver, xpath);
+  }
+
+  async clickPoolPositionHref(firstTokenName: string, secondTokenName: string) {
     const PoolName = "/positions/" + firstTokenName + "-" + secondTokenName;
     const hrefXpath = buildHrefXpath(PoolName);
     await clickElement(this.driver, hrefXpath);
