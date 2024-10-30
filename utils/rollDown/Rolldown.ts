@@ -243,7 +243,7 @@ export class Rolldown {
     const disputePeriodEnd = JSON.parse(
       JSON.stringify(event.data),
     ).disputePeriodEnd;
-    return stringToBN(disputeEndBlockNumber).toNumber();
+    return stringToBN(disputePeriodEnd).toNumber();
   }
   static getRequestIdFromCancelEvent(
     cancel: MangataGenericEvent[],
