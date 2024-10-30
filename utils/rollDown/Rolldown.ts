@@ -237,11 +237,10 @@ export class Rolldown {
 
   static getDisputeEndBlockNumber(
     events: MangataGenericEvent[],
-    module = "rolldown",
     method = "L1ReadStored",
   ) {
-    const event = getEventResultFromMangataTx(events, [module, method]);
-    const disputeEndBlockNumber = JSON.parse(
+    const event = getEventResultFromMangataTx(events, [method]);
+    const disputePeriodEnd = JSON.parse(
       JSON.stringify(event.data),
     ).disputePeriodEnd;
     return stringToBN(disputeEndBlockNumber).toNumber();

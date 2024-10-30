@@ -81,6 +81,12 @@ export const getEventResult = (
   });
 };
 
+export async function getSessionIndex() {
+  const api = getApi();
+  const index = await api.query.session.currentIndex();
+  return index.toNumber();
+}
+
 export const waitNewBlock = () => {
   const api = getApi();
   let count = 0;
