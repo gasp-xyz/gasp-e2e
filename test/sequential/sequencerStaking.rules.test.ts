@@ -295,7 +295,8 @@ describe("sequencerStaking", () => {
   it("An active sequencer with cancel rights can submit cancels", async () => {
     const chain = "Ethereum";
     const sequencer = await setupASequencer(chain);
-    const { reqId: reqIdCanceled } = await createAnUpdate(sequencer, chain);
+    const { disputeEndBlockNumber: disputeEndBlockNumber1 } =
+      await createAnUpdate(sequencer, chain);
     let sequencerStatus = await Rolldown.sequencerRights(
       chain,
       sequencer.keyRingPair.address,
@@ -307,7 +308,7 @@ describe("sequencerStaking", () => {
     let cancel = await Sudo.asSudoFinalized(
       Sudo.sudoAs(
         sequencer,
-        await Rolldown.cancelRequestFromL1(chain, reqIdCanceled),
+        await Rolldown.cancelRequestFromL1(chain, disputeEndBlockNumber1),
       ),
     );
     const cancelReqId = Rolldown.getRequestIdFromCancelEvent(
@@ -326,13 +327,13 @@ describe("sequencerStaking", () => {
 
     const idx = await Rolldown.lastProcessedRequestOnL2(chain);
     //since last update was canceled, idx is idx -1.
-    const { reqId } = await createAnUpdate(
-      preSetupSequencers.Ethereum,
-      chain,
-      idx - 1,
-    );
+    const { disputeEndBlockNumber: disputeEndBlockNumber2 } =
+      await createAnUpdate(preSetupSequencers.Ethereum, chain, idx - 1);
     cancel = await Sudo.asSudoFinalized(
-      Sudo.sudoAs(sequencer, await Rolldown.cancelRequestFromL1(chain, reqId)),
+      Sudo.sudoAs(
+        sequencer,
+        await Rolldown.cancelRequestFromL1(chain, disputeEndBlockNumber2),
+      ),
     );
     await waitSudoOperationFail(
       cancel,
