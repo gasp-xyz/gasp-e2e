@@ -234,10 +234,9 @@ export class Rolldown {
 
   static getRequestIdFromEvents(
     events: MangataGenericEvent[],
-    module = "rolldown",
     method = "L1ReadStored",
   ) {
-    const event = getEventResultFromMangataTx(events, [module, method]);
+    const event = getEventResultFromMangataTx(events, [method]);
     const disputePeriodEnd = JSON.parse(
       JSON.stringify(event.data),
     ).disputePeriodEnd;

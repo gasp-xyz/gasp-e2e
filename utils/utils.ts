@@ -370,6 +370,41 @@ export async function waitNewStakingRound(maxBlocks: number = 0) {
   }
 }
 
+export async function waitForSessionN(
+  awaitedSessionNumber: number,
+  maxBlocks: number = 0,
+) {
+  let currentSessionNumber: number;
+  let counter: number;
+  counter = 0;
+  const api = getApi();
+  const parachainStakingRoundInfo = await api.query.parachainStaking.round();
+  const sessionLength = parachainStakingRoundInfo.length.toNumber();
+  currentSessionNumber = (await api.query.session.currentIndex()).toNumber();
+  if (maxBlocks <= 0) {
+    maxBlocks = sessionLength * 2 + 1;
+  }
+  while (currentSessionNumber < awaitedSessionNumber && counter <= maxBlocks) {
+    counter++;
+    currentSessionNumber = (await api.query.session.currentIndex()).toNumber();
+    testLog
+      .getLog()
+      .info(
+        "Awaited session number: " +
+          awaitedSessionNumber +
+          ", current session number: " +
+          currentSessionNumber,
+      );
+    await waitNewBlock();
+  }
+  if (currentSessionNumber < awaitedSessionNumber) {
+    testLog.getLog().warn("Expected session number was not received");
+  }
+  if (counter > maxBlocks) {
+    testLog.getLog().warn("Not found within blocks limit");
+  }
+}
+
 export async function waitUntilCollatorProducesBlocks(
   maxBlocks: number = 0,
   userAddress: string,
