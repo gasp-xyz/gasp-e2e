@@ -11,6 +11,7 @@ import {
   L2Update,
   Rolldown,
   createAnUpdate,
+  createAnUpdateAndCancelIt,
 } from "../../utils/rollDown/Rolldown";
 import { BN_MILLION, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
@@ -18,6 +19,7 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import {
   expectExtrinsicFail,
   expectExtrinsicSucceed,
+  waitBlockNumber,
   waitForNBlocks,
 } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
@@ -379,6 +381,28 @@ describe("sequencerStaking", () => {
     expect(otherSequencerStatus.readRights.toString()).toBe("1");
     //the other sequencer got kicked, this must be zero, since it is the only sequencer
     expect(otherSequencerStatus.cancelRights.toString()).toBe("0");
+  });
+
+  it("When a cancel resolution fail, maintenance mode will be triggered automatically", async () => {
+    const chain = "Ethereum";
+    const api = getApi();
+    const sequencer = await setupASequencer(chain);
+    const { txIndex, reqIdCanceled, disputeEndBlockNumber } =
+      await createAnUpdateAndCancelIt(
+        sequencer,
+        sequencer.keyRingPair.address,
+        chain,
+      );
+    await waitBlockNumber((disputeEndBlockNumber + 1).toString(), 50);
+    await Sudo.asSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        sequencer.keyRingPair.address,
+        new L2Update(api)
+          .withCancelResolution(txIndex + 1, reqIdCanceled, true)
+          .on(chain)
+          .buildUnsafe(),
+      ),
+    );
   });
 
   //TODO- Add a test when collating is not required.
