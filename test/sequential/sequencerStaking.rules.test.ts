@@ -12,7 +12,7 @@ import {
   Rolldown,
   createAnUpdate,
 } from "../../utils/rollDown/Rolldown";
-import { BN_MILLION, signTx } from "gasp-sdk";
+import { BN_HUNDRED, BN_MILLION, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -25,18 +25,21 @@ import {
   expectMGAExtrinsicSuDidSuccess,
   ExtrinsicResult,
   filterAndStringifyFirstEvent,
+  waitForEvents,
   waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { BN_ZERO } from "@polkadot/util";
-import {
-  getEventErrorFromSudo,
-  getEventResultFromMangataTx,
-} from "../../utils/txHandler";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import BN from "bn.js";
 import { Maintenance } from "../../utils/Maintenance";
 import { FoundationMembers } from "../../utils/FoundationMembers";
+
+async function getEventError(events: any, eventNumber: number = 0) {
+  const stringifyEvent = JSON.parse(JSON.stringify(events));
+  return stringifyEvent[eventNumber].event.data[2].err;
+}
 
 async function findACollatorButNotSequencerUser() {
   const [user] = setupUsers();
@@ -414,20 +417,55 @@ describe("sequencerStaking", () => {
     ).then(async (events) => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
-    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
+    const err = await getEventError(event);
+    expect(err).toEqual("WrongCancelRequestId");
+    maintenanceStatus = await api.query.maintenance.maintenanceStatus();
+    expect(maintenanceStatus.isMaintenance.toString()).toEqual("true");
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
-        sequencer.keyRingPair.address,
-        new L2Update(api)
-          .withCancelResolution(txIndex, 1, true)
-          .on(chain)
-          .buildUnsafe(),
+        foundationMembers[0],
+        Maintenance.switchMaintenanceModeOff(),
       ),
+    );
+  });
+
+  it("When a cancel resolution fail, the whole update wont be stored", async () => {
+    let maintenanceStatus: any;
+    const foundationMembers = await FoundationMembers.getFoundationMembers();
+    const chain = "Ethereum";
+    const sequencer = await setupASequencer(chain);
+    const api = getApi();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        foundationMembers[0],
+        Maintenance.switchMaintenanceModeOff(),
+      ),
+    );
+    maintenanceStatus = await api.query.maintenance.maintenanceStatus();
+    expect(maintenanceStatus.isMaintenance.toString()).toEqual("false");
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    const update = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_HUNDRED,
+      )
+      .withCancelResolution(txIndex, 1, true)
+      .on(chain)
+      .buildUnsafe();
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update),
     ).then(async (events) => {
-      const error = await getEventErrorFromSudo(events);
-      expect(error.data).toEqual("BlockedByMaintenanceMode");
+      expectMGAExtrinsicSuDidSuccess(events);
     });
+    const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
+    const depositErr = await getEventError(event);
+    const resolutionErr = await getEventError(event, 1);
+    expect(depositErr).toEqual(undefined);
+    expect(resolutionErr).toEqual("WrongCancelRequestId");
     maintenanceStatus = await api.query.maintenance.maintenanceStatus();
     expect(maintenanceStatus.isMaintenance.toString()).toEqual("true");
     await Sudo.batchAsSudoFinalized(
