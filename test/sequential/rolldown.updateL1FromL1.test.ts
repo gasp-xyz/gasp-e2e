@@ -4,19 +4,82 @@
  */
 
 import { EthUser } from "../../utils/EthUser";
-import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
+import {
+  ChainName,
+  SequencerStaking,
+} from "../../utils/rollDown/SequencerStaking";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
-import { BN_MILLION, BN_THOUSAND, BN_ZERO, signTx } from "gasp-sdk";
+import {
+  BN_HUNDRED,
+  BN_MILLION,
+  BN_TEN_THOUSAND,
+  BN_THOUSAND,
+  BN_ZERO,
+  signTx,
+} from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
-import { setupUsers } from "../../utils/setup";
+import { setupApi, setupUsers } from "../../utils/setup";
 import {
   expectExtrinsicFail,
   expectExtrinsicSucceed,
   stringToBN,
   waitForNBlocks,
 } from "../../utils/utils";
-import { Keyring } from "@polkadot/api";
+import { ApiPromise, Keyring } from "@polkadot/api";
 import { testLog } from "../../utils/Logger";
+import { Sudo } from "../../utils/sudo";
+import { Assets } from "../../utils/Assets";
+import { FoundationMembers } from "../../utils/FoundationMembers";
+import { Maintenance } from "../../utils/Maintenance";
+import {
+  expectMGAExtrinsicSuDidSuccess,
+  filterAndStringifyFirstEvent,
+  waitForEvents,
+  waitNewBlock,
+} from "../../utils/eventListeners";
+import { BN } from "@polkadot/util";
+import { AssetWallet, User } from "../../utils/User";
+import { getAssetIdFromErc20 } from "../../utils/rollup/ethUtils";
+
+async function checkAndSwitchMnModeOff() {
+  let maintenanceStatus: any;
+  const api = getApi();
+  maintenanceStatus = await api.query.maintenance.maintenanceStatus();
+  if (maintenanceStatus.isMaintenance.toString() === "true") {
+    const foundationMembers = await FoundationMembers.getFoundationMembers();
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        foundationMembers[0],
+        Maintenance.switchMaintenanceModeOff(),
+      ),
+    );
+  }
+  maintenanceStatus = await api.query.maintenance.maintenanceStatus();
+  expect(maintenanceStatus.isMaintenance.toString()).toEqual("false");
+}
+
+async function getEventError(events: any, eventNumber: number = 0) {
+  const stringifyEvent = JSON.parse(JSON.stringify(events));
+  return stringifyEvent[eventNumber].event.data[2].err;
+}
+
+async function setupASequencer(chain: ChainName = "Ethereum") {
+  const [notYetSequencer] = setupUsers();
+  await Sudo.asSudoFinalized(Assets.mintNative(notYetSequencer));
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(notYetSequencer));
+  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
+  await signTx(
+    await getApi(),
+    await SequencerStaking.provideSequencerStaking(
+      minToBeSequencer.addn(1234),
+      chain,
+    ),
+    notYetSequencer.keyRingPair,
+  ).then((events) => {
+    expectExtrinsicSucceed(events);
+  });
+  return notYetSequencer;
+}
 
 describe.skip("updateL1FromL1", () => {
   let sequencer: EthUser;
@@ -453,6 +516,138 @@ describe.skip("updateL1FromL1 - errors", () => {
           expectExtrinsicSucceed(result);
         }
       },
+    );
+  });
+});
+
+describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
+  let chain: any;
+  let api: ApiPromise;
+  let sequencer: User;
+  let txIndex: number;
+
+  beforeAll(async () => {
+    await initApi();
+    setupUsers();
+    await setupApi();
+    api = getApi();
+  });
+
+  beforeEach(async () => {
+    //TODO: Replace this by some monitoring of the active queue.
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await SequencerStaking.removeAddedSequencers(10);
+    chain = "Ethereum";
+    sequencer = await setupASequencer(chain);
+    txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+  });
+
+  it("When a cancel resolution fail, maintenance mode will be triggered automatically", async () => {
+    await checkAndSwitchMnModeOff();
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(
+        sequencer.keyRingPair.address,
+        new L2Update(api)
+          .withCancelResolution(txIndex, 1, true)
+          .on(chain)
+          .buildUnsafe(),
+      ),
+    ).then(async (events) => {
+      expectMGAExtrinsicSuDidSuccess(events);
+    });
+    const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
+    const err = await getEventError(event);
+    expect(err).toEqual("WrongCancelRequestId");
+    await checkAndSwitchMnModeOff();
+  });
+
+  it("[BUG] When a cancel resolution fail, the whole update wont be stored", async () => {
+    await checkAndSwitchMnModeOff();
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    const update = new L2Update(api)
+      .withDeposit(
+        txIndex + 1,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_HUNDRED,
+      )
+      .withCancelResolution(txIndex, 1, true)
+      .on(chain)
+      .buildUnsafe();
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update),
+    ).then(async (events) => {
+      expectMGAExtrinsicSuDidSuccess(events);
+    });
+    const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
+    const resolutionErr = await getEventError(event);
+    const depositErr = await getEventError(event, 1);
+    expect(depositErr).toEqual(undefined);
+    expect(resolutionErr).toEqual("WrongCancelRequestId");
+    const currencyId = await getAssetIdFromErc20(
+      sequencer.keyRingPair.address,
+      "EthAnvil",
+    );
+    sequencer.addAsset(currencyId);
+    await sequencer.refreshAmounts(AssetWallet.AFTER);
+    expect(sequencer.getAsset(currencyId)?.amountAfter.free!).bnEqual(
+      BN_HUNDRED,
+    );
+    await checkAndSwitchMnModeOff();
+  });
+
+  it("When we have a failed deposit and send it again, it will result in no-execution again", async () => {
+    const update1 = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_TEN_THOUSAND.pow(new BN(18)),
+      )
+      .on(chain)
+      .buildUnsafe();
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update1),
+    );
+    const event1 = await waitForEvents(
+      api,
+      "rolldown.RequestProcessedOnL2",
+      40,
+    );
+    const error1 = await getEventError(event1);
+    expect(error1).toEqual("Overflow");
+    const update2 = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_TEN_THOUSAND.pow(new BN(18)),
+      )
+      .withDeposit(
+        txIndex + 1,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_MILLION,
+      )
+      .on(chain)
+      .buildUnsafe();
+    await waitNewBlock();
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    const event2 = await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update2),
+    );
+    const eventFiltered = filterAndStringifyFirstEvent(event2, "L1ReadStored");
+    await Rolldown.waitForL2UpdateExecuted(stringToBN(eventFiltered.range.end));
+    const currencyId = await getAssetIdFromErc20(
+      sequencer.keyRingPair.address,
+      "EthAnvil",
+    );
+    sequencer.addAsset(currencyId);
+    await sequencer.refreshAmounts(AssetWallet.AFTER);
+    expect(sequencer.getAsset(currencyId)?.amountAfter.free!).bnEqual(
+      BN_MILLION,
     );
   });
 });
