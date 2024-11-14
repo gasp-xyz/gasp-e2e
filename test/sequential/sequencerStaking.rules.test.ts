@@ -12,7 +12,7 @@ import {
   Rolldown,
   createAnUpdate,
 } from "../../utils/rollDown/Rolldown";
-import { BN_HUNDRED, BN_MILLION, signTx } from "gasp-sdk";
+import { BN_HUNDRED, BN_MILLION, BN_TEN_THOUSAND, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -26,6 +26,8 @@ import {
   ExtrinsicResult,
   filterAndStringifyFirstEvent,
   waitForEvents,
+  waitForSessionChange,
+  waitNewBlock,
   waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
@@ -35,6 +37,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import BN from "bn.js";
 import { Maintenance } from "../../utils/Maintenance";
 import { FoundationMembers } from "../../utils/FoundationMembers";
+import { AssetWallet } from "../../utils/User";
 
 async function getEventError(events: any, eventNumber: number = 0) {
   const stringifyEvent = JSON.parse(JSON.stringify(events));
@@ -473,6 +476,64 @@ describe("sequencerStaking", () => {
         foundationMembers[0],
         Maintenance.switchMaintenanceModeOff(),
       ),
+    );
+  });
+
+  it("When we have a failed deposit and send it again, it will result in no-execution again", async () => {
+    const chain = "Ethereum";
+    const sequencer = await setupASequencer(chain);
+    const api = getApi();
+    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    const update1 = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_TEN_THOUSAND.pow(new BN(18)),
+      )
+      .on(chain)
+      .buildUnsafe();
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update1),
+    );
+    const event1 = await waitForEvents(
+      api,
+      "rolldown.RequestProcessedOnL2",
+      40,
+    );
+    const error1 = await getEventError(event1);
+    expect(error1).toEqual("Overflow");
+    const update2 = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_TEN_THOUSAND.pow(new BN(18)),
+      )
+      .withDeposit(
+        txIndex + 1,
+        sequencer.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        BN_MILLION,
+      )
+      .on(chain)
+      .buildUnsafe();
+    await waitForSessionChange();
+    await waitNewBlock();
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update2),
+    );
+    const event2: any = await waitForEvents(api, "tokens.Endowed", 40);
+    const eventData = JSON.parse(
+      JSON.stringify(event2[0]!.event.toHuman().data),
+    );
+    const currencyId = new BN(eventData.currencyId.replaceAll(",", ""));
+    sequencer.addAsset(currencyId);
+    await sequencer.refreshAmounts(AssetWallet.AFTER);
+    expect(sequencer.getAsset(currencyId)?.amountAfter.free!).bnEqual(
+      BN_MILLION,
     );
   });
 
