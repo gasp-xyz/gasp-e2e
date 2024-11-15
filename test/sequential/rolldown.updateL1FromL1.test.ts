@@ -535,8 +535,6 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
   });
 
   beforeEach(async () => {
-    //TODO: Replace this by some monitoring of the active queue.
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await SequencerStaking.removeAddedSequencers(10);
     chain = "Ethereum";
     sequencer = await setupASequencer(chain);
@@ -678,5 +676,21 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
     const error = await getEventError(event, 1);
     expect(error).toEqual("MintError");
+    const currencyId = await getAssetIdFromErc20(
+      sequencer.keyRingPair.address,
+      "EthAnvil",
+    );
+    testUser1.addAsset(currencyId);
+    testUser2.addAsset(currencyId);
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    await testUser2.refreshAmounts(AssetWallet.AFTER);
+    expect(testUser1.getAsset(currencyId)?.amountAfter.free!).bnEqual(
+      MAX_BALANCE.subn(1),
+    );
+    expect(testUser2.getAsset(currencyId)?.amountAfter.free!).bnEqual(BN_ZERO);
+    const currencyTotalIssuance = new BN(
+      await api.query.tokens.totalIssuance(currencyId),
+    );
+    expect(currencyTotalIssuance).bnEqual(MAX_BALANCE.subn(1));
   });
 });
