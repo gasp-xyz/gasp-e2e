@@ -4,10 +4,7 @@
  */
 
 import { EthUser } from "../../utils/EthUser";
-import {
-  ChainName,
-  SequencerStaking,
-} from "../../utils/rollDown/SequencerStaking";
+import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
 import {
   BN_HUNDRED,
@@ -28,12 +25,10 @@ import {
 import { ApiPromise, Keyring } from "@polkadot/api";
 import { testLog } from "../../utils/Logger";
 import { Sudo } from "../../utils/sudo";
-import { Assets } from "../../utils/Assets";
 import { FoundationMembers } from "../../utils/FoundationMembers";
 import { Maintenance } from "../../utils/Maintenance";
 import {
   expectMGAExtrinsicSuDidSuccess,
-  filterAndStringifyFirstEvent,
   waitForEvents,
   waitNewBlock,
 } from "../../utils/eventListeners";
@@ -41,7 +36,7 @@ import { BN } from "@polkadot/util";
 import { AssetWallet, User } from "../../utils/User";
 import { getAssetIdFromErc20 } from "../../utils/rollup/ethUtils";
 
-async function checkAndSwitchMnModeOff() {
+async function checkAndSwitchMmOff() {
   let maintenanceStatus: any;
   const api = getApi();
   maintenanceStatus = await api.query.maintenance.maintenanceStatus();
@@ -61,24 +56,6 @@ async function checkAndSwitchMnModeOff() {
 async function getEventError(events: any, eventNumber: number = 0) {
   const stringifyEvent = JSON.parse(JSON.stringify(events));
   return stringifyEvent[eventNumber].event.data[2].err;
-}
-
-async function setupASequencer(chain: ChainName = "Ethereum") {
-  const [notYetSequencer] = setupUsers();
-  await Sudo.asSudoFinalized(Assets.mintNative(notYetSequencer));
-  await Sudo.batchAsSudoFinalized(Assets.mintNative(notYetSequencer));
-  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  await signTx(
-    await getApi(),
-    await SequencerStaking.provideSequencerStaking(
-      minToBeSequencer.addn(1234),
-      chain,
-    ),
-    notYetSequencer.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
-  });
-  return notYetSequencer;
 }
 
 describe.skip("updateL1FromL1", () => {
@@ -520,11 +497,12 @@ describe.skip("updateL1FromL1 - errors", () => {
   });
 });
 
-describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
+describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
   let chain: any;
   let api: ApiPromise;
   let sequencer: User;
   let txIndex: number;
+  let waitingPeriod: number;
 
   beforeAll(async () => {
     await initApi();
@@ -534,17 +512,21 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
   });
 
   beforeEach(async () => {
-    //TODO: Replace this by some monitoring of the active queue.
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await SequencerStaking.removeAddedSequencers(10);
     chain = "Ethereum";
-    sequencer = await setupASequencer(chain);
+    [sequencer] = await setupUsers();
+    await SequencerStaking.setupASequencer(sequencer, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    waitingPeriod = SequencerStaking.blocksForSequencerUpdate() * 5;
   });
 
   it("When a cancel resolution fail, maintenance mode will be triggered automatically", async () => {
-    await checkAndSwitchMnModeOff();
-    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    await checkAndSwitchMmOff();
+    await Rolldown.waitForReadRights(
+      sequencer.keyRingPair.address,
+      waitingPeriod,
+      chain,
+    );
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
         sequencer.keyRingPair.address,
@@ -559,12 +541,16 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
     const err = await getEventError(event);
     expect(err).toEqual("WrongCancelRequestId");
-    await checkAndSwitchMnModeOff();
+    await checkAndSwitchMmOff();
   });
 
   it("[BUG] When a cancel resolution fail, the whole update wont be stored", async () => {
-    await checkAndSwitchMnModeOff();
-    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    await checkAndSwitchMmOff();
+    await Rolldown.waitForReadRights(
+      sequencer.keyRingPair.address,
+      waitingPeriod,
+      chain,
+    );
     const update = new L2Update(api)
       .withDeposit(
         txIndex + 1,
@@ -594,7 +580,7 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
     expect(sequencer.getAsset(currencyId)?.amountAfter.free!).bnEqual(
       BN_HUNDRED,
     );
-    await checkAndSwitchMnModeOff();
+    await checkAndSwitchMmOff();
   });
 
   it("When we have a failed deposit and send it again, it will result in no-execution again", async () => {
@@ -607,14 +593,18 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
       )
       .on(chain)
       .buildUnsafe();
-    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    await Rolldown.waitForReadRights(
+      sequencer.keyRingPair.address,
+      waitingPeriod,
+      chain,
+    );
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update1),
     );
     const event1 = await waitForEvents(
       api,
       "rolldown.RequestProcessedOnL2",
-      40,
+      (await Rolldown.disputePeriodLength()).toNumber() * 4,
     );
     const error1 = await getEventError(event1);
     expect(error1).toEqual("Overflow");
@@ -634,12 +624,21 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
       .on(chain)
       .buildUnsafe();
     await waitNewBlock();
-    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
-    const event2 = await Sudo.batchAsSudoFinalized(
+    await Rolldown.waitForReadRights(
+      sequencer.keyRingPair.address,
+      waitingPeriod,
+      chain,
+    );
+    await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update2),
     );
-    const eventFiltered = filterAndStringifyFirstEvent(event2, "L1ReadStored");
-    await Rolldown.waitForL2UpdateExecuted(stringToBN(eventFiltered.range.end));
+    const event2 = await waitForEvents(
+      api,
+      "rolldown.RequestProcessedOnL2",
+      (await Rolldown.disputePeriodLength()).toNumber() * 4,
+    );
+    const error = await getEventError(event2);
+    expect(error).toEqual(undefined);
     const currencyId = await getAssetIdFromErc20(
       sequencer.keyRingPair.address,
       "EthAnvil",
