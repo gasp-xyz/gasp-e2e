@@ -40,6 +40,7 @@ import {
 import { BN } from "@polkadot/util";
 import { AssetWallet, User } from "../../utils/User";
 import { getAssetIdFromErc20 } from "../../utils/rollup/ethUtils";
+import { MAX_BALANCE } from "../../utils/Constants";
 
 async function checkAndSwitchMnModeOff() {
   let maintenanceStatus: any;
@@ -649,5 +650,33 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
     expect(sequencer.getAsset(currencyId)?.amountAfter.free!).bnEqual(
       BN_MILLION,
     );
+  });
+
+  it("GIVEN two deposit with u128max-1 amount THEN second deposit fails", async () => {
+    const [testUser1, testUser2] = await setupUsers();
+    await Rolldown.waitForReadRights(sequencer.keyRingPair.address, 50, chain);
+    const update = new L2Update(api)
+      .withDeposit(
+        txIndex,
+        testUser1.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        MAX_BALANCE.divn(1),
+      )
+      .withDeposit(
+        txIndex + 1,
+        testUser2.keyRingPair.address,
+        sequencer.keyRingPair.address,
+        MAX_BALANCE.divn(1),
+      )
+      .on(chain)
+      .buildUnsafe();
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update),
+    ).then(async (events) => {
+      expectMGAExtrinsicSuDidSuccess(events);
+    });
+    const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
+    const error = await getEventError(event, 1);
+    expect(error).toEqual("MintError");
   });
 });
