@@ -660,13 +660,13 @@ describe("updateL1FromL1 - cancelResolution and deposit errors", () => {
         txIndex,
         testUser1.keyRingPair.address,
         sequencer.keyRingPair.address,
-        MAX_BALANCE.divn(1),
+        MAX_BALANCE.subn(1),
       )
       .withDeposit(
         txIndex + 1,
         testUser2.keyRingPair.address,
         sequencer.keyRingPair.address,
-        MAX_BALANCE.divn(1),
+        MAX_BALANCE.subn(1),
       )
       .on(chain)
       .buildUnsafe();
