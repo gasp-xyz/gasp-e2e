@@ -517,7 +517,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     [sequencer] = await setupUsers();
     await SequencerStaking.setupASequencer(sequencer, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-    waitingPeriod = SequencerStaking.blocksForSequencerUpdate() * 5;
+    waitingPeriod = (await SequencerStaking.getBlocksNumberForSeqUpdate()) * 5;
   });
 
   it("When a cancel resolution fail, maintenance mode will be triggered automatically", async () => {

@@ -87,12 +87,6 @@ export class SequencerStaking {
     return (await api.query.sequencerStaking.minimalStakeAmount()) as any as BN;
   }
 
-  static blocksForSequencerUpdate() {
-    const api = getApi();
-    return api.consts.sequencerStaking
-      .blocksForSequencerUpdate as any as number;
-  }
-
   static async roundSequencerRewardInfo(
     address: string,
     sessionNumber: number,
