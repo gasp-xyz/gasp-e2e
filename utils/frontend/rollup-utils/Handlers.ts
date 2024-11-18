@@ -29,8 +29,6 @@ export async function connectWallet(
   await walletWrapper.openWalletConnectionInfo();
   let isWalletConnected = await walletWrapper.isWalletDetailsConnected();
   expect(isWalletConnected).toBeFalsy();
-
-  await walletWrapper.clickWalletConnect();
   await walletWrapper.pickWallet(walletType);
 
   const walletConnectModal = new WalletConnectModal(driver);
@@ -46,7 +44,12 @@ export async function connectWallet(
   const areAccountsDisplayed = await walletConnectModal.accountsDisplayed();
   expect(areAccountsDisplayed).toBeTruthy();
 
-  await walletConnectModal.pickAccount(acc_addr);
+  try {
+    await walletConnectModal.pickAccount(acc_addr);
+  } catch (e) {
+    await walletConnectModal.pickAccount(acc_addr.toUpperCase());
+  }
+
   isWalletConnectModalDisplayed = await walletConnectModal.displayed();
   expect(isWalletConnectModalDisplayed).toBeFalsy();
 
