@@ -77,8 +77,12 @@ export class WalletConnectModal {
 
   async isAccInfoDisplayed(accName: string) {
     const xpath = MODAL_ACC_LIST + buildXpathByText(accName);
-    const xpathUppercase = MODAL_ACC_LIST + buildXpathByText(accName.toUpperCase);
-    return await isDisplayed(this.driver, xpath) || isDisplayed(this.driver, xpathUppercase);
+    const xpathUppercase =
+      MODAL_ACC_LIST + buildXpathByText(accName.toUpperCase);
+    return (
+      (await isDisplayed(this.driver, xpath)) ||
+      isDisplayed(this.driver, xpathUppercase)
+    );
   }
 
   async disconnect() {
