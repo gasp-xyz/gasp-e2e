@@ -10,10 +10,12 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import {
+  expectMGAExtrinsicSuDidSuccess,
   filterAndStringifyFirstEvent,
   waitForEvents,
+  waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { stringToBN } from "../../utils/utils";
+import { stringToBN, waitForNBlocks } from "../../utils/utils";
 
 let api: ApiPromise;
 let recipient: User;
@@ -36,7 +38,14 @@ beforeAll(async () => {
 beforeEach(async () => {
   await SequencerStaking.removeAllSequencers();
   [recipient, sequencer] = setupUsers();
-  await SequencerStaking.setupASequencer(sequencer, chain);
+  const extrinsic = await SequencerStaking.provideSequencerStaking(
+    (await SequencerStaking.minimalStakeAmount()).muln(2),
+    chain,
+  );
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(sequencer),
+    Sudo.sudoAs(sequencer, extrinsic),
+  );
   ferrier = await Ferry.setupFerrier("EthAnvil");
   txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   recipient.addAsset(GASP_ASSET_ID);
@@ -106,12 +115,13 @@ it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispu
   );
 
   await ferrier.refreshAmounts(AssetWallet.BEFORE);
-  await Sudo.batchAsSudoFinalized(
+  const event1 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       sequencer.keyRingPair.address,
       update1.buildUnsafe(),
     ),
   );
+  await expectMGAExtrinsicSuDidSuccess(event1);
   await waitForEvents(
     api,
     "rolldown.RequestProcessedOnL2",
@@ -125,9 +135,10 @@ it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispu
     );
   expect(ferrierDiff).bnEqual(BN_TEN_THOUSAND);
 
-  await Sudo.batchAsSudoFinalized(
+  const event2 = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(sequencer.keyRingPair.address, update2),
   );
+  await expectMGAExtrinsicSuDidSuccess(event2);
   await waitForEvents(
     api,
     "rolldown.RequestProcessedOnL2",
@@ -140,4 +151,88 @@ it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispu
       recipient.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
   expect(recipientDiff).bnEqual(BN_THOUSAND);
+});
+
+it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispute period  AND WHEN a dispute happens AND resolution is True AND another update comes with the same id, THEN the ferrier will get those back after the dispute period", async () => {
+  let event: any;
+  const [judge] = setupUsers();
+  const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
+  const stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
+    (await SequencerStaking.minimalStakeAmount()).addn(1000),
+    chain,
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(judge),
+    Sudo.sudoAs(judge, stakeAndJoinExtrinsic),
+  );
+  await Rolldown.waitForReadRights(
+    sequencer.keyRingPair.address,
+    waitingPeriod,
+    chain,
+  );
+  const ferryTip = BN_TEN;
+  const update1 = new L2Update(api)
+    .withDeposit(
+      txIndex,
+      recipient.keyRingPair.address,
+      gaspL1Address,
+      BN_TEN_THOUSAND,
+      0,
+      ferryTip,
+    )
+    .on(chain);
+  await Ferry.ferryThisDeposit(ferrier, update1.pendingDeposits[0], "EthAnvil");
+  await recipient.refreshAmounts(AssetWallet.BEFORE);
+  await ferrier.refreshAmounts(AssetWallet.BEFORE);
+  expect(recipient.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
+    BN_TEN_THOUSAND.sub(ferryTip),
+  );
+  await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
+  event = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      sequencer.keyRingPair.address,
+      update1.buildUnsafe(),
+    ),
+  );
+  await expectMGAExtrinsicSuDidSuccess(event);
+  const disputeEndBlockNumber = Rolldown.getDisputeEndBlockNumber(event);
+  const cancel = await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      judge.keyRingPair.address,
+      await Rolldown.cancelRequestFromL1(chain, disputeEndBlockNumber),
+    ),
+  );
+  await waitSudoOperationSuccess(cancel, "SudoAsDone");
+  await Rolldown.waitForReadRights(judge.keyRingPair.address);
+  const reqIdCanceled = Rolldown.getRequestIdFromCancelEvent(cancel);
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      judge.keyRingPair.address,
+      new L2Update(api)
+        .withCancelResolution(txIndex, reqIdCanceled, true)
+        .on(chain)
+        .buildUnsafe(),
+    ),
+  );
+
+  await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
+  event = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      sequencer.keyRingPair.address,
+      update1.buildUnsafe(),
+    ),
+  );
+  await expectMGAExtrinsicSuDidSuccess(event);
+  await waitForNBlocks(disputePeriodLength);
+
+  await recipient.refreshAmounts(AssetWallet.AFTER);
+  await ferrier.refreshAmounts(AssetWallet.AFTER);
+  //tokens must be returned to ferrier, but there are on recipient's account
+  expect(recipient.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
+    recipient.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
+  );
+  expect(ferrier.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
+    ferrier.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
+  );
 });
