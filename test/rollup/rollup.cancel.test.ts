@@ -66,11 +66,15 @@ describe("Rollup", () => {
       );
       //wait for the update to be in contract
       await waitForBatchWithRequest(nToBigInt(id), getL1("EthAnvil")!);
-      //run close.
-      await Rolldown.closeCancelOnL1(
-        nToBigInt(id),
-        getL1("EthAnvil")!.gaspName,
-      );
+
+      // FIXME: sequencer should close cancel automatically so maybe instead 
+      // test should wait for that to happen on L1 ?
+      //
+      // await Rolldown.closeCancelOnL1(
+      //   nToBigInt(id),
+      //   getL1("EthAnvil")!.gaspName,
+      // );
+
       await waitForEvents(
         await getApi(),
         "sequencerStaking.SequencersRemovedFromActiveSet",
