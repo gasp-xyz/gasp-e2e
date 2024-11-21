@@ -8,10 +8,10 @@ import { Assets } from "../../utils/Assets";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO, Mangata, MangataInstance } from "gasp-sdk";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -41,7 +41,7 @@ beforeAll(async () => {
     Assets.mintNative(user1),
     Sudo.sudoAs(
       user1,
-      Xyk.createPool(token1, poolBalance, token2, poolBalance),
+      Market.createPool(token1, poolBalance, token2, poolBalance),
     ),
   );
   liquidityToken = await getLiquidityAssetId(token1, token2);

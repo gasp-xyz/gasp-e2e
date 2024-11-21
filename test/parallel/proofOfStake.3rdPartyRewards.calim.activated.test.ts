@@ -7,7 +7,6 @@ import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -16,6 +15,7 @@ import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
+import { Market } from "../../utils/market";
 
 let testUser: User;
 let sudo: User;
@@ -53,7 +53,7 @@ describe("Proof of stake tests", () => {
       Assets.mintNative(sudo, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Sudo.sudoAs(
         sudo,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken1,
@@ -62,7 +62,7 @@ describe("Proof of stake tests", () => {
       ),
       Sudo.sudoAs(
         sudo,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken2,
@@ -71,7 +71,7 @@ describe("Proof of stake tests", () => {
       ),
       Sudo.sudoAs(
         sudo,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,

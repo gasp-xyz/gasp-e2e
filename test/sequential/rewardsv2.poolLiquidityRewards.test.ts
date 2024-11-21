@@ -23,6 +23,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, MangataGenericEvent, MangataInstance } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { Market } from "../../utils/market";
 
 const defaultCurrencyValue = new BN(10000000);
 const assetAmount = new BN("1000000000000000");
@@ -66,7 +67,7 @@ describe("rewards v2 tests", () => {
       Assets.mintNative(testUser3),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.divn(2),
           secondCurrency,

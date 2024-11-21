@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group rewardsV2Parallel
  * @group validateStatus
  */
@@ -17,9 +18,9 @@ import {
   mintLiquidity,
 } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -64,7 +65,7 @@ describe("Validate initial status", () => {
       Assets.mintNative(testUser),
       Sudo.sudoAs(
         testUser,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.divn(2),
           token1,

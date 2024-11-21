@@ -15,6 +15,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_BILLION, BN_ZERO, MangataInstance, PoolWithRatio } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -74,7 +75,7 @@ beforeAll(async () => {
     Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
@@ -173,7 +174,7 @@ test("check parameters of getTotalIssuance functions", async () => {
     Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
@@ -281,7 +282,7 @@ test("sdk - filter deactivated pools on node", async () => {
     Assets.mintToken(token2, testUser1, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,

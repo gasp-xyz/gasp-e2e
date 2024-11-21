@@ -19,6 +19,7 @@ import {
 } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -56,7 +57,7 @@ beforeAll(async () => {
     Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,

@@ -419,7 +419,8 @@ export const createPool = async (
 
   return await signTx(
     api,
-    api.tx.xyk.createPool(
+    api.tx.market.createPool(
+      "Xyk",
       firstAssetId,
       firstAssetAmount,
       secondAssetId,
@@ -855,7 +856,8 @@ export async function createPoolIfMissing(
         ),
       )
       .withFn(
-        sudo.node.api!.tx.xyk.createPool(
+        sudo.node.api!.tx.market.createPool(
+          "Xyk",
           firstAssetId,
           poolValue,
           seccondAssetId,

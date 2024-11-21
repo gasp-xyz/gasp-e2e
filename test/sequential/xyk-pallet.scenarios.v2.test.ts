@@ -26,6 +26,7 @@ import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
 import { signSendFinalized } from "../../utils/sign";
 import { SudoDB } from "../../utils/SudoDB";
+import { Market } from "../../utils/market";
 
 function assetsAfterFree(user: User): BN[] {
   return user.assets.map((asset) => asset.amountAfter.free);
@@ -37,6 +38,7 @@ function assetsBeforeFree(user: User): BN[] {
 
 /**
  * @group xyk
+ * @group market
  * @group sequential
  * @group critical
  */
@@ -132,7 +134,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     const assetAmount1 = new BN(50000);
     const assetAmount2 = new BN(50000);
     await signSendFinalized(
-      Xyk.createPool(assetId1, assetAmount1, assetId2, assetAmount2),
+      Market.createPool(assetId1, assetAmount1, assetId2, assetAmount2),
       user1,
     );
     liquidityAssetId = await getLiquidityAssetId(assetId1, assetId2);
@@ -663,7 +665,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     const assetAmount2 = new BN(60000);
 
     await signSendFinalized(
-      Xyk.createPool(assetId1, assetAmount1, assetId2, assetAmount2),
+      Market.createPool(assetId1, assetAmount1, assetId2, assetAmount2),
       user1,
     );
     liquidityAssetId = await getLiquidityAssetId(assetId1, assetId2);

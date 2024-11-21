@@ -25,6 +25,7 @@ import {
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { BN_ZERO } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -66,7 +67,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         defaultCurrencyValue,
         token1,

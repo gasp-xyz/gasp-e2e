@@ -7,8 +7,10 @@ export class Market {
     firstAssetAmount: BN,
     secondAsset: BN,
     secondAssetAmount: BN,
+    kind: any = "Xyk",
   ): Extrinsic {
     return api.tx.market.createPool(
+      kind,
       firstAsset,
       firstAssetAmount,
       secondAsset,

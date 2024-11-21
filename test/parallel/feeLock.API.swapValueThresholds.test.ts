@@ -18,7 +18,7 @@ import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { feeLockErrors, getFeeLockMetadata } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -78,7 +78,7 @@ beforeEach(async () => {
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
@@ -97,7 +97,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
         GASP_ASSET_ID,
@@ -160,7 +160,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
         GASP_ASSET_ID,

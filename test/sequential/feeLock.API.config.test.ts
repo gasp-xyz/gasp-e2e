@@ -18,8 +18,8 @@ import { updateFeeLockMetadata, unlockFee } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
 import { getFeeLockMetadata, sleep } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { waitForEvents } from "../../utils/eventListeners";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -58,7 +58,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         defaultPoolVolumeValue,
         firstCurrency,

@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group api
  * @group parallel
  */
@@ -31,8 +32,8 @@ import { testLog } from "../../utils/Logger";
 import { hexToBn } from "@polkadot/util";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { getSudoUser } from "../../utils/setup";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -224,7 +225,7 @@ describe("xyk-pallet - Pool tests: a pool can:", () => {
       Assets.mintNative(testUser2),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           firstCurrency,
           first_asset_amount,
           secondCurrency,

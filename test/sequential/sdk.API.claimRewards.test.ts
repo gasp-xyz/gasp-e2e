@@ -21,6 +21,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { BN_ZERO } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -72,7 +73,7 @@ beforeAll(async () => {
     batchPromisesMinting.push(
       Sudo.sudoAs(
         testUser,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           defaultCurrencyValue.divn(2),
           new BN(newTokenId),

@@ -26,6 +26,7 @@ import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
 import { getApi } from "../../utils/api";
 import { SudoDB } from "../../utils/SudoDB";
+import { Market } from "../../utils/market";
 
 const asset_amount1 = new BN(500000);
 const asset_amount2 = asset_amount1.div(new BN(2));
@@ -44,6 +45,7 @@ async function validateTreasuryAmountsEqual(
 
 /**
  * @group xyk
+ * @group market
  * @group api
  * @group sequential
  * @group critical
@@ -64,7 +66,12 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       Assets.mintToken(currency, user),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(GASP_ASSET_ID, asset_amount1, currency, asset_amount2),
+        Market.createPool(
+          GASP_ASSET_ID,
+          asset_amount1,
+          currency,
+          asset_amount2,
+        ),
       ),
     );
 
@@ -217,7 +224,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       Assets.mintToken(indirectlyConnected, user),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           asset_amount1,
           connectedToMGA,
@@ -226,7 +233,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       ),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(
+        Market.createPool(
           connectedToMGA,
           asset_amount1,
           indirectlyConnected,
@@ -440,7 +447,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
       Assets.mintToken(currency, user),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(GASP_ASSET_ID, asset_amount1, currency, asset_amount2),
+        Market.createPool(
+          GASP_ASSET_ID,
+          asset_amount1,
+          currency,
+          asset_amount2,
+        ),
       ),
     );
 

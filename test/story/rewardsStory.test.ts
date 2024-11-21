@@ -23,6 +23,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { Xyk } from "../../utils/xyk";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -132,7 +133,7 @@ async function setupPoolWithRewardsForUsers(users: User[]) {
     Assets.mintNative(testUser4),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,

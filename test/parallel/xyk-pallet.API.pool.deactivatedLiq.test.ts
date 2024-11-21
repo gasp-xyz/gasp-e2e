@@ -15,13 +15,13 @@ import {
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getMultiPurposeLiquidityStatus } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
 import { BN_BILLION, BN_ZERO } from "gasp-sdk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -63,7 +63,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,

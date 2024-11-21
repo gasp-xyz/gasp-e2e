@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group liquidity
  * @group parallel
  */
@@ -24,8 +25,8 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { getSudoUser } from "../../utils/setup";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -74,7 +75,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         firstCurrency,
         new BN(40000),
         secondCurrency,

@@ -29,7 +29,7 @@ import {
 import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -132,7 +132,7 @@ describe("Multiswap - happy paths", () => {
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(assetIdWithSmallPool, sudo, new BN(1)),
       Assets.mintToken(tokenIds[tokenIds.length - 1], sudo, new BN(1)),
-      Xyk.createPool(
+      Market.createPool(
         tokenIds[tokenIds.length - 1],
         new BN(1),
         assetIdWithSmallPool,

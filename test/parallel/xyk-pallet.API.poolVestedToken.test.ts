@@ -2,6 +2,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group liquidity
  * @group parallel
  */
@@ -28,9 +29,9 @@ import {
 import { BN_ZERO, toBN } from "gasp-sdk";
 import { getBlockNumber } from "../../utils/utils";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -56,7 +57,7 @@ async function createPoolAndVestingToken(
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         defaultCurrencyValue,
         createdToken,

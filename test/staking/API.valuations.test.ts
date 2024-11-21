@@ -17,10 +17,10 @@ import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -72,7 +72,7 @@ describe("Collators: MinCandidateStk limit", () => {
       Assets.mintNative(testUser4, aBigEnoughAmount),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           totalMgxInPool,
           newTokenId,

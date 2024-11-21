@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group parallel
  */
 import { jest } from "@jest/globals";
@@ -16,10 +17,10 @@ import {
   provideLiquidity,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -66,7 +67,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser, Assets.DEFAULT_AMOUNT.muln(2)),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
@@ -75,7 +76,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
@@ -84,7 +85,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         token2,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,
