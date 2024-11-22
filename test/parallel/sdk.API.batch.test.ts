@@ -154,7 +154,7 @@ test("Happy path - batch", async () => {
     account: testUser1.keyRingPair,
     calls: [
       Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-      Market.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
 
