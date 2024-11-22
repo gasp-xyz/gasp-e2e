@@ -249,6 +249,7 @@ export class Rolldown {
     ).disputePeriodEnd;
     return stringToBN(disputePeriodEnd).toNumber();
   }
+
   static getRequestIdFromCancelEvent(
     cancel: MangataGenericEvent[],
     rolldown: string = "rolldown",

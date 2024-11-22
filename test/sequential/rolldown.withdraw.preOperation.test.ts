@@ -531,7 +531,10 @@ describe("Pre-operation withdrawal tests -", () => {
       )),
       await Rolldown.createManualBatch(l1Eth),
     );
-    const filteredEvent = await filterAndStringifyFirstEvent(events, "TxBatchCreated");
+    const filteredEvent = await filterAndStringifyFirstEvent(
+      events,
+      "TxBatchCreated",
+    );
     expect(filteredEvent.range[0].replace(",", "")).toEqual(
       nextRequestIdEth.toString(),
     );
@@ -559,7 +562,10 @@ describe("Pre-operation withdrawal tests -", () => {
         ),
       ),
     );
-    const filteredEvent = await filterAndStringifyFirstEvent(events, "TxBatchCreated");
+    const filteredEvent = await filterAndStringifyFirstEvent(
+      events,
+      "TxBatchCreated",
+    );
     expect(filteredEvent.range[0].replace(",", "")).toEqual(
       nextRequestIdEth.toString(),
     );
