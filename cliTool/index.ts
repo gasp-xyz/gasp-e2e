@@ -143,17 +143,22 @@ async function app(): Promise<any> {
         await sendUpdateToL1();
       }
       if (answers.option.includes("1000 withdrawals")) {
+        const chain = "ArbAnvil";
+        const chainName = "Arbitrum";
+        const userAddress = "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac";
+        const ethTokenAddress = "0xfd471836031dc5108809d173a067e8486b9047a3";
         await setupApi();
         await setupUsers();
         const addr = "0x" + randomBytes(20).toString("hex");
-        await sudo.registerL1Asset(null,addr, "Arbitrum");
+        await sudo.registerL1Asset(null,addr, chainName);
         await Sudo.asSudoFinalized(
           Sudo.sudo(
-            Assets.mintTokenAddress(await getAssetIdFromErc20(addr,"ArbAnvil"), "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac" )
+            Assets.mintTokenAddress(await getAssetIdFromErc20(addr,chain), userAddress )
           )
         );
-        await Rolldown.createWithdrawalsInBatch(500, "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac", addr, "ArbAnvil");
-        //await Rolldown.createWithdrawalsInBatch(500);
+        await Rolldown.createWithdrawalsInBatch(1, userAddress, ethTokenAddress, "EthAnvil");
+        await Rolldown.createWithdrawalsInBatch(500, userAddress, addr, chain);
+        
       }
       if (answers.option.includes("Close All L1 items")) {
         return inquirer
