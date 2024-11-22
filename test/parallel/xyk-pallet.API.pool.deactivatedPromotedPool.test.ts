@@ -9,7 +9,6 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
@@ -91,7 +90,7 @@ beforeEach(async () => {
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(liquidityId, defaultCurrencyValue),
     ),
   );
 

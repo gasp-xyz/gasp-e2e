@@ -154,7 +154,7 @@ test("Happy path - batch", async () => {
     account: testUser1.keyRingPair,
     calls: [
       Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
     ],
   });
 
@@ -206,7 +206,7 @@ test("Happy path - batchAll", async () => {
     account: testUser1.keyRingPair,
     calls: [
       Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
 
@@ -267,7 +267,7 @@ test("Happy path - forceBatch", async () => {
     account: testUser1.keyRingPair,
     calls: [
       Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
 

@@ -17,4 +17,18 @@ export class Market {
       secondAssetAmount,
     );
   }
+
+  static burnLiquidity(
+    poolId: BN,
+    assetAmount: BN,
+    minFirstAssetAmount: BN | number = 0,
+    minSecondAssetAmount: BN | number = 0,
+  ): Extrinsic {
+    return api.tx.market.burnLiquidity(
+      poolId,
+      assetAmount,
+      minFirstAssetAmount,
+      minSecondAssetAmount,
+    );
+  }
 }

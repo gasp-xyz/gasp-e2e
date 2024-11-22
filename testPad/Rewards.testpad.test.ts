@@ -5,8 +5,12 @@ import { api, getApi, initApi } from "../utils/api";
 import { MAX_BALANCE, GASP_ASSET_ID } from "../utils/Constants";
 import { User, AssetWallet } from "../utils/User";
 import { getEnvironmentRequiredVars, waitForNBlocks } from "../utils/utils";
-import { MangataGenericEvent, signTx } from "gasp-sdk";
-import { getNextAssetId, mintLiquidity } from "../utils/tx";
+import { BN_ZERO, MangataGenericEvent, signTx } from "gasp-sdk";
+import {
+  getLiquidityAssetId,
+  getNextAssetId,
+  mintLiquidity,
+} from "../utils/tx";
 import { ApiPromise } from "@polkadot/api";
 import { WsProvider } from "@polkadot/rpc-provider/ws";
 import { options } from "@mangata-finance/types";
@@ -174,10 +178,11 @@ describe("RewardsV2 - testpad", () => {
     sudo = new User(keyring, sudoUserName);
     const users = [testUser1, testUser2, testUser3, testUser4];
     const promises: Promise<MangataGenericEvent[]>[] = [];
+    const assetId = await getLiquidityAssetId(BN_ZERO, liqtokenId);
     promises.push(
       signTx(
         api!,
-        api!.tx.xyk.burnLiquidity(0, liqtokenId, amount.divn(2)),
+        api!.tx.market.burnLiquidity(assetId, amount.divn(2)),
         sudo.keyRingPair,
       ),
     );
@@ -193,10 +198,11 @@ describe("RewardsV2 - testpad", () => {
         testUser1.keyRingPair.address,
         liqtokenId.addn(1),
       );
+      const assetId = await getLiquidityAssetId(BN_ZERO, liqtokenId);
       promises.push(
         signTx(
           api!,
-          api!.tx.xyk.burnLiquidity(0, liqtokenId, new BN(10000000000000)),
+          api!.tx.market.burnLiquidity(assetId, new BN(10000000000000)),
           testUser1.keyRingPair,
         ),
       );
@@ -246,9 +252,10 @@ describe("RewardsV2 - testpad", () => {
     keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring, "//Ferdie");
     sudo = new User(keyring, sudoUserName);
+    const assetId = await getLiquidityAssetId(BN_ZERO, liqtokenId);
     await api!.tx.utility
       .batch([
-        api!.tx.xyk.burnLiquidity(0, tokenId, new BN(1000)),
+        api!.tx.market.burnLiquidity(assetId, new BN(1000)),
         api!.tx.xyk.mintLiquidity(0, tokenId, new BN(1000), new BN(2000)),
       ])
       .signAndSend(testUser1.keyRingPair);

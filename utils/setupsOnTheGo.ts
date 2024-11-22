@@ -616,10 +616,8 @@ export async function burnAllTokensFromPool(liqToken: BN) {
   for (let index = 0; index < users.length; index++) {
     const user = users[index];
     const amounts = await getUserBalanceOfToken(liqToken, user);
-    const pool = await getLiquidityPool(liqToken);
-    const burnTx = Xyk.burnLiquidity(
-      pool[0],
-      pool[1],
+    const burnTx = Market.burnLiquidity(
+      liqToken,
       amounts.free.add(amounts.reserved),
     );
     txs.push(Sudo.sudoAs(user, burnTx));

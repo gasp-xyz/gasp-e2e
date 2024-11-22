@@ -159,7 +159,7 @@ describe("Proof of stake tests", () => {
       );
       await signTx(
         getApi(),
-        Xyk.burnLiquidity(newToken, GASP_ASSET_ID, amountToBurn),
+        Market.burnLiquidity(liqId, amountToBurn),
         testUser.keyRingPair,
       ).then((events) => {
         const res = getEventResultFromMangataTx(events);

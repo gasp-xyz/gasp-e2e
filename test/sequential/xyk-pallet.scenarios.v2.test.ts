@@ -447,7 +447,7 @@ describe("xyk-pallet: Happy case scenario", () => {
       await calcuate_burn_liquidity_price_local(assetId1, assetId2, amount);
 
     await signSendFinalized(
-      Xyk.burnLiquidity(assetId1, assetId2, amount),
+      Market.burnLiquidity(liquidityAssetId, amount),
       user1,
     );
 
@@ -738,7 +738,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     const amount = new BN(10000);
 
     await signSendFinalized(
-      Xyk.burnLiquidity(assetId1, assetId2, amount),
+      Market.burnLiquidity(liquidityAssetId, amount),
       user2,
     ).catch(checkError(xykErrors.NotEnoughAssets));
     testLog.getLog().info("ExpectNoChange On:burnLiquidityFromEmptyPoolTest");
@@ -812,7 +812,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       await calcuate_burn_liquidity_price_local(assetId1, assetId2, amount);
 
     await signSendFinalized(
-      Xyk.burnLiquidity(assetId1, assetId2, amount),
+      Market.burnLiquidity(liquidityAssetId, amount),
       user,
     );
 
@@ -850,7 +850,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     const excess = assetsBurned.mul(new BN(105)).div(new BN(100));
 
     await signSendFinalized(
-      Xyk.burnLiquidity(assetId1, assetId2, excess),
+      Market.burnLiquidity(liquidityAssetId, excess),
       user,
     ).catch(checkError(xykErrors.NotEnoughAssets));
     testLog.getLog().info("ExpectNoChange On:burnLiquidityFail");

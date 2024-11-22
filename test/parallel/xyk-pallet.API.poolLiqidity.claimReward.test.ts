@@ -205,11 +205,11 @@ test("Given a pool with 2 users with activated rewards WHEN more than one period
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(GASP_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2)),
+      Market.burnLiquidity(liquidityAssetId, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.burnLiquidity(GASP_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(4)),
+      Market.burnLiquidity(liquidityAssetId, Assets.DEFAULT_AMOUNT.divn(4)),
     ),
   );
 

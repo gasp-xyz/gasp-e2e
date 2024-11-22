@@ -10,7 +10,6 @@ import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { stringToBN } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_BILLION, BN_ZERO, MangataInstance, PoolWithRatio } from "gasp-sdk";
@@ -289,9 +288,12 @@ test("sdk - filter deactivated pools on node", async () => {
         Assets.DEFAULT_AMOUNT.divn(2),
       ),
     ),
+  );
+  const liqId2 = await getLiquidityAssetId(GASP_ASSET_ID, token2);
+  await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(GASP_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2)),
+      Market.burnLiquidity(liqId2, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
   );
   const deactivatedPoolId = await getLiquidityAssetId(GASP_ASSET_ID, token2);

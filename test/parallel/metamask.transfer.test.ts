@@ -173,11 +173,7 @@ describe("Tests with Metamask signing: Test that with current data, txs can be s
 
     await testEthUser.refreshAmounts(AssetWallet.BEFORE);
 
-    const tx = api.tx.xyk.burnLiquidity(
-      GASP_ASSET_ID,
-      secondCurrency,
-      Assets.DEFAULT_AMOUNT,
-    );
+    const tx = Market.burnLiquidity(liqId, Assets.DEFAULT_AMOUNT);
 
     await signByMetamask(tx, testEthUser);
 
