@@ -29,7 +29,6 @@ describe("API fees test suite", () => {
   let currency2: BN;
   let currency3: BN;
   let currency4: BN;
-  let liqId: BN;
   let user1: User;
   let user2: User;
 
@@ -56,7 +55,6 @@ describe("API fees test suite", () => {
         Market.createPool(currency1, BN_THOUSAND, currency2, BN_THOUSAND),
       ),
     );
-    liqId = await getLiquidityAssetId(currency1, currency2);
   });
 
   beforeEach(async () => {
@@ -127,6 +125,7 @@ describe("API fees test suite", () => {
 
   it("xyk-pallet - MGA tokens are subtracted as fee : BurnLiquidity", async () => {
     const from = await getBlockNumber();
+    const liqId = await getLiquidityAssetId(currency1, currency2);
     await signSendFinalized(Market.burnLiquidity(liqId, BN_THOUSAND), user1);
     const to = await getBlockNumber();
 
