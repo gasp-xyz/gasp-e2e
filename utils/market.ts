@@ -31,4 +31,18 @@ export class Market {
       minSecondAssetAmount,
     );
   }
+
+  static mintLiquidity(
+    poolId: BN,
+    assetId: BN,
+    assetAmount: BN,
+    maxOtherAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
+  ): Extrinsic {
+    return api.tx.market.mintLiquidity(
+      poolId,
+      assetId,
+      assetAmount,
+      maxOtherAssetAmount,
+    );
+  }
 }

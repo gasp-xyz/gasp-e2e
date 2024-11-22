@@ -13,7 +13,6 @@ import {
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -221,9 +220,9 @@ describe("Proof of stake tests", () => {
         ),
         Sudo.sudoAs(
           oneUser,
-          Xyk.mintLiquidity(
+          Market.mintLiquidity(
+            liquidityAssetId,
             GASP_ASSET_ID,
-            newToken3,
             Assets.DEFAULT_AMOUNT,
             Assets.DEFAULT_AMOUNT.muln(2),
           ),
@@ -365,18 +364,18 @@ describe("Proof of stake tests", () => {
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
           alice,
-          Xyk.mintLiquidity(
+          Market.mintLiquidity(
+            liquidityAssetId,
             GASP_ASSET_ID,
-            testToken,
             Assets.DEFAULT_AMOUNT,
             Assets.DEFAULT_AMOUNT.muln(2),
           ),
         ),
         Sudo.sudoAs(
           bob,
-          Xyk.mintLiquidity(
+          Market.mintLiquidity(
+            liquidityAssetId,
             GASP_ASSET_ID,
-            testToken,
             Assets.DEFAULT_AMOUNT,
             Assets.DEFAULT_AMOUNT.muln(2),
           ),

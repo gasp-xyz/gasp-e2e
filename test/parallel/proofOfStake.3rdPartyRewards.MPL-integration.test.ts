@@ -84,18 +84,18 @@ describe("Proof of stake tests", () => {
       Sudo.sudo(Staking.addStakingLiquidityToken(liqId)),
       Sudo.sudoAs(
         testUser2,
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liqId,
           GASP_ASSET_ID,
-          newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
         ),
       ),
       Sudo.sudoAs(
         testUser3,
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liqId,
           GASP_ASSET_ID,
-          newToken,
           Assets.DEFAULT_AMOUNT.divn(2),
           Assets.DEFAULT_AMOUNT,
         ),
