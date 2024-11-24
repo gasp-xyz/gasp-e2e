@@ -9582,27 +9582,27 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-eth-rollup-develop.46:
-  version "0.0.2-eth-rollup-develop.46"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-eth-rollup-develop.46.tgz#13bd981042b8a9958caa07d15d92a7c0a20f18fc"
-  integrity sha512-6CapS5jVapZ6eMsbQdogqCn0bqp5LrriPt6J/O7P/Ub0fHFvCZZidQdc7qgN2SM3uOu8tgpbctQw+QYCJfkPlw==
+gasp-sdk@0.0.2-feature-rolldown-on-idle-hook.0:
+  version "0.0.2-feature-rolldown-on-idle-hook.0"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-rolldown-on-idle-hook.0.tgz#17693211576b6a679df72dbedae12abfeb23a2a6"
+  integrity sha512-h08qiBKXhDgrGWojgepdOAk+Lumaq/EEro1KAlFhf+MfR+fHzH1Mm8UVONUrN2Xp/xmaVUam/0HBoLcNo+Q03A==
   dependencies:
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-eth-rollup-develop.48"
+    gasp-type-definitions "0.0.2-feature-rolldown-on-idle-hook.0"
     tslib "^2.3.0"
     tslog "4.8.2"
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-eth-rollup-develop.48:
-  version "0.0.2-eth-rollup-develop.48"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-eth-rollup-develop.48.tgz#f7f92cba7e48d4a4a14d7098fc93e14c622e4e61"
-  integrity sha512-nE7e3Uhc3YkRUBObnBPvaQZlk+/JyAPwowSJ2L0fZtxkWFrsj5IoXm2Rm92VToUkfB12AYBv3rit6wp3X8Xvzw==
+gasp-type-definitions@0.0.2-feature-rolldown-on-idle-hook.0:
+  version "0.0.2-feature-rolldown-on-idle-hook.0"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-rolldown-on-idle-hook.0.tgz#823400703966ac0042c3e2017877810e1fbb4269"
+  integrity sha512-unRXCS2OUbeSSzYSKWeVpTcyEoZq8/TB+Fb7JaNO+CQ+kVOghEjatHhUtfzxkkBjdpCnB8BprLmgZm9pVLU4Sw==
 
-gasp-types@0.0.2-eth-rollup-develop.46:
-  version "0.0.2-eth-rollup-develop.46"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-eth-rollup-develop.46.tgz#47eadc012b34b767f8f99df812facd191fbdf84c"
-  integrity sha512-47mcfbbNkljM3OVswhh3s/IdOfG4QU4XspYm8NBrNwLcmMfhbFY8N7MXFJkcdpCraVjgkU82ANMRh6q9oD7t8Q==
+gasp-types@0.0.2-feature-rolldown-on-idle-hook.0:
+  version "0.0.2-feature-rolldown-on-idle-hook.0"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-rolldown-on-idle-hook.0.tgz#6952414f82bb2bece10a8e26f104682cf8d04145"
+  integrity sha512-P0VFssv/HGfJuRu9biW2DRQv2fHjc0E0L3B6M8dS2741J24ZBPi3MlCkgXQeYVyNjXT7SAdt53qZeES7CUQLug==
 
 gauge@^4.0.3:
   version "4.0.4"
