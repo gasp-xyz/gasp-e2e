@@ -35,7 +35,7 @@ import {
 import { BN } from "@polkadot/util";
 import { AssetWallet, User } from "../../utils/User";
 import { getAssetIdFromErc20 } from "../../utils/rollup/ethUtils";
-import { MAX_BALANCE } from "../../utils/Constants";
+import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
 
 async function checkAndSwitchMmOff() {
   let maintenanceStatus: any;
@@ -527,6 +527,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     await SequencerStaking.setupASequencer(sequencer, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     waitingPeriod = (await SequencerStaking.getBlocksNumberForSeqUpdate()) * 5;
+    await checkAndSwitchMmOff();
   });
 
   it("When a cancel resolution fail, maintenance mode will be triggered automatically", async () => {
@@ -554,7 +555,6 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
   });
 
   it("[BUG] When a cancel resolution fail, the whole update wont be stored", async () => {
-    await checkAndSwitchMmOff();
     await Rolldown.waitForReadRights(
       sequencer.keyRingPair.address,
       waitingPeriod,
@@ -578,16 +578,15 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
     const error = await getEventError(event);
     expect(error).toEqual("WrongCancelRequestId");
+    //lets wait a couple of blocks just in case the deposit happens a few blocks later
+    await waitForNBlocks(2);
     const currencyId = await getAssetIdFromErc20(
       sequencer.keyRingPair.address,
       "EthAnvil",
     );
     sequencer.addAsset(currencyId);
-    await sequencer.refreshAmounts(AssetWallet.AFTER);
-    expect(sequencer.getAsset(currencyId)?.amountAfter.free!).bnEqual(
-      BN_HUNDRED,
-    );
-    await checkAndSwitchMmOff();
+    expect(currencyId).bnEqual(GASP_ASSET_ID);
+    //if above is true => no token has been created => token is not avl to the user.
   });
 
   it("When we have a failed deposit and send it again, it will result in no-execution again", async () => {

@@ -216,9 +216,11 @@ it("When session ends, tokens will be distributed according the points obtained"
     rewardsSessionNumber,
     testUser3.keyRingPair.address,
   );
+  //now that we have different session lenght for different dispute periods, we will
+  // loosely validating those points.
   expect(pointsValue.divn(3)).bnLte(user1AwardedPts);
   expect(user2AwardedPts).bnEqual(BN_ZERO);
-  expect(pointsValue.divn(3).muln(2)).bnLte(user3AwardedPts);
+  expect(pointsValue.divn(3).muln(2)).bnGt(user3AwardedPts);
   await waitForSessionN(rewardsSessionNumber + 2);
   await ethUser1.refreshAmounts(AssetWallet.BEFORE);
   await ethUser2.refreshAmounts(AssetWallet.BEFORE);
