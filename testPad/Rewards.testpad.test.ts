@@ -182,7 +182,7 @@ describe("RewardsV2 - testpad", () => {
     promises.push(
       signTx(
         api!,
-        api!.tx.market.burnLiquidity(assetId, amount.divn(2)),
+        api!.tx.market.burnLiquidity(assetId, amount.divn(2), 0, 0),
         sudo.keyRingPair,
       ),
     );
@@ -202,7 +202,7 @@ describe("RewardsV2 - testpad", () => {
       promises.push(
         signTx(
           api!,
-          api!.tx.market.burnLiquidity(assetId, new BN(10000000000000)),
+          api!.tx.market.burnLiquidity(assetId, new BN(10000000000000), 0, 0),
           testUser1.keyRingPair,
         ),
       );
@@ -231,12 +231,13 @@ describe("RewardsV2 - testpad", () => {
         testUser1.keyRingPair.address,
         liqtokenId.addn(1),
       );
+      const assetId = await getLiquidityAssetId(BN_ZERO, liqtokenId);
       promises.push(
         signTx(
           api!,
-          api!.tx.xyk.mintLiquidity(
-            0,
-            liqtokenId,
+          api!.tx.market.mintLiquidity(
+            assetId,
+            BN_ZERO,
             new BN(100000),
             new BN(1998000),
           ),
@@ -252,11 +253,16 @@ describe("RewardsV2 - testpad", () => {
     keyring = new Keyring({ type: "sr25519" });
     const testUser1 = new User(keyring, "//Ferdie");
     sudo = new User(keyring, sudoUserName);
-    const assetId = await getLiquidityAssetId(BN_ZERO, liqtokenId);
+    const assetId = await getLiquidityAssetId(BN_ZERO, tokenId);
     await api!.tx.utility
       .batch([
-        api!.tx.market.burnLiquidity(assetId, new BN(1000)),
-        api!.tx.xyk.mintLiquidity(0, tokenId, new BN(1000), new BN(2000)),
+        api!.tx.market.burnLiquidity(assetId, new BN(1000), 0, 0),
+        api!.tx.market.mintLiquidity(
+          assetId,
+          BN_ZERO,
+          new BN(1000),
+          new BN(2000),
+        ),
       ])
       .signAndSend(testUser1.keyRingPair);
     await waitForNBlocks(3);
@@ -268,19 +274,39 @@ describe("RewardsV2 - testpad", () => {
     const testUser1 = new User(keyring, "//Eve");
     const testUser2 = new User(keyring, "//Dave");
     sudo = new User(keyring, sudoUserName);
+    const assetId = await getLiquidityAssetId(BN_ZERO, tokenId);
     await api!.tx.utility
       .batch([
-        api!.tx.xyk.mintLiquidity(0, tokenId, new BN(1000), new BN(2000)),
+        api!.tx.market.mintLiquidity(
+          assetId,
+          BN_ZERO,
+          new BN(1000),
+          new BN(2000),
+        ),
       ])
       .signAndSend(testUser1.keyRingPair);
 
     await waitForNBlocks(1);
     await api!.tx.utility
-      .batch([api!.tx.xyk.mintLiquidity(0, tokenId, new BN(500), new BN(2000))])
+      .batch([
+        api!.tx.market.mintLiquidity(
+          assetId,
+          BN_ZERO,
+          new BN(500),
+          new BN(2000),
+        ),
+      ])
       .signAndSend(testUser2.keyRingPair);
     await waitForNBlocks(2);
     await api!.tx.utility
-      .batch([api!.tx.xyk.mintLiquidity(0, tokenId, new BN(500), new BN(2000))])
+      .batch([
+        api!.tx.market.mintLiquidity(
+          assetId,
+          BN_ZERO,
+          new BN(500),
+          new BN(2000),
+        ),
+      ])
       .signAndSend(testUser2.keyRingPair);
 
     await waitForNBlocks(2);
