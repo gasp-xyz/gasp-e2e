@@ -88,10 +88,15 @@ export class Rolldown {
     const txs = [];
     for (let index = 0; index < num; index++) {
       let withdrawAmount = amount;
-      if(amount.eq(BN_ONE)){
+      if (amount.eq(BN_ONE)) {
         withdrawAmount = new BN(Math.floor(Math.random() * 100));
       }
-      const tx = Rolldown.withdraw(l1, userAddress, erc20Address, withdrawAmount);
+      const tx = Rolldown.withdraw(
+        l1,
+        userAddress,
+        erc20Address,
+        withdrawAmount,
+      );
       txs.push(tx);
     }
     return txs;
@@ -210,7 +215,9 @@ export class Rolldown {
 
   static async disputePeriodLength(chain: string = "Ethereum") {
     const api = getApi();
-    return (await api.query.rolldown.disputePeriod(chain)) as any as BN;
+    const dp = await api.query.rolldown.disputePeriod(chain);
+    const dpHuman = dp.toHuman();
+    return stringToBN(dpHuman!.toString());
   }
 
   static getMerkleRootBatchPeriod(extraBlocksNumber = 0) {
