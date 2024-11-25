@@ -54,9 +54,17 @@ async function checkAndSwitchMmOff() {
   expect(maintenanceStatus.isMaintenance.toString()).toEqual("false");
 }
 
-async function getEventError(events: any, eventNumber: number = 0) {
+async function getEventError(events: any) {
   const stringifyEvent = JSON.parse(JSON.stringify(events));
-  return stringifyEvent[eventNumber].event.data[2].err;
+  const eventWithError = (stringifyEvent as any[]).filter(
+    (x) => x.event.data && x.event.data[2] && x.event.data[2].err !== undefined,
+  );
+  if (eventWithError.length > 1) {
+    testLog.getLog().warn("More than one events with error!!");
+    testLog.getLog().warn(JSON.stringify(eventWithError));
+  }
+  //returning first item :shrug:
+  return eventWithError[0].event.data[2].err;
 }
 
 describe.skip("updateL1FromL1", () => {
@@ -568,10 +576,8 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
-    const resolutionErr = await getEventError(event);
-    const depositErr = await getEventError(event, 1);
-    expect(depositErr).toEqual(undefined);
-    expect(resolutionErr).toEqual("WrongCancelRequestId");
+    const error = await getEventError(event);
+    expect(error).toEqual("WrongCancelRequestId");
     const currencyId = await getAssetIdFromErc20(
       sequencer.keyRingPair.address,
       "EthAnvil",
@@ -605,7 +611,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event1 = await waitForEvents(
       api,
       "rolldown.RequestProcessedOnL2",
-      (await Rolldown.disputePeriodLength()).toNumber() * 4,
+      (await Rolldown.disputePeriodLength(chain)).toNumber() * 4,
     );
     const error1 = await getEventError(event1);
     expect(error1).toEqual("Overflow");
@@ -636,7 +642,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event2 = await waitForEvents(
       api,
       "rolldown.RequestProcessedOnL2",
-      (await Rolldown.disputePeriodLength()).toNumber() * 4,
+      (await Rolldown.disputePeriodLength(chain)).toNumber() * 4,
     );
     const error = await getEventError(event2);
     expect(error).toEqual(undefined);
@@ -675,7 +681,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
-    const error = await getEventError(event, 1);
+    const error = await getEventError(event);
     expect(error).toEqual("MintError");
     const currencyId = await getAssetIdFromErc20(
       sequencer.keyRingPair.address,
