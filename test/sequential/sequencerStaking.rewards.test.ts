@@ -87,7 +87,9 @@ it("Sequencer budget is set when initializing issuance config", async () => {
 
 it("Sequencers get paid on every session BUT only when they submit valid updates ( Succeeded extrinsics )", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
-  const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
+  const disputePeriodLength = (
+    await Rolldown.disputePeriodLength(chainArb)
+  ).toNumber();
   const { disputeEndBlockNumber } = await createAnUpdate(testUser, chainEth);
   const rewardsSessionNumber = await getSessionIndex();
   const registrationBlock = disputeEndBlockNumber + 1;
@@ -179,7 +181,9 @@ it("When session ends, tokens will be distributed according the points obtained"
       ),
     ),
   );
-  const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
+  const disputePeriodLength = (
+    await Rolldown.disputePeriodLength(chainArb)
+  ).toNumber();
   await waitForAllEventsFromMatchingBlock(
     getApi(),
     disputePeriodLength * 2,

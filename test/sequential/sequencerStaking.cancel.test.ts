@@ -22,7 +22,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 
 let api: any;
-let chain: any;
+const chain = "Ethereum";
 let testUser1: User;
 let testUser2: User;
 let testUser2Address: string;
@@ -40,7 +40,6 @@ beforeEach(async () => {
   //There shouldn't be any sequencer in activeSequencers
   [testUser1, testUser2] = setupUsers();
   await SequencerStaking.removeAllSequencers();
-  chain = "Ethereum";
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
   stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
     minToBeSequencer.addn(1000),

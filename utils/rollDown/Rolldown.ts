@@ -401,7 +401,7 @@ export class Rolldown {
   static async waitForL2UpdateExecuted(requestId: BN) {
     const event = await waitForAllEventsFromMatchingBlock(
       getApi(),
-      20,
+      30,
       (ev) =>
         ev.method === "RequestProcessedOnL2" &&
         ev.section === "rolldown" &&

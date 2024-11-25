@@ -499,7 +499,7 @@ describe.skip("updateL1FromL1 - errors", () => {
 });
 
 describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
-  let chain: any;
+  const chain = "Ethereum";
   let api: ApiPromise;
   let sequencer: User;
   let txIndex: number;
@@ -514,7 +514,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
 
   beforeEach(async () => {
     await SequencerStaking.removeAddedSequencers(10);
-    chain = "Ethereum";
+
     [sequencer] = await setupUsers();
     await SequencerStaking.setupASequencer(sequencer, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
