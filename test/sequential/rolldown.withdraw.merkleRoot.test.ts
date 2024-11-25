@@ -19,9 +19,12 @@ import {
 } from "../../utils/rollDown/Rolldown";
 import { BN_HUNDRED, BN_MILLION, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { ExtrinsicResult, filterEventData } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  filterEventData,
+  getEventError,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
-import { testLog } from "../../utils/Logger";
 
 let testUser: User;
 let sudo: User;
@@ -242,8 +245,8 @@ describe("Withdraw & Batches tests -", () => {
         await Rolldown.waitForL2UpdateExecuted(new BN(depositEvent.txIndex)),
       ),
     );
-    testLog.getLog().warn("EVENTS::" + JSON.stringify(event));
-    expect(event[0].data[2].err).toEqual("Overflow");
+    const errEvent = await getEventError(event);
+    expect(errEvent).toEqual("Overflow");
 
     await signTx(
       getApi(),
