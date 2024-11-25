@@ -75,7 +75,7 @@ function difference(a1: any, a2: any) {
   const tokens = await api!.query.tokens.accounts(user.address, liqToken);
   await signTx(
     api!,
-    api!.tx.xyk.burnLiquidity(0, 7, tokens.free.toString()),
+    api!.tx.market.burnLiquidity(liqToken, tokens.free.toString(), 0, 0),
     user,
   );
 })()

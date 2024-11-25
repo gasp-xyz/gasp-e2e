@@ -24,9 +24,9 @@ import {
   EVENT_SECTION_PAYMENT,
   GASP_ASSET_ID,
 } from "../../utils/Constants";
-import { Xyk } from "../../utils/xyk";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -127,7 +127,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     );
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(tokenIds[tokenIds.length - 1], sudo, new BN(1)),
-      Xyk.createPool(
+      Market.createPool(
         tokenIds[tokenIds.length - 1],
         new BN(1),
         assetIdWithSmallPool,

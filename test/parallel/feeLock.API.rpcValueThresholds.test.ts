@@ -16,8 +16,8 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -76,7 +76,7 @@ beforeAll(async () => {
     Assets.mintToken(thirdCurrency, testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
@@ -85,7 +85,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         thirdCurrency,
         defaultPoolVolumeValue,
         secondCurrency,
@@ -95,7 +95,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
         GASP_ASSET_ID,

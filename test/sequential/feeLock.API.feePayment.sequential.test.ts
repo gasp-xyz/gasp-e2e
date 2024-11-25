@@ -11,9 +11,9 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { feeLockErrors } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
 import { sellAsset } from "../../utils/tx";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -77,7 +77,7 @@ beforeEach(async () => {
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         defaultPoolVolumeValue,
         firstCurrency,

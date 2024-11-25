@@ -10,7 +10,6 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { getUserBalanceOfToken } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   activateLiquidity,
@@ -29,6 +28,7 @@ import {
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { signSendFinalized } from "../../utils/sign";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -74,7 +74,7 @@ beforeAll(async () => {
     Assets.mintToken(token2, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
@@ -83,7 +83,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,

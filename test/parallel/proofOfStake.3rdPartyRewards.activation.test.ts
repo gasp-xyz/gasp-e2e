@@ -16,6 +16,7 @@ import "jest-extended";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { PalletProofOfStakeThirdPartyActivationKind } from "@polkadot/types/lookup";
+import { Market } from "../../utils/market";
 
 let testUser1: User;
 let testUser2: User;
@@ -62,7 +63,7 @@ describe("Proof of stake tests", () => {
       Assets.mintNative(testUser3, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
@@ -71,7 +72,7 @@ describe("Proof of stake tests", () => {
       ),
       Sudo.sudoAs(
         testUser2,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken2,
@@ -80,7 +81,7 @@ describe("Proof of stake tests", () => {
       ),
       Sudo.sudoAs(
         testUser2,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,
@@ -89,7 +90,7 @@ describe("Proof of stake tests", () => {
       ),
       Sudo.sudoAs(
         testUser3,
-        Xyk.createPool(
+        Market.createPool(
           newToken2,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken3,

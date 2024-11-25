@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group api
  * @group sequential
  */
@@ -26,7 +27,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Fees } from "../../utils/Fees";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -69,7 +70,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         firstAssetAmount,
         secondCurrency,

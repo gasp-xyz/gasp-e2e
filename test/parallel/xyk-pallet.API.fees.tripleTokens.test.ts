@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group accuracy
  * @group parallel
  */
@@ -26,6 +27,7 @@ import { feeLockErrors } from "../../utils/utils";
 import { signTx } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { getFeeLockMetadata } from "../../utils/feeLockHelper";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -92,8 +94,8 @@ beforeAll(async () => {
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(sudo),
-    Xyk.createPool(GASP_ASSET_ID, assetAmount, firstCurrency, assetAmount),
-    Xyk.createPool(firstCurrency, assetAmount, secondCurrency, assetAmount),
+    Market.createPool(GASP_ASSET_ID, assetAmount, firstCurrency, assetAmount),
+    Market.createPool(firstCurrency, assetAmount, secondCurrency, assetAmount),
   );
 });
 

@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import { Keyring } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import { Xyk } from "../utils/xyk";
 import { getApi, initApi } from "../utils/api";
 import { provisionBootstrap, scheduleBootstrap } from "../utils/tx";
 import { GASP_ASSET_ID } from "../utils/Constants";
@@ -16,6 +15,7 @@ import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { setAssetInfo } from "../utils/txHandler";
 import "dotenv/config";
+import { Market } from "../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -64,7 +64,7 @@ describe("Boostrap - testpad", () => {
       Assets.mintNative(user1),
       Sudo.sudoAs(
         user1,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           new BN("1000000000000000000000"),
           new BN(7),
@@ -73,7 +73,7 @@ describe("Boostrap - testpad", () => {
       ),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           new BN(4),
           new BN("1000000000000000"),
           new BN(7),

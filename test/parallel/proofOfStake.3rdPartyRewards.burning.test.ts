@@ -20,6 +20,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Vesting } from "../../utils/Vesting";
 import { MPL } from "../../utils/MPL";
+import { Market } from "../../utils/market";
 
 let testUser0: User;
 let testUser1: User;
@@ -66,7 +67,7 @@ describe("Proof of stake tests", () => {
       Assets.mintNative(testUser4),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,
@@ -158,7 +159,7 @@ describe("Proof of stake tests", () => {
       );
       await signTx(
         getApi(),
-        Xyk.burnLiquidity(newToken, GASP_ASSET_ID, amountToBurn),
+        Market.burnLiquidity(liqId, amountToBurn),
         testUser.keyRingPair,
       ).then((events) => {
         const res = getEventResultFromMangataTx(events);

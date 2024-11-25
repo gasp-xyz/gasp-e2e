@@ -10,7 +10,6 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { stringToBN } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
@@ -35,6 +34,7 @@ import {
   scheduleBootstrap,
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -77,20 +77,24 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         defaultCurrencyValue,
         token1,
         defaultCurrencyValue,
       ),
     ),
-    Sudo.sudoAs(
-      testUser1,
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-    ),
   );
 
   liquidityId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser1,
+      Market.burnLiquidity(liquidityId, defaultCurrencyValue),
+    ),
+  );
+
   const deactivatedPoolBalance = await getBalanceOfPool(GASP_ASSET_ID, token1);
 
   expect(deactivatedPoolBalance[0][0]).bnEqual(BN_ZERO);

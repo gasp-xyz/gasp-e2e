@@ -16,6 +16,7 @@ import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO } from "gasp-sdk";
+import { Market } from "../../utils/market";
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
@@ -55,7 +56,7 @@ beforeAll(async () => {
     Assets.mintToken(token1, testUser, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
@@ -153,7 +154,7 @@ test("Happy path - batch", async () => {
     account: testUser1.keyRingPair,
     calls: [
       Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
 
@@ -205,7 +206,7 @@ test("Happy path - batchAll", async () => {
     account: testUser1.keyRingPair,
     calls: [
       Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
 
@@ -266,7 +267,7 @@ test("Happy path - forceBatch", async () => {
     account: testUser1.keyRingPair,
     calls: [
       Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
-      Xyk.burnLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
 

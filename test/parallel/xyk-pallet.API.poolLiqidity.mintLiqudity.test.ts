@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
@@ -22,6 +23,7 @@ import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -63,7 +65,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
@@ -72,7 +74,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
@@ -148,7 +150,7 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         token1,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,

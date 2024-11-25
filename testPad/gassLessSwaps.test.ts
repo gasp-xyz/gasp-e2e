@@ -11,11 +11,11 @@ import {
 import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { Sudo } from "../utils/sudo";
-import { Xyk } from "../utils/xyk";
 import { testLog } from "../utils/Logger";
 import { buyAsset } from '../utils/tx';
 
 import "dotenv/config";
+import { Market } from "../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -51,7 +51,7 @@ describe("staking - testpad", () => {
       Assets.mintToken(tokenId.addn(1), ferdie),
       Sudo.sudoAs(
         charlie,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           new BN("100000000000000000000"),
           tokenId,
@@ -60,7 +60,7 @@ describe("staking - testpad", () => {
       ),
       Sudo.sudoAs(
         charlie,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           new BN("100000000000000000000"),
           tokenId.addn(1),
@@ -69,7 +69,7 @@ describe("staking - testpad", () => {
       ),
       Sudo.sudoAs(
         charlie,
-        Xyk.createPool(
+        Market.createPool(
           tokenId.addn(1),
           new BN("100000000000000000000"),
           tokenId,

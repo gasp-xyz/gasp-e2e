@@ -21,10 +21,10 @@ import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
 import "jest-extended";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(3500000);
@@ -67,11 +67,21 @@ beforeAll(async () => {
     Assets.mintToken(tokenId2, testUser4, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser3,
-      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId1, minStk.muln(3)),
+      Market.createPool(
+        GASP_ASSET_ID,
+        minStk.muln(3),
+        tokenId1,
+        minStk.muln(3),
+      ),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId2, minStk.muln(3)),
+      Market.createPool(
+        GASP_ASSET_ID,
+        minStk.muln(3),
+        tokenId2,
+        minStk.muln(3),
+      ),
     ),
   );
   const liqToken1 = await getLiquidityAssetId(GASP_ASSET_ID, tokenId1);

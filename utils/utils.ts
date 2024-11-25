@@ -12,13 +12,13 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { getStakingLiquidityTokens, sellAsset } from "./tx";
 import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
-import { Xyk } from "./xyk";
 import { GASP_ASSET_ID } from "./Constants";
 import { BN_HUNDRED, BN_ONE, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
 import Keyring from "@polkadot/keyring";
 import jsonpath from "jsonpath";
 import _ from "lodash";
 import { getEventResultFromMangataTx } from "./txHandler";
+import { Market } from "./market";
 
 export type Tokens = { free: BN; reserved: BN; frozen: BN };
 export function sleep(ms: number) {
@@ -697,7 +697,7 @@ export async function swapEachNBlocks(period: number) {
     Assets.mintNative(testUser4),
     Sudo.sudoAs(
       testUser4,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,

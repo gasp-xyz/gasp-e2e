@@ -11,11 +11,11 @@ import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { BN_ONE, MangataInstance } from "gasp-sdk";
 import { getLiquidityAssetId } from "../../utils/tx";
+import { Market } from "../../utils/market";
 
 let tokens: number[] = [];
 let liq1: BN;
@@ -70,13 +70,13 @@ export class Extrinsic3rdPartyScheduleActivate extends performanceTestItem {
         sudo,
         Assets.DEFAULT_AMOUNT.muln(40e6),
       ),
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[0]),
         Assets.DEFAULT_AMOUNT.muln(10e6),
       ),
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(10e6),
         new BN(this.tokens[1]),

@@ -18,11 +18,11 @@ import { BN_BILLION, BN_ONE, BN_ZERO } from "gasp-sdk";
 import { Assets } from "../../utils/Assets";
 import { getApi, initApi } from "../../utils/api";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { Staking } from "../../utils/Staking";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -66,7 +66,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser1, aBigEnoughAmount),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(GASP_ASSET_ID, totalMgxInPool, newTokenId, tokenAmount),
+      Market.createPool(GASP_ASSET_ID, totalMgxInPool, newTokenId, tokenAmount),
     ),
   );
   liqToken = await getLiquidityAssetId(GASP_ASSET_ID, newTokenId);

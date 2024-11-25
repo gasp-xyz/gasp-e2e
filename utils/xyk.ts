@@ -9,7 +9,8 @@ export class Xyk {
     secondAsset: BN,
     secondAssetAmount: BN,
   ): Extrinsic {
-    return api.tx.xyk.createPool(
+    return api.tx.market.createPool(
+      "Xyk",
       firstAsset,
       firstAssetAmount,
       secondAsset,

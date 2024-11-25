@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group poolLiq
  */
 import { jest } from "@jest/globals";
@@ -17,8 +18,8 @@ import {
   mintLiquidity,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { waitSudoOperationFail } from "../../utils/eventListeners";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -57,7 +58,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,

@@ -72,6 +72,7 @@ import { getL1, L1Type } from "./rollup/l1s";
 import { ApiPromise } from "@polkadot/api";
 import { privateKeyToAccount } from "viem/accounts";
 import { estimateMaxPriorityFeePerGas } from "viem/actions";
+import { Market } from "./market";
 Assets.legacy = true;
 const L1_CHAIN = "Ethereum";
 
@@ -231,13 +232,34 @@ export async function setupACouncilWithDefaultUsers() {
     1000,
   )!;
   const keyring = new Keyring({ type: "ethereum" });
-  const testUser1 = new User(keyring, "0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b");
-  const testUser2 = new User(keyring, "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133");
-  const testUser3 = new User(keyring, "0x0b6e18cafb6ed99687ec547bd28139cafdd2bffe70e6b688025de6b445aa5c5b");
-  const testUser4 = new User(keyring, "0x7dce9bc8babb68fec1409be38c8e1a52650206a7ed90ff956ae8a6d15eeaaef4");
-  const testUser5 = new User(keyring, "0xb9d2ea9a615f3165812e8d44de0d24da9bbd164b65c4f0573e1ce2c8dbd9c8df");
-  const testUser6 = new User(keyring, "0x39539ab1876910bbf3a223d84a29e28f1cb4e2e456503e7e91ed39b2e7223d68");
-  const testUser7 = new User(keyring, "0x908c52ac6642f632a58d3497052be12925dd3def565d0c4f0bfb9c0164f648a6");
+  const testUser1 = new User(
+    keyring,
+    "0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b",
+  );
+  const testUser2 = new User(
+    keyring,
+    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+  );
+  const testUser3 = new User(
+    keyring,
+    "0x0b6e18cafb6ed99687ec547bd28139cafdd2bffe70e6b688025de6b445aa5c5b",
+  );
+  const testUser4 = new User(
+    keyring,
+    "0x7dce9bc8babb68fec1409be38c8e1a52650206a7ed90ff956ae8a6d15eeaaef4",
+  );
+  const testUser5 = new User(
+    keyring,
+    "0xb9d2ea9a615f3165812e8d44de0d24da9bbd164b65c4f0573e1ce2c8dbd9c8df",
+  );
+  const testUser6 = new User(
+    keyring,
+    "0x39539ab1876910bbf3a223d84a29e28f1cb4e2e456503e7e91ed39b2e7223d68",
+  );
+  const testUser7 = new User(
+    keyring,
+    "0x908c52ac6642f632a58d3497052be12925dd3def565d0c4f0bfb9c0164f648a6",
+  );
   const sudo = new User(keyring, getEnvironmentRequiredVars().sudo);
   const token2 = await Assets.issueAssetToUser(sudo, amount, sudo, true);
   await Sudo.batchAsSudoFinalized(
@@ -282,12 +304,30 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     1000,
   )!;
   const keyring = new Keyring({ type: "ethereum" });
-  const testUser1 = new User(keyring, "0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b");
-  const testUser2 = new User(keyring, "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133");
-  const testUser3 = new User(keyring, "0x0b6e18cafb6ed99687ec547bd28139cafdd2bffe70e6b688025de6b445aa5c5b");
-  const testUser4 = new User(keyring, "0x7dce9bc8babb68fec1409be38c8e1a52650206a7ed90ff956ae8a6d15eeaaef4");
-  const testUser5 = new User(keyring, "0x39539ab1876910bbf3a223d84a29e28f1cb4e2e456503e7e91ed39b2e7223d68");
-  const testUser6 = new User(keyring, "0xb9d2ea9a615f3165812e8d44de0d24da9bbd164b65c4f0573e1ce2c8dbd9c8df");
+  const testUser1 = new User(
+    keyring,
+    "0x8075991ce870b93a8870eca0c0f91913d12f47948ca0fd25b49c6fa7cdbeee8b",
+  );
+  const testUser2 = new User(
+    keyring,
+    "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
+  );
+  const testUser3 = new User(
+    keyring,
+    "0x0b6e18cafb6ed99687ec547bd28139cafdd2bffe70e6b688025de6b445aa5c5b",
+  );
+  const testUser4 = new User(
+    keyring,
+    "0x7dce9bc8babb68fec1409be38c8e1a52650206a7ed90ff956ae8a6d15eeaaef4",
+  );
+  const testUser5 = new User(
+    keyring,
+    "0x39539ab1876910bbf3a223d84a29e28f1cb4e2e456503e7e91ed39b2e7223d68",
+  );
+  const testUser6 = new User(
+    keyring,
+    "0xb9d2ea9a615f3165812e8d44de0d24da9bbd164b65c4f0573e1ce2c8dbd9c8df",
+  );
   const users = [
     testUser1,
     testUser2,
@@ -315,7 +355,12 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     Assets.mintNative(testUser6, amount),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(GASP_ASSET_ID, amount.divn(10), token2, amount.divn(10)),
+      Market.createPool(
+        GASP_ASSET_ID,
+        amount.divn(10),
+        token2,
+        amount.divn(10),
+      ),
     ),
   );
   const liqId = await getLiquidityAssetId(GASP_ASSET_ID, token2);
@@ -571,10 +616,8 @@ export async function burnAllTokensFromPool(liqToken: BN) {
   for (let index = 0; index < users.length; index++) {
     const user = users[index];
     const amounts = await getUserBalanceOfToken(liqToken, user);
-    const pool = await getLiquidityPool(liqToken);
-    const burnTx = Xyk.burnLiquidity(
-      pool[0],
-      pool[1],
+    const burnTx = Market.burnLiquidity(
+      liqToken,
       amounts.free.add(amounts.reserved),
     );
     txs.push(Sudo.sudoAs(user, burnTx));
@@ -922,12 +965,12 @@ export async function createCustomPool(div = true, ratio = 1, user = "//Bob") {
   if (div) {
     tx = Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(GASP_ASSET_ID, amount, token2, amount.divn(ratio)),
+      Market.createPool(GASP_ASSET_ID, amount, token2, amount.divn(ratio)),
     );
   } else {
     tx = Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(GASP_ASSET_ID, amount, token2, amount.muln(ratio)),
+      Market.createPool(GASP_ASSET_ID, amount, token2, amount.muln(ratio)),
     );
   }
   await Sudo.batchAsSudoFinalized(
@@ -1209,9 +1252,7 @@ export async function createProposal() {
     ),
     44,
   );
-  await Sudo.asSudoFinalized(
-    Sudo.sudoAs(alice, tx),
-  );
+  await Sudo.asSudoFinalized(Sudo.sudoAs(alice, tx));
 }
 export async function migrate() {
   await setupApi();
@@ -1475,7 +1516,7 @@ export async function activateAndClaim3rdPartyRewardsForUser(
     Assets.mintNative(sudo, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.muln(1e6),
         newToken,
@@ -1484,7 +1525,7 @@ export async function activateAndClaim3rdPartyRewardsForUser(
     ),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT,
         newToken2,
@@ -1639,7 +1680,7 @@ export async function addStakedUnactivatedReserves(
       Assets.mintNative(sudo, tokenAmount.muln(2)),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(GASP_ASSET_ID, tokenAmount, newToken, tokenAmount),
+        Market.createPool(GASP_ASSET_ID, tokenAmount, newToken, tokenAmount),
       ),
     );
     liqToken = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
@@ -1704,7 +1745,7 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
       Assets.mintNative(user, Assets.DEFAULT_AMOUNT.muln(2)),
       Sudo.sudoAs(
         user,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT,
           assetID,
@@ -2105,23 +2146,23 @@ async function findMerkleRange(
   requestId: bigint,
   network: L1Type,
 ) {
+  const root = (await publicClient.readContract({
+    address: getL1(network)!.contracts.rollDown.address,
+    abi: abi,
+    functionName: "find_l2_batch",
+    args: [requestId],
+    blockTag: "latest",
+  })) as any;
+  testLog.getLog().info(`root: ${root}`);
 
-    const root = await publicClient.readContract({
-      address: getL1(network)!.contracts.rollDown.address,
-      abi: abi,
-      functionName: "find_l2_batch",
-      args: [requestId],
-      blockTag: "latest"
-    }) as any;
-    testLog.getLog().info(`root: ${root}`);
-
-    const range = await publicClient.readContract({ address: getL1(network)!.contracts.rollDown.address,
-      abi: abi,
-      functionName: "merkleRootRange",
-      args: [root],
-      blockTag: "latest"
-    });
-    return range as [bigint, bigint];
+  const range = await publicClient.readContract({
+    address: getL1(network)!.contracts.rollDown.address,
+    abi: abi,
+    functionName: "merkleRootRange",
+    args: [root],
+    blockTag: "latest",
+  });
+  return range as [bigint, bigint];
 }
 
 async function getLastBatchId(api: ApiPromise) {

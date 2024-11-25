@@ -136,7 +136,8 @@ describe("staking - testpad", () => {
 
     await api!.tx.utility
       .batch([
-        api!.tx.xyk.createPool(
+        api!.tx.market.createPool(
+          "Xyk",
           GASP_ASSET_ID,
           amount.divn(2),
           tokenId,

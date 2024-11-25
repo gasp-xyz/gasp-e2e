@@ -5,13 +5,13 @@ import "gasp-types";
 import { getApi, initApi } from "./api";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { Xyk } from "./xyk";
 import { SudoDB } from "./SudoDB";
 import { Codec } from "@polkadot/types-codec/types";
 import { signTx } from "gasp-sdk";
 import { SubmittableExtrinsic } from "@polkadot/api/types";
 import { EthUser } from "./EthUser";
 import { BN } from "@polkadot/util";
+import { Market } from "./market";
 // API
 export let api: ApiPromise;
 
@@ -152,7 +152,7 @@ export async function setup5PoolsChained(users: User[]) {
   const poolCreationExtrinsics: Extrinsic[] = [];
   tokenIds.forEach((_, index, tokens) => {
     poolCreationExtrinsics.push(
-      Xyk.createPool(
+      Market.createPool(
         tokenIds[index],
         Assets.DEFAULT_AMOUNT.divn(2),
         tokenIds[index + (1 % tokens.length)],
@@ -187,7 +187,7 @@ export async function setupAPoolForUsers(users: User[]) {
 
   const poolCreationExtrinsics: Extrinsic[] = [];
   poolCreationExtrinsics.push(
-    Xyk.createPool(
+    Market.createPool(
       tokenIds[0],
       Assets.DEFAULT_AMOUNT.divn(2),
       tokenIds[1],

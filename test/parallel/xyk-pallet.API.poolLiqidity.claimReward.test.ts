@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
@@ -26,6 +27,7 @@ import { waitForRewards } from "../../utils/eventListeners";
 import { getBalanceOfPool } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -74,7 +76,7 @@ beforeAll(async () => {
     Assets.mintToken(token3, testUser1, Assets.DEFAULT_AMOUNT),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
@@ -83,7 +85,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
@@ -92,7 +94,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,
@@ -203,11 +205,11 @@ test("Given a pool with 2 users with activated rewards WHEN more than one period
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.burnLiquidity(GASP_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(2)),
+      Market.burnLiquidity(liquidityAssetId, Assets.DEFAULT_AMOUNT.divn(2)),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.burnLiquidity(GASP_ASSET_ID, token2, Assets.DEFAULT_AMOUNT.divn(4)),
+      Market.burnLiquidity(liquidityAssetId, Assets.DEFAULT_AMOUNT.divn(4)),
     ),
   );
 

@@ -20,9 +20,9 @@ import {
   waitBlockNumber,
   stringToBN,
 } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { addMgaToWhitelisted } from "../../utils/feeLockHelper";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -255,7 +255,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
     Assets.mintNative(testUser1),
     Sudo.sudoAs(
       sudo,
-      Xyk.createPool(
+      Market.createPool(
         firstCurrency,
         defaultPoolVolumeValue,
         secondCurrency,

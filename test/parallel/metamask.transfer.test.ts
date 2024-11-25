@@ -17,7 +17,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { EthUser } from "../../utils/EthUser";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { Xyk } from "../../utils/xyk";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -57,7 +57,7 @@ describe("Tests with Metamask signing: Test that with current data, txs can be s
       Assets.mintNative(sudo),
       Sudo.sudoAs(
         sudo,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT,
           secondCurrency,
@@ -173,11 +173,7 @@ describe("Tests with Metamask signing: Test that with current data, txs can be s
 
     await testEthUser.refreshAmounts(AssetWallet.BEFORE);
 
-    const tx = api.tx.xyk.burnLiquidity(
-      GASP_ASSET_ID,
-      secondCurrency,
-      Assets.DEFAULT_AMOUNT,
-    );
+    const tx = Market.burnLiquidity(liqId, Assets.DEFAULT_AMOUNT);
 
     await signByMetamask(tx, testEthUser);
 

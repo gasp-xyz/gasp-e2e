@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group liquidity
  * @group rewardsV2Parallel
  */
@@ -17,6 +18,7 @@ import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -68,7 +70,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser3),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token1,
@@ -77,7 +79,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token2,
@@ -86,7 +88,7 @@ beforeAll(async () => {
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.createPool(
+      Market.createPool(
         GASP_ASSET_ID,
         Assets.DEFAULT_AMOUNT.divn(2),
         token3,

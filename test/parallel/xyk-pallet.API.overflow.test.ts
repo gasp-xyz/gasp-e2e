@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group api
  * @group parallel
  */
@@ -27,9 +28,9 @@ import { Assets } from "../../utils/Assets";
 import { TokensErrorCodes, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { BN_ONE } from "gasp-sdk";
 import { getSudoUser } from "../../utils/setup";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -78,7 +79,12 @@ describe("xyk-pallet - Check operations are not executed because of overflow in 
       Assets.mintToken(secondCurrency, testUser1, BN_ONE),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(secondCurrency, MAX_BALANCE, firstCurrency, MAX_BALANCE),
+        Market.createPool(
+          secondCurrency,
+          MAX_BALANCE,
+          firstCurrency,
+          MAX_BALANCE,
+        ),
       ),
     );
 
@@ -172,7 +178,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
     txs.push(
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           secondCurrency,
           MAX_BALANCE.sub(new BN(10)),
           firstCurrency,
@@ -321,7 +327,7 @@ describe("xyk-pallet - Operate with a user account close to overflow", () => {
     txs.push(
       Sudo.sudoAs(
         testUser2,
-        Xyk.createPool(
+        Market.createPool(
           secondCurrency,
           new BN(1000000),
           firstCurrency,

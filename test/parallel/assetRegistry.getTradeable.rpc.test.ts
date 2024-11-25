@@ -13,8 +13,8 @@ import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import { BN } from "@polkadot/util";
 import { BN_THOUSAND } from "gasp-sdk";
-import { Xyk } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -65,7 +65,7 @@ describe("AssetRegistry RPC -", () => {
       Assets.mintNative(sudo),
       Assets.mintToken(nameSymbol, sudo),
       Assets.mintToken(nameSymbolDisableFalse, sudo),
-      Xyk.createPool(
+      Market.createPool(
         nameSymbol,
         BN_THOUSAND,
         nameSymbolDisableFalse,

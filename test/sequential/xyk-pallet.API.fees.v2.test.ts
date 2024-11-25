@@ -15,8 +15,11 @@ import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
 import { getApi } from "../../utils/api";
 import { SudoDB } from "../../utils/SudoDB";
+import { Market } from "../../utils/market";
+import { getLiquidityAssetId } from "../../utils/tx";
 /**
  * @group xyk
+ * @group market
  * @group api
  * @group sequential
  * @group critical
@@ -49,7 +52,7 @@ describe("API fees test suite", () => {
       Assets.mintNative(user2),
       Sudo.sudoAs(
         user1,
-        Xyk.createPool(currency1, BN_THOUSAND, currency2, BN_THOUSAND),
+        Market.createPool(currency1, BN_THOUSAND, currency2, BN_THOUSAND),
       ),
     );
   });
@@ -101,7 +104,7 @@ describe("API fees test suite", () => {
   it("xyk-pallet - MGA tokens are subtracted as fee : CreatePool", async () => {
     const from = await getBlockNumber();
     await signSendFinalized(
-      Xyk.createPool(currency3, BN_THOUSAND, currency4, BN_HUNDRED),
+      Market.createPool(currency3, BN_THOUSAND, currency4, BN_HUNDRED),
       user1,
     );
     const to = await getBlockNumber();
@@ -122,10 +125,8 @@ describe("API fees test suite", () => {
 
   it("xyk-pallet - MGA tokens are subtracted as fee : BurnLiquidity", async () => {
     const from = await getBlockNumber();
-    await signSendFinalized(
-      Xyk.burnLiquidity(currency1, currency2, BN_THOUSAND),
-      user1,
-    );
+    const liqId = await getLiquidityAssetId(currency1, currency2);
+    await signSendFinalized(Market.burnLiquidity(liqId, BN_THOUSAND), user1);
     const to = await getBlockNumber();
 
     await expectFeePaid(from, to, user1);

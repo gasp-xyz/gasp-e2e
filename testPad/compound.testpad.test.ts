@@ -14,6 +14,7 @@ import { XToken } from "../utils/xToken";
 import { AssetId, ChainId, ChainSpecs } from "../utils/ChainSpecs";
 import { signSendFinalized, signSendSuccess } from "../utils/sign";
 import { ProofOfStake } from "../utils/ProofOfStake";
+import { Market } from "../utils/market";
 
 const TUR_ID = new BN(7);
 const TUR_ED = ChainSpecs.get(ChainId.Tur)!.assets.get(AssetId.Tur)!.ed;
@@ -80,7 +81,7 @@ describe("auto-compound story: auto compound rewards XCM task", () => {
     const initPool = [
       Sudo.sudoAs(
         userMangata,
-        Xyk.createPool(
+        Market.createPool(
           BN_ZERO,
           AssetId.Mgx.unit.mul(BN_THOUSAND),
           TUR_ID,

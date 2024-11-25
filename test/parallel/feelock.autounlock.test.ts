@@ -12,10 +12,10 @@ import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { sellAsset } from "../../utils/tx";
 import { getBlockNumber, getFeeLockMetadata } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForEvents } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { GASP_ASSET_ID } from "../../utils/Constants";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -57,7 +57,7 @@ beforeEach(async () => {
     Assets.mintNative(testUser1, millionNative),
     Sudo.sudoAs(
       testUser1,
-      Xyk.createPool(
+      Market.createPool(
         firstToken,
         defaultPoolVolumeValue,
         secondToken,

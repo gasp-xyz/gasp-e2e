@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group asset
  * @group parallel
  */
@@ -15,10 +16,10 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN, hexToU8a } from "@polkadot/util";
 import { BN_ONE, BN_TEN, MangataGenericEvent } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { signSendFinalized } from "../../utils/sign";
+import { Market } from "../../utils/market";
 
 jest.setTimeout(1500000);
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -180,7 +181,7 @@ test("register asset with xyk disabled and try to create a pool, expect to fail"
 
   await expect(
     signSendFinalized(
-      Xyk.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
+      Market.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
       testUser1,
     ),
   ).rejects.toEqual(
@@ -209,7 +210,7 @@ test("register asset with xyk undefined and try to create a pool, expect success
   await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
-    Xyk.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
+    Market.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
     testUser1,
   );
 });
@@ -227,7 +228,7 @@ test("register asset with xyk enabled and try to create a pool, expect success",
   await Sudo.asSudoFinalized(Assets.mintToken(assetId, testUser1, BN_TEN));
 
   await signSendFinalized(
-    Xyk.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
+    Market.createPool(assetId, BN_ONE, GASP_ASSET_ID, BN_ONE),
     testUser1,
   );
 });

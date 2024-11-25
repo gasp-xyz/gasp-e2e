@@ -21,6 +21,7 @@ import { getLiquidityAssetId } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
+import { Market } from "../../utils/market";
 
 let testUser1: User;
 let testUser2: User;
@@ -59,7 +60,7 @@ describe("Proof of stake tests", () => {
       Assets.mintNative(testUser3),
       Sudo.sudoAs(
         testUser1,
-        Xyk.createPool(
+        Market.createPool(
           GASP_ASSET_ID,
           Assets.DEFAULT_AMOUNT.muln(20e6),
           newToken,

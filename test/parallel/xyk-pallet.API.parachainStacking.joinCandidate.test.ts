@@ -1,6 +1,7 @@
 /*
  *
  * @group xyk
+ * @group market
  * @group experimentalStaking
  */
 import { jest } from "@jest/globals";
@@ -19,6 +20,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { getSudoUser, setupUsers } from "../../utils/setup";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -70,7 +72,7 @@ beforeAll(async () => {
     Assets.mintNative(testUser, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser,
-      Xyk.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId, minStk.muln(3)),
+      Market.createPool(GASP_ASSET_ID, minStk.muln(3), tokenId, minStk.muln(3)),
     ),
   );
 
