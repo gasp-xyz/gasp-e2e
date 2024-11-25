@@ -645,11 +645,12 @@ export const mintLiquidityUsingVestingNativeTokens = async (
 ) => {
   const mangata = await getMangataInstance();
   const api = await mangata.api();
+  const liqToken = await getLiquidityAssetId(GASP_ASSET_ID, secondAssetId);
   return await signTx(
     api,
-    api.tx.xyk.mintLiquidityUsingVestingNativeTokens(
+    api.tx.market.mintLiquidityUsingVestingNativeTokens(
+      liqToken,
       vestingTokensAmount,
-      secondAssetId.toString(),
       expectedSecondAssetAmount,
     ),
     user,

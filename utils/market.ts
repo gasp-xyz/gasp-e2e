@@ -45,4 +45,16 @@ export class Market {
       maxOtherAssetAmount,
     );
   }
+
+  static mintLiquidityUsingVested(
+    poolId: BN,
+    nativeAssetVestingAmount: BN,
+    maxOtherAssetAmount: BN,
+  ) {
+    return api.tx.market.mintLiquidityUsingVestingNativeTokens(
+      poolId,
+      nativeAssetVestingAmount,
+      maxOtherAssetAmount,
+    );
+  }
 }

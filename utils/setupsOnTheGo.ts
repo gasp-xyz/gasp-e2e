@@ -25,7 +25,6 @@ import {
   getUserBalanceOfToken,
   stringToBN,
 } from "./utils";
-import { Xyk } from "./xyk";
 import { api, getApi, getMangataInstance, initApi } from "./api";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { getBalanceOfPool } from "./txHandler";
@@ -1776,8 +1775,8 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
     Assets.promotePool(liqToken.toNumber(), 20),
     Sudo.sudoAs(
       user,
-      Xyk.mintLiquidityUsingVested(
-        assetID,
+      Market.mintLiquidityUsingVested(
+        liqToken,
         Assets.DEFAULT_AMOUNT.divn(2),
         Assets.DEFAULT_AMOUNT,
       ),
