@@ -179,7 +179,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
 
 it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const { disputeEndBlockNumber } = await createAnUpdate(
+  const { disputeEndBlockNumber, txIndex } = await createAnUpdate(
     testUser1,
     chain,
     0,
@@ -188,7 +188,7 @@ it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", 
   );
   //if we don't cancel the update then function RegisteredAsset runs in next block after disputeEndBlockNumber
   const registrationBlock = disputeEndBlockNumber + 1;
-  await Rolldown.waitForL2UpdateExecuted(BN_ZERO);
+  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
   const assetId = await Rolldown.getRegisteredAssetId(registrationBlock);
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -217,7 +217,8 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     testUser2.keyRingPair.address,
     chain,
   );
-  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex1));
+  //lets wait for 3 blocks to have evth synced.
+  await waitForNBlocks(3);
   const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
   const txIndex3 = txIndex2 + 1;
   const updateValue = new L2Update(api)
