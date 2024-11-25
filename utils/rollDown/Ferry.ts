@@ -1,3 +1,8 @@
+/*
+ *
+ * @group ferry
+ */
+
 import { getL1, L1Type } from "../rollup/l1s";
 import { setupUsers, sudo } from "../setup";
 import { registerL1Asset } from "../tx";
