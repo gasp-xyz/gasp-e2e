@@ -10,6 +10,8 @@ import { setupApi, setupAPoolForUsers, Extrinsic } from "../../utils/setup";
 import { BN_ONE, BN_HUNDRED } from "gasp-sdk";
 import { BN_MILLION } from "gasp-sdk";
 import { Tokens, Xyk } from "../../utils/xyk";
+import { getLiquidityAssetId } from "../../utils/tx";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -29,6 +31,7 @@ describe("Tips - Tips are not allowed for swaps", () => {
     }
     await setupApi();
     ({ users, tokenIds } = await setupAPoolForUsers(users));
+    const liqId = await getLiquidityAssetId(tokenIds[0], tokenIds[1]);
     swapOperations = {
       multiswapSellAsset: Xyk.multiswapSellAsset(tokenIds, BN_HUNDRED, BN_ONE),
       multiswapBuyAsset: Xyk.multiswapBuyAsset(
@@ -43,7 +46,7 @@ describe("Tips - Tips are not allowed for swaps", () => {
         tokenIds[0],
         BN_HUNDRED,
       ),
-      mint: Xyk.mintLiquidity(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
+      mint: Market.mintLiquidity(liqId, tokenIds[0], BN_HUNDRED, BN_MILLION),
     };
     usersIterator = users[Symbol.iterator]();
   });

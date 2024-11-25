@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group market
  * @group experimentalStaking
  */
@@ -17,7 +16,6 @@ import { Sudo } from "../../utils/sudo";
 import { Staking } from "../../utils/Staking";
 import { delegate, getLiquidityAssetId, joinCandidate } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { getSudoUser, setupUsers } from "../../utils/setup";
 import { Market } from "../../utils/market";
@@ -89,7 +87,12 @@ beforeAll(async () => {
     Assets.mintToken(tokenId, testUser1, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(GASP_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+      Market.mintLiquidity(
+        liqToken,
+        GASP_ASSET_ID,
+        minStk.muln(5),
+        minStk.muln(6),
+      ),
     ),
     Assets.mintNative(testUser2, minStk.muln(1000)),
     Assets.mintToken(liqToken, testUser2, minStk.muln(2)),
@@ -97,13 +100,23 @@ beforeAll(async () => {
     Assets.mintToken(tokenId, testUser3, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(GASP_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+      Market.mintLiquidity(
+        liqToken,
+        GASP_ASSET_ID,
+        minStk.muln(5),
+        minStk.muln(6),
+      ),
     ),
     Assets.mintNative(testUser4, minStk.muln(1000)),
     Assets.mintToken(tokenId, testUser4, minStk.muln(1000)),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(GASP_ASSET_ID, tokenId, minStk.muln(5), minStk.muln(6)),
+      Market.mintLiquidity(
+        liqToken,
+        GASP_ASSET_ID,
+        minStk.muln(5),
+        minStk.muln(6),
+      ),
     ),
   );
 });

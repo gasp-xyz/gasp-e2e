@@ -14,7 +14,6 @@ import { Sudo } from "../../utils/sudo";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Market } from "../../utils/market";
@@ -100,15 +99,15 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdPromPool,
         GASP_ASSET_ID,
-        token1,
         defaultCurrencyValue.mul(new BN(2)),
       ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqIdPromPool, GASP_ASSET_ID, defaultCurrencyValue),
     ),
   );
 
@@ -136,45 +135,45 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, defaultCurrencyValue),
+      Market.mintLiquidity(liqIdPromPool, GASP_ASSET_ID, defaultCurrencyValue),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdPromPool,
         GASP_ASSET_ID,
-        token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdPromPool,
         GASP_ASSET_ID,
-        token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdPromPool,
         GASP_ASSET_ID,
-        token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdPromPool,
         GASP_ASSET_ID,
-        token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdPromPool,
         GASP_ASSET_ID,
-        token2,
         defaultCurrencyValue.div(new BN(5)),
       ),
     ),

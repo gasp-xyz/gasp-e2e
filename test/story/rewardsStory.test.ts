@@ -22,7 +22,6 @@ import {
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -146,19 +145,19 @@ async function setupPoolWithRewardsForUsers(users: User[]) {
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, new BN("1000000000000000")),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, new BN("1000000000000000")),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, new BN("1000000000000000")),
     ),
   );
   await waitForRewards(testUser4, liqId);

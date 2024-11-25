@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group market
  * @group poolLiq
  */
@@ -17,7 +16,6 @@ import {
   getRewardsInfo,
 } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { Market } from "../../utils/market";
@@ -84,11 +82,11 @@ test("One user claim all the rewards on every session and other user claim them 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token, defaultCurrencyValue),
+      Market.mintLiquidity(liqIdPromPool, GASP_ASSET_ID, defaultCurrencyValue),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token, defaultCurrencyValue),
+      Market.mintLiquidity(liqIdPromPool, GASP_ASSET_ID, defaultCurrencyValue),
     ),
   );
 

@@ -8,7 +8,6 @@ import { BN } from "@polkadot/util";
 import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import {
   mintLiquidity,
   activateLiquidity,
@@ -113,15 +112,15 @@ describe("rewards v2 tests", () => {
         Assets.promotePool(liqId.toNumber(), 20),
         Sudo.sudoAs(
           testUser1,
-          Xyk.mintLiquidity(GASP_ASSET_ID, secondCurrency, assetAmount),
+          Market.mintLiquidity(liqId, GASP_ASSET_ID, assetAmount),
         ),
         Sudo.sudoAs(
           testUser2,
-          Xyk.mintLiquidity(GASP_ASSET_ID, secondCurrency, assetAmount),
+          Market.mintLiquidity(liqId, GASP_ASSET_ID, assetAmount),
         ),
         Sudo.sudoAs(
           testUser3,
-          Xyk.mintLiquidity(GASP_ASSET_ID, secondCurrency, assetAmount),
+          Market.mintLiquidity(liqId, GASP_ASSET_ID, assetAmount),
         ),
         Sudo.sudoAs(
           testUser1,

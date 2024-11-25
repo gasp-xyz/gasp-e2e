@@ -117,7 +117,7 @@ describe("API fees test suite", () => {
   it("xyk-pallet - MGA tokens are subtracted as fee : MintLiquidity", async () => {
     const from = await getBlockNumber();
     await signSendFinalized(
-      Xyk.mintLiquidity(currency1, currency2, BN_THOUSAND),
+      Market.mintLiquidity(liqId, currency1, BN_THOUSAND),
       user1,
     );
     const to = await getBlockNumber();
