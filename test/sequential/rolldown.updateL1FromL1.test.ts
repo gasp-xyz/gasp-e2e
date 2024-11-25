@@ -64,6 +64,11 @@ async function getEventError(events: any) {
     testLog.getLog().warn(JSON.stringify(eventWithError));
   }
   //returning first item :shrug:
+  if (eventWithError.length < 1) {
+    testLog.getLog().warn("No events with error!!");
+    testLog.getLog().warn(JSON.stringify(stringifyEvent));
+    return undefined;
+  }
   return eventWithError[0].event.data[2].err;
 }
 
