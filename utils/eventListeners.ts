@@ -442,7 +442,9 @@ export const expectMGAExtrinsicSuDidSuccess = (
     .filter((x) => x.method === "SudoAsDone" && x.section === "sudo")
     .some((x) => JSON.parse(JSON.stringify(x.eventData[0].data)).err);
   if (!anyError) {
-    testLog.getLog().warn(JSON.stringify(events));
+    testLog
+      .getLog()
+      .warn("expectMGAExtrinsicSuDidSuccess" + JSON.stringify(events));
   }
   expect(anyError).toBeFalsy();
   return events!;

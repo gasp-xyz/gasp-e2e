@@ -20,6 +20,7 @@ import { Assets } from "../../utils/Assets";
 import { BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
+import BN from "bn.js";
 
 let api: any;
 const chain = "Ethereum";
@@ -88,19 +89,18 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     (disputeEndBlockNumber2 + 1).toString(),
     disputePeriodLength * 2,
   );
-  const blockHash = await api.rpc.chain.getBlockHash(
-    disputeEndBlockNumber2 + 1,
+  const resolutionEvents = await Rolldown.waitForL2UpdateExecuted(
+    new BN(txIndex),
   );
-  const resolutionEvents = await api.query.system.events.at(blockHash);
   const filteredEvent = resolutionEvents.filter(
-    (result: any) => result.event.method === "Slashed",
+    (result: any) => result.method === "Slashed",
   );
-  expect(filteredEvent[0].event.data[0]).bnEqual(GASP_ASSET_ID);
-  expect(filteredEvent[0].event.data[1].toString()).toContain(
+  expect(filteredEvent[0].data[0]).bnEqual(GASP_ASSET_ID);
+  expect(filteredEvent[0].data[1].toString()).toContain(
     testUser1.keyRingPair.address,
   );
-  expect(filteredEvent[0].event.data[2]).bnEqual(BN_ZERO);
-  expect(filteredEvent[0].event.data[3]).bnEqual(slashFineAmount.muln(0.8));
+  expect(filteredEvent[0].data[2]).bnEqual(BN_ZERO);
+  expect(filteredEvent[0].data[3]).bnEqual(slashFineAmount.muln(0.8));
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
@@ -146,7 +146,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update THEN my slash is 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength + 1);
+  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
@@ -188,7 +188,7 @@ it("GIVEN a sequencer, WHEN <no> canceling an update THEN no slash is applied", 
   );
   //if we don't cancel the update then function RegisteredAsset runs in next block after disputeEndBlockNumber
   const registrationBlock = disputeEndBlockNumber + 1;
-  await waitBlockNumber(registrationBlock.toString(), disputePeriodLength * 2);
+  await Rolldown.waitForL2UpdateExecuted(BN_ZERO);
   const assetId = await Rolldown.getRegisteredAssetId(registrationBlock);
   testUser1.addAsset(assetId);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -217,7 +217,7 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     testUser2.keyRingPair.address,
     chain,
   );
-  await waitForNBlocks(disputePeriodLength);
+  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex1));
   const txIndex2 = await Rolldown.lastProcessedRequestOnL2(chain);
   const txIndex3 = txIndex2 + 1;
   const updateValue = new L2Update(api)
@@ -256,7 +256,8 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength + 1);
+  const txId = Rolldown.getUpdateIdFromEvents(cancelResolutionEvent1);
+  await Rolldown.waitForL2UpdateExecuted(new BN(txId));
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -270,7 +271,8 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
-  await waitForNBlocks(disputePeriodLength + 1);
+  const txId2 = Rolldown.getUpdateIdFromEvents(cancelResolutionEvent2);
+  await Rolldown.waitForL2UpdateExecuted(new BN(txId2));
 
   const didDeposit1Run = await Rolldown.isTokenBalanceIncreased(
     testUser1.keyRingPair.address,

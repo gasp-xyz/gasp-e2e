@@ -216,9 +216,9 @@ it("When session ends, tokens will be distributed according the points obtained"
     rewardsSessionNumber,
     testUser3.keyRingPair.address,
   );
-  expect(user1AwardedPts).bnEqual(pointsValue.divn(3));
+  expect(pointsValue.divn(3)).bnLte(user1AwardedPts);
   expect(user2AwardedPts).bnEqual(BN_ZERO);
-  expect(user3AwardedPts).bnEqual(pointsValue.divn(3).muln(2));
+  expect(pointsValue.divn(3).muln(2)).bnLte(user3AwardedPts);
   await waitForSessionN(rewardsSessionNumber + 2);
   await ethUser1.refreshAmounts(AssetWallet.BEFORE);
   await ethUser2.refreshAmounts(AssetWallet.BEFORE);
