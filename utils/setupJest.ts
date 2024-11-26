@@ -35,6 +35,8 @@ declare global {
       bnLte(expected: BN, message: string): R;
       bnLt(expected: BN): R;
       bnLt(expected: BN, message: string): R;
+      bnGte(expected: BN): R;
+      bnGte(expected: BN, message: string): R;
       bnGt(expected: BN): R;
       bnGt(expected: BN, message: string): R;
       collectionBnEqual(expected: BN[]): R;

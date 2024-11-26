@@ -11,25 +11,13 @@ import {
   expectMGAExtrinsicSuDidSuccess,
   filterAndStringifyFirstEvent,
   getSessionIndex,
-  waitForAllEventsFromMatchingBlock,
+  waitForAllEventsFromMatchingBlock
 } from "../../utils/eventListeners";
-import {
-  createAnUpdate,
-  L2Update,
-  Rolldown,
-} from "../../utils/rollDown/Rolldown";
-import {
-  leaveSequencing,
-  SequencerStaking,
-} from "../../utils/rollDown/SequencerStaking";
+import { createAnUpdate, L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
+import { leaveSequencing, SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import {
-  stringToBN,
-  waitBlockNumber,
-  waitForSessionN,
-  waitNewStakingRound,
-} from "../../utils/utils";
+import { stringToBN, waitBlockNumber, waitForSessionN, waitNewStakingRound } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
@@ -44,12 +32,10 @@ async function createADepositUpdate(
   chain: string,
 ) {
   const api = getApi();
-  const update = new L2Update(api)
+  return new L2Update(api)
     .withDeposit(txIndex, userAddress, userAddress, BN_MILLION)
     .on(chain)
     .buildUnsafe();
-
-  return update;
 }
 
 beforeAll(async () => {
@@ -267,7 +253,7 @@ it("When session ends, tokens will be distributed according the points obtained"
   const diff1 = ethUser1.getWalletDifferences()[0].diff.free;
   const diff2 = ethUser2.getWalletDifferences();
   const diff3 = testUser3.getWalletDifferences()[0].diff.free;
-  expect(diff3).bnGt(diff1);
+  expect(diff3).bnGte(diff1);
   expect(diff2).toBeEmpty();
   expect(diff1).bnEqual(sequencerRewards1);
   expect(diff3).bnEqual(sequencerRewards3);

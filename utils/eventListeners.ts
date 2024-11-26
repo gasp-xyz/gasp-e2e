@@ -487,10 +487,11 @@ export async function getEventError(events: any) {
   const stringifyEvent = JSON.parse(JSON.stringify(events));
   const eventWithError = (stringifyEvent as any[]).filter((x) => {
     return (
-      x.event &&
-      x.event.data &&
-      x.event.data[2] &&
-      x.event.data[2].err !== undefined
+      (x.data && x.data[2] && x.data[2].err !== undefined) ||
+      (x.event &&
+        x.event.data &&
+        x.event.data[2] &&
+        x.event.data[2].err !== undefined)
     );
   });
   if (eventWithError.length > 1) {
@@ -503,5 +504,7 @@ export async function getEventError(events: any) {
     testLog.getLog().warn(JSON.stringify(stringifyEvent));
     return undefined;
   }
-  return eventWithError[0].event.data[2].err;
+  return eventWithError[0].event
+    ? eventWithError[0].event.data[2].err
+    : eventWithError[0].data[2].err;
 }

@@ -240,10 +240,8 @@ describe("Withdraw & Batches tests -", () => {
       update,
     );
 
-    const event = JSON.parse(
-      JSON.stringify(
-        await Rolldown.waitForL2UpdateExecuted(new BN(depositEvent.txIndex)),
-      ),
+    const event = await Rolldown.waitForL2UpdateExecuted(
+      new BN(depositEvent.txIndex),
     );
     const errEvent = await getEventError(event);
     expect(errEvent).toEqual("Overflow");

@@ -256,23 +256,20 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
-  const txId = Rolldown.getUpdateIdFromEvents(cancelResolutionEvent1);
-  await Rolldown.waitForL2UpdateExecuted(new BN(txId));
+  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex1));
   await testUser2.refreshAmounts(AssetWallet.AFTER);
   await Rolldown.waitForReadRights(judge.keyRingPair.address);
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const updt = new L2Update(api)
+    .withCancelResolution(txIndex3, reqIdCanceled2, false)
+    .on(chain);
+
   const cancelResolutionEvent2 = await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      judge.keyRingPair.address,
-      new L2Update(api)
-        .withCancelResolution(txIndex3, reqIdCanceled2, false)
-        .on(chain)
-        .buildUnsafe(),
-    ),
+    Sudo.sudoAsWithAddressString(judge.keyRingPair.address, updt.buildUnsafe()),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");
-  const txId2 = Rolldown.getUpdateIdFromEvents(cancelResolutionEvent2);
-  await Rolldown.waitForL2UpdateExecuted(new BN(txId2));
+
+  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex3));
 
   const didDeposit1Run = await Rolldown.isTokenBalanceIncreased(
     testUser1.keyRingPair.address,
