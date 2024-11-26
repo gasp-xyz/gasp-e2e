@@ -49,6 +49,7 @@ import {
   PrivateKeyAccount,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import { GenericEvent } from "@polkadot/types";
 
 export class Rolldown {
   static getUpdateIdFromEvents(
@@ -318,8 +319,15 @@ export class Rolldown {
     const filteredEvent = events.filter(
       (result: any) => result.event.method === "RegisteredAsset",
     );
-    // @ts-ignore
-    return new BN(filteredEvent[0].event.data.assetId.toString());
+    //@ts-ignore
+    return stringToBN(filteredEvent[0].data.assetId.toString());
+  }
+  static async getRegisteredAssetIdByEvents(events: GenericEvent[]) {
+    const filteredEvent = events.filter(
+      (result: GenericEvent) => result.method === "RegisteredAsset",
+    );
+    //@ts-ignore
+    return stringToBN(filteredEvent[0].data.assetId.toString());
   }
 
   static async waitCancelResolution(chain = "Ethereum") {

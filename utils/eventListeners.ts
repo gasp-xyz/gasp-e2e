@@ -469,17 +469,12 @@ export async function getEventsAt(blockNo: BN) {
 }
 
 export async function getProvidingSeqStakeData(events: MangataGenericEvent[]) {
-  let isUserJoinedAsSeq: boolean;
   const eventJoining = filterAndStringifyFirstEvent(
     events,
     "SequencerJoinedActiveSet",
   );
   const eventReserved = filterAndStringifyFirstEvent(events, "Reserved");
-  if (eventJoining !== undefined) {
-    isUserJoinedAsSeq = true;
-  } else {
-    isUserJoinedAsSeq = false;
-  }
+  const isUserJoinedAsSeq = eventJoining !== undefined;
   const userAddress = eventReserved.who;
   const stakeAmount = stringToBN(eventReserved.amount);
   return {
@@ -490,9 +485,14 @@ export async function getProvidingSeqStakeData(events: MangataGenericEvent[]) {
 }
 export async function getEventError(events: any) {
   const stringifyEvent = JSON.parse(JSON.stringify(events));
-  const eventWithError = (stringifyEvent as any[]).filter(
-    (x) => x.event.data && x.event.data[2] && x.event.data[2].err !== undefined,
-  );
+  const eventWithError = (stringifyEvent as any[]).filter((x) => {
+    return (
+      x.event &&
+      x.event.data &&
+      x.event.data[2] &&
+      x.event.data[2].err !== undefined
+    );
+  });
   if (eventWithError.length > 1) {
     testLog.getLog().warn("More than one events with error!!");
     testLog.getLog().warn(JSON.stringify(eventWithError));
