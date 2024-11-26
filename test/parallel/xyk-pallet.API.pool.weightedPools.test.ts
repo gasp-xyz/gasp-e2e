@@ -171,7 +171,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     Assets.mintNative(testUser2),
     Sudo.sudoAs(
       testUser1,
-      Market.mintLiquidity(liqId, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
     ),
   );
 
