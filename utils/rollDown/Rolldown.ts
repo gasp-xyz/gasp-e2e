@@ -312,16 +312,6 @@ export class Rolldown {
     return filteredEvent[0] !== undefined;
   }
 
-  static async getRegisteredAssetId(blockNumber: number) {
-    const api = getApi();
-    const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
-    const events = await api.query.system.events.at(blockHash);
-    const filteredEvent = events.filter(
-      (result: any) => result.event.method === "RegisteredAsset",
-    );
-    //@ts-ignore
-    return stringToBN(filteredEvent[0].data.assetId.toString());
-  }
   static async getRegisteredAssetIdByEvents(events: GenericEvent[]) {
     const filteredEvent = events.filter(
       (result: GenericEvent) => result.method === "RegisteredAsset",
