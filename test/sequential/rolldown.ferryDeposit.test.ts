@@ -229,10 +229,18 @@ it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the
   await recipient.refreshAmounts(AssetWallet.AFTER);
   await ferrier.refreshAmounts(AssetWallet.AFTER);
   //tokens must be returned to ferrier, but there are on recipient's account
-  expect(recipient.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
-    recipient.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
-  );
-  expect(ferrier.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
-    ferrier.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
-  );
+  expect(
+    recipient
+      .getAsset(GASP_ASSET_ID)
+      ?.amountBefore.free!.sub(
+        recipient.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
+      ),
+  ).bnEqual(BN_TEN_THOUSAND.sub(ferryTip));
+  expect(
+    ferrier
+      .getAsset(GASP_ASSET_ID)
+      ?.amountAfter.free!.sub(
+        ferrier.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
+      ),
+  ).bnEqual(BN_TEN_THOUSAND.sub(ferryTip));
 });
