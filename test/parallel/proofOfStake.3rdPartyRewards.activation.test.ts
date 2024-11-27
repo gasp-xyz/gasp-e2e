@@ -8,7 +8,6 @@ import { BN } from "@polkadot/util";
 import { waitIfSessionWillChangeInNblocks } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -118,15 +117,6 @@ describe("Proof of stake tests", () => {
         ),
       ),
       Sudo.sudoAs(
-        testUser3,
-        Xyk.mintLiquidity(
-          GASP_ASSET_ID,
-          newToken,
-          Assets.DEFAULT_AMOUNT,
-          Assets.DEFAULT_AMOUNT.muln(2),
-        ),
-      ),
-      Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
           GASP_ASSET_ID,
@@ -134,6 +124,18 @@ describe("Proof of stake tests", () => {
           newToken3,
           Assets.DEFAULT_AMOUNT.muln(10e6),
           3,
+        ),
+      ),
+    );
+    const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
+    await Sudo.batchAsSudoFinalized(
+      Sudo.sudoAs(
+        testUser3,
+        Market.mintLiquidity(
+          liqId,
+          GASP_ASSET_ID,
+          Assets.DEFAULT_AMOUNT,
+          Assets.DEFAULT_AMOUNT.muln(2),
         ),
       ),
     );

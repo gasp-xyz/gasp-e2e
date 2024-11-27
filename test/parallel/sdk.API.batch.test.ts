@@ -12,7 +12,6 @@ import { AssetWallet, User } from "../../utils/User";
 import { findErrorMetadata } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_ZERO } from "gasp-sdk";
@@ -91,7 +90,7 @@ test("Check that when we are using SDK batch function and the first call finishe
     account: testUser1.keyRingPair,
     calls: [
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
     ],
   });
 
@@ -121,7 +120,7 @@ test("Check that when we are using SDK batch function and the second call finish
   ).batch({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
     ],
   });
@@ -153,7 +152,7 @@ test("Happy path - batch", async () => {
   ).batch({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
       Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
@@ -180,7 +179,7 @@ test("WHEN call batchAll where one item is failed THEN all entire transactions w
   ).batchAll({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
     ],
   });
@@ -205,7 +204,7 @@ test("Happy path - batchAll", async () => {
   ).batchAll({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
       Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });
@@ -233,7 +232,7 @@ test("WHEN call forceBatch where one item is failed THEN check completed and fai
     account: testUser1.keyRingPair,
     calls: [
       Assets.mintToken(token1, testUser1, defaultCurrencyValue),
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
     ],
   });
 
@@ -266,7 +265,7 @@ test("Happy path - forceBatch", async () => {
   ).forceBatch({
     account: testUser1.keyRingPair,
     calls: [
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
       Market.burnLiquidity(liqId, defaultCurrencyValue),
     ],
   });

@@ -7,11 +7,11 @@ import { getLiquidityPool } from "./tx";
 import { GASP_ASSET_ID } from "./Constants";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { Xyk } from "./xyk";
 import { signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "./txHandler";
 import { ExtrinsicResult } from "./eventListeners";
 import { ProofOfStake } from "./ProofOfStake";
+import { Market } from "./market";
 
 export enum tokenOriginEnum {
   AvailableBalance = "AvailableBalance",
@@ -198,9 +198,9 @@ export class Staking {
       Assets.mintNative(user, amountToJoin.muln(100000)),
       Sudo.sudoAs(
         user,
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liq,
           GASP_ASSET_ID,
-          tokenInPool,
           amountToJoin.muln(2),
           amountToJoin.muln(100000),
         ),

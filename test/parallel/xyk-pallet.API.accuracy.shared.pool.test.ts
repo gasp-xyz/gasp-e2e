@@ -1,6 +1,6 @@
 /*
  *
- * @group xyk
+ * @group market
  * @group accuracy
  * @group rewardsV2Parallel
  */
@@ -22,9 +22,9 @@ import {
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
-import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { getSudoUser } from "../../utils/setup";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -261,11 +261,11 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(firstCurrency, GASP_ASSET_ID, default50k),
+      Market.mintLiquidity(liqId, firstCurrency, default50k),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(firstCurrency, GASP_ASSET_ID, default50k),
+      Market.mintLiquidity(liqId, firstCurrency, default50k),
     ),
     Assets.promotePool(liqId.toNumber(), 20),
   );

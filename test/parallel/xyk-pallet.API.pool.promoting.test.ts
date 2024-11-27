@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group market
  * @group liquidity
  * @group rewardsV2Parallel
@@ -14,7 +13,6 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { activateLiquidity, getLiquidityAssetId } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -104,9 +102,9 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser11,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdPool1,
         GASP_ASSET_ID,
-        token1,
         Assets.DEFAULT_AMOUNT.divn(2),
         Assets.DEFAULT_AMOUNT.muln(2),
       ),

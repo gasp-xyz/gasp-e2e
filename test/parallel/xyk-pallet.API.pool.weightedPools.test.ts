@@ -22,7 +22,6 @@ import {
   stringToBN,
   waitForNBlocks,
 } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
@@ -172,7 +171,7 @@ test("GIVEN a pool WHEN it has configured with 0 THEN no new issuance will be re
     Assets.mintNative(testUser2),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token1, defaultCurrencyValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultCurrencyValue),
     ),
   );
 

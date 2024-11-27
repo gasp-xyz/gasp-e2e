@@ -11,7 +11,6 @@ import {
 } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -184,9 +183,9 @@ describe("Proof of stake tests", () => {
         ),
         Sudo.sudoAs(
           testUser2,
-          Xyk.mintLiquidity(
+          Market.mintLiquidity(
+            liqId,
             GASP_ASSET_ID,
-            newToken,
             Assets.DEFAULT_AMOUNT.muln(3),
             Assets.DEFAULT_AMOUNT.muln(4),
           ),

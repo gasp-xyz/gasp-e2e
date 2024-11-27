@@ -12,7 +12,6 @@ import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { Maintenance } from "../../utils/Maintenance";
 import {
   compoundRewards,
@@ -86,7 +85,7 @@ beforeAll(async () => {
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(GASP_ASSET_ID, firstCurrency, defaultPoolVolumeValue),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, defaultPoolVolumeValue),
     ),
   );
 });

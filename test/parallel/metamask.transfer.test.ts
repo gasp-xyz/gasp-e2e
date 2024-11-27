@@ -148,9 +148,9 @@ describe("Tests with Metamask signing: Test that with current data, txs can be s
     );
     testEthUser.addAsset(GASP_ASSET_ID);
 
-    const tx = api.tx.xyk.mintLiquidity(
+    const tx = api.tx.market.mintLiquidity(
+      liqId,
       GASP_ASSET_ID,
-      secondCurrency,
       Assets.DEFAULT_AMOUNT.div(BN_TWO),
       Assets.DEFAULT_AMOUNT.div(BN_TWO).add(BN_ONE),
     );
@@ -198,9 +198,9 @@ describe("Tests with Metamask signing: Test that with current data, txs can be s
     const txs = [];
 
     txs.push(
-      api.tx.xyk.mintLiquidity(
+      api.tx.market.mintLiquidity(
+        liqId,
         GASP_ASSET_ID,
-        secondCurrency,
         Assets.DEFAULT_AMOUNT.div(BN_TWO),
         Assets.DEFAULT_AMOUNT.div(BN_TWO).add(BN_ONE),
       ),

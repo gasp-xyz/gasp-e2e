@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group market
  * @group rewardsV2Parallel
  */
@@ -19,7 +18,6 @@ import {
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { getEnvironmentRequiredVars } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -168,9 +166,9 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
     ProofOfStake.updatePoolPromotion(liqIdThirdPool, 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIdThirdPool,
         token1,
-        token2,
         defaultCurrencyValue,
         new BN(Number.MAX_SAFE_INTEGER),
       ),

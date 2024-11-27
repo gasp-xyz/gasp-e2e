@@ -9,7 +9,6 @@ import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   claimRewardsAll,
@@ -122,9 +121,9 @@ test("GIVEN an user has available some rewards in one pool WHEN claims all rewar
     Assets.mintToken(poolTokenIds[0], testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIds[0],
         GASP_ASSET_ID,
-        poolTokenIds[0],
         defaultCurrencyValue.divn(2),
       ),
     ),
@@ -157,17 +156,17 @@ test("GIVEN an user has available some rewards in two pools WHEN claims all rewa
     Assets.mintToken(poolTokenIds[1], testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIds[0],
         GASP_ASSET_ID,
-        poolTokenIds[0],
         defaultCurrencyValue.divn(2),
       ),
     ),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIds[1],
         GASP_ASSET_ID,
-        poolTokenIds[1],
         defaultCurrencyValue.divn(2),
       ),
     ),
@@ -212,17 +211,17 @@ test("GIVEN an user has available some rewards in two pools one deactivated WHEN
     Assets.mintToken(poolTokenIds[12], testUser1, defaultCurrencyValue),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIds[0],
         GASP_ASSET_ID,
-        poolTokenIds[0],
         defaultCurrencyValue.divn(2),
       ),
     ),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liqIds[12],
         GASP_ASSET_ID,
-        poolTokenIds[12],
         defaultCurrencyValue.divn(2),
       ),
     ),
@@ -368,9 +367,9 @@ async function createMultiplePoolsForUser(user: User, numberPools: number) {
     batchPromisesMinting.push(
       Sudo.sudoAs(
         user,
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liqIds[i],
           GASP_ASSET_ID,
-          poolTokenIds[i],
           defaultCurrencyValue.divn(2),
         ),
       ),

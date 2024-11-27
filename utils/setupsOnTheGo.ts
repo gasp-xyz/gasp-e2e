@@ -25,7 +25,6 @@ import {
   getUserBalanceOfToken,
   stringToBN,
 } from "./utils";
-import { Xyk } from "./xyk";
 import { api, getApi, getMangataInstance, initApi } from "./api";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { getBalanceOfPool } from "./txHandler";
@@ -368,27 +367,27 @@ export async function setupPoolWithRewardsForDefaultUsers() {
     Assets.promotePool(liqId.toNumber(), 20),
     Sudo.sudoAs(
       testUser1,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser3,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser4,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser5,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, amount.divn(10), amount),
     ),
     Sudo.sudoAs(
       testUser6,
-      Xyk.mintLiquidity(GASP_ASSET_ID, token2, amount.divn(10), amount),
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, amount.divn(10), amount),
     ),
   );
   await waitForRewards(testUser4, liqId);
@@ -663,9 +662,9 @@ export async function joinAsCandidate(
       Assets.mintNative(user, amountToJoin.muln(100000)),
       Sudo.sudoAs(
         user,
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liq,
           GASP_ASSET_ID,
-          tokenInPool,
           amountToJoin.muln(2),
           amountToJoin.muln(100000),
         ),
@@ -738,9 +737,9 @@ export async function joinAFewCandidates(numCandidates = 50, liqId = 9) {
     txs.push(
       Sudo.sudoAs(
         user,
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liq,
           GASP_ASSET_ID,
-          tokenInPool,
           amountToJoin.muln(10),
           MAX_BALANCE,
         ),
@@ -795,9 +794,9 @@ export async function giveTokensToUser(userName = "//Charlie", liqId = 9) {
       Assets.mintNative(user, amountToJoin.muln(100000)),
       Sudo.sudoAs(
         user,
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liq,
           GASP_ASSET_ID,
-          tokenInPool,
           amountToJoin.muln(2),
           tokensToMint.muln(4),
         ),
@@ -853,9 +852,9 @@ export async function fillWithDelegators(
       txs.push(
         Sudo.sudoAs(
           user,
-          Xyk.mintLiquidity(
+          Market.mintLiquidity(
+            liq,
             GASP_ASSET_ID,
-            tokenInPool,
             amountToJoin.muln(2),
             MAX_BALANCE,
           ),
@@ -1776,8 +1775,8 @@ export async function addUnspentReserves(userName = "//Alice", tokenId = 1) {
     Assets.promotePool(liqToken.toNumber(), 20),
     Sudo.sudoAs(
       user,
-      Xyk.mintLiquidityUsingVested(
-        assetID,
+      Market.mintLiquidityUsingVested(
+        liqToken,
         Assets.DEFAULT_AMOUNT.divn(2),
         Assets.DEFAULT_AMOUNT,
       ),

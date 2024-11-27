@@ -1,6 +1,5 @@
 /*
  *
- * @group xyk
  * @group market
  * @group rewardsV2Parallel
  */
@@ -22,7 +21,6 @@ import {
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import { waitNewStakingRound } from "../../utils/utils";
-import { Xyk } from "../../utils/xyk";
 import { waitForRewards } from "../../utils/eventListeners";
 import { getBalanceOfPool } from "../../utils/txHandler";
 import { BN } from "@polkadot/util";
@@ -178,9 +176,9 @@ test("Given a pool with 2 users with activated rewards WHEN more than one period
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       testUser2,
-      Xyk.mintLiquidity(
+      Market.mintLiquidity(
+        liquidityAssetId,
         GASP_ASSET_ID,
-        token2,
         Assets.DEFAULT_AMOUNT.divn(4),
         Assets.DEFAULT_AMOUNT,
       ),

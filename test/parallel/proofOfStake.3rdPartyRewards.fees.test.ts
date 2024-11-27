@@ -8,7 +8,6 @@ import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, signTx } from "gasp-sdk";
@@ -133,9 +132,9 @@ describe("Proof of stake tests", () => {
       testUser.addAssets([GASP_ASSET_ID, newToken1, newToken2, liqId, liqId2]);
       await signTx(
         getApi(),
-        Xyk.mintLiquidity(
+        Market.mintLiquidity(
+          liqId,
           GASP_ASSET_ID,
-          newToken1,
           amountToActivate,
           amountToActivate.muln(2),
         ),
@@ -257,9 +256,9 @@ describe("Proof of stake tests", () => {
       await Sudo.batchAsSudoFinalized(
         Sudo.sudoAs(
           testUser,
-          Xyk.mintLiquidity(
+          Market.mintLiquidity(
+            liqId,
             GASP_ASSET_ID,
-            newToken1,
             Assets.DEFAULT_AMOUNT,
             Assets.DEFAULT_AMOUNT.muln(2),
           ),

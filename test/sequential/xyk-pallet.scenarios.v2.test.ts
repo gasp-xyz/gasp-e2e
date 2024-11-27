@@ -185,7 +185,12 @@ describe("xyk-pallet: Happy case scenario", () => {
       );
 
     await signSendFinalized(
-      Xyk.mintLiquidity(assetId1, assetId2, assetAmount1, assetAmount2),
+      Market.mintLiquidity(
+        liquidityAssetId,
+        assetId1,
+        assetAmount1,
+        assetAmount2,
+      ),
       user1,
     );
 
@@ -771,7 +776,12 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
       );
 
     await signSendFinalized(
-      Xyk.mintLiquidity(assetId1, assetId2, assetAmount1, assetAmount2),
+      Market.mintLiquidity(
+        liquidityAssetId,
+        assetId1,
+        assetAmount1,
+        assetAmount2,
+      ),
       user,
     );
 
