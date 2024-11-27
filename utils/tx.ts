@@ -36,6 +36,7 @@ import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { getSudoUser, setupApi, setupUsers } from "./setup";
+import { Market } from "./market";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -1165,6 +1166,67 @@ export async function updateFeeLockMetadata(
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     },
+  );
+}
+
+export async function multiSwapBuyMarket(
+  user: User,
+  tokenIds: BN[],
+  buyAmount: BN,
+  maxAmountIn: BN = MAX_BALANCE,
+) {
+  const api = await getApi();
+  const swapPoolList: BN[] = [];
+  let i: number = 0;
+  let liqId: BN;
+  const tokenIdsLength = tokenIds.length;
+  const firstToken = tokenIds[0];
+  const lastToken = tokenIds[tokenIdsLength - 1];
+  while (i < tokenIdsLength - 1) {
+    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+    swapPoolList.push(liqId);
+    i++;
+  }
+  return await signTx(
+    api,
+    Market.multiswapAssetBuy(
+      swapPoolList,
+      lastToken,
+      buyAmount,
+      firstToken,
+      maxAmountIn,
+    ),
+    user.keyRingPair,
+  );
+}
+export async function multiSwapSellMarket(
+  user: User,
+  tokenIds: BN[],
+  soldAmount: BN,
+  minAmountOut: BN = BN_ONE,
+) {
+  const api = await getApi();
+  const swapPoolList: BN[] = [];
+  let i: number = 0;
+  let liqId: BN;
+  const tokenIdsLength = tokenIds.length;
+  const firstToken = tokenIds[0];
+  const lastToken = tokenIds[tokenIdsLength - 1];
+  while (i < tokenIdsLength - 1) {
+    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+    swapPoolList.push(liqId);
+    i++;
+  }
+  return await signTx(
+    api,
+    Market.multiswapAssetSell(
+      swapPoolList,
+      firstToken,
+      soldAmount,
+      lastToken,
+      minAmountOut,
+    ),
+    user.keyRingPair,
   );
 }
 

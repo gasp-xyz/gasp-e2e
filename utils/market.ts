@@ -57,4 +57,36 @@ export class Market {
       maxOtherAssetAmount,
     );
   }
+
+  static multiswapAssetBuy(
+    swapPoolList: BN[],
+    assetIdOut: BN,
+    assetAmountOut: BN,
+    assetIdIn: BN,
+    maxAmountIn: BN,
+  ): Extrinsic {
+    return api.tx.market.multiswapAssetBuy(
+      swapPoolList,
+      assetIdOut,
+      assetAmountOut,
+      assetIdIn,
+      maxAmountIn,
+    );
+  }
+
+  static multiswapAssetSell(
+    swapPoolList: BN[],
+    assetIdIn: BN,
+    assetAmountIn: BN,
+    assetIdOut: BN,
+    minAmountOut: BN,
+  ): Extrinsic {
+    return api.tx.market.multiswapAsset(
+      swapPoolList,
+      assetIdIn,
+      assetAmountIn,
+      assetIdOut,
+      minAmountOut,
+    );
+  }
 }

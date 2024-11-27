@@ -5,11 +5,13 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
-  multiSwapBuy,
-  multiSwapSell,
   calculate_sell_price_id_rpc,
   burnLiquidity,
   calculate_buy_price_id_rpc,
+  multiSwapBuyMarket,
+  multiSwapSellMarket,
+  multiSwapBuy,
+  multiSwapSell,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -55,7 +57,7 @@ describe("Multiswap - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       testUser1,
     );
-    const multiSwapOutput = await multiSwapBuy(
+    const multiSwapOutput = await multiSwapBuyMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -87,7 +89,7 @@ describe("Multiswap - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       testUser1,
     );
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -216,7 +218,7 @@ describe("Multiswap - happy paths", () => {
     );
     testUser1.addAssets(tokenIds);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -286,7 +288,7 @@ describe("Multiswap - happy paths", () => {
     );
     testUser1.addAssets(tokenIds);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapBuy(
+    const multiSwapOutput = await multiSwapBuyMarket(
       testUser1,
       tokenIds,
       new BN(1000),
