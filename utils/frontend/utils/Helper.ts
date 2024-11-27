@@ -765,3 +765,24 @@ export async function comparePoolsLists(
   }
   expect(bePoolsList).toIncludeSameMembers(fePoolsList);
 }
+
+export function textNumberToFloat(text: string): number {
+  try {
+    // Remove all commas and convert to float
+    const value = parseFloat(text.replace(/,/g, ""));
+
+    // Check if the result is a valid number
+    if (isNaN(value)) {
+      throw new Error("Invalid number format");
+    }
+
+    return value;
+  } catch (error) {
+    throw new Error(`Failed to convert "${text}" to number: ${error}`);
+  }
+}
+
+export function extractNumberFromText(text: string): number {
+  const match = text.replace(/[^0-9.-]+/g, "");
+  return parseFloat(match);
+}
