@@ -8,6 +8,7 @@ import { getApi, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
   addExtraLogs,
+  extractNumberFromText,
   importMetamaskExtension,
 } from "../../utils/frontend/utils/Helper";
 import "dotenv/config";
@@ -73,12 +74,21 @@ describe("Gasp UI staking list tests", () => {
   it("User can enter active collator details and see its stats and go back", async () => {
     await setupPageWithState(driver, acc_addr_short);
     await sidebar.clickNavStaking();
+    const STAKED_TOKEN = "GASPV2";
 
     await stakingPage.waitForCollatorsVisible();
     await stakingPage.chooseCollatorRow();
     const isCollatorsDetailCardVisible =
       await stakingCollatorPage.isCollatorsDetailCardDisplayed();
     expect(isCollatorsDetailCardVisible).toBeTruthy();
+
+    const stakigDetails = await stakingCollatorPage.getStakingStats();
+    expect(stakigDetails.rewards).toBeGreaterThan(0);
+    expect(stakigDetails.minStake).toContain(STAKED_TOKEN);
+    expect(extractNumberFromText(stakigDetails.delegators)).toBeGreaterThan(0);
+    expect(stakigDetails.totalStake).toContain(STAKED_TOKEN);
+    expect(stakigDetails.stakedToken).toContain(STAKED_TOKEN);
+
     await stakingCollatorPage.clickBack();
     await stakingPage.waitForCollatorsVisible();
     const isCollatorsListVisible = await stakingPage.isCollatorsListDisplayed();
