@@ -664,15 +664,12 @@ export const burnLiquidity = async (
   secondAssetId: BN,
   liquidityAssetAmount: BN,
 ) => {
-  const mangata = await getMangataInstance();
-  const nonce = await getCurrentNonce(account.address);
-  return await mangata.xyk.burnLiquidity({
-    account: account,
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    amount: liquidityAssetAmount,
-    txOptions: { nonce: nonce },
-  });
+  const liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  return await signTx(
+    getApi(),
+    Market.burnLiquidity(liqId, liquidityAssetAmount),
+    account,
+  );
 };
 
 export async function getTokensAccountInfo(account: string, assetId: BN) {
