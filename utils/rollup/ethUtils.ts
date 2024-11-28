@@ -37,7 +37,7 @@ import {
 import { Ferry } from "../rollDown/Ferry";
 
 export const ROLL_DOWN_CONTRACT_ADDRESS =
-  "0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f";
+  "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
 
 export const ERC20_ADDRESS = "0x09635F643e140090A9A8Dcd712eD6285858ceBef";
 export const account = privateKeyToAccount(
