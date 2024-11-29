@@ -125,9 +125,6 @@ describe("Multiswap - happy paths", () => {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
   test("[gasless] Fees - multi-swap roll backs all the swaps when one fail but we take fees in GASP tokens", async () => {
-    let liqId: BN;
-    let i = 0;
-
     const assetIdWithSmallPool = new BN(7);
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(assetIdWithSmallPool, sudo, new BN(1)),
@@ -145,26 +142,13 @@ describe("Multiswap - happy paths", () => {
     testUser1.addAssets(listIncludingSmallPool);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-    const tokenIdsLength = listIncludingSmallPool.length;
-    const firstToken = listIncludingSmallPool[0];
-    const lastToken = listIncludingSmallPool[tokenIdsLength - 1];
-    const swapPoolList: BN[] = [];
-    while (i < tokenIdsLength - 1) {
-      liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
-      swapPoolList.push(liqId);
-      i++;
-    }
-
-    const multiswapSellEvent = await Market.multiswapAssetSell(
-      swapPoolList,
-      firstToken,
+    const multiswapSellPaymentInfo = await getMultiswapSellPaymentInfo(
+      testUser1,
+      listIncludingSmallPool,
       swapAmount,
-      lastToken,
       BN_TEN_THOUSAND,
     );
-    const multiswapSellPaymentInfo = await multiswapSellEvent.paymentInfo(
-      testUser1.keyRingPair,
-    );
+
     const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       listIncludingSmallPool,
@@ -194,9 +178,7 @@ describe("Multiswap - happy paths", () => {
     //   .divn(1000)
     //   .add(new BN(3))
     //   .neg();
-    expect(changeInSoldAsset).bnEqual(
-      multiswapSellPaymentInfo.partialFee.neg(),
-    );
+    expect(changeInSoldAsset).bnEqual(multiswapSellPaymentInfo.neg());
   });
   test("[gasless] accuracy - Sum of calculate_sell_asset chained is equal to the multiswap operation", async () => {
     const testUser1 = users[0];
@@ -362,6 +344,16 @@ describe("Multiswap - happy paths", () => {
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     testUser4.addAssets(tokenIds.concat(GASP_ASSET_ID));
+
+    const multiswapSellPaymentInfo = (
+      await getMultiswapSellPaymentInfo(
+        testUser4,
+        tokenIds.concat(GASP_ASSET_ID),
+        Assets.DEFAULT_AMOUNT.divn(100000),
+        BN_ZERO,
+      )
+    ).neg();
+
     await testUser4.refreshAmounts(AssetWallet.BEFORE);
     //now only one token must be in the pool
     const multiSwapOutput2 = await multiSwapSellMarket(
@@ -375,9 +367,49 @@ describe("Multiswap - happy paths", () => {
     expect(eventResponse2.data).toEqual("ZeroAmount");
     await testUser4.refreshAmounts(AssetWallet.AFTER);
 
-    //check that we bought 0 tokens, but operation still works.
-    expect(testUser4.getAsset(tokenIds[0])!.amountAfter.free).bnLt(
+    //check that we bought 0 tokens, but we need to pay fees in GASP.
+    expect(testUser4.getAsset(tokenIds[0])!.amountAfter.free).bnEqual(
       testUser4.getAsset(tokenIds[0])!.amountBefore.free,
     );
+
+    expect(
+      testUser4
+        .getAsset(GASP_ASSET_ID)!
+        .amountBefore.free.sub(
+          testUser4.getAsset(GASP_ASSET_ID)!.amountAfter.free,
+        ),
+    ).bnEqual(multiswapSellPaymentInfo.neg());
   });
 });
+
+async function getMultiswapSellPaymentInfo(
+  user: User,
+  tokenIds: BN[],
+  assetAmountIn: BN,
+  minAmountOut: BN,
+) {
+  let liqId: BN;
+  let i = 0;
+
+  const tokenIdsLength = tokenIds.length;
+  const firstToken = tokenIds[0];
+  const lastToken = tokenIds[tokenIdsLength - 1];
+  const swapPoolList: BN[] = [];
+  while (i < tokenIdsLength - 1) {
+    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+    swapPoolList.push(liqId);
+    i++;
+  }
+
+  const multiswapSellEvent = await Market.multiswapAssetSell(
+    swapPoolList,
+    firstToken,
+    assetAmountIn,
+    lastToken,
+    minAmountOut,
+  );
+  const multiswapSellPaymentInfo = await multiswapSellEvent.paymentInfo(
+    user.keyRingPair,
+  );
+  return multiswapSellPaymentInfo.partialFee;
+}
