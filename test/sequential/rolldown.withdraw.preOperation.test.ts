@@ -27,7 +27,6 @@ import {
 } from "../../utils/eventListeners";
 import { Maintenance } from "../../utils/Maintenance";
 import { L1Type } from "../../utils/rollup/l1s";
-import { waitForNBlocks } from "../../utils/utils";
 import { BN } from "@polkadot/util";
 
 let testUser: User;
@@ -634,8 +633,6 @@ describe("Pre-operation withdrawal tests -", () => {
   test("GIVEN manual batch THEN requires as parameter of the Arb Chain", async () => {
     //since there is no token in the Arbitrum chain by default, we create a new one
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    const blocksForSequencerUpdate =
-      await SequencerStaking.getBlocksNumberForSeqUpdate();
     await SequencerStaking.removeAddedSequencers();
     await signTx(
       await getApi(),
@@ -665,7 +662,7 @@ describe("Pre-operation withdrawal tests -", () => {
       const res = getEventResultFromMangataTx(events);
       expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitForNBlocks(blocksForSequencerUpdate + 1);
+    await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
     const arbAssetId = await api.query.assetRegistry.l1AssetToId({
       Arbitrum: testUser.keyRingPair.address,
     });

@@ -24,7 +24,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { signTx } from "gasp-sdk";
 
 let api: any;
-let chain: any;
+const chain = "Arbitrum";
 let testUser1: User;
 let testUser2: User;
 let testUser2Address: string;
@@ -35,14 +35,13 @@ beforeAll(async () => {
   await initApi();
   await setupApi();
   api = getApi();
-  disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
+  disputePeriodLength = (await Rolldown.disputePeriodLength(chain)).toNumber();
 });
 
 beforeEach(async () => {
   //There shouldn't be any sequencer in activeSequencers
   [testUser1, testUser2] = setupUsers();
   await SequencerStaking.removeAllSequencers();
-  chain = "Arbitrum";
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
   stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
     minToBeSequencer.addn(1000),
@@ -79,7 +78,9 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
   ).then((events) => {
     expectExtrinsicSucceed(events);
   });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(
+    (await Rolldown.disputePeriodLength(chain)).toNumber() + 5,
+  );
   await signTx(
     api,
     await SequencerStaking.unstake(chain),
@@ -103,7 +104,9 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(
+    (await Rolldown.disputePeriodLength(chain)).toNumber() + 5,
+  );
 
   //then the user must be able to unstake and leave
   await signTx(
