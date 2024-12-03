@@ -78,7 +78,7 @@ beforeEach(async () => {
 test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const buyAssetEvent = await signTx(
     api,
-    Xyk.buyAsset(GASP_ASSET_ID, token1, new BN(1000)),
+    Market.buyAsset(GASP_ASSET_ID, token1, new BN(1000)),
     testUser1.keyRingPair,
   );
 

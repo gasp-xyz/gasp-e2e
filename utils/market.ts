@@ -91,6 +91,38 @@ export class Market {
       minAmountOut,
     );
   }
+
+  static buyAsset(
+    soldAssetId: BN,
+    boughtAssetId: BN,
+    boughtAssetAmount: BN,
+    maxAmountIn: BN = new BN("340282366920938463463374607431768211455"), //u128::MAX,
+  ): Extrinsic {
+    const liqId = getLiquidityAssetId(soldAssetId, boughtAssetId);
+    return api.tx.market.multiswapAssetBuy(
+      [liqId],
+      soldAssetId,
+      boughtAssetAmount,
+      boughtAssetId,
+      maxAmountIn,
+    );
+  }
+
+  static sellAsset(
+    swapPoolList: BN[],
+    assetIdIn: BN,
+    assetAmountIn: BN,
+    assetIdOut: BN,
+    minAmountOut: BN,
+  ): Extrinsic {
+    return api.tx.market.multiswapAsset(
+      swapPoolList,
+      assetIdIn,
+      assetAmountIn,
+      assetIdOut,
+      minAmountOut,
+    );
+  }
 }
 
 export async function getMultiswapSellPaymentInfo(
