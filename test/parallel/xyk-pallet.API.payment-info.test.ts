@@ -20,7 +20,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { Market } from "../../utils/market";
+import { getMintLiquidityPaymentInfo, Market } from "../../utils/market";
 import { getLiquidityAssetId } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -95,16 +95,11 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is multiswapBuyAsset THEN non-
 });
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is mintLiquidityEvent THEN non-zero is returned", async () => {
-  liqId = await getLiquidityAssetId(GASP_ASSET_ID, ETH_ASSET_ID);
-  const mintLiquidityEvent = api.tx.market.mintLiquidity(
-    liqId,
+  const mintLiquidityPaymentInfo = await getMintLiquidityPaymentInfo(
+    testUser,
     GASP_ASSET_ID,
+    ETH_ASSET_ID,
     BN_HUNDRED,
-    new BN(Number.MAX_SAFE_INTEGER),
-  );
-
-  const mintLiquidityPaymentInfo = await mintLiquidityEvent.paymentInfo(
-    testUser.keyRingPair,
   );
 
   expect(mintLiquidityPaymentInfo.partialFee).bnGt(BN_ZERO);

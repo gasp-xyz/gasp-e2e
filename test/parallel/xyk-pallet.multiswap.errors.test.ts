@@ -58,6 +58,7 @@ describe("Multiswap - error cases: disabled tokens", () => {
     async (position: number) => {
       await Assets.disableToken(tokenIds[position]);
       const testUser1 = users[0];
+      //comment from Gonzalo: "We can leave it now, but it looks like a bug"
       const event = JSON.parse(
         JSON.stringify(
           (
@@ -91,6 +92,7 @@ describe("Multiswap - error cases: disabled tokens", () => {
 
       const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual("FunctionNotAvailableForThisToken");
 
       const boughtTokens = await getUserBalanceOfToken(
         tokenIds[tokenIds.length - 1],

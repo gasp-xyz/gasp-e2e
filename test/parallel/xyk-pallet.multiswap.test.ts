@@ -11,10 +11,7 @@ import {
   multiSwapBuyMarket,
   multiSwapSellMarket,
 } from "../../utils/tx";
-import {
-  ExtrinsicResult,
-  filterAndStringifyFirstEvent,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
 import { getUserBalanceOfToken } from "../../utils/utils";
@@ -28,7 +25,11 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
-import { getMultiswapSellPaymentInfo, Market } from "../../utils/market";
+import {
+  getMultiswapSellPaymentInfo,
+  getTransactionFeeInfo,
+  Market,
+} from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -72,10 +73,8 @@ describe("Multiswap - happy paths", () => {
     expect(boughtTokens.free.sub(boughtTokensBefore.free)).bnEqual(
       new BN(1000),
     );
-    const transactionFee = (
-      await filterAndStringifyFirstEvent(multiSwapOutput, "TransactionFeePaid")
-    ).actualFee;
-    expect(transactionFee).toEqual("0");
+    const transactionFee = await getTransactionFeeInfo(multiSwapOutput);
+    expect(transactionFee).bnEqual(BN_ZERO);
   });
   test("[gasless] Happy path - multi-swap - sell", async () => {
     const testUser1 = users[0];
