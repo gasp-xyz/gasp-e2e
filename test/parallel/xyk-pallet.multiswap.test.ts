@@ -10,7 +10,6 @@ import {
   calculate_buy_price_id_rpc,
   multiSwapBuyMarket,
   multiSwapSellMarket,
-  getLiquidityAssetId,
 } from "../../utils/tx";
 import {
   ExtrinsicResult,
@@ -29,7 +28,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
-import { Market } from "../../utils/market";
+import { getMultiswapSellPaymentInfo, Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -381,35 +380,3 @@ describe("Multiswap - happy paths", () => {
     ).bnEqual(multiswapSellPaymentInfo.neg());
   });
 });
-
-async function getMultiswapSellPaymentInfo(
-  user: User,
-  tokenIds: BN[],
-  assetAmountIn: BN,
-  minAmountOut: BN,
-) {
-  let liqId: BN;
-  let i = 0;
-
-  const tokenIdsLength = tokenIds.length;
-  const firstToken = tokenIds[0];
-  const lastToken = tokenIds[tokenIdsLength - 1];
-  const swapPoolList: BN[] = [];
-  while (i < tokenIdsLength - 1) {
-    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
-    swapPoolList.push(liqId);
-    i++;
-  }
-
-  const multiswapSellEvent = await Market.multiswapAssetSell(
-    swapPoolList,
-    firstToken,
-    assetAmountIn,
-    lastToken,
-    minAmountOut,
-  );
-  const multiswapSellPaymentInfo = await multiswapSellEvent.paymentInfo(
-    user.keyRingPair,
-  );
-  return multiswapSellPaymentInfo.partialFee;
-}

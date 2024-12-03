@@ -1,5 +1,7 @@
 import { BN } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
+import { User } from "./User";
+import { getLiquidityAssetId } from "./tx";
 
 export class Market {
   static createPool(
@@ -89,4 +91,36 @@ export class Market {
       minAmountOut,
     );
   }
+}
+
+export async function getMultiswapSellPaymentInfo(
+  user: User,
+  tokenIds: BN[],
+  assetAmountIn: BN,
+  minAmountOut: BN,
+) {
+  let liqId: BN;
+  let i = 0;
+
+  const tokenIdsLength = tokenIds.length;
+  const firstToken = tokenIds[0];
+  const lastToken = tokenIds[tokenIdsLength - 1];
+  const swapPoolList: BN[] = [];
+  while (i < tokenIdsLength - 1) {
+    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+    swapPoolList.push(liqId);
+    i++;
+  }
+
+  const multiswapSellEvent = await Market.multiswapAssetSell(
+    swapPoolList,
+    firstToken,
+    assetAmountIn,
+    lastToken,
+    minAmountOut,
+  );
+  const multiswapSellPaymentInfo = await multiswapSellEvent.paymentInfo(
+    user.keyRingPair,
+  );
+  return multiswapSellPaymentInfo.partialFee;
 }

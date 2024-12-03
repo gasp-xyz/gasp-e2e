@@ -15,7 +15,7 @@ import {
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
-import { getUserBalanceOfToken } from "../../utils/utils";
+import { getUserBalanceOfToken, stringToBN } from "../../utils/utils";
 import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
 import {
   getBalanceOfPool,
@@ -23,13 +23,11 @@ import {
 } from "../../utils/txHandler";
 import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "gasp-sdk";
 import {
-  EVENT_METHOD_PAYMENT,
-  EVENT_SECTION_PAYMENT,
   GASP_ASSET_ID,
 } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Market } from "../../utils/market";
+import { getMultiswapSellPaymentInfo, Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -119,7 +117,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
-  test.skip("[gasless] Fees - multi-swap roll backs all the swaps when one fail but 0.3% is charged", async () => {
+  test("[gasless] Fees - multi-swap roll backs all the swaps when one fail but 0.3% is charged", async () => {
     const [assetIdWithSmallPool] = await Assets.setupUserWithCurrencies(
       sudo,
       [new BN(1)],
@@ -139,46 +137,44 @@ describe("Multiswap [2 hops] - happy paths", () => {
     const listIncludingSmallPool = tokenIds.concat([assetIdWithSmallPool]);
     testUser1.addAssets(listIncludingSmallPool);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    
+    const multiswapSellPaymentInfo = await getMultiswapSellPaymentInfo(
+      testUser1,
+      listIncludingSmallPool,
+      swapAmount,
+      BN_TEN_THOUSAND,
+    );
+    
     const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       listIncludingSmallPool,
       swapAmount,
       BN_TEN_THOUSAND,
     );
-    const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
-      "xyk",
-      "MultiSwapAssetFailedOnAtomicSwap",
-    ]);
+    const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("InsufficientOutputAmount");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
-    //Validate that the modified tokens are MGX and the first element in the list.
-    expect(walletsModifiedInSwap).toHaveLength(2);
+    //Validate that the modified tokens are only GASP in the list.
+    expect(walletsModifiedInSwap).toHaveLength(1);
     expect(
       walletsModifiedInSwap.some((token) => token.currencyId.eq(GASP_ASSET_ID)),
     ).toBeTruthy();
-    expect(
-      walletsModifiedInSwap.some((token) =>
-        token.currencyId.eq(listIncludingSmallPool[0]),
-      ),
-    ).toBeTruthy();
+    // expect(
+    //   walletsModifiedInSwap.some((token) =>
+    //     token.currencyId.eq(listIncludingSmallPool[0]),
+    //   ),
+    // ).toBeTruthy();
     const changeInSoldAsset = walletsModifiedInSwap.find((token) =>
-      token.currencyId.eq(listIncludingSmallPool[0]),
+      token.currencyId.eq(GASP_ASSET_ID),
     )?.diff.free;
-    const expectedFeeCharged = swapAmount
-      .muln(3)
-      .divn(1000)
-      .add(new BN(3))
-      .neg();
-    expect(changeInSoldAsset).bnEqual(expectedFeeCharged);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    //check only 0.3%
-    expect(
-      multiSwapOutput.findIndex(
-        (x) =>
-          x.section === EVENT_SECTION_PAYMENT ||
-          x.method === EVENT_METHOD_PAYMENT,
-      ),
-    ).toEqual(-1);
+    expect(changeInSoldAsset).bnEqual(multiswapSellPaymentInfo.neg());
+    //pay transaction fee?
+    const transactionFee = (
+      await filterAndStringifyFirstEvent(multiSwapOutput, "TransactionFeePaid")
+    ).actualFee;
+    expect(stringToBN(transactionFee)).bnGt(BN_ZERO);
   });
   test("[gasless] accuracy - Sum of calculate_sell_asset chained is equal to the multiswap operation", async () => {
     const testUser1 = users[0];
