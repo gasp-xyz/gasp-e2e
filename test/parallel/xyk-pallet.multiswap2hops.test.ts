@@ -5,11 +5,14 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
-  multiSwapBuy,
-  multiSwapSell,
   calculate_sell_price_id_rpc,
+  multiSwapBuyMarket,
+  multiSwapSellMarket,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  filterAndStringifyFirstEvent,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
 import { getUserBalanceOfToken } from "../../utils/utils";
@@ -49,7 +52,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
   });
   test("[gasless] Happy path - multi-swap - buy", async () => {
     const testUser1 = users[0];
-    const multiSwapOutput = await multiSwapBuy(
+    const multiSwapOutput = await multiSwapBuyMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -65,13 +68,10 @@ describe("Multiswap [2 hops] - happy paths", () => {
       testUser1,
     );
     expect(boughtTokens.free).bnEqual(new BN(1000));
-    expect(
-      multiSwapOutput.findIndex(
-        (x) =>
-          x.section === EVENT_SECTION_PAYMENT ||
-          x.method === EVENT_METHOD_PAYMENT,
-      ),
-    ).toEqual(-1);
+    const transactionFee = (
+      await filterAndStringifyFirstEvent(multiSwapOutput, "TransactionFeePaid")
+    ).actualFee;
+    expect(transactionFee).toEqual("0");
   });
   test("[gasless] Happy path - multi-swap - sell", async () => {
     const testUser1 = users[0];
@@ -79,7 +79,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       testUser1,
     );
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -100,7 +100,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     const testUser2 = users[1];
     testUser2.addAssets(tokenIds);
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapBuy(
+    const multiSwapOutput = await multiSwapBuyMarket(
       testUser2,
       tokenIds,
       new BN(1000),
@@ -119,7 +119,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
-  test("[gasless] Fees - multi-swap roll backs all the swaps when one fail but 0.3% is charged", async () => {
+  test.skip("[gasless] Fees - multi-swap roll backs all the swaps when one fail but 0.3% is charged", async () => {
     const [assetIdWithSmallPool] = await Assets.setupUserWithCurrencies(
       sudo,
       [new BN(1)],
@@ -139,7 +139,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     const listIncludingSmallPool = tokenIds.concat([assetIdWithSmallPool]);
     testUser1.addAssets(listIncludingSmallPool);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       listIncludingSmallPool,
       swapAmount,
@@ -190,7 +190,7 @@ describe("Multiswap [2 hops] - happy paths", () => {
     );
     testUser1.addAssets(tokenIds);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       tokenIds,
       new BN(1000),

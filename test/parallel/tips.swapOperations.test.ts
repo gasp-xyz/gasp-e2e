@@ -33,10 +33,18 @@ describe("Tips - Tips are not allowed for swaps", () => {
     ({ users, tokenIds } = await setupAPoolForUsers(users));
     const liqId = await getLiquidityAssetId(tokenIds[0], tokenIds[1]);
     swapOperations = {
-      multiswapSellAsset: Xyk.multiswapSellAsset(tokenIds, BN_HUNDRED, BN_ONE),
-      multiswapBuyAsset: Xyk.multiswapBuyAsset(
-        tokenIds,
+      multiswapSellAsset: Market.multiswapAssetSell(
+        [liqId],
+        tokenIds[0],
         BN_HUNDRED,
+        tokenIds[1],
+        BN_ONE,
+      ),
+      multiswapBuyAsset: Market.multiswapAssetBuy(
+        [liqId],
+        tokenIds[0],
+        BN_HUNDRED,
+        tokenIds[1],
         BN_MILLION,
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),

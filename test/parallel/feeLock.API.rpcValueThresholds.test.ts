@@ -14,7 +14,7 @@ import {
 import { BN, BN_ONE, BN_ZERO } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata } from "../../utils/tx";
+import { multiSwapSellMarket, updateFeeLockMetadata } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Market } from "../../utils/market";
@@ -234,12 +234,14 @@ test("gasless- isFree works same as multiswap of two", async () => {
     GASP_ASSET_ID.toString(),
     testUser1.keyRingPair.address,
   );
-  const events = await mangata?.xyk.multiswapSellAsset({
-    account: testUser1.keyRingPair,
-    amount: saleAssetValue,
-    minAmountOut: BN_ONE,
-    tokenIds: [firstCurrency.toString(), secondCurrency.toString()],
-  });
+
+  const events = await multiSwapSellMarket(
+    testUser1,
+    [firstCurrency, secondCurrency],
+    saleAssetValue,
+    BN_ONE,
+  );
+
   const eventResponse = getEventResultFromMangataTx(events!, [
     "xyk",
     "AssetsSwapped",

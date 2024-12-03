@@ -11,7 +11,7 @@ import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
+import { multiSwapBuyMarket, multiSwapSellMarket } from "../../utils/tx";
 import {
   BN_TEN_THOUSAND,
   isMultiSwapAssetTransactionSuccessful,
@@ -154,7 +154,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
 test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [GASP_ASSET_ID, token1];
 
-  const multiSwapBuyEvent = await multiSwapBuy(
+  const multiSwapBuyEvent = await multiSwapBuyMarket(
     testUser1,
     tokenIds,
     new BN(1000),
@@ -170,16 +170,12 @@ test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransac
 });
 
 test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
+  const [testUser2] = setupUsers();
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser2));
+  const tokenIds = [token1, GASP_ASSET_ID];
 
-  const tokenIds = [token1, token2];
-
-  const multiSwapBuyEvent = await multiSwapBuy(
-    testUser1,
+  const multiSwapBuyEvent = await multiSwapBuyMarket(
+    testUser2,
     tokenIds,
     new BN(1000),
   );
@@ -190,7 +186,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).data).toEqual(
-    "NoSuchPool",
+    "NotEnoughAssets",
   );
   expect(eventResult).toEqual(false);
 });
@@ -198,7 +194,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
 test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [GASP_ASSET_ID, token1];
 
-  const multiSwapSellEvent = await multiSwapSell(
+  const multiSwapSellEvent = await multiSwapSellMarket(
     testUser1,
     tokenIds,
     new BN(1000),
@@ -213,16 +209,12 @@ test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransa
 });
 
 test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
+  const [testUser2] = setupUsers();
+  await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser2));
+  const tokenIds = [token1, GASP_ASSET_ID];
 
-  const tokenIds = [token1, token2];
-
-  const multiSwapSellEvent = await multiSwapSell(
-    testUser1,
+  const multiSwapSellEvent = await multiSwapSellMarket(
+    testUser2,
     tokenIds,
     new BN(1000),
   );
@@ -233,7 +225,7 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransacti
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapSellEvent).data).toEqual(
-    "NoSuchPool",
+    "NotEnoughAssets",
   );
   expect(eventResult).toEqual(false);
 });

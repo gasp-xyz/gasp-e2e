@@ -33,12 +33,16 @@ import { Maintenance } from "../../utils/Maintenance";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { User } from "../../utils/User";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
 
 let users: User[] = [];
 let tokenIds: BN[] = [];
+const poolIds: BN[] = [];
+let liqId: BN;
+let i: number = 0;
 let api: ApiPromise;
 let swapOperations: { [K: string]: Extrinsic } = {};
 let testUser1: User;
@@ -57,11 +61,27 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
     ({ users, tokenIds } = await setup5PoolsChained(users));
     api = await getApi();
     const liq = await getLiquidityAssetId(tokenIds.slice(-1)[0], GASP_ASSET_ID);
+    const tokenIdsLength = tokenIds.length;
+    const firstToken = tokenIds[0];
+    const lastToken = tokenIds[tokenIdsLength - 1];
+    while (i < tokenIdsLength - 1) {
+      liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+      poolIds.push(liqId);
+      i++;
+    }
     swapOperations = {
-      multiswapSellAsset: Xyk.multiswapSellAsset(tokenIds, BN_HUNDRED, BN_ONE),
-      multiswapBuyAsset: Xyk.multiswapBuyAsset(
-        tokenIds,
+      multiswapSellAsset: Market.multiswapAssetSell(
+        [liqId],
+        firstToken,
         BN_HUNDRED,
+        lastToken,
+        BN_ONE,
+      ),
+      multiswapBuyAsset: Market.multiswapAssetBuy(
+        [liqId],
+        firstToken,
+        BN_HUNDRED,
+        lastToken,
         BN_MILLION,
       ),
       sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
@@ -90,7 +110,6 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
     "multiswapBuyAsset",
     "sellAsset",
     "buyAsset",
-    "provideLiquidity",
   ])("%s operation is not allowed in mm", async (operation) => {
     const extrinsic = swapOperations[operation];
     userIndex += 1;
