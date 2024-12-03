@@ -360,6 +360,7 @@ export async function setupPoolWithRewardsForDefaultUsers() {
         amount.divn(10),
         token2,
         amount.divn(10),
+        "StableSwap",
       ),
     ),
   );
