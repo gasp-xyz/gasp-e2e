@@ -22,9 +22,7 @@ import {
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
 import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "gasp-sdk";
-import {
-  GASP_ASSET_ID,
-} from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { getMultiswapSellPaymentInfo, Market } from "../../utils/market";
@@ -137,14 +135,14 @@ describe("Multiswap [2 hops] - happy paths", () => {
     const listIncludingSmallPool = tokenIds.concat([assetIdWithSmallPool]);
     testUser1.addAssets(listIncludingSmallPool);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    
+
     const multiswapSellPaymentInfo = await getMultiswapSellPaymentInfo(
       testUser1,
       listIncludingSmallPool,
       swapAmount,
       BN_TEN_THOUSAND,
     );
-    
+
     const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       listIncludingSmallPool,

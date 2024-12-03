@@ -105,29 +105,27 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
     });
   });
   let userIndex = 0;
-  it.each([
-    "multiswapSellAsset",
-    "multiswapBuyAsset",
-    "sellAsset",
-    "buyAsset",
-  ])("%s operation is not allowed in mm", async (operation) => {
-    const extrinsic = swapOperations[operation];
-    userIndex += 1;
-    await signTx(api, extrinsic, users[userIndex % users.length].keyRingPair)
-      .then((events) => {
-        const event = getEventResultFromMangataTx(events, [
-          "system",
-          "ExtrinsicFailed",
-        ]);
-        expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(event.data).toContain("TradingBlockedByMaintenanceMode");
-      })
-      .catch((exc) => {
-        expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
-          "1010: Invalid Transaction: The swap prevalidation has failed",
-        );
-      });
-  });
+  it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
+    "%s operation is not allowed in mm",
+    async (operation) => {
+      const extrinsic = swapOperations[operation];
+      userIndex += 1;
+      await signTx(api, extrinsic, users[userIndex % users.length].keyRingPair)
+        .then((events) => {
+          const event = getEventResultFromMangataTx(events, [
+            "system",
+            "ExtrinsicFailed",
+          ]);
+          expect(event.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+          expect(event.data).toContain("TradingBlockedByMaintenanceMode");
+        })
+        .catch((exc) => {
+          expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
+            "1010: Invalid Transaction: The swap prevalidation has failed",
+          );
+        });
+    },
+  );
   afterAll(async () => {
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(

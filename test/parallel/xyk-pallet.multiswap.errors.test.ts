@@ -9,7 +9,7 @@ import {
   multiSwapSellMarket,
   updateFeeLockMetadata,
 } from "../../utils/tx";
-import { ExtrinsicResult, } from "../../utils/eventListeners";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
@@ -58,14 +58,18 @@ describe("Multiswap - error cases: disabled tokens", () => {
     async (position: number) => {
       await Assets.disableToken(tokenIds[position]);
       const testUser1 = users[0];
-      const event = JSON.parse(JSON.stringify((
-        await multiSwapBuyMarket(
-          testUser1,
-          tokenIds,
-          new BN(1000),
-          BN_TEN_THOUSAND,
-        )
-      ).filter((x) => x.method === "ExtrinsicFailed")));
+      const event = JSON.parse(
+        JSON.stringify(
+          (
+            await multiSwapBuyMarket(
+              testUser1,
+              tokenIds,
+              new BN(1000),
+              BN_TEN_THOUSAND,
+            )
+          ).filter((x) => x.method === "ExtrinsicFailed"),
+        ),
+      );
       expect(event[0].error.name).toEqual("FunctionNotAvailableForThisToken");
     },
   );
