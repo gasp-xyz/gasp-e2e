@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import {
+  BN_MILLION,
   BN_ONE,
   MangataGenericEvent,
   signTx,
@@ -36,7 +37,7 @@ import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { getSudoUser, setupApi, setupUsers } from "./setup";
-import { getPoolIdsInfo, Market } from "./market";
+import { Market } from "./market";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -462,17 +463,26 @@ export const sellAsset = async (
   boughtAssetId: BN,
   amount: BN,
   minAmountOut: BN,
-  options = {},
 ) => {
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.multiswapSellAsset({
-    account: account,
-    tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
-    amount: amount,
-    minAmountOut: minAmountOut,
-    txOptions: options,
-  });
+  let liqId: BN;
+  const api = getApi();
+  liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
+  if (liqId === new BN(-1)) {
+    liqId = BN_MILLION;
+  }
+  return await signTx(
+    api,
+    Market.multiswapAssetSell(
+      [liqId],
+      soldAssetId,
+      amount,
+      boughtAssetId,
+      minAmountOut,
+    ),
+    account,
+  );
 };
+
 export const delegate = async (
   account: KeyringPair,
   liqToken: BN,
@@ -610,16 +620,24 @@ export const buyAsset = async (
   boughtAssetId: BN,
   amount: BN,
   maxAmountIn: BN,
-  options = {},
 ) => {
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.multiswapBuyAsset({
-    account: account,
-    tokenIds: [soldAssetId.toString(), boughtAssetId.toString()],
-    amount: amount,
-    maxAmountIn: maxAmountIn,
-    txOptions: options,
-  });
+  let liqId: BN;
+  const api = getApi();
+  liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
+  if (liqId === new BN(-1)) {
+    liqId = BN_MILLION;
+  }
+  return await signTx(
+    api,
+    Market.multiswapAssetBuy(
+      [liqId],
+      soldAssetId,
+      amount,
+      boughtAssetId,
+      maxAmountIn,
+    ),
+    account,
+  );
 };
 
 export const mintLiquidity = async (
@@ -1173,8 +1191,17 @@ export async function multiSwapBuyMarket(
   maxAmountIn: BN = MAX_BALANCE,
 ) {
   const api = await getApi();
-  const { swapPoolList, firstToken, lastToken } =
-    await getPoolIdsInfo(tokenIds);
+  const swapPoolList: BN[] = [];
+  let i: number = 0;
+  let liqId: BN;
+  const tokenIdsLength = tokenIds.length;
+  const firstToken = tokenIds[0];
+  const lastToken = tokenIds[tokenIdsLength - 1];
+  while (i < tokenIdsLength - 1) {
+    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+    swapPoolList.push(liqId);
+    i++;
+  }
   return await signTx(
     api,
     Market.multiswapAssetBuy(
@@ -1194,8 +1221,17 @@ export async function multiSwapSellMarket(
   minAmountOut: BN = BN_ONE,
 ) {
   const api = await getApi();
-  const { swapPoolList, firstToken, lastToken } =
-    await getPoolIdsInfo(tokenIds);
+  const swapPoolList: BN[] = [];
+  let i: number = 0;
+  let liqId: BN;
+  const tokenIdsLength = tokenIds.length;
+  const firstToken = tokenIds[0];
+  const lastToken = tokenIds[tokenIdsLength - 1];
+  while (i < tokenIdsLength - 1) {
+    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+    swapPoolList.push(liqId);
+    i++;
+  }
   return await signTx(
     api,
     Market.multiswapAssetSell(
