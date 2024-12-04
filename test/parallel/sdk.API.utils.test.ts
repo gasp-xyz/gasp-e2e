@@ -9,8 +9,7 @@ import { BN } from "@polkadot/util";
 import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-<<<<<<< HEAD
-import { GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
 import {
   getLiquidityAssetId,
   multiSwapBuyMarket,
@@ -18,14 +17,7 @@ import {
 } from "../../utils/tx";
 import {
   BN_MILLION,
-=======
-import { Xyk } from "../../utils/xyk";
-import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
-import { multiSwapBuyMarket, multiSwapSellMarket } from "../../utils/tx";
-import {
-  BN_MILLION,
   BN_ONE,
->>>>>>> feature/creatingMarketClassMultiswap
   BN_TEN_THOUSAND,
   isMultiSwapAssetTransactionSuccessful,
   signTx,
