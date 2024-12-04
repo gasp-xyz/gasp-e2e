@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract USDC18 is ERC20 {
+contract USDC is ERC20 {
     constructor(
         string memory name,
         string memory symbol
@@ -13,10 +13,10 @@ contract USDC18 is ERC20 {
     }
 
     function decimals() public pure override returns (uint8) {
-        return 18;
+        return 6;
     }
 
-    function mintTestTokens(address to, uint256 amount) external {
+    function mint(address to, uint256 amount) external {
         _mint(to, amount);
     }
 }

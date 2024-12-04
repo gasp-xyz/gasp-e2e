@@ -64,3 +64,14 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+
+# Howto
+ foundryup
+
+ forge install OpenZeppelin/openzeppelin-contracts
+
+ forge build
+
+ export PRIVATE_KEY=0xdbda1821b80551c9d65939329250298aa3472ba22feea921c0cf5d620ea67b97 ; forge script  --rpc-url=https://evm-node-arb-frontend.gasp.xyz script/deploycontracts.sol --broadcast
+
