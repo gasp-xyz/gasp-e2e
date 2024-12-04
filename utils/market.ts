@@ -79,22 +79,6 @@ export class Market {
     );
   }
 
-  static multiswapAssetSell(
-    swapPoolList: BN[],
-    assetIdIn: BN,
-    assetAmountIn: BN,
-    assetIdOut: BN,
-    minAmountOut: BN,
-  ): Extrinsic {
-    return api.tx.market.multiswapAsset(
-      swapPoolList,
-      assetIdIn,
-      assetAmountIn,
-      assetIdOut,
-      minAmountOut,
-    );
-  }
-
   static buyAsset(
     swapPool: BN,
     soldAssetId: BN,
@@ -108,6 +92,22 @@ export class Market {
       boughtAssetAmount,
       soldAssetId,
       maxAmountIn,
+    );
+  }
+
+  static multiswapAssetSell(
+    swapPoolList: BN[],
+    assetIdIn: BN,
+    assetAmountIn: BN,
+    assetIdOut: BN,
+    minAmountOut: BN,
+  ): Extrinsic {
+    return api.tx.market.multiswapAsset(
+      swapPoolList,
+      assetIdIn,
+      assetAmountIn,
+      assetIdOut,
+      minAmountOut,
     );
   }
 
