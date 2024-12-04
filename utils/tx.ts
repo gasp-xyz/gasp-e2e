@@ -36,6 +36,7 @@ import { ExtrinsicResult } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { getSudoUser, setupApi, setupUsers } from "./setup";
+import { getPoolIdsInfo, Market } from "./market";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -663,15 +664,12 @@ export const burnLiquidity = async (
   secondAssetId: BN,
   liquidityAssetAmount: BN,
 ) => {
-  const mangata = await getMangataInstance();
-  const nonce = await getCurrentNonce(account.address);
-  return await mangata.xyk.burnLiquidity({
-    account: account,
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    amount: liquidityAssetAmount,
-    txOptions: { nonce: nonce },
-  });
+  const liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  return await signTx(
+    getApi(),
+    Market.burnLiquidity(liqId, liquidityAssetAmount),
+    account,
+  );
 };
 
 export async function getTokensAccountInfo(account: string, assetId: BN) {
@@ -1165,6 +1163,49 @@ export async function updateFeeLockMetadata(
     {
       nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
     },
+  );
+}
+
+export async function multiSwapBuyMarket(
+  user: User,
+  tokenIds: BN[],
+  buyAmount: BN,
+  maxAmountIn: BN = MAX_BALANCE,
+) {
+  const api = await getApi();
+  const { swapPoolList, firstToken, lastToken } =
+    await getPoolIdsInfo(tokenIds);
+  return await signTx(
+    api,
+    Market.multiswapAssetBuy(
+      swapPoolList,
+      lastToken,
+      buyAmount,
+      firstToken,
+      maxAmountIn,
+    ),
+    user.keyRingPair,
+  );
+}
+export async function multiSwapSellMarket(
+  user: User,
+  tokenIds: BN[],
+  soldAmount: BN,
+  minAmountOut: BN = BN_ONE,
+) {
+  const api = await getApi();
+  const { swapPoolList, firstToken, lastToken } =
+    await getPoolIdsInfo(tokenIds);
+  return await signTx(
+    api,
+    Market.multiswapAssetSell(
+      swapPoolList,
+      firstToken,
+      soldAmount,
+      lastToken,
+      minAmountOut,
+    ),
+    user.keyRingPair,
   );
 }
 

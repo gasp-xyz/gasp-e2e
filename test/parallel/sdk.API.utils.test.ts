@@ -10,9 +10,11 @@ import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
 import { Xyk } from "../../utils/xyk";
-import { GASP_ASSET_ID } from "../../utils/Constants";
-import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
+import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
+import { multiSwapBuyMarket, multiSwapSellMarket } from "../../utils/tx";
 import {
+  BN_MILLION,
+  BN_ONE,
   BN_TEN_THOUSAND,
   isMultiSwapAssetTransactionSuccessful,
   signTx,
@@ -154,7 +156,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
 test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [GASP_ASSET_ID, token1];
 
-  const multiSwapBuyEvent = await multiSwapBuy(
+  const multiSwapBuyEvent = await multiSwapBuyMarket(
     testUser1,
     tokenIds,
     new BN(1000),
@@ -170,18 +172,16 @@ test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransac
 });
 
 test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
-  const tokenIds = [token1, token2];
-
-  const multiSwapBuyEvent = await multiSwapBuy(
-    testUser1,
-    tokenIds,
-    new BN(1000),
+  const multiSwapBuyEvent = await signTx(
+    api,
+    Market.multiswapAssetBuy(
+      [BN_MILLION],
+      GASP_ASSET_ID,
+      new BN(1000),
+      token1,
+      MAX_BALANCE,
+    ),
+    testUser.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapBuyEvent);
@@ -198,7 +198,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
 test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [GASP_ASSET_ID, token1];
 
-  const multiSwapSellEvent = await multiSwapSell(
+  const multiSwapSellEvent = await multiSwapSellMarket(
     testUser1,
     tokenIds,
     new BN(1000),
@@ -213,18 +213,16 @@ test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransa
 });
 
 test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
-  const tokenIds = [token1, token2];
-
-  const multiSwapSellEvent = await multiSwapSell(
-    testUser1,
-    tokenIds,
-    new BN(1000),
+  const multiSwapSellEvent = await signTx(
+    api,
+    Market.multiswapAssetSell(
+      [BN_MILLION],
+      GASP_ASSET_ID,
+      new BN(1000),
+      token1,
+      BN_ONE,
+    ),
+    testUser.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapSellEvent);
