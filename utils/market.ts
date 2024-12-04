@@ -2,6 +2,9 @@ import { BN, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { getLiquidityAssetId } from "./tx";
+import { filterAndStringifyFirstEvent } from "./eventListeners";
+import { MangataGenericEvent } from "gasp-sdk";
+import { stringToBN } from "./utils";
 
 export class Market {
   static createPool(
@@ -155,4 +158,49 @@ export async function getMultiswapSellPaymentInfo(
     user.keyRingPair,
   );
   return multiswapSellPaymentInfo.partialFee;
+}
+
+export async function getMintLiquidityPaymentInfo(
+  user: User,
+  firstCurrency: BN,
+  secondCurrency: BN,
+  assetAmount: BN,
+  maxOtherAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
+) {
+  const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  const mintLiquidityEvent = api.tx.market.mintLiquidity(
+    liqId,
+    firstCurrency,
+    assetAmount,
+    maxOtherAssetAmount,
+  );
+
+  const mintLiquidityPaymentInfo = await mintLiquidityEvent.paymentInfo(
+    user.keyRingPair,
+  );
+  return mintLiquidityPaymentInfo;
+}
+
+export async function getTransactionFeeInfo(event: MangataGenericEvent[]) {
+  const transactionFeePaid = await filterAndStringifyFirstEvent(
+    event,
+    "TransactionFeePaid",
+  );
+  const actualFee = await stringToBN(transactionFeePaid.actualFee);
+  return actualFee;
+}
+
+export async function getPoolIdsInfo(tokenIds: BN[]) {
+  const swapPoolList: BN[] = [];
+  let i: number = 0;
+  let liqId: BN;
+  const tokenIdsLength = tokenIds.length;
+  const firstToken = tokenIds[0];
+  const lastToken = tokenIds[tokenIdsLength - 1];
+  while (i < tokenIdsLength - 1) {
+    liqId = await getLiquidityAssetId(tokenIds[i], tokenIds[i + 1]);
+    swapPoolList.push(liqId);
+    i++;
+  }
+  return { swapPoolList, firstToken, lastToken };
 }
