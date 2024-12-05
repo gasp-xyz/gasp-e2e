@@ -360,6 +360,7 @@ export async function setupPoolWithRewardsForDefaultUsers() {
         amount.divn(10),
         token2,
         amount.divn(10),
+        "Xyk",
       ),
     ),
   );
@@ -475,6 +476,15 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   return { users, liqId, sudo, token2 };
 }
 
+export async function calculateBuyPrice() {
+  await setupUsers();
+  await setupApi();
+  const api = await getApi();
+  //@ts-ignore
+  const value = await api.rpc.market.get_pools(3);
+  //@ts-ignore
+  testLog.getLog().info(JSON.stringify(value.toHuman()));
+}
 export async function printAllTxsDoneByUser(userAddress: string) {
   await setupUsers();
   await setupApi();
