@@ -11,6 +11,7 @@ import { Node } from "../../utils/Framework/Node/Node";
 import { UserFactory, Users } from "../../utils/Framework/User/UserFactory";
 import { Keyring } from "@polkadot/api";
 import { MAX_BALANCE } from "../../utils/Constants";
+import { getLiquidityAssetId } from "../../utils/tx";
 
 let tokens: number[] = [];
 export class ExtrinsicSwap extends performanceTestItem {
@@ -79,17 +80,29 @@ async function createAndSignSwaps(
   const srcUser = users[threadId % users.length];
   const api = await mgaSdk.api();
   const nonce = srcUser.nonce.add(nonceOffset);
-
   let assets = [tokens[0], tokens[1]];
+  const liq = await getLiquidityAssetId(new BN(assets[0]), new BN(assets[1]));
   if (srcUser!.nonce.toNumber() % 2 === 0) {
     assets = [tokens[1], tokens[0]];
   }
   let tx;
 
   if (isBuy) {
-    tx = api!.tx.xyk.buyAsset(assets[0], assets[1], new BN(100), MAX_BALANCE);
+    tx = api!.tx.market.buyAsset(
+      liq,
+      assets[0],
+      assets[1],
+      new BN(100),
+      MAX_BALANCE,
+    );
   } else {
-    tx = api!.tx.xyk.sellAsset(assets[0], assets[1], new BN(100), new BN(0));
+    tx = api!.tx.market.sellAsset(
+      liq,
+      assets[0],
+      assets[1],
+      new BN(100),
+      new BN(0),
+    );
   }
 
   await tx.signAsync(

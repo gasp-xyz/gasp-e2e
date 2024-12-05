@@ -7,7 +7,11 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { mintLiquidity, updateFeeLockMetadata } from "../../utils/tx";
+import {
+  getLiquidityAssetId,
+  mintLiquidity,
+  updateFeeLockMetadata,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN, BN_ZERO } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -22,7 +26,6 @@ import {
 } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
-import { Xyk } from "../../utils/xyk";
 import { feeLockErrors } from "../../utils/utils";
 import { signTx } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
@@ -44,6 +47,7 @@ let defaultCurrencyValue: BN;
 let feeLockMetadata: any;
 let swapValueThreshold: BN;
 let feeLockAmount: BN;
+let liqId: BN;
 
 beforeAll(async () => {
   try {
@@ -97,6 +101,7 @@ beforeAll(async () => {
     Market.createPool(GASP_ASSET_ID, assetAmount, firstCurrency, assetAmount),
     Market.createPool(firstCurrency, assetAmount, secondCurrency, assetAmount),
   );
+  liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 });
 
 beforeEach(async () => {
@@ -256,7 +261,7 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
 
   await signTx(
     api,
-    Xyk.sellAsset(firstCurrency, secondCurrency, saleAssetValue),
+    Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue),
     testUser1.keyRingPair,
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -275,7 +280,7 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
 
   await signTx(
     api,
-    Xyk.sellAsset(secondCurrency, firstCurrency, saleAssetValue),
+    Market.sellAsset(liqId, secondCurrency, firstCurrency, saleAssetValue),
     testUser1.keyRingPair,
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -296,7 +301,7 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
   try {
     await signTx(
       api,
-      Xyk.sellAsset(firstCurrency, secondCurrency, saleAssetValue),
+      Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue),
       testUser1.keyRingPair,
     );
   } catch (error) {

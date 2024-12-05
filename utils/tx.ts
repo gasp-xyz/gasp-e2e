@@ -647,14 +647,17 @@ export const mintLiquidity = async (
   firstAssetAmount: BN,
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
 ) => {
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.mintLiquidity({
-    account: account,
-    expectedSecondTokenAmount: expectedSecondAssetAmount,
-    firstTokenAmount: firstAssetAmount,
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-  });
+  const liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  return await signTx(
+    getApi(),
+    Market.mintLiquidity(
+      liqId,
+      firstAssetId,
+      firstAssetAmount,
+      expectedSecondAssetAmount,
+    ),
+    account,
+  );
 };
 export const mintLiquidityUsingVestingNativeTokens = async (
   user: KeyringPair,

@@ -59,8 +59,9 @@ beforeAll(async () => {
   }
 });
 
-test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is returned.", async () => {
-  const sellAssetEvent = api.tx.xyk.sellAsset(
+test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset THEN non-zero is returned", async () => {
+  const sellAssetEvent = api.tx.market.multiswapAsset(
+    [liqId],
     GASP_ASSET_ID,
     ETH_ASSET_ID,
     new BN(1000),
@@ -70,12 +71,12 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is ret
   const sellAssetPaymentInfo = await sellAssetEvent.paymentInfo(
     testUser.keyRingPair,
   );
-  expect(sellAssetPaymentInfo.partialFee).bnEqual(BN_ZERO);
+  expect(sellAssetPaymentInfo.partialFee).bnGt(BN_ZERO);
 });
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is multiswapBuyAsset THEN non-zero is returned", async () => {
   liqId = await getLiquidityAssetId(GASP_ASSET_ID, ETH_ASSET_ID);
-  const multiswapBuyEvent = api.tx.market.multiswapAsset(
+  const multiswapBuyEvent = api.tx.market.multiswapAssetBuy(
     [liqId],
     GASP_ASSET_ID,
     BN_HUNDRED,

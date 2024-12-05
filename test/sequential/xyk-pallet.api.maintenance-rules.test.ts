@@ -21,7 +21,6 @@ import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 import { BN_ONE, BN_HUNDRED, signTx } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { ApiPromise } from "@polkadot/api";
 import { Assets } from "../../utils/Assets";
 import {
@@ -78,9 +77,21 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
         lastToken,
         BN_MILLION,
       ),
-      sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
-      buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
-      provideLiquidity: Xyk.provideLiquidity(liq, GASP_ASSET_ID, BN_HUNDRED),
+      sellAsset: Market.sellAsset(
+        poolIds[0],
+        tokenIds[0],
+        tokenIds[1],
+        BN_HUNDRED,
+        BN_ONE,
+      ),
+      buyAsset: Market.buyAsset(
+        poolIds[0],
+        tokenIds[0],
+        tokenIds[1],
+        BN_HUNDRED,
+        BN_MILLION,
+      ),
+      //provideLiquidity: Xyk.provideLiquidity(liq, GASP_ASSET_ID, BN_HUNDRED),
     };
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(

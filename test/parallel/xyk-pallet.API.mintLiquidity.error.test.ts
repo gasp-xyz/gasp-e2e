@@ -6,7 +6,12 @@
  */
 import { jest } from "@jest/globals";
 import { api, getApi, initApi } from "../../utils/api";
-import { getBalanceOfPool, mintLiquidity, createPool } from "../../utils/tx";
+import {
+  getBalanceOfPool,
+  mintLiquidity,
+  createPool,
+  getLiquidityAssetId,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -19,6 +24,7 @@ import {
   signSendAndWaitToFinishTx,
 } from "../../utils/txHandler";
 import { getSudoUser } from "../../utils/setup";
+import { SudoDB } from "../../utils/SudoDB";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -57,6 +63,8 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
     await testUser1.addGASPTokens(sudo);
+    const currency = await SudoDB.getInstance().getTokenId();
+    expect(currency).not.toEqual(undefined);
   });
 
   test("Mint liquidity when not enough assetY for minting Xamount", async () => {
@@ -225,10 +233,11 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstAssetAmount,
       poolAmountSecondCurrency,
     ]);
-
+    const liqId = await getLiquidityAssetId(secondCurrency, firstCurrency);
     //lets empty the second wallet assets.
     await signSendAndWaitToFinishTx(
-      api?.tx.xyk.sellAsset(
+      api?.tx.market.sellAsset(
+        liqId,
         secondCurrency,
         firstCurrency,
         testUser1.getAsset(secondCurrency)?.amountBefore.free!,
