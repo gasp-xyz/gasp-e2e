@@ -9559,27 +9559,27 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-feature-rolldown-on-idle-hook.0:
-  version "0.0.2-feature-rolldown-on-idle-hook.0"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-rolldown-on-idle-hook.0.tgz#17693211576b6a679df72dbedae12abfeb23a2a6"
-  integrity sha512-h08qiBKXhDgrGWojgepdOAk+Lumaq/EEro1KAlFhf+MfR+fHzH1Mm8UVONUrN2Xp/xmaVUam/0HBoLcNo+Q03A==
+gasp-sdk@0.0.2-feature-stable-pool-mgx-1307.18:
+  version "0.0.2-feature-stable-pool-mgx-1307.18"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-stable-pool-mgx-1307.18.tgz#7e576c7ca5255ac53d492ee4a7e8ff5801785285"
+  integrity sha512-7RHw82pBQ2FR1Cybg2bXDbupRBZz+EV7SYgcGAK8F568rhWX3maiYQH34L4OoGHAtWo/LCrnZtpZObbo/bez8g==
   dependencies:
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-feature-rolldown-on-idle-hook.0"
+    gasp-type-definitions "0.0.2-feature-stable-pool-mgx-1307.24"
     tslib "^2.3.0"
     tslog "4.8.2"
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-feature-rolldown-on-idle-hook.0:
-  version "0.0.2-feature-rolldown-on-idle-hook.0"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-rolldown-on-idle-hook.0.tgz#823400703966ac0042c3e2017877810e1fbb4269"
-  integrity sha512-unRXCS2OUbeSSzYSKWeVpTcyEoZq8/TB+Fb7JaNO+CQ+kVOghEjatHhUtfzxkkBjdpCnB8BprLmgZm9pVLU4Sw==
+gasp-type-definitions@0.0.2-feature-stable-pool-mgx-1307.24:
+  version "0.0.2-feature-stable-pool-mgx-1307.24"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-stable-pool-mgx-1307.24.tgz#9b227cc62ae5625dd11e250db336133f6d86edb4"
+  integrity sha512-AFgQMA7CsIB2K8zFyVseHKEVXlrWhtMNikLfHF15dfxP23uApnd7mMR72WKv7qYBMuxCGFI05QdatGgGQigxDA==
 
-gasp-types@0.0.2-feature-rolldown-on-idle-hook.0:
-  version "0.0.2-feature-rolldown-on-idle-hook.0"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-rolldown-on-idle-hook.0.tgz#6952414f82bb2bece10a8e26f104682cf8d04145"
-  integrity sha512-P0VFssv/HGfJuRu9biW2DRQv2fHjc0E0L3B6M8dS2741J24ZBPi3MlCkgXQeYVyNjXT7SAdt53qZeES7CUQLug==
+gasp-types@0.0.2-feature-stable-pool-mgx-1307.24:
+  version "0.0.2-feature-stable-pool-mgx-1307.24"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-stable-pool-mgx-1307.24.tgz#6cbf4ff7dd71460b3525c8632f2c832bfb52f165"
+  integrity sha512-86iMzX4ZiyxwdNAriljIqQLYmvyO4beczY+QKrqYW6k309EEp9P39VZYzWmKPKhjpF+5n2x2n2iXmXnywjKK3g==
 
 gauge@^4.0.3:
   version "4.0.4"
