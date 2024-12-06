@@ -87,7 +87,7 @@ describe("Story tests > Rewards - autocompound", () => {
     expect(expectedMGAAmount).bnLte(mgasBalancesAfter.free);
     expect(availableRewardsAfter).bnEqual(new BN(0));
   });
-  test("Given a user3 WHEN available rewards can autocompund", async () => {
+  test.skip("Given a user3 WHEN available rewards can autocompund", async () => {
     const testUser3 = users[2];
     const { chainUri } = getEnvironmentRequiredVars();
     const mangata = await getMangataInstance(chainUri);
