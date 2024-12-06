@@ -6,7 +6,7 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { getCurrentNonce, createPool, buyAsset, getLiquidityAssetId } from "../../utils/tx";
+import { getCurrentNonce, createPool, buyAsset } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";

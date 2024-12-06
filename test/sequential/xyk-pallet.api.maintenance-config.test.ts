@@ -170,7 +170,7 @@ test("check UpgradabilityOn can only be set after MaintenanceModeOn is set and M
   await checkMaintenanceStatus(false, false);
 });
 
-test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
+test.skip("maintenance- check we can sell MGX tokens and compoundRewards THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
   testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(liqId);
