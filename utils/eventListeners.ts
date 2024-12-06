@@ -442,7 +442,9 @@ export const expectMGAExtrinsicSuDidSuccess = (
     .filter((x) => x.method === "SudoAsDone" && x.section === "sudo")
     .some((x) => JSON.parse(JSON.stringify(x.eventData[0].data)).err);
   if (!anyError) {
-    testLog.getLog().warn(JSON.stringify(events));
+    testLog
+      .getLog()
+      .warn("expectMGAExtrinsicSuDidSuccess" + JSON.stringify(events));
   }
   expect(anyError).toBeFalsy();
   return events!;
@@ -467,17 +469,12 @@ export async function getEventsAt(blockNo: BN) {
 }
 
 export async function getProvidingSeqStakeData(events: MangataGenericEvent[]) {
-  let isUserJoinedAsSeq: boolean;
   const eventJoining = filterAndStringifyFirstEvent(
     events,
     "SequencerJoinedActiveSet",
   );
   const eventReserved = filterAndStringifyFirstEvent(events, "Reserved");
-  if (eventJoining !== undefined) {
-    isUserJoinedAsSeq = true;
-  } else {
-    isUserJoinedAsSeq = false;
-  }
+  const isUserJoinedAsSeq = eventJoining !== undefined;
   const userAddress = eventReserved.who;
   const stakeAmount = stringToBN(eventReserved.amount);
   return {
@@ -485,4 +482,29 @@ export async function getProvidingSeqStakeData(events: MangataGenericEvent[]) {
     userAddress: userAddress,
     userStakeAmount: new BN(stakeAmount),
   };
+}
+export async function getEventError(events: any) {
+  const stringifyEvent = JSON.parse(JSON.stringify(events));
+  const eventWithError = (stringifyEvent as any[]).filter((x) => {
+    return (
+      (x.data && x.data[2] && x.data[2].err !== undefined) ||
+      (x.event &&
+        x.event.data &&
+        x.event.data[2] &&
+        x.event.data[2].err !== undefined)
+    );
+  });
+  if (eventWithError.length > 1) {
+    testLog.getLog().warn("More than one events with error!!");
+    testLog.getLog().warn(JSON.stringify(eventWithError));
+  }
+  //returning first item :shrug:
+  if (eventWithError.length < 1) {
+    testLog.getLog().warn("No events with error!!");
+    testLog.getLog().warn(JSON.stringify(stringifyEvent));
+    return undefined;
+  }
+  return eventWithError[0].event
+    ? eventWithError[0].event.data[2].err
+    : eventWithError[0].data[2].err;
 }

@@ -62,6 +62,7 @@ import {
   getPublicClient,
   getWalletClient,
   ROLL_DOWN_CONTRACT_ADDRESS,
+  account,
 } from "./rollup/ethUtils";
 import Web3 from "web3";
 import { L2Update, Rolldown } from "./rollDown/Rolldown";
@@ -2092,6 +2093,7 @@ export async function closeL1Item(
       functionName: closingItem,
       //@ts-ignore
       args: [withdrawal, root.toHuman(), proof.toHuman()],
+      account,
     });
     return viemClient
       .writeContract(request)

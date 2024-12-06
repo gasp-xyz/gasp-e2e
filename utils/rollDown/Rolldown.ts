@@ -49,7 +49,7 @@ import {
   PrivateKeyAccount,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { uiStringToNumber } from "../frontend/utils/Helper";
+import { GenericEvent } from "@polkadot/types";
 
 export class Rolldown {
   static getUpdateIdFromEvents(
@@ -214,13 +214,11 @@ export class Rolldown {
     throw new Error("Max blocks reached without getting read rights");
   }
 
-  static async disputePeriodLength(chain: ChainName = "Ethereum") {
+  static async disputePeriodLength(chain: string = "Ethereum") {
     const api = getApi();
-    const disputePeriodString = JSON.stringify(
-      await api.query.rolldown.disputePeriod(chain),
-    );
-    const disputePeriod = await uiStringToNumber(disputePeriodString);
-    return disputePeriod;
+    const dp = await api.query.rolldown.disputePeriod(chain);
+    const dpHuman = dp.toHuman();
+    return stringToBN(dpHuman!.toString());
   }
 
   static getMerkleRootBatchPeriod(extraBlocksNumber = 0) {
@@ -314,15 +312,12 @@ export class Rolldown {
     return filteredEvent[0] !== undefined;
   }
 
-  static async getRegisteredAssetId(blockNumber: number) {
-    const api = getApi();
-    const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
-    const events = await api.query.system.events.at(blockHash);
+  static async getRegisteredAssetIdByEvents(events: GenericEvent[]) {
     const filteredEvent = events.filter(
-      (result: any) => result.event.method === "RegisteredAsset",
+      (result: GenericEvent) => result.method === "RegisteredAsset",
     );
-    // @ts-ignore
-    return new BN(filteredEvent[0].event.data.assetId.toString());
+    //@ts-ignore
+    return stringToBN(filteredEvent[0].data.assetId.toString());
   }
 
   static async waitCancelResolution(chain = "Ethereum") {
@@ -404,7 +399,7 @@ export class Rolldown {
   static async waitForL2UpdateExecuted(requestId: BN) {
     const event = await waitForAllEventsFromMatchingBlock(
       getApi(),
-      20,
+      30,
       (ev) =>
         ev.method === "RequestProcessedOnL2" &&
         ev.section === "rolldown" &&
