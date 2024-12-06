@@ -91,7 +91,7 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
       "SequencerLastUpdateStillInDisputePeriod",
     );
   });
-  await waitForNBlocks(await Rolldown.disputePeriodLength());
+  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
   await Rolldown.waitForReadRights(testUser2Address, 50, chain);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(

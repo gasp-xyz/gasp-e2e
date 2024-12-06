@@ -125,7 +125,7 @@ it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispu
   await waitForEvents(
     api,
     "rolldown.RequestProcessedOnL2",
-    (await Rolldown.disputePeriodLength()) * 4,
+    (await Rolldown.disputePeriodLength()).toNumber() * 4,
   );
   await ferrier.refreshAmounts(AssetWallet.AFTER);
   ferrierDiff = ferrier
@@ -142,7 +142,7 @@ it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispu
   await waitForEvents(
     api,
     "rolldown.RequestProcessedOnL2",
-    (await Rolldown.disputePeriodLength()) * 4,
+    (await Rolldown.disputePeriodLength()).toNumber() * 4,
   );
   await recipient.refreshAmounts(AssetWallet.AFTER);
   const recipientDiff = recipient
@@ -156,7 +156,7 @@ it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispu
 it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispute period  AND WHEN a dispute happens AND resolution is True AND another update comes with the same id, THEN the ferrier will get those back after the dispute period", async () => {
   let event: any;
   const [judge] = setupUsers();
-  const disputePeriodLength = await Rolldown.disputePeriodLength();
+  const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
   const stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
     (await SequencerStaking.minimalStakeAmount()).addn(1000),
     chain,

@@ -80,7 +80,7 @@ describe("sequencerStaking", () => {
 
   beforeEach(async () => {
     //TODO: Replace this by some monitoring of the active queue.
-    await waitForNBlocks(await Rolldown.disputePeriodLength());
+    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
     await SequencerStaking.removeAddedSequencers(10);
   });
 

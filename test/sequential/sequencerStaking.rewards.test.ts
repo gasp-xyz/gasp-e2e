@@ -11,13 +11,25 @@ import {
   expectMGAExtrinsicSuDidSuccess,
   filterAndStringifyFirstEvent,
   getSessionIndex,
-  waitForAllEventsFromMatchingBlock
+  waitForAllEventsFromMatchingBlock,
 } from "../../utils/eventListeners";
-import { createAnUpdate, L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
-import { leaveSequencing, SequencerStaking } from "../../utils/rollDown/SequencerStaking";
+import {
+  createAnUpdate,
+  L2Update,
+  Rolldown,
+} from "../../utils/rollDown/Rolldown";
+import {
+  leaveSequencing,
+  SequencerStaking,
+} from "../../utils/rollDown/SequencerStaking";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { stringToBN, waitBlockNumber, waitForSessionN, waitNewStakingRound } from "../../utils/utils";
+import {
+  stringToBN,
+  waitBlockNumber,
+  waitForSessionN,
+  waitNewStakingRound,
+} from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
