@@ -49,6 +49,7 @@ import {
   PrivateKeyAccount,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import { uiStringToNumber } from "../frontend/utils/Helper";
 
 export class Rolldown {
   static getUpdateIdFromEvents(
@@ -215,7 +216,11 @@ export class Rolldown {
 
   static async disputePeriodLength(chain: ChainName = "Ethereum") {
     const api = getApi();
-    return (await api.query.rolldown.disputePeriod(chain)) as any as number;
+    const disputePeriodString = JSON.stringify(
+      await api.query.rolldown.disputePeriod(chain),
+    );
+    const disputePeriod = await uiStringToNumber(disputePeriodString);
+    return disputePeriod;
   }
 
   static getMerkleRootBatchPeriod(extraBlocksNumber = 0) {
