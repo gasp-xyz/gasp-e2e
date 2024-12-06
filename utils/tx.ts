@@ -652,7 +652,11 @@ export const mintLiquidity = async (
   firstAssetAmount: BN,
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
 ) => {
-  const liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  let liqId: BN;
+  liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  if (liqId < BN_ZERO) {
+    liqId = BN_MILLION;
+  }
   return await signTx(
     getApi(),
     Market.mintLiquidity(
