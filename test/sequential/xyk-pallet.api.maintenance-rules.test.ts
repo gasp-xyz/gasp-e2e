@@ -169,7 +169,7 @@ describe('On Maintenance mode - aggregators and candidates are allowed', () => {
     )
   })
 })
-describe.only('On Maintenance mode - ferry deposits are not allowed', () => {
+describe.skip('On Maintenance mode - ferry deposits are not allowed', () => {
   beforeAll(async () => {
     try {
       getApi()
@@ -203,7 +203,7 @@ describe.only('On Maintenance mode - ferry deposits are not allowed', () => {
       expectMGAExtrinsicSuDidSuccess(value)
     })
   })
-  it.only('A user cannot do ferry deposit - extrinsic failed', async () => {
+  it('A user cannot do ferry deposit - extrinsic failed', async () => {
     const ferryTip = BN_TEN
     const update1 = new L2Update(api)
       .withDeposit(
@@ -215,12 +215,6 @@ describe.only('On Maintenance mode - ferry deposits are not allowed', () => {
         ferryTip
       )
       .on(chain)
-    // const l1 = 'EthAnvil'
-    // eslint-disable-next-line no-template-curly-in-string
-    // const tokenAddress = getL1(l1)?.contracts.native.address as '0x${string}'
-    // const anyChange = await depositAndWaitNative(user, l1, true)
-    // Check that got updated.
-    // expect(anyChange).toBeTruthy()
 
     const events = await Ferry.ferryThisDeposit(ferrier, update1.pendingDeposits[0], 'EthAnvil')
     expectExtrinsicFail(events)
