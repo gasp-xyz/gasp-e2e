@@ -605,7 +605,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event1 = await waitForEvents(
       api,
       "rolldown.RequestProcessedOnL2",
-      (await Rolldown.disputePeriodLength()).toNumber() * 4,
+      (await Rolldown.disputePeriodLength()) * 4,
     );
     const error1 = await getEventError(event1);
     expect(error1).toEqual("Overflow");
@@ -636,7 +636,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event2 = await waitForEvents(
       api,
       "rolldown.RequestProcessedOnL2",
-      (await Rolldown.disputePeriodLength()).toNumber() * 4,
+      (await Rolldown.disputePeriodLength()) * 4,
     );
     const error = await getEventError(event2);
     expect(error).toEqual(undefined);

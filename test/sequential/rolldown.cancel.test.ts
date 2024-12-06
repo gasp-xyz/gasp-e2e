@@ -35,7 +35,7 @@ beforeAll(async () => {
   await initApi();
   await setupApi();
   api = getApi();
-  disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
+  disputePeriodLength = await Rolldown.disputePeriodLength();
 });
 
 beforeEach(async () => {
@@ -79,7 +79,7 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
   ).then((events) => {
     expectExtrinsicSucceed(events);
   });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(await Rolldown.disputePeriodLength());
   await signTx(
     api,
     await SequencerStaking.unstake(chain),
@@ -90,7 +90,7 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
       "SequencerLastUpdateStillInDisputePeriod",
     );
   });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(await Rolldown.disputePeriodLength());
   await Rolldown.waitForReadRights(testUser2Address, 50, chain);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
   const cancelResolutionEvents = await Sudo.asSudoFinalized(
@@ -103,7 +103,7 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(await Rolldown.disputePeriodLength());
 
   //then the user must be able to unstake and leave
   await signTx(

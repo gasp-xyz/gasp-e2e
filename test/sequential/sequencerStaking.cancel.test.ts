@@ -33,7 +33,7 @@ beforeAll(async () => {
   await initApi();
   await setupApi();
   api = getApi();
-  disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
+  disputePeriodLength = await Rolldown.disputePeriodLength();
 });
 
 beforeEach(async () => {

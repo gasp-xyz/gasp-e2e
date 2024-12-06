@@ -213,9 +213,9 @@ export class Rolldown {
     throw new Error("Max blocks reached without getting read rights");
   }
 
-  static async disputePeriodLength() {
+  static async disputePeriodLength(chain: ChainName = "Ethereum") {
     const api = getApi();
-    return (await api.consts.rolldown.disputePeriodLength) as any as BN;
+    return (await api.query.rolldown.disputePeriod(chain)) as any as number;
   }
 
   static getMerkleRootBatchPeriod(extraBlocksNumber = 0) {

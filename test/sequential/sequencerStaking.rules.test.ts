@@ -80,7 +80,7 @@ describe("sequencerStaking", () => {
 
   beforeEach(async () => {
     //TODO: Replace this by some monitoring of the active queue.
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(await Rolldown.disputePeriodLength());
     await SequencerStaking.removeAddedSequencers(10);
   });
 
@@ -163,7 +163,7 @@ describe("sequencerStaking", () => {
         "SequencerAwaitingCancelResolution",
       ]).toContain(res.data.toString());
     });
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(await Rolldown.disputePeriodLength());
     await signTx(
       api,
       await SequencerStaking.unstake("Arbitrum"),
@@ -246,7 +246,7 @@ describe("sequencerStaking", () => {
       expect(eventFiltered.range.start).toEqual(txIndex.toString());
       expect(eventFiltered.range.end).toEqual(txIndex.toString());
     });
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(await Rolldown.disputePeriodLength());
     await signTx(
       api,
       await SequencerStaking.leaveSequencerStaking(chain),
@@ -284,7 +284,7 @@ describe("sequencerStaking", () => {
       expect(eventResponse.data).toEqual("OperationFailed");
     });
 
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(await Rolldown.disputePeriodLength());
     const sequencerStatusAfterWaiting = await Rolldown.sequencerRights(
       chain,
       sequencer.keyRingPair.address,
@@ -361,7 +361,7 @@ describe("sequencerStaking", () => {
     expect(eventFiltered.range.start).toEqual(txIndex.toString());
     expect(eventFiltered.range.end).toEqual(txIndex.toString());
     await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(await Rolldown.disputePeriodLength());
 
     sequencerStatus = await Rolldown.sequencerRights(
       chain,
