@@ -275,22 +275,22 @@ export async function waitBlockNumber(
   maxWaitingPeriod: number,
 ) {
   let currentBlock = await getBlockNumber();
-  let waitingperiodCounter: number;
+  let waitingPeriodCounter: number;
 
-  waitingperiodCounter = 0;
+  waitingPeriodCounter = 0;
   testLog.getLog().info("Waiting block number " + blockNumber);
   while (
     currentBlock < Number(blockNumber) &&
-    waitingperiodCounter < maxWaitingPeriod
+    waitingPeriodCounter < maxWaitingPeriod
   ) {
     await waitNewBlock();
     currentBlock = await getBlockNumber();
-    waitingperiodCounter = waitingperiodCounter + 1;
+    waitingPeriodCounter = waitingPeriodCounter + 1;
   }
   testLog.getLog().info("... Done waiting block number" + blockNumber);
   if (
-    waitingperiodCounter === maxWaitingPeriod ||
-    waitingperiodCounter > maxWaitingPeriod
+    waitingPeriodCounter === maxWaitingPeriod ||
+    waitingPeriodCounter > maxWaitingPeriod
   ) {
     testLog.getLog().warn("TIMEDOUT waiting for the specific block number");
   }

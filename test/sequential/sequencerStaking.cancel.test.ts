@@ -86,12 +86,10 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
   await waitBlockNumber(
-    (disputeEndBlockNumber2 + 1).toString(),
+    disputeEndBlockNumber2.toString(),
     disputePeriodLength * 2,
   );
-  const blockHash = await api.rpc.chain.getBlockHash(
-    disputeEndBlockNumber2 + 1,
-  );
+  const blockHash = await api.rpc.chain.getBlockHash(disputeEndBlockNumber2);
   const resolutionEvents = await api.query.system.events.at(blockHash);
   const filteredEvent = resolutionEvents.filter(
     (result: any) => result.event.method === "Slashed",
