@@ -1,6 +1,6 @@
 import { formatBalance } from "@polkadot/util/format";
 import { BN, hexToBn, hexToU8a, isHex } from "@polkadot/util";
-import { getApi, getMangataInstance, initApi, mangata } from "./api";
+import { getApi, initApi, mangata } from "./api";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
@@ -13,7 +13,13 @@ import { getStakingLiquidityTokens, sellAsset } from "./tx";
 import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
 import { GASP_ASSET_ID } from "./Constants";
-import { BN_HUNDRED, BN_ONE, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
+import {
+  BN_HUNDRED,
+  BN_ONE,
+  BN_ZERO,
+  MangataGenericEvent,
+  signTx,
+} from "gasp-sdk";
 import Keyring from "@polkadot/keyring";
 import jsonpath from "jsonpath";
 import _ from "lodash";
@@ -196,15 +202,11 @@ export async function UserCreatesAPoolAndMintLiquidity(
     sudo,
   );
   await testUser1.addGASPTokens(sudo);
-  await (
-    await getMangataInstance()
-  ).xyk.createPool({
-    account: testUser1.keyRingPair,
-    firstTokenAmount: poolAmount,
-    firstTokenId: firstCurrency.toString(),
-    secondTokenId: secondCurrency.toString(),
-    secondTokenAmount: poolAmount,
-  });
+  await signTx(
+    getApi(),
+    Market.createPool(firstCurrency, poolAmount, secondCurrency, mintAmount),
+    testUser1.keyRingPair,
+  );
 
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
   return [firstCurrency, secondCurrency];

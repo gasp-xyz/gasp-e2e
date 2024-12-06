@@ -236,11 +236,11 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     const liqId = await getLiquidityAssetId(secondCurrency, firstCurrency);
     //lets empty the second wallet assets.
     await signSendAndWaitToFinishTx(
-      api?.tx.market.sellAsset(
+      api?.tx.market.multiswapAsset(
         liqId,
         secondCurrency,
-        firstCurrency,
         testUser1.getAsset(secondCurrency)?.amountBefore.free!,
+        firstCurrency,
         new BN(0),
       ),
       testUser1.keyRingPair,

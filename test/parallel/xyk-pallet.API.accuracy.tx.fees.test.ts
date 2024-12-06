@@ -6,7 +6,7 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { getCurrentNonce, createPool, buyAsset } from "../../utils/tx";
+import { getCurrentNonce, createPool, buyAsset, getLiquidityAssetId } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -88,8 +88,9 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
     nonce: nonce,
     tip: 0,
   };
-  cost = await api?.tx.xyk
+  cost = await api?.tx.market
     .createPool(
+      "Xyk",
       firstCurrency,
       first_asset_amount,
       secondCurrency,

@@ -2,6 +2,7 @@
 import {
   BN_MILLION,
   BN_ONE,
+  BN_ZERO,
   MangataGenericEvent,
   signTx,
   toBN,
@@ -463,11 +464,12 @@ export const sellAsset = async (
   boughtAssetId: BN,
   amount: BN,
   minAmountOut: BN,
+  options = {},
 ) => {
   let liqId: BN;
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
-  if (liqId === new BN(-1)) {
+  if (liqId < BN_ZERO) {
     liqId = BN_MILLION;
   }
   return await signTx(
@@ -480,6 +482,7 @@ export const sellAsset = async (
       minAmountOut,
     ),
     account,
+    options,
   );
 };
 
@@ -620,11 +623,12 @@ export const buyAsset = async (
   boughtAssetId: BN,
   amount: BN,
   maxAmountIn: BN,
+  options = {},
 ) => {
   let liqId: BN;
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
-  if (liqId === new BN(-1)) {
+  if (liqId < BN_ZERO) {
     liqId = BN_MILLION;
   }
   return await signTx(
@@ -637,6 +641,7 @@ export const buyAsset = async (
       maxAmountIn,
     ),
     account,
+    options,
   );
 };
 
