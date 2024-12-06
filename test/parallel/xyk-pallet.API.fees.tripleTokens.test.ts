@@ -206,13 +206,9 @@ test("GIVEN User has enough GASP & enough ETH THEN Fees are charged in GASP", as
     Assets.mintToken(ETH_ASSET_ID, testUser1, Assets.DEFAULT_AMOUNT),
   );
   const api = getApi();
-  const cost = await api?.tx.xyk
-    .mintLiquidity(
-      firstCurrency.toString(),
-      new BN(100),
-      secondCurrency.toString(),
-      new BN(1000000),
-    )
+  const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  const cost = await api?.tx.market
+    .mintLiquidity(liqId, firstCurrency, new BN(100), new BN(1000000))
     .paymentInfo(testUser1.keyRingPair);
   const fee = cost.partialFee;
 
@@ -227,13 +223,9 @@ test("GIVEN User has enough GASP & enough ETH THEN Fees are charged in GASP", as
 
 test("GIVEN User has a very limited amount of GASP & enough ETH THEN Fees are charged in ETH", async () => {
   const api = getApi();
-  const cost = await api?.tx.xyk
-    .mintLiquidity(
-      firstCurrency.toString(),
-      new BN(100),
-      secondCurrency.toString(),
-      new BN(1000000),
-    )
+  const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  const cost = await api?.tx.market
+    .mintLiquidity(liqId, firstCurrency, new BN(100), new BN(1000000))
     .paymentInfo(testUser1.keyRingPair);
   const fee = cost.partialFee;
 

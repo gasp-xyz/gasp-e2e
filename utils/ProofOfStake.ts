@@ -11,6 +11,7 @@ import { Sudo } from "./sudo";
 import { GASP_ASSET_ID } from "./Constants";
 import { Assets } from "./Assets";
 import { User } from "./User";
+import { getLiquidityAssetId } from "./tx";
 
 export class ProofOfStake {
   static async rewardPool(
@@ -23,8 +24,10 @@ export class ProofOfStake {
     setupApi();
     const api = getApi();
     const currSession = (await api.query.session.currentIndex()).toNumber();
+    const poolId = await getLiquidityAssetId(token1, token2);
     return api.tx.proofOfStake.rewardPool(
-      [token1, token2],
+      //@ts-ignore
+      poolId,
       tokenId,
       amount,
       currSession + whenEnding,
