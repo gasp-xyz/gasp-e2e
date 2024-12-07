@@ -245,15 +245,11 @@ export async function getUserAssets(account: any, assets: BN[]) {
 }
 
 export async function getBalanceOfAssetStr(assetId: BN, account: string) {
-  const mangata = await getMangataInstance();
-  return await mangata.query.getTokenBalance(assetId.toString(), account);
+  const api = getApi();
+  return await api.query.tokens.accounts(account, assetId);
 }
 export async function getBalanceOfAsset(assetId: BN, account: User) {
-  const mangata = await getMangataInstance();
-  return await mangata.query.getTokenBalance(
-    assetId.toString(),
-    account.keyRingPair.address,
-  );
+  return await getBalanceOfAssetStr(assetId, account.keyRingPair.address);
 }
 
 export async function getBalanceOfPool(
