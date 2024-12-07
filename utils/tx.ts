@@ -469,7 +469,7 @@ export const sellAsset = async (
   let liqId: BN;
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
-  if (liqId < BN_ZERO) {
+  if (liqId.lt(BN_ZERO)) {
     liqId = BN_MILLION;
   }
   return await signTx(
@@ -628,7 +628,7 @@ export const buyAsset = async (
   let liqId: BN;
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
-  if (liqId < BN_ZERO) {
+  if (liqId.lt(BN_ZERO)) {
     liqId = BN_MILLION;
   }
   return await signTx(
@@ -654,7 +654,7 @@ export const mintLiquidity = async (
 ) => {
   let liqId: BN;
   liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
-  if (liqId < BN_ZERO) {
+  if (liqId.lt(BN_ZERO)) {
     liqId = BN_MILLION;
   }
   return await signTx(

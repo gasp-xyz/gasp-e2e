@@ -24,7 +24,6 @@ import {
   signSendAndWaitToFinishTx,
 } from "../../utils/txHandler";
 import { getSudoUser } from "../../utils/setup";
-import { SudoDB } from "../../utils/SudoDB";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -63,8 +62,6 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     keyring.addPair(testUser1.keyRingPair);
     keyring.addPair(sudo.keyRingPair);
     await testUser1.addGASPTokens(sudo);
-    const currency = await SudoDB.getInstance().getTokenId();
-    expect(currency).not.toEqual(undefined);
   });
 
   test("Mint liquidity when not enough assetY for minting Xamount", async () => {
