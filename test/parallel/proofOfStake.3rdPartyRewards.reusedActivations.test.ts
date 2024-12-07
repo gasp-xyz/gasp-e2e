@@ -108,6 +108,8 @@ describe("Proof of stake tests", () => {
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
+    );
+    await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
@@ -207,8 +209,8 @@ describe("Proof of stake tests", () => {
           ),
         ),
       );
-      // testUser must have the liq already activated for mgx-new token - newtoken
-      // testUser2 just activated for both rewarded mgx-newtoken pools
+      // testUser must have the liq already activated for gasp-new token - newtoken
+      // testUser2 just activated for both rewarded gasp-new token pools
       await waitForRewards(testUser2, liqId, 40, newToken);
       // So expected is: for first rewards shares are divided, for the second, only testUser2 gets rewards
       const expectedSharedReward = Assets.DEFAULT_AMOUNT.muln(10e6).divn(2);

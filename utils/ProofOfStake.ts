@@ -26,7 +26,6 @@ export class ProofOfStake {
     const currSession = (await api.query.session.currentIndex()).toNumber();
     const poolId = await getLiquidityAssetId(token1, token2);
     return api.tx.proofOfStake.rewardPool(
-      //@ts-ignore
       poolId,
       tokenId,
       amount,
