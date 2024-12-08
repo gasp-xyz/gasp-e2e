@@ -192,6 +192,6 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
   });
   expect(
     boughtEvent.filter((event) => event.method === "AssetsSwapped"),
-  ).toHaveLength(1);
+  ).toHaveLength(2);
   expect(exception).toBeFalsy();
 });

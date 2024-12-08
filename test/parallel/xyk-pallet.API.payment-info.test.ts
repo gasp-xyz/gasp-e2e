@@ -43,7 +43,7 @@ beforeAll(async () => {
     Assets.mintToken(ETH_ASSET_ID, testUser, Assets.DEFAULT_AMOUNT.muln(40e6)),
   );
   liqId = await getLiquidityAssetId(GASP_ASSET_ID, ETH_ASSET_ID);
-  if ((liqId.bnLt(new BN(0)))) {
+  if (liqId.lt(BN_ZERO)) {
     await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         testUser.keyRingPair.address,
