@@ -49,7 +49,7 @@ import {
   getPolkAddress,
   create10sequencers,
   closeL1Item,
-  sendUpdateToL1,
+  sendUpdateToL1, createSequencers, monitorSequencers
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -135,10 +135,18 @@ async function app(): Promise<any> {
         "Close All L1 items",
         "1000 withdrawals",
         "sync updates",
+        "add sequencers like hell",
+        "monitor sequencers",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("add sequencers like hell")) {
+        await createSequencers(1000);
+      }
+      if (answers.option.includes("monitor sequencers")) {
+        await monitorSequencers();
+      }
       if (answers.option.includes("sync updates")) {
         await sendUpdateToL1();
       }

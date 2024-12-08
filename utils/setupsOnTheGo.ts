@@ -26,7 +26,7 @@ import {
   stringToBN,
 } from "./utils";
 import { api, getApi, getMangataInstance, initApi } from "./api";
-import { BN_ZERO, signTx } from "gasp-sdk";
+import { BN_BILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { getBalanceOfPool } from "./txHandler";
 import { Bytes, StorageKey } from "@polkadot/types";
 import { Codec, ITuple } from "@polkadot/types/types";
@@ -114,6 +114,41 @@ export async function claimForAllAvlRewards() {
 
 const tokenOrigin = tokenOriginEnum.AvailableBalance;
 
+export async function createSequencers(num: number) {
+  let txs = [];
+  await setupApi();
+  setupUsers();
+  for (let i = 0; i < num; i++) {
+    const user = new User(new Keyring({ type: "ethereum" }));
+    txs.push(Assets.mintNative(user));
+    txs.push(
+      Sudo.sudoAsWithAddressString(
+        user.keyRingPair.address,
+        await SequencerStaking.provideSequencerStaking(BN_BILLION),
+      ),
+    );
+    if (i % 5 === 0){
+      await Sudo.batchAsSudoFinalized(...txs);
+      txs = [];
+    }
+  }
+  await Sudo.batchAsSudoFinalized(...txs);
+}
+export async function monitorSequencers() {
+  return new Promise<[number, number][]>(async (_2, _) => {
+    let selectedSeq = "";
+    await setupApi();
+    const api = await getApi();
+    await api.rpc.chain.subscribeNewHeads(async (head): Promise<void> => {
+      const seqcs = await api?.query.sequencerStaking.selectedSequencer();
+      const selected = JSON.stringify( seqcs);
+      if (selectedSeq !== selected) {
+        selectedSeq = selected;
+        testLog.getLog().info(head.number.toNumber() + " - " + selectedSeq);
+      }
+    });
+  });
+}
 export async function vetoMotion(motionId: number) {
   //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
   const fundAcc = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
