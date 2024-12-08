@@ -635,9 +635,9 @@ export const buyAsset = async (
     api,
     Market.multiswapAssetBuy(
       [liqId],
-      soldAssetId,
-      amount,
       boughtAssetId,
+      amount,
+      soldAssetId,
       maxAmountIn,
     ),
     account,
