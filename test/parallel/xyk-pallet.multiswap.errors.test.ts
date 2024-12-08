@@ -154,7 +154,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     );
     let exception = false;
     await expect(
-      multiSwapSellMarket(testUser1, tokenIds, threshold.addn(10)).catch(
+      await multiSwapSellMarket(testUser1, tokenIds, threshold.addn(10)).catch(
         (reason) => {
           exception = true;
           throw new Error(reason.data);
@@ -190,7 +190,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     await testUser.refreshAmounts(AssetWallet.BEFORE);
     let exception = false;
     await expect(
-      multiSwapSellMarket(
+      await multiSwapSellMarket(
         testUser,
         tokenIds.concat(BN_BILLION),
         new BN(12345),
