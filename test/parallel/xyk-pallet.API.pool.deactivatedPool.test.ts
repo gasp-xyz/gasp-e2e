@@ -168,21 +168,17 @@ test("GIVEN deactivated pool WHEN the user mints liquidity in the pool again THE
 });
 
 test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the deactivated pool THEN error returns", async () => {
-  let swapError: any = [];
-  try {
-    await sellAsset(
-      testUser1.keyRingPair,
-      GASP_ASSET_ID,
-      token1,
-      defaultCurrencyValue,
-      new BN(1),
-    );
-  } catch (error) {
-    swapError = error;
-  }
-  expect(swapError.data).toEqual(
-    "1010: Invalid Transaction: The swap prevalidation has failed",
-  );
+  await sellAsset(
+    testUser1.keyRingPair,
+    GASP_ASSET_ID,
+    token1,
+    defaultCurrencyValue,
+    new BN(1),
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("PoolIsEmpty");
+  });
 });
 
 test("GIVEN deactivated pool WHEN sudo try to promote a pool THEN poolPromotion is updated", async () => {
