@@ -20,6 +20,7 @@ import {
   MAX_BALANCE,
   GASP_ASSET_ID,
   MGA_DEFAULT_LIQ_TOKEN,
+  MAX_ARRAY_LENGTH,
 } from "./Constants";
 import { Fees } from "./Fees";
 import { SudoUser } from "./Framework/User/SudoUser";
@@ -469,7 +470,7 @@ export const sellAsset = async (
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = MAX_BALANCE;
+    liqId = MAX_ARRAY_LENGTH;
   }
   return await signTx(
     api,
@@ -628,7 +629,7 @@ export const buyAsset = async (
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = MAX_BALANCE;
+    liqId = MAX_ARRAY_LENGTH;
   }
   return await signTx(
     api,
@@ -654,7 +655,7 @@ export const mintLiquidity = async (
   let liqId: BN;
   liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = MAX_BALANCE;
+    liqId = MAX_ARRAY_LENGTH;
   }
   return await signTx(
     getApi(),
@@ -696,7 +697,7 @@ export const burnLiquidity = async (
   let liqId: BN;
   liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = MAX_BALANCE;
+    liqId = MAX_ARRAY_LENGTH;
   }
   return await signTx(
     getApi(),
