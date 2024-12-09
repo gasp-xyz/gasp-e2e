@@ -234,7 +234,7 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
     //lets empty the second wallet assets.
     await signSendAndWaitToFinishTx(
       api?.tx.market.multiswapAsset(
-        liqId,
+        [liqId],
         secondCurrency,
         testUser1.getAsset(secondCurrency)?.amountBefore.free!,
         firstCurrency,

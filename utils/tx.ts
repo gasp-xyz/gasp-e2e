@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import {
-  BN_MILLION,
   BN_ONE,
   BN_ZERO,
   MangataGenericEvent,
@@ -13,7 +12,7 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyJson, AnyTuple, Codec } from "@polkadot/types/types";
-import { BN, BN_MAX_INTEGER } from "@polkadot/util";
+import { BN } from "@polkadot/util";
 import { env } from "process";
 import { getApi, getMangataInstance } from "./api";
 import {
@@ -470,7 +469,7 @@ export const sellAsset = async (
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = BN_MILLION;
+    liqId = MAX_BALANCE;
   }
   return await signTx(
     api,
@@ -629,7 +628,7 @@ export const buyAsset = async (
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = BN_MAX_INTEGER;
+    liqId = MAX_BALANCE;
   }
   return await signTx(
     api,
@@ -655,7 +654,7 @@ export const mintLiquidity = async (
   let liqId: BN;
   liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = BN_MILLION;
+    liqId = MAX_BALANCE;
   }
   return await signTx(
     getApi(),
@@ -697,7 +696,7 @@ export const burnLiquidity = async (
   let liqId: BN;
   liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = BN_MILLION;
+    liqId = MAX_BALANCE;
   }
   return await signTx(
     getApi(),
