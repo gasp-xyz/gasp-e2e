@@ -96,6 +96,8 @@ describe("Proof of stake tests", () => {
           Assets.DEFAULT_AMOUNT.muln(20e6),
         ),
       ),
+    );
+    await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(
