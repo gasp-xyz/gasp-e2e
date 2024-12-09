@@ -694,7 +694,11 @@ export const burnLiquidity = async (
   secondAssetId: BN,
   liquidityAssetAmount: BN,
 ) => {
-  const liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  let liqId: BN;
+  liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  if (liqId.lt(BN_ZERO)) {
+    liqId = BN_MILLION;
+  }
   return await signTx(
     getApi(),
     Market.burnLiquidity(liqId, liquidityAssetAmount),
