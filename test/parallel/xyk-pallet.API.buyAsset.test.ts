@@ -188,12 +188,9 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       secondAssetAmount.sub(new BN(1)),
       buyPriceLocal.sub(new BN(1)),
     ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "BuyAssetFailedDueToSlippage",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual("ExcesiveInputAmount");
     });
 
     await validateUserPaidFeeForFailedTx(
