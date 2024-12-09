@@ -52,10 +52,10 @@ export function getEnvironmentRequiredVars() {
     : "";
   const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_PALLET_ADDRESS
-    : "";
+    : "0x6d6f646c70792f74727372790000000000000000";
   const treasuryBurnPalletAddress = process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
-    : "";
+    : "0x6d6f646c70792f7472737279626e627400000000";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
     : "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133";

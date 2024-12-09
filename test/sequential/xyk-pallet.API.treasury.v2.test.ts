@@ -7,11 +7,12 @@ import {
   calculate_sell_price_local_no_fee,
   calculate_sell_price_rpc,
   getBalanceOfPool,
+  getLiquidityAssetId,
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
 import { Xyk } from "../../utils/xyk";
-import { GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import {
   calculateFees,
@@ -185,9 +186,17 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     testLog
       .getLog()
       .debug(`treasury before: ${treasuryBefore}, sell price: ${sellPrice}`);
+    const liqId = await getLiquidityAssetId(GASP_ASSET_ID, currency);
 
+    //Xyk.buyAsset(GASP_ASSET_ID, currency, buyAssetAmount),
     await signSendFinalized(
-      Xyk.buyAsset(GASP_ASSET_ID, currency, buyAssetAmount),
+      Market.multiswapAssetBuy(
+        [liqId],
+        currency,
+        buyAssetAmount,
+        GASP_ASSET_ID,
+        MAX_BALANCE,
+      ),
       user,
     );
 
