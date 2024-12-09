@@ -1,6 +1,6 @@
 import { formatBalance } from "@polkadot/util/format";
 import { BN, hexToBn, hexToU8a, isHex } from "@polkadot/util";
-import { getApi, getMangataInstance, initApi, mangata } from "./api";
+import { getApi, initApi, mangata } from "./api";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
@@ -13,7 +13,13 @@ import { getStakingLiquidityTokens, sellAsset } from "./tx";
 import { Sudo } from "./sudo";
 import { setupApi, setupUsers } from "./setup";
 import { GASP_ASSET_ID } from "./Constants";
-import { BN_HUNDRED, BN_ONE, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
+import {
+  BN_HUNDRED,
+  BN_ONE,
+  BN_ZERO,
+  MangataGenericEvent,
+  signTx,
+} from "gasp-sdk";
 import Keyring from "@polkadot/keyring";
 import jsonpath from "jsonpath";
 import _ from "lodash";
@@ -52,10 +58,10 @@ export function getEnvironmentRequiredVars() {
     : "";
   const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_PALLET_ADDRESS
-    : "";
+    : "0x6d6f646c70792f74727372790000000000000000";
   const treasuryBurnPalletAddress = process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_BURN_PALLET_ADDRESS
-    : "";
+    : "0x6d6f646c70792f7472737279626e627400000000";
   const sudoUserName = process.env.TEST_SUDO_NAME
     ? process.env.TEST_SUDO_NAME
     : "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133";
@@ -196,15 +202,11 @@ export async function UserCreatesAPoolAndMintLiquidity(
     sudo,
   );
   await testUser1.addGASPTokens(sudo);
-  await (
-    await getMangataInstance()
-  ).xyk.createPool({
-    account: testUser1.keyRingPair,
-    firstTokenAmount: poolAmount,
-    firstTokenId: firstCurrency.toString(),
-    secondTokenId: secondCurrency.toString(),
-    secondTokenAmount: poolAmount,
-  });
+  await signTx(
+    getApi(),
+    Market.createPool(firstCurrency, poolAmount, secondCurrency, mintAmount),
+    testUser1.keyRingPair,
+  );
 
   await testUser1.mintLiquidity(firstCurrency, secondCurrency, mintAmount);
   return [firstCurrency, secondCurrency];
@@ -273,22 +275,22 @@ export async function waitBlockNumber(
   maxWaitingPeriod: number,
 ) {
   let currentBlock = await getBlockNumber();
-  let waitingperiodCounter: number;
+  let waitingPeriodCounter: number;
 
-  waitingperiodCounter = 0;
+  waitingPeriodCounter = 0;
   testLog.getLog().info("Waiting block number " + blockNumber);
   while (
     currentBlock < Number(blockNumber) &&
-    waitingperiodCounter < maxWaitingPeriod
+    waitingPeriodCounter < maxWaitingPeriod
   ) {
     await waitNewBlock();
     currentBlock = await getBlockNumber();
-    waitingperiodCounter = waitingperiodCounter + 1;
+    waitingPeriodCounter = waitingPeriodCounter + 1;
   }
   testLog.getLog().info("... Done waiting block number" + blockNumber);
   if (
-    waitingperiodCounter === maxWaitingPeriod ||
-    waitingperiodCounter > maxWaitingPeriod
+    waitingPeriodCounter === maxWaitingPeriod ||
+    waitingPeriodCounter > maxWaitingPeriod
   ) {
     testLog.getLog().warn("TIMEDOUT waiting for the specific block number");
   }

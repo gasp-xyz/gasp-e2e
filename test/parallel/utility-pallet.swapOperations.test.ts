@@ -13,7 +13,6 @@ import { BN_ONE, BN_HUNDRED, signTx } from "gasp-sdk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { ApiPromise } from "@polkadot/api";
 import { Tokens } from "../../utils/tokens";
 import { getLiquidityAssetId } from "../../utils/tx";
@@ -81,10 +80,22 @@ describe("Utility - batched swaps are not allowed", () => {
         lastToken,
         BN_MILLION,
       ),
-      sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
-      buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
-      compoundRewards: Xyk.compoundRewards(liq),
-      provideLiquidity: Xyk.provideLiquidity(liq, tokenIds[0], BN_HUNDRED),
+      sellAsset: Market.sellAsset(
+        poolIds[0],
+        tokenIds[0],
+        tokenIds[1],
+        BN_HUNDRED,
+        BN_ONE,
+      ),
+      buyAsset: Market.buyAsset(
+        poolIds[0],
+        tokenIds[0],
+        tokenIds[1],
+        BN_HUNDRED,
+        BN_MILLION,
+      ),
+      //compoundRewards: Xyk.compoundRewards(liq),
+      //provideLiquidity: Xyk.provideLiquidity(liq, tokenIds[0], BN_HUNDRED),
     };
   });
   it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(

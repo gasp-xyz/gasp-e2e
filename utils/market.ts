@@ -1,4 +1,4 @@
-import { BN } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { getLiquidityAssetId } from "./tx";
@@ -79,6 +79,22 @@ export class Market {
     );
   }
 
+  static buyAsset(
+    swapPool: BN,
+    soldAssetId: BN,
+    boughtAssetId: BN,
+    boughtAssetAmount: BN,
+    maxAmountIn: BN = new BN("340282366920938463463374607431768211455"), //u128::MAX,
+  ): Extrinsic {
+    return api.tx.market.multiswapAssetBuy(
+      [swapPool],
+      boughtAssetId,
+      boughtAssetAmount,
+      soldAssetId,
+      maxAmountIn,
+    );
+  }
+
   static multiswapAssetSell(
     swapPoolList: BN[],
     assetIdIn: BN,
@@ -92,6 +108,22 @@ export class Market {
       assetAmountIn,
       assetIdOut,
       minAmountOut,
+    );
+  }
+
+  static sellAsset(
+    swapPool: BN,
+    soldAssetId: BN,
+    boughtAssetId: BN,
+    soldAssetAmount: BN,
+    minBoughtOut: BN = BN_ZERO,
+  ): Extrinsic {
+    return api.tx.market.multiswapAsset(
+      [swapPool],
+      soldAssetId,
+      soldAssetAmount,
+      boughtAssetId,
+      minBoughtOut,
     );
   }
 }

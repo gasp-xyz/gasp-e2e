@@ -88,8 +88,9 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
     nonce: nonce,
     tip: 0,
   };
-  cost = await api?.tx.xyk
+  cost = await api?.tx.market
     .createPool(
+      "Xyk",
       firstCurrency,
       first_asset_amount,
       secondCurrency,

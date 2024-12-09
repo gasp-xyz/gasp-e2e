@@ -9,13 +9,8 @@ import { setupApi, setupUsers } from "../../utils/setup";
 import { User } from "../../utils/User";
 
 import { BN } from "@polkadot/util";
-import {
-  GASP_ASSET_ID,
-  TUR_ASSET_ID,
-  ETH_ASSET_ID,
-} from "../../utils/Constants";
+import { GASP_ASSET_ID, ETH_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_MILLION, BN_ZERO, signTx } from "gasp-sdk";
-import { Xyk } from "../../utils/xyk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Sudo } from "../../utils/sudo";
@@ -48,7 +43,7 @@ beforeAll(async () => {
     Assets.mintToken(ETH_ASSET_ID, testUser, Assets.DEFAULT_AMOUNT.muln(40e6)),
   );
   liqId = await getLiquidityAssetId(GASP_ASSET_ID, ETH_ASSET_ID);
-  if ((liqId = new BN(-1))) {
+  if (liqId.lt(BN_ZERO)) {
     await Sudo.asSudoFinalized(
       Sudo.sudoAsWithAddressString(
         testUser.keyRingPair.address,
@@ -60,11 +55,13 @@ beforeAll(async () => {
         ),
       ),
     );
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, ETH_ASSET_ID);
   }
 });
 
-test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is returned.", async () => {
-  const sellAssetEvent = api.tx.xyk.sellAsset(
+test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset THEN non-zero is returned", async () => {
+  const sellAssetEvent = api.tx.market.multiswapAsset(
+    [liqId],
     GASP_ASSET_ID,
     ETH_ASSET_ID,
     new BN(1000),
@@ -74,12 +71,12 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is sellAsset  THEN zero is ret
   const sellAssetPaymentInfo = await sellAssetEvent.paymentInfo(
     testUser.keyRingPair,
   );
-  expect(sellAssetPaymentInfo.partialFee).bnEqual(BN_ZERO);
+  expect(sellAssetPaymentInfo.partialFee).bnGt(BN_ZERO);
 });
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is multiswapBuyAsset THEN non-zero is returned", async () => {
   liqId = await getLiquidityAssetId(GASP_ASSET_ID, ETH_ASSET_ID);
-  const multiswapBuyEvent = api.tx.market.multiswapAsset(
+  const multiswapBuyEvent = api.tx.market.multiswapAssetBuy(
     [liqId],
     GASP_ASSET_ID,
     BN_HUNDRED,
@@ -105,7 +102,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is mintLiquidityEvent THEN non
   expect(mintLiquidityPaymentInfo.partialFee).bnGt(BN_ZERO);
 });
 
-test("GIVEN a paymentInfo request, WHEN extrinsic is compoundRewards THEN non-zero is returned", async () => {
+test.skip("GIVEN a paymentInfo request, WHEN extrinsic is compoundRewards THEN non-zero is returned", async () => {
   const compoundRewardsEvent = api.tx.xyk.compoundRewards(liqId, 1000000);
 
   const compoundRewardsPaymentInfo = await compoundRewardsEvent.paymentInfo(
@@ -115,7 +112,7 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is compoundRewards THEN non-ze
   expect(compoundRewardsPaymentInfo.partialFee).bnGt(BN_ZERO);
 });
 
-test("GIVEN a paymentInfo request, WHEN extrinsic is provideLiquidityWithId THEN non-zero is returned", async () => {
+test.skip("GIVEN a paymentInfo request, WHEN extrinsic is provideLiquidityWithId THEN non-zero is returned", async () => {
   const provideLiquidityEvent = api.tx.xyk.provideLiquidityWithConversion(
     liqId,
     GASP_ASSET_ID,
@@ -131,8 +128,8 @@ test("GIVEN a paymentInfo request, WHEN extrinsic is provideLiquidityWithId THEN
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is a batch with a sell/buy operation THEN non-zero is returned AND the extrinsic will fail because sell/buy are forbidden in batches tx", async () => {
   const batchAllEvent = api.tx.utility.batchAll([
-    Xyk.buyAsset(GASP_ASSET_ID, ETH_ASSET_ID, BN_HUNDRED),
-    Xyk.buyAsset(GASP_ASSET_ID, TUR_ASSET_ID, BN_HUNDRED),
+    Market.buyAsset(liqId, GASP_ASSET_ID, ETH_ASSET_ID, BN_HUNDRED),
+    Market.buyAsset(liqId, GASP_ASSET_ID, ETH_ASSET_ID, BN_HUNDRED),
   ]);
 
   await signTx(api, batchAllEvent, testUser.keyRingPair).then((result) => {

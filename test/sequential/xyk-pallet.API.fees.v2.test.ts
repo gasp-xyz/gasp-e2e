@@ -10,7 +10,6 @@ import {
   getTokensDiffForBlockAuthor,
 } from "../../utils/utils";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { Xyk } from "../../utils/xyk";
 import { Assets } from "../../utils/Assets";
 import { signSendFinalized } from "../../utils/sign";
 import { getApi } from "../../utils/api";
@@ -31,6 +30,7 @@ describe("API fees test suite", () => {
   let currency4: BN;
   let user1: User;
   let user2: User;
+  let liqId: BN;
 
   beforeAll(async () => {
     await setupApi();
@@ -55,6 +55,7 @@ describe("API fees test suite", () => {
         Market.createPool(currency1, BN_THOUSAND, currency2, BN_THOUSAND),
       ),
     );
+    liqId = await getLiquidityAssetId(currency1, currency2);
   });
 
   beforeEach(async () => {
@@ -125,7 +126,6 @@ describe("API fees test suite", () => {
 
   it("xyk-pallet - MGA tokens are subtracted as fee : BurnLiquidity", async () => {
     const from = await getBlockNumber();
-    const liqId = await getLiquidityAssetId(currency1, currency2);
     await signSendFinalized(Market.burnLiquidity(liqId, BN_THOUSAND), user1);
     const to = await getBlockNumber();
 
@@ -156,7 +156,7 @@ describe("API fees test suite", () => {
     const from = await getBlockNumber();
     //those currencies are not in whitelist -> hence tokens are reserved.
     await signSendFinalized(
-      Xyk.sellAsset(currency1, currency2, new BN(50)),
+      Market.sellAsset(liqId, currency1, currency2, new BN(50)),
       user1,
     );
     const to = await getBlockNumber();
@@ -167,7 +167,7 @@ describe("API fees test suite", () => {
   it("xyk-pallet - MGA tokens are / are not subtracted as fee : BuyAsset", async () => {
     const from = await getBlockNumber();
     await signSendFinalized(
-      Xyk.buyAsset(currency1, currency2, new BN(50)),
+      Market.buyAsset(liqId, currency1, currency2, new BN(50)),
       user1,
     );
     const to = await getBlockNumber();

@@ -12,7 +12,7 @@ import {
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
-import { waitBlockNumber, waitForNBlocks } from "../../utils/utils";
+import { waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
@@ -81,14 +81,8 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
         .buildUnsafe(),
     ),
   );
-  const disputeEndBlockNumber2 = Rolldown.getDisputeEndBlockNumber(
-    cancelResolutionEvents,
-  );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitBlockNumber(
-    (disputeEndBlockNumber2 + 1).toString(),
-    disputePeriodLength * 2,
-  );
+
   const resolutionEvents = await Rolldown.waitForL2UpdateExecuted(
     new BN(txIndex),
   );

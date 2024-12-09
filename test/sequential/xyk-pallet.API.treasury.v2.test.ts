@@ -7,10 +7,10 @@ import {
   calculate_sell_price_local_no_fee,
   calculate_sell_price_rpc,
   getBalanceOfPool,
+  getLiquidityAssetId,
   getTreasury,
   getTreasuryBurn,
 } from "../../utils/tx";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { AssetWallet, User } from "../../utils/User";
 import {
@@ -53,6 +53,7 @@ async function validateTreasuryAmountsEqual(
 describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
   let currency: BN;
   let user: User;
+  let liqId: BN;
 
   beforeAll(async () => {
     await setupApi();
@@ -74,7 +75,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
         ),
       ),
     );
-
+    liqId = await getLiquidityAssetId(GASP_ASSET_ID, currency);
     await user.refreshAmounts(AssetWallet.BEFORE);
   });
 
@@ -85,7 +86,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
     testLog.getLog().debug(`treasury before: ${treasuryBefore}`);
 
     await signSendFinalized(
-      Xyk.sellAsset(GASP_ASSET_ID, currency, sellAssetAmount),
+      Market.sellAsset(liqId, GASP_ASSET_ID, currency, sellAssetAmount),
       user,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -119,7 +120,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       );
 
     await signSendFinalized(
-      Xyk.buyAsset(currency, GASP_ASSET_ID, buyAssetAmount),
+      Market.buyAsset(liqId, currency, GASP_ASSET_ID, buyAssetAmount),
       user,
     );
 
@@ -151,7 +152,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       .debug(`treasury before: ${treasuryBefore}, fee: ${treasury}`);
 
     await signSendFinalized(
-      Xyk.sellAsset(currency, GASP_ASSET_ID, sellAssetAmount),
+      Market.sellAsset(liqId, currency, GASP_ASSET_ID, sellAssetAmount),
       user,
     );
 
@@ -187,7 +188,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       .debug(`treasury before: ${treasuryBefore}, sell price: ${sellPrice}`);
 
     await signSendFinalized(
-      Xyk.buyAsset(GASP_ASSET_ID, currency, buyAssetAmount),
+      Market.buyAsset(liqId, GASP_ASSET_ID, currency, buyAssetAmount),
       user,
     );
 
@@ -208,6 +209,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
 describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we store", () => {
   let connectedToMGA: BN, indirectlyConnected: BN;
   let user: User;
+  let liqId: BN;
 
   beforeAll(async () => {
     await setupApi();
@@ -242,6 +244,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       ),
     );
 
+    liqId = await getLiquidityAssetId(connectedToMGA, indirectlyConnected);
     await user.refreshAmounts(AssetWallet.BEFORE);
   });
 
@@ -268,7 +271,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
     );
 
     await signSendFinalized(
-      Xyk.sellAsset(connectedToMGA, indirectlyConnected, sellAssetAmount),
+      Market.sellAsset(
+        liqId,
+        connectedToMGA,
+        indirectlyConnected,
+        sellAssetAmount,
+      ),
       user,
     );
     await user.refreshAmounts(AssetWallet.AFTER);
@@ -324,7 +332,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       );
 
     await signSendFinalized(
-      Xyk.buyAsset(connectedToMGA, indirectlyConnected, buyAssetAmount),
+      Market.buyAsset(
+        liqId,
+        connectedToMGA,
+        indirectlyConnected,
+        buyAssetAmount,
+      ),
       user,
     );
 
@@ -357,7 +370,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       );
 
     await signSendFinalized(
-      Xyk.sellAsset(indirectlyConnected, connectedToMGA, sellAssetAmount),
+      Market.sellAsset(
+        liqId,
+        indirectlyConnected,
+        connectedToMGA,
+        sellAssetAmount,
+      ),
       user,
     );
 
@@ -409,7 +427,12 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       );
 
     await signSendFinalized(
-      Xyk.buyAsset(connectedToMGA, indirectlyConnected, buyAssetAmount),
+      Market.buyAsset(
+        liqId,
+        connectedToMGA,
+        indirectlyConnected,
+        buyAssetAmount,
+      ),
       user,
     );
 
@@ -466,9 +489,14 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     const treasuryBeforeConnectedAsset = await getTreasury(currency);
     const treasuryBurnBeforeConnectedAsset = await getTreasuryBurn(currency);
     const from = await getBlockNumber();
-
+    const liqId = await getLiquidityAssetId(GASP_ASSET_ID, currency);
     await signSendFinalized(
-      Xyk.buyAsset(currency, GASP_ASSET_ID, mgPoolAmount[0].sub(BN_ONE)),
+      Market.buyAsset(
+        liqId,
+        currency,
+        GASP_ASSET_ID,
+        mgPoolAmount[0].sub(BN_ONE),
+      ),
       user,
     );
 

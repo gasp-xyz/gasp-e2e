@@ -22,7 +22,6 @@ import { BN } from "@polkadot/util";
 import { keyring, setupApi, setupUsers } from "../../utils/setup";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
-import { Xyk } from "../../utils/xyk";
 import { testLog } from "../../utils/Logger";
 import { signSendFinalized } from "../../utils/sign";
 import { SudoDB } from "../../utils/SudoDB";
@@ -271,7 +270,10 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     expect(sellPriceLocal).bnEqual(sellPriceRpc);
 
-    await signSendFinalized(Xyk.sellAsset(assetId1, assetId2, amount), user2);
+    await signSendFinalized(
+      Market.sellAsset(liquidityAssetId, assetId1, assetId2, amount),
+      user2,
+    );
 
     await user1.refreshAmounts(AssetWallet.AFTER);
     await user2.refreshAmounts(AssetWallet.AFTER);
@@ -317,7 +319,10 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     expect(sellPriceLocal).bnEqual(sellPriceRpc);
 
-    await signSendFinalized(Xyk.sellAsset(assetId2, assetId1, amount), user2);
+    await signSendFinalized(
+      Market.sellAsset(liquidityAssetId, assetId2, assetId1, amount),
+      user2,
+    );
 
     await user1.refreshAmounts(AssetWallet.AFTER);
     await user2.refreshAmounts(AssetWallet.AFTER);
@@ -363,7 +368,10 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     expect(buyPriceLocal).bnEqual(buyPriceRpc);
 
-    await signSendFinalized(Xyk.buyAsset(assetId1, assetId2, amount), user2);
+    await signSendFinalized(
+      Market.buyAsset(liquidityAssetId, assetId1, assetId2, amount),
+      user2,
+    );
 
     await user1.refreshAmounts(AssetWallet.AFTER);
     await user2.refreshAmounts(AssetWallet.AFTER);
@@ -412,7 +420,10 @@ describe("xyk-pallet: Happy case scenario", () => {
 
     expect(buyPriceLocal).bnEqual(buyPriceRpc);
 
-    await signSendFinalized(Xyk.buyAsset(assetId2, assetId1, amount), user2);
+    await signSendFinalized(
+      Market.buyAsset(liquidityAssetId, assetId2, assetId1, amount),
+      user2,
+    );
 
     await user1.refreshAmounts(AssetWallet.AFTER);
     await user2.refreshAmounts(AssetWallet.AFTER);
@@ -873,10 +884,12 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     error = xykErrors.NotEnoughAssets,
   ) {
     const amount = new BN(20000);
+    const liq = await getLiquidityAssetId(sell, buy);
 
-    await signSendFinalized(Xyk.sellAsset(sell, buy, amount), user2).catch(
-      checkError(error),
-    );
+    await signSendFinalized(
+      Market.sellAsset(liq, sell, buy, amount),
+      user2,
+    ).catch(checkError(error));
     testLog.getLog().info("ExpectNoChange On:sellAssetFail");
     await expectNoChange();
   }
@@ -887,10 +900,12 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     error = xykErrors.NotEnoughAssets,
   ) {
     const amount = new BN(20000);
+    const liq = await getLiquidityAssetId(sell, buy);
 
-    await signSendFinalized(Xyk.buyAsset(sell, buy, amount), user2).catch(
-      checkError(error),
-    );
+    await signSendFinalized(
+      Market.buyAsset(liq, sell, buy, amount),
+      user2,
+    ).catch(checkError(error));
     testLog.getLog().info("ExpectNoChange On:buyAssetFail");
     await expectNoChange();
   }

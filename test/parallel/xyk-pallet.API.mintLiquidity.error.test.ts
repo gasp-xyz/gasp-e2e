@@ -6,7 +6,12 @@
  */
 import { jest } from "@jest/globals";
 import { api, getApi, initApi } from "../../utils/api";
-import { getBalanceOfPool, mintLiquidity, createPool } from "../../utils/tx";
+import {
+  getBalanceOfPool,
+  mintLiquidity,
+  createPool,
+  getLiquidityAssetId,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -225,13 +230,14 @@ describe("xyk-pallet - Mint liquidity tests: MintLiquidity Errors:", () => {
       firstAssetAmount,
       poolAmountSecondCurrency,
     ]);
-
+    const liqId = await getLiquidityAssetId(secondCurrency, firstCurrency);
     //lets empty the second wallet assets.
     await signSendAndWaitToFinishTx(
-      api?.tx.xyk.sellAsset(
+      api?.tx.market.multiswapAsset(
+        liqId,
         secondCurrency,
-        firstCurrency,
         testUser1.getAsset(secondCurrency)?.amountBefore.free!,
+        firstCurrency,
         new BN(0),
       ),
       testUser1.keyRingPair,

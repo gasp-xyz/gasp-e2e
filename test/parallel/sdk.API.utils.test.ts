@@ -9,9 +9,12 @@ import { BN } from "@polkadot/util";
 import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
-import { multiSwapBuyMarket, multiSwapSellMarket } from "../../utils/tx";
+import {
+  getLiquidityAssetId,
+  multiSwapBuyMarket,
+  multiSwapSellMarket,
+} from "../../utils/tx";
 import {
   BN_MILLION,
   BN_ONE,
@@ -31,6 +34,7 @@ let testUser: User;
 let testUser1: User;
 let sudo: User;
 let token1: BN;
+let liqId: BN;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -75,12 +79,13 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Assets.mintToken(token1, testUser1, BN_TEN_THOUSAND),
   );
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 });
 
 test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const buyAssetEvent = await signTx(
     api,
-    Xyk.buyAsset(GASP_ASSET_ID, token1, new BN(1000)),
+    Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -93,15 +98,9 @@ test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransaction
 });
 
 test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
   const buyAssetEvent = await signTx(
     api,
-    Xyk.buyAsset(token1, token2, new BN(1000)),
+    Market.buyAsset(BN_MILLION, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -117,7 +116,7 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
 test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const sellAssetEvent = await signTx(
     api,
-    Xyk.sellAsset(GASP_ASSET_ID, token1, new BN(1000)),
+    Market.sellAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -130,15 +129,9 @@ test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactio
 });
 
 test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
   const sellAssetEvent = await signTx(
     api,
-    Xyk.sellAsset(token1, token2, new BN(1000)),
+    Market.sellAsset(BN_MILLION, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
