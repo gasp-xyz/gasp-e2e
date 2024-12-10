@@ -117,18 +117,22 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   const saleAssetValue = thresholdValue.add(new BN(2));
   //non existing pool
   expect(
-    await api.rpc.xyk.is_buy_asset_lock_free(
-      [secondCurrency.toString(), firstCurrency.addn(10).toString()],
-      thresholdValue!.addn(1),
-    ),
-  ).toBeNull();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.addn(10).toString()],
+        thresholdValue!.addn(1),
+      )
+    ).toString(),
+  ).toEqual("");
   // non mga paired token. -> always false.
   expect(
-    await api.rpc.xyk.is_buy_asset_lock_free(
-      [secondCurrency.toString(), thirdCurrency.toString()],
-      thresholdValue!.addn(1000),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), thirdCurrency.toString()],
+        thresholdValue!.addn(1000),
+      )
+    ).toString(),
+  ).toEqual("false");
 
   const isFree = api.rpc.xyk.is_sell_asset_lock_free(
     [firstCurrency.toString(), secondCurrency.toString()],
@@ -137,37 +141,47 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   expect(isFree).toBeTruthy();
   //MGA pool
   expect(
-    await api.rpc.xyk.is_sell_asset_lock_free(
-      [firstCurrency.toString(), GASP_ASSET_ID.toString()],
-      thresholdValue.subn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [firstCurrency.toString(), GASP_ASSET_ID.toString()],
+        thresholdValue.subn(2),
+      )
+    ).toString(),
+  ).toEqual("");
   expect(
-    await api.rpc.xyk.is_sell_asset_lock_free(
-      [GASP_ASSET_ID.toString(), firstCurrency.toString()],
-      thresholdValue.subn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [GASP_ASSET_ID.toString(), firstCurrency.toString()],
+        thresholdValue.subn(2),
+      )
+    ).toString(),
+  ).toEqual("");
   expect(
-    await api.rpc.xyk.is_sell_asset_lock_free(
-      [GASP_ASSET_ID.toString(), firstCurrency.toString()],
-      thresholdValue,
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [GASP_ASSET_ID.toString(), firstCurrency.toString()],
+        thresholdValue,
+      )
+    ).toString(),
+  ).toEqual("");
   expect(
-    await api.rpc.xyk.is_sell_asset_lock_free(
-      [firstCurrency.toString(), GASP_ASSET_ID.toString()],
-      thresholdValue,
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [firstCurrency.toString(), GASP_ASSET_ID.toString()],
+        thresholdValue,
+      )
+    ).toString(),
+  ).toEqual("");
 
   //MGA paired token
   expect(
-    await api.rpc.xyk.is_sell_asset_lock_free(
-      [firstCurrency.toString(), secondCurrency.toString()],
-      thresholdValue.subn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [firstCurrency.toString(), secondCurrency.toString()],
+        thresholdValue.subn(2),
+      )
+    ).toString(),
+  ).toEqual("false");
   const amount = (await mangata?.rpc.calculateBuyPriceId(
     secondCurrency.toString(),
     firstCurrency.toString(),
@@ -177,31 +191,39 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //and the valuation of the result is less than threshold. ( you need 670secCurr to get 666firstCurr)
   //th is 670,
   expect(
-    await api.rpc.xyk.is_sell_asset_lock_free(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      thresholdValue.addn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        thresholdValue.addn(2),
+      )
+    ).toString(),
+  ).toEqual("false");
 
   expect(
-    await api.rpc.xyk.is_sell_asset_lock_free(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      amount.addn(1),
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        amount.addn(1),
+      )
+    ).toString(),
+  ).toEqual("false");
 
   expect(
-    await api.rpc.xyk.is_buy_asset_lock_free(
-      [firstCurrency.toString(), secondCurrency.toString()],
-      thresholdValue.subn(1),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [firstCurrency.toString(), secondCurrency.toString()],
+        thresholdValue.subn(1),
+      )
+    ).toString(),
+  ).toEqual("false");
   expect(
-    await api.rpc.xyk.is_buy_asset_lock_free(
-      [firstCurrency.toString(), secondCurrency.toString()],
-      amount.addn(1),
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [firstCurrency.toString(), secondCurrency.toString()],
+        amount.addn(1),
+      )
+    ).toString(),
+  ).toEqual("false");
 
   //Indirect paired token
   const amountReqToGetThreshold = await mangata?.rpc.calculateSellPriceId(
@@ -212,17 +234,21 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //Same as before, we first calcualte from wich value, the buy results on the threshold.
   //Then we check that the value (-1) result in false, and +1 in true.
   expect(
-    await api.rpc.xyk.is_buy_asset_lock_free(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      amountReqToGetThreshold!,
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        amountReqToGetThreshold!,
+      )
+    ).toString(),
+  ).toEqual("false");
   expect(
-    await api.rpc.xyk.is_buy_asset_lock_free(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      amountReqToGetThreshold!.addn(1),
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        amountReqToGetThreshold!.addn(1),
+      )
+    ).toString(),
+  ).toEqual("false");
 });
 
 test("gasless- isFree works same as multiswap of two", async () => {
