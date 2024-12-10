@@ -140,7 +140,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.NotEnoughReserve);
+      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -161,7 +161,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.NotEnoughReserve);
+      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -190,7 +190,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual("ExcesiveInputAmount");
+      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
 
     await validateUserPaidFeeForFailedTx(

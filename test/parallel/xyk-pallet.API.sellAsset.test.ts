@@ -272,22 +272,20 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       remainingOfCurrency1.free,
       sellPriceLocal.add(new BN(1)),
     ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "SellAssetFailedDueToSlippage",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual("InsufficientOutputAmount");
     });
     //fee: 603 ??  //TODO: validate with Stano.
-    const feeToAvoidFrontRunning = new BN(603);
+    //const feeToAvoidFrontRunning = new BN(603);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    const diffFromWallet = testUser1
-      .getAsset(thirdCurrency)
-      ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
+    //To Gonzalo: Should we take this fee yet?
+    // const diffFromWallet = testUser1
+    //   .getAsset(thirdCurrency)
+    //   ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
     expect(testUser1.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!,
+      testUser1.getAsset(thirdCurrency)?.amountBefore.free!,
     );
 
     //second wallet should not be modified.
