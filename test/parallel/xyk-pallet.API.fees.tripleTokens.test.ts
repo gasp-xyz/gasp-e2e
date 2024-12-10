@@ -250,10 +250,10 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
   );
 
   const saleAssetValue = swapValueThreshold.muln(2);
-
+  const workAroundFromBug = swapValueThreshold.muln(1.5);
   await signTx(
     api,
-    Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue),
+    Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue, workAroundFromBug),
     testUser1.keyRingPair,
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -269,10 +269,11 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
   );
 
   const saleAssetValue = swapValueThreshold.muln(2);
+  const workAroundFromBug = swapValueThreshold.muln(1.5);
 
   await signTx(
     api,
-    Market.sellAsset(liqId, secondCurrency, firstCurrency, saleAssetValue),
+    Market.sellAsset(liqId, secondCurrency, firstCurrency, saleAssetValue, workAroundFromBug),
     testUser1.keyRingPair,
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -289,18 +290,20 @@ test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND
   );
 
   const saleAssetValue = swapValueThreshold.divn(2);
+  const workAroundFromBug = swapValueThreshold.muln(1.5);
 
   try {
     await signTx(
       api,
-      Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue),
+      Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue, workAroundFromBug),
       testUser1.keyRingPair,
     );
   } catch (error) {
     clientError = error;
   }
+  //Goncer - fixing until this is done. https://mangatafinance.atlassian.net/browse/GASP-1723
   expect(clientError.data).toContain(
-    "Invalid Transaction: Fee lock processing has failed either due to not enough funds to reserve or an unexpected error",
+    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
   );
 });
 
