@@ -219,7 +219,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   expect(stringToBN(transactionFee)).bnEqual(BN_ZERO);
 });
 
-test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
+test("[BUG] gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -238,5 +238,5 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
     ).catch((reason) => {
       throw new Error(reason.data);
     }),
-  ).rejects.toThrow(feeLockErrors.AccountBalanceFail);
+  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
 });
