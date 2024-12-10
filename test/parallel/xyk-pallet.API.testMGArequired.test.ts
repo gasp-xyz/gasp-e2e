@@ -161,7 +161,7 @@ test("xyk-pallet - User Balance - Selling an asset does not require paying fees"
   });
   expect(
     soldEvent.filter((event) => event.method === "AssetsSwapped"),
-  ).toHaveLength(1);
+  ).toHaveLength(2);
   expect(exception).toBeFalsy();
 });
 

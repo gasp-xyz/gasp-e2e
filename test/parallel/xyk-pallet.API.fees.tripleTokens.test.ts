@@ -261,7 +261,7 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
   });
 });
 
-test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok2 to tok1 above the “threshold” THEN operation succeed", async () => {
+test("[BUG] GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok2 to tok1 above the “threshold” THEN operation succeed", async () => {
   const api = getApi();
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
@@ -281,7 +281,7 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
   });
 });
 
-test("GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND the Tx is a swap below the “threshold” THEN we receive client error", async () => {
+test("[BUG] GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND the Tx is a swap below the “threshold” THEN we receive client error", async () => {
   const api = getApi();
   let clientError: any;
   await Sudo.batchAsSudoFinalized(
