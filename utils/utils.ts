@@ -573,6 +573,7 @@ export enum xykErrors {
   LiquidityTokenCreationFailed = "LiquidityTokenCreationFailed",
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
   PoolIsEmpty = "PoolIsEmpty",
+  ExcesiveInputAmount = "ExcesiveInputAmount",
 }
 
 export enum feeLockErrors {
