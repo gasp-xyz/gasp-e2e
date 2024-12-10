@@ -226,13 +226,15 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
 });
 
 test("gasless- isFree works same as multiswap of two", async () => {
-  const saleAssetValue = thresholdValue.add(new BN(2));
+  const saleAssetValue = thresholdValue
+    .add(new BN(2))
+    .add(thresholdValue.muln(0.004));
 
   const isFree = await api.rpc.xyk.is_sell_asset_lock_free(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
-  expect(isFree).toBeTruthy();
+
   const mgasBef = await mangata?.query.getTokenBalance(
     GASP_ASSET_ID.toString(),
     testUser1.keyRingPair.address,
@@ -242,7 +244,7 @@ test("gasless- isFree works same as multiswap of two", async () => {
     testUser1,
     [firstCurrency, secondCurrency],
     saleAssetValue,
-    saleAssetValue.muln(0.75),
+    new BN("663").mul(Assets.MG_UNIT),
   );
 
   const eventResponse = getEventResultFromMangataTx(events!, [
@@ -258,4 +260,5 @@ test("gasless- isFree works same as multiswap of two", async () => {
   expect(mgasBef?.reserved).bnEqual(BN_ZERO);
   expect(mgasAfter?.reserved).bnEqual(BN_ZERO);
   expect(mgasBef!.free).bnEqual(mgasAfter!.free);
+  expect(isFree.toString()).toEqual("true");
 });
