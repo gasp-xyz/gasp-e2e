@@ -55,7 +55,7 @@ export function getMangataApiUrlPort() {
 export function getEnvironmentRequiredVars() {
   const xykPalletAddress = process.env.E2E_XYK_PALLET_ADDRESS
     ? process.env.E2E_XYK_PALLET_ADDRESS
-    : "";
+    : "0x6d6f646c37396231346339360000000000000000";
   const treasuryPalletAddress = process.env.E2E_TREASURY_PALLET_ADDRESS
     ? process.env.E2E_TREASURY_PALLET_ADDRESS
     : "0x6d6f646c70792f74727372790000000000000000";
