@@ -366,7 +366,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
         thirdCurrency,
         firstCurrency,
         amountToBuy,
-        buyPriceLocal,
+        buyPriceLocal.addn(1),
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [

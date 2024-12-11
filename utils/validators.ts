@@ -17,6 +17,7 @@ import {
   calculateLiqAssetAmount,
   fromBNToUnitString,
   fromStringToUnitString,
+  stringToBN,
 } from "./utils";
 import { getApi } from "./api";
 
@@ -77,11 +78,15 @@ export function validateAssetsSwappedEvent(
   const rawData = result.data;
   expect(rawData).not.toBeNull();
   expect(rawData[0]).toEqual(userAddress);
-  expect(parseInt(rawData[1][0])).toEqual(parseInt(firstCurrency.toString()));
+  expect(stringToBN(rawData[1][0])).bnEqual(
+    stringToBN(firstCurrency.toString()),
+  );
   expect(fromStringToUnitString(rawData[2])).toEqual(
     fromBNToUnitString(first_asset_amount),
   );
-  expect(parseInt(rawData[1][1])).toEqual(parseInt(secondCurrency.toString()));
+  expect(stringToBN(rawData[1][1])).toEqual(
+    stringToBN(secondCurrency.toString()),
+  );
   expect(fromStringToUnitString(rawData[3])).toEqual(
     fromBNToUnitString(second_asset_amount),
   );
