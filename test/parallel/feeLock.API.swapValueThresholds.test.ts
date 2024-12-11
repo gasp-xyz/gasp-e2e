@@ -238,5 +238,5 @@ test("[BUG] gasless- Given a feeLock correctly configured WHEN the user swaps tw
     ).catch((reason) => {
       throw new Error(reason.data);
     }),
-  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
+  ).rejects.toThrow(feeLockErrors.AccountBalanceFail);
 });
