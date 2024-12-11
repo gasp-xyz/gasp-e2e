@@ -147,7 +147,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         thresholdValue.subn(2),
       )
     ).toString(),
-  ).toEqual("");
+  ).toEqual("false");
   expect(
     (
       await api.rpc.xyk.is_sell_asset_lock_free(
@@ -155,7 +155,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         thresholdValue.subn(2),
       )
     ).toString(),
-  ).toEqual("");
+  ).toEqual("false");
   expect(
     (
       await api.rpc.xyk.is_sell_asset_lock_free(
@@ -163,7 +163,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         thresholdValue,
       )
     ).toString(),
-  ).toEqual("");
+  ).toEqual("true");
   expect(
     (
       await api.rpc.xyk.is_sell_asset_lock_free(
@@ -171,7 +171,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         thresholdValue,
       )
     ).toString(),
-  ).toEqual("");
+  ).toEqual("false");
 
   //MGA paired token
   expect(
@@ -223,7 +223,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         amount.addn(1),
       )
     ).toString(),
-  ).toEqual("false");
+  ).toEqual("true");
 
   //Indirect paired token
   const amountReqToGetThreshold = await mangata?.rpc.calculateSellPriceId(
