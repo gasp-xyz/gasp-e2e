@@ -18,6 +18,7 @@ export const wellKnownUsers: Record<string, string> = {
 export class SequencerStaking {
   static async setupASequencer(user: User, chain: ChainName = "Ethereum") {
     const extrinsic = await SequencerStaking.provideSequencerStaking(
+      user,
       (await SequencerStaking.minimalStakeAmount()).addn(1000),
       chain,
     );
@@ -36,6 +37,7 @@ export class SequencerStaking {
     return new EthUser(new Keyring({ type: "ethereum" }), pkey);
   }
   static async provideSequencerStaking(
+    sender: User,
     amount: BN = BN_ZERO,
     chainName: ChainName = "Ethereum",
     stakeAndJoin = true,
@@ -52,11 +54,15 @@ export class SequencerStaking {
       amountToStake = await SequencerStaking.minimalStakeAmount();
       amountToStake = amountToStake.addn(1000);
     }
-    return api.tx.sequencerStaking.provideSequencerStake(
-      chainName,
-      stringToBN(amountToStake.toString()),
-      null,
-      stakeAction,
+    return Sudo.sudo(
+      api.tx.sequencerStaking.provideSequencerStake(
+        chainName,
+        stringToBN(amountToStake.toString()),
+        null,
+        stakeAction,
+        //@ts-ignore
+        sender.keyRingPair.address,
+      ),
     );
   }
 

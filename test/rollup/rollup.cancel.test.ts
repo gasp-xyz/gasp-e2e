@@ -11,8 +11,10 @@ import { User } from "../../utils/User";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { MangataGenericEvent, signTx } from "gasp-sdk";
 import { createAnUpdate, Rolldown } from "../../utils/rollDown/Rolldown";
-import { expectExtrinsicSucceed } from "../../utils/utils";
-import { waitForEvents } from "../../utils/eventListeners";
+import {
+  waitForEvents,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { nToBigInt } from "@polkadot/util";
@@ -39,14 +41,13 @@ describe("Rollup", () => {
 
     test("A sequencer who creates a fake deposit, gets slashed", async () => {
       const newSequencer = user;
-      await signTx(
-        getApi(),
+      await Sudo.batchAsSudoFinalized(
         await SequencerStaking.provideSequencerStaking(
+          newSequencer,
           (await SequencerStaking.minimalStakeAmount()).addn(1000),
         ),
-        newSequencer.keyRingPair,
       ).then(async (events) => {
-        expectExtrinsicSucceed(events);
+        await waitSudoOperationSuccess(events);
       });
 
       await Rolldown.waitForReadRights(newSequencer.keyRingPair.address);
@@ -67,7 +68,7 @@ describe("Rollup", () => {
       //wait for the update to be in contract
       await waitForBatchWithRequest(nToBigInt(id), getL1("EthAnvil")!);
 
-      // FIXME: sequencer should close cancel automatically so maybe instead 
+      // FIXME: sequencer should close cancel automatically so maybe instead
       // test should wait for that to happen on L1 ?
       //
       // await Rolldown.closeCancelOnL1(

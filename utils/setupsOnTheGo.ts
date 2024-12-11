@@ -124,10 +124,10 @@ export async function createSequencers(num: number) {
     txs.push(
       Sudo.sudoAsWithAddressString(
         user.keyRingPair.address,
-        await SequencerStaking.provideSequencerStaking(BN_BILLION),
+        await SequencerStaking.provideSequencerStaking(user, BN_BILLION),
       ),
     );
-    if (i % 5 === 0){
+    if (i % 5 === 0) {
       await Sudo.batchAsSudoFinalized(...txs);
       txs = [];
     }
@@ -141,7 +141,7 @@ export async function monitorSequencers() {
     const api = await getApi();
     await api.rpc.chain.subscribeNewHeads(async (head): Promise<void> => {
       const seqcs = await api?.query.sequencerStaking.selectedSequencer();
-      const selected = JSON.stringify( seqcs);
+      const selected = JSON.stringify(seqcs);
       if (selectedSeq !== selected) {
         selectedSeq = selected;
         testLog.getLog().info(head.number.toNumber() + " - " + selectedSeq);
@@ -2064,6 +2064,7 @@ export async function create10sequencers(nw = "Ethereum") {
       Sudo.sudoAsWithAddressString(
         users[0].keyRingPair.address,
         await SequencerStaking.provideSequencerStaking(
+          users[0],
           BN_ZERO,
           nw as ChainName,
         ),
