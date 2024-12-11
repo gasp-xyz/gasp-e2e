@@ -194,7 +194,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     });
 
     await validateUserPaidFeeForFailedTx(
-      buyPriceLocal,
       testUser1,
       firstCurrency,
       secondCurrency,
