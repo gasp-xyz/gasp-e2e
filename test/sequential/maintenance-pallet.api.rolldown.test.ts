@@ -186,12 +186,6 @@ describe.each(["mm", "upgradabilityMm"])(
             ),
             getSudoUser(),
           ],
-          sequencerSetup: [
-            await SequencerStaking.provideSequencerStaking(
-              users[1].keyRingPair.address,
-            ),
-            users[1],
-          ],
           sequencerTearDown: [
             await SequencerStaking.leaveSequencerStaking(),
             users[2],
@@ -237,19 +231,42 @@ describe.each(["mm", "upgradabilityMm"])(
             );
           });
       });
-      it.each(["sequencerSetup", "sequencerTearDown"])(
+      it.each(["sequencerSetup"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);
-          let signer: User = getSudoUser();
-          const [extrinsic, testsSigner] = tests[testName];
-          if (mmMode === "mm" && testName === "sequencerTearDown") {
-            signer = testsSigner;
+          let usr: User;
+
+          if (mmMode === "mm") {
+            usr = users[1];
+          } else {
+            usr = user;
           }
-          if (
-            mmMode === "upgradabilityMm" &&
-            testName === "sequencerTearDown"
-          ) {
+          const extrinsic = await SequencerStaking.provideSequencerStaking(
+            usr.keyRingPair.address,
+          );
+          const signer = getSudoUser();
+          const nonce = await getCurrentNonce(signer.keyRingPair.address);
+          await signTx(api, extrinsic, signer.keyRingPair, {
+            nonce: nonce,
+          }).then(async (events) => {
+            const event = getEventResultFromMangataTx(events);
+            testLog
+              .getLog()
+              .info("DEBUG::Event result - " + JSON.stringify(event));
+            expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+          });
+        },
+      );
+      it.each(["sequencerTearDown"])(
+        "%s operations are allowed in mm",
+        async (testName) => {
+          testLog.getLog().info("DEBUG::TestName - " + testName);
+          let signer: User;
+          const [extrinsic, testsSigner] = tests[testName];
+          if (mmMode === "mm") {
+            signer = testsSigner;
+          } else {
             signer = user;
           }
           const nonce = await getCurrentNonce(signer.keyRingPair.address);
