@@ -699,10 +699,14 @@ export const burnLiquidity = async (
   if (liqId.lt(BN_ZERO)) {
     liqId = MAX_ARRAY_LENGTH;
   }
+  const nonce = await getCurrentNonce(account.address);
   return await signTx(
     getApi(),
     Market.burnLiquidity(liqId, liquidityAssetAmount),
     account,
+    {
+      nonce: nonce,
+    },
   );
 };
 
