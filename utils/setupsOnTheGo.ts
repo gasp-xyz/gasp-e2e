@@ -4,7 +4,14 @@ import BN from "bn.js";
 import { Assets } from "./Assets";
 import { MAX_BALANCE, GASP_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { alice, Extrinsic, setupApi, setupUsers, sudo } from "./setup";
+import {
+  alice,
+  Extrinsic,
+  getSudoUser,
+  setupApi,
+  setupUsers,
+  sudo,
+} from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
 import { SudoDB } from "./SudoDB";
@@ -118,13 +125,17 @@ export async function createSequencers(num: number) {
   let txs = [];
   await setupApi();
   setupUsers();
+  const sudo = getSudoUser();
   for (let i = 0; i < num; i++) {
     const user = new User(new Keyring({ type: "ethereum" }));
     txs.push(Assets.mintNative(user));
     txs.push(
-      Sudo.sudoAsWithAddressString(
-        user.keyRingPair.address,
-        await SequencerStaking.provideSequencerStaking(user, BN_BILLION),
+      Sudo.sudoAs(
+        sudo,
+        await SequencerStaking.provideSequencerStaking(
+          user.keyRingPair.address,
+          BN_BILLION,
+        ),
       ),
     );
     if (i % 5 === 0) {
@@ -2061,13 +2072,10 @@ export async function create10sequencers(nw = "Ethereum") {
     const users = await setupUsers();
     txs.push(Assets.mintNativeAddress(users[0].keyRingPair.address));
     txs.push(
-      Sudo.sudoAsWithAddressString(
+      await SequencerStaking.provideSequencerStaking(
         users[0].keyRingPair.address,
-        await SequencerStaking.provideSequencerStaking(
-          users[0],
-          BN_ZERO,
-          nw as ChainName,
-        ),
+        BN_ZERO,
+        nw as ChainName,
       ),
     );
   }

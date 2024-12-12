@@ -140,9 +140,8 @@ describe.each(["mm", "upgradabilityMm"])(
         const tokenAddress = JSON.parse(token.toString()).ethereum;
         await setupUsersWithBalances(users, tokenIds.concat([GASP_ASSET_ID]));
         await Sudo.batchAsSudoFinalized(
-          Sudo.sudoAs(
-            users[2],
-            await SequencerStaking.provideSequencerStaking(),
+          await SequencerStaking.provideSequencerStaking(
+            users[2].keyRingPair.address,
           ),
         ).then((value) => {
           testLog
@@ -188,7 +187,9 @@ describe.each(["mm", "upgradabilityMm"])(
             getSudoUser(),
           ],
           sequencerSetup: [
-            await SequencerStaking.provideSequencerStaking(),
+            await SequencerStaking.provideSequencerStaking(
+              users[1].keyRingPair.address,
+            ),
             users[1],
           ],
           sequencerTearDown: [
@@ -240,11 +241,15 @@ describe.each(["mm", "upgradabilityMm"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);
-          let signer: User;
+          let signer: User = getSudoUser();
           const [extrinsic, testsSigner] = tests[testName];
-          if (mmMode === "mm") {
+          if (mmMode === "mm" && testName === "sequencerTearDown") {
             signer = testsSigner;
-          } else {
+          }
+          if (
+            mmMode === "upgradabilityMm" &&
+            testName === "sequencerTearDown"
+          ) {
             signer = user;
           }
           const nonce = await getCurrentNonce(signer.keyRingPair.address);

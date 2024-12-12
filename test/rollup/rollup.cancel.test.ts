@@ -43,7 +43,7 @@ describe("Rollup", () => {
       const newSequencer = user;
       await Sudo.batchAsSudoFinalized(
         await SequencerStaking.provideSequencerStaking(
-          newSequencer,
+          newSequencer.keyRingPair.address,
           (await SequencerStaking.minimalStakeAmount()).addn(1000),
         ),
       ).then(async (events) => {

@@ -67,16 +67,19 @@ describe("Withdraw & Batches tests -", () => {
     await SequencerStaking.removeAddedSequencers();
     const [testUser2] = setupUsers();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    const stakeAndJoinExtrinsic =
-      await SequencerStaking.provideSequencerStaking(
-        minToBeSequencer.addn(1000),
-        chain,
-      );
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(testUser),
       Assets.mintNative(testUser2),
-      Sudo.sudoAs(testUser, stakeAndJoinExtrinsic),
-      Sudo.sudoAs(testUser2, stakeAndJoinExtrinsic),
+      await SequencerStaking.provideSequencerStaking(
+        testUser.keyRingPair.address,
+        minToBeSequencer.addn(1000),
+        chain,
+      ),
+      await SequencerStaking.provideSequencerStaking(
+        testUser2.keyRingPair.address,
+        minToBeSequencer.addn(1000),
+        chain,
+      ),
     );
     await createAnUpdateAndCancelIt(
       testUser,
@@ -147,13 +150,12 @@ describe("Withdraw & Batches tests -", () => {
     //since there is no token in the Arbitrum chain by default, we create a new one
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
     await SequencerStaking.removeAddedSequencers();
-    await signTx(
-      await getApi(),
+    await Sudo.batchAsSudoFinalized(
       await SequencerStaking.provideSequencerStaking(
+        testUser.keyRingPair.address,
         minToBeSequencer.addn(1234),
         "Arbitrum",
       ),
-      testUser.keyRingPair,
     );
     await Rolldown.waitForReadRights(
       testUser.keyRingPair.address,

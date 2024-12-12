@@ -29,7 +29,6 @@ let testUser1: User;
 let testUser2: User;
 let testUser2Address: string;
 let disputePeriodLength: number;
-let stakeAndJoinExtrinsic: any;
 
 beforeAll(async () => {
   await initApi();
@@ -43,15 +42,19 @@ beforeEach(async () => {
   [testUser1, testUser2] = setupUsers();
   await SequencerStaking.removeAllSequencers();
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
-    minToBeSequencer.addn(1000),
-    chain,
-  );
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
-    Sudo.sudoAs(testUser1, stakeAndJoinExtrinsic),
-    Sudo.sudoAs(testUser2, stakeAndJoinExtrinsic),
+    await SequencerStaking.provideSequencerStaking(
+      testUser1.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
+    await SequencerStaking.provideSequencerStaking(
+      testUser2.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
   );
   const sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Arbitrum).toContain(
