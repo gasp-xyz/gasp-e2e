@@ -261,7 +261,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
   });
 
   test("Sell assets with a high expectation: limit +1", async () => {
-    let event: any;
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const remainingOfCurrency1 =
       testUser1.getAsset(thirdCurrency)?.amountBefore!;
@@ -277,11 +276,15 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       fourthCurrency,
       remainingOfCurrency1.free,
       sellPriceLocal.add(new BN(1)),
-    ).then((result) => {
-      event = result;
+    ).then(async (result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual("InsufficientOutputAmount");
+
+      const feeId = (
+        await filterAndStringifyFirstEvent(result, "TransactionFeePaid")
+      ).tokenId;
+      expect(stringToBN(feeId)).bnEqual(GASP_ASSET_ID);
     });
     //fee: 603 ??  //TODO: validate with Stano.
     //const feeToAvoidFrontRunning = new BN(603);
@@ -310,10 +313,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     const poolBalances = await getBalanceOfPool(thirdCurrency, fourthCurrency);
     expect(poolBalances[0]).bnEqual(firstAssetAmount);
     expect(poolBalances[1]).bnEqual(secondAssetAmount);
-    const feeId = (
-      await filterAndStringifyFirstEvent(event, "TransactionFeePaid")
-    ).tokenId;
-    expect(stringToBN(feeId)).bnEqual(GASP_ASSET_ID);
   });
 });
 
