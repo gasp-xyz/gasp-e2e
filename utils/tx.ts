@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import {
-  BN_MILLION,
   BN_ONE,
   BN_ZERO,
   MangataGenericEvent,
@@ -13,7 +12,7 @@ import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
 import { AnyJson, AnyTuple, Codec } from "@polkadot/types/types";
-import { BN, BN_MAX_INTEGER } from "@polkadot/util";
+import { BN } from "@polkadot/util";
 import { env } from "process";
 import { getApi, getMangataInstance } from "./api";
 import {
@@ -21,6 +20,7 @@ import {
   MAX_BALANCE,
   GASP_ASSET_ID,
   MGA_DEFAULT_LIQ_TOKEN,
+  MAX_ARRAY_LENGTH,
 } from "./Constants";
 import { Fees } from "./Fees";
 import { SudoUser } from "./Framework/User/SudoUser";
@@ -470,7 +470,7 @@ export const sellAsset = async (
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = BN_MILLION;
+    liqId = MAX_ARRAY_LENGTH;
   }
   return await signTx(
     api,
@@ -629,7 +629,7 @@ export const buyAsset = async (
   const api = getApi();
   liqId = await getLiquidityAssetId(soldAssetId, boughtAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = BN_MAX_INTEGER;
+    liqId = MAX_ARRAY_LENGTH;
   }
   return await signTx(
     api,
@@ -655,7 +655,7 @@ export const mintLiquidity = async (
   let liqId: BN;
   liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
   if (liqId.lt(BN_ZERO)) {
-    liqId = BN_MILLION;
+    liqId = MAX_ARRAY_LENGTH;
   }
   return await signTx(
     getApi(),
@@ -694,11 +694,19 @@ export const burnLiquidity = async (
   secondAssetId: BN,
   liquidityAssetAmount: BN,
 ) => {
-  const liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  let liqId: BN;
+  liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  if (liqId.lt(BN_ZERO)) {
+    liqId = MAX_ARRAY_LENGTH;
+  }
+  const nonce = await getCurrentNonce(account.address);
   return await signTx(
     getApi(),
     Market.burnLiquidity(liqId, liquidityAssetAmount),
     account,
+    {
+      nonce: nonce,
+    },
   );
 };
 

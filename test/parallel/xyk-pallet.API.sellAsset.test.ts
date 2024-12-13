@@ -15,18 +15,23 @@ import {
   getTreasuryBurn,
   FeeTxs,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  filterAndStringifyFirstEvent,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsSwappedEvent } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { xykErrors } from "../../utils/utils";
+import { stringToBN, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
 import { Sudo } from "../../utils/sudo";
 import { getSudoUser } from "../../utils/setup";
 import { Market } from "../../utils/market";
+import { BN_ZERO } from "gasp-sdk";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -271,23 +276,26 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       fourthCurrency,
       remainingOfCurrency1.free,
       sellPriceLocal.add(new BN(1)),
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "SellAssetFailedDueToSlippage",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    ).then(async (result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual("InsufficientOutputAmount");
+
+      const feeId = (
+        await filterAndStringifyFirstEvent(result, "TransactionFeePaid")
+      ).tokenId;
+      expect(stringToBN(feeId)).bnEqual(GASP_ASSET_ID);
     });
     //fee: 603 ??  //TODO: validate with Stano.
-    const feeToAvoidFrontRunning = new BN(603);
+    //const feeToAvoidFrontRunning = new BN(603);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
-    const diffFromWallet = testUser1
-      .getAsset(thirdCurrency)
-      ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
+    //To Gonzalo: Should we take this fee yet?
+    // const diffFromWallet = testUser1
+    //   .getAsset(thirdCurrency)
+    //   ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
     expect(testUser1.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
-      diffFromWallet!,
+      testUser1.getAsset(thirdCurrency)?.amountBefore.free!,
     );
 
     //second wallet should not be modified.
@@ -298,12 +306,12 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const treasury = await getTreasury(thirdCurrency);
     const treasuryBurn = await getTreasuryBurn(thirdCurrency);
-    expect(treasury).bnEqual(new BN(101));
-    expect(treasuryBurn).bnEqual(new BN(101));
+    expect(treasury).bnEqual(BN_ZERO);
+    expect(treasuryBurn).bnEqual(BN_ZERO);
     //TODO: validate with Stano.
-    const increasedInPool = new BN(401);
+    //const increasedInPool = new BN(401);
     const poolBalances = await getBalanceOfPool(thirdCurrency, fourthCurrency);
-    expect(poolBalances[0]).bnEqual(firstAssetAmount.add(increasedInPool));
+    expect(poolBalances[0]).bnEqual(firstAssetAmount);
     expect(poolBalances[1]).bnEqual(secondAssetAmount);
   });
 });

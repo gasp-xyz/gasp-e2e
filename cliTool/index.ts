@@ -49,7 +49,9 @@ import {
   getPolkAddress,
   create10sequencers,
   closeL1Item,
-  sendUpdateToL1, createSequencers, monitorSequencers
+  sendUpdateToL1,
+  createSequencers,
+  monitorSequencers,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -158,15 +160,22 @@ async function app(): Promise<any> {
         await setupApi();
         await setupUsers();
         const addr = "0x" + randomBytes(20).toString("hex");
-        await sudo.registerL1Asset(null,addr, chainName);
+        await sudo.registerL1Asset(null, addr, chainName);
         await Sudo.asSudoFinalized(
           Sudo.sudo(
-            Assets.mintTokenAddress(await getAssetIdFromErc20(addr,chain), userAddress )
-          )
+            Assets.mintTokenAddress(
+              await getAssetIdFromErc20(addr, chain),
+              userAddress,
+            ),
+          ),
         );
-        await Rolldown.createWithdrawalsInBatch(1, userAddress, ethTokenAddress, "EthAnvil");
+        await Rolldown.createWithdrawalsInBatch(
+          1,
+          userAddress,
+          ethTokenAddress,
+          "EthAnvil",
+        );
         await Rolldown.createWithdrawalsInBatch(500, userAddress, addr, chain);
-        
       }
       if (answers.option.includes("Close All L1 items")) {
         return inquirer

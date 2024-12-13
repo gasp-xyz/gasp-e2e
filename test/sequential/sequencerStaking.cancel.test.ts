@@ -28,7 +28,7 @@ let testUser1: User;
 let testUser2: User;
 let testUser2Address: string;
 let disputePeriodLength: number;
-let stakeAndJoinExtrinsic: any;
+let minToBeSequencer: BN;
 
 beforeAll(async () => {
   await initApi();
@@ -41,16 +41,20 @@ beforeEach(async () => {
   //There shouldn't be any sequencer in activeSequencers
   [testUser1, testUser2] = setupUsers();
   await SequencerStaking.removeAllSequencers();
-  const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
-    minToBeSequencer.addn(1000),
-    chain,
-  );
+  minToBeSequencer = await SequencerStaking.minimalStakeAmount();
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
-    Sudo.sudoAs(testUser1, stakeAndJoinExtrinsic),
-    Sudo.sudoAs(testUser2, stakeAndJoinExtrinsic),
+    await SequencerStaking.provideSequencerStaking(
+      testUser1.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
+    await SequencerStaking.provideSequencerStaking(
+      testUser2.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
   );
   const sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Ethereum).toContain(
@@ -198,7 +202,11 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   const [judge] = setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(judge),
-    Sudo.sudoAs(judge, stakeAndJoinExtrinsic),
+    await SequencerStaking.provideSequencerStaking(
+      judge.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
   );
 
   const {
@@ -319,10 +327,6 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
   );
   await Rolldown.waitForReadRights(testUser2Address);
   const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-  stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
-    (await SequencerStaking.minimalStakeAmount()).muln(2),
-    chain,
-  );
   //the cancellation is incorrectly
   const cancelResolutionEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -332,13 +336,11 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND cancelator pr
         .on(chain)
         .buildUnsafe(),
     ),
-    Sudo.sudoAs(
-      testUser2,
-      await SequencerStaking.provideSequencerStaking(
-        (await SequencerStaking.minimalStakeAmount()).muln(2),
-        chain,
-        false,
-      ),
+    await SequencerStaking.provideSequencerStaking(
+      testUser2.keyRingPair.address,
+      (await SequencerStaking.minimalStakeAmount()).muln(2),
+      chain,
+      false,
     ),
   );
   await testUser2.refreshAmounts(AssetWallet.BEFORE);
@@ -367,7 +369,11 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
   const [judge] = setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(judge),
-    Sudo.sudoAs(judge, stakeAndJoinExtrinsic),
+    await SequencerStaking.provideSequencerStaking(
+      judge.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
   );
 
   const { txIndex: txIndex1, reqIdCanceled: reqIdCanceled1 } =
@@ -409,13 +415,11 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
         .on(chain)
         .buildUnsafe(),
     ),
-    Sudo.sudoAs(
-      testUser2,
-      await SequencerStaking.provideSequencerStaking(
-        (await SequencerStaking.minimalStakeAmount()).muln(2),
-        chain,
-        false,
-      ),
+    await SequencerStaking.provideSequencerStaking(
+      testUser2.keyRingPair.address,
+      (await SequencerStaking.minimalStakeAmount()).muln(2),
+      chain,
+      false,
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent1, "SudoAsDone");
@@ -431,13 +435,11 @@ it("GIVEN a sequencer, WHEN <in-correctly> canceling an update AND some pending 
         .on(chain)
         .buildUnsafe(),
     ),
-    Sudo.sudoAs(
-      testUser1,
-      await SequencerStaking.provideSequencerStaking(
-        (await SequencerStaking.minimalStakeAmount()).muln(2),
-        chain,
-        false,
-      ),
+    await SequencerStaking.provideSequencerStaking(
+      testUser1.keyRingPair.address,
+      (await SequencerStaking.minimalStakeAmount()).muln(2),
+      chain,
+      false,
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvent2, "SudoAsDone");

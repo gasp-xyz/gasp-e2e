@@ -15,7 +15,7 @@ import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 
 import { expectMGAExtrinsicSuDidSuccess } from "../../utils/eventListeners";
-import { BN_ONE, BN_ZERO, signTx } from "gasp-sdk";
+import { BN_ONE, BN_ZERO } from "gasp-sdk";
 import {
   createAnUpdateAndCancelIt,
   L2Update,
@@ -55,32 +55,25 @@ async function setup3sequencers(
 ) {
   const activeSequencersBefore = await SequencerStaking.activeSequencers();
 
-  await signTx(
-    getApi(),
+  await Sudo.batchAsSudoFinalized(
     await SequencerStaking.provideSequencerStaking(
+      testUser.keyRingPair.address,
       newStakeValue.add(amounts[0]),
       chain,
       true,
     ),
-    testUser.keyRingPair,
-  );
-  await signTx(
-    getApi(),
     await SequencerStaking.provideSequencerStaking(
+      testUser2.keyRingPair.address,
       newStakeValue.add(amounts[1]),
       chain,
       true,
     ),
-    testUser2.keyRingPair,
-  );
-  await signTx(
-    getApi(),
     await SequencerStaking.provideSequencerStaking(
+      testUser3.keyRingPair.address,
       newStakeValue.add(amounts[2]),
       chain,
       true,
     ),
-    testUser3.keyRingPair,
   );
   await testUser.refreshAmounts();
   await testUser2.refreshAmounts();
@@ -270,14 +263,13 @@ it("Given a set of sequencers, WHEN dispute AND min increased + sm1 else joining
   );
   expectMGAExtrinsicSuDidSuccess(events);
 
-  await signTx(
-    getApi(),
+  await Sudo.batchAsSudoFinalized(
     await SequencerStaking.provideSequencerStaking(
+      testUser4.keyRingPair.address,
       newStakeValue.add(BN_ONE),
       chain,
       true,
     ),
-    testUser4.keyRingPair,
   );
 
   //ACT: Submit resolution

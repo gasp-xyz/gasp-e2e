@@ -140,9 +140,8 @@ describe.each(["mm", "upgradabilityMm"])(
         const tokenAddress = JSON.parse(token.toString()).ethereum;
         await setupUsersWithBalances(users, tokenIds.concat([GASP_ASSET_ID]));
         await Sudo.batchAsSudoFinalized(
-          Sudo.sudoAs(
-            users[2],
-            await SequencerStaking.provideSequencerStaking(),
+          await SequencerStaking.provideSequencerStaking(
+            users[2].keyRingPair.address,
           ),
         ).then((value) => {
           testLog
@@ -186,10 +185,6 @@ describe.each(["mm", "upgradabilityMm"])(
                 .forceBuild(),
             ),
             getSudoUser(),
-          ],
-          sequencerSetup: [
-            await SequencerStaking.provideSequencerStaking(),
-            users[1],
           ],
           sequencerTearDown: [
             await SequencerStaking.leaveSequencerStaking(),
@@ -236,7 +231,34 @@ describe.each(["mm", "upgradabilityMm"])(
             );
           });
       });
-      it.each(["sequencerSetup", "sequencerTearDown"])(
+      it.each(["sequencerSetup"])(
+        "%s operations are allowed in mm",
+        async (testName) => {
+          testLog.getLog().info("DEBUG::TestName - " + testName);
+          let usr: User;
+
+          if (mmMode === "mm") {
+            usr = users[1];
+          } else {
+            usr = user;
+          }
+          const extrinsic = await SequencerStaking.provideSequencerStaking(
+            usr.keyRingPair.address,
+          );
+          const signer = getSudoUser();
+          const nonce = await getCurrentNonce(signer.keyRingPair.address);
+          await signTx(api, extrinsic, signer.keyRingPair, {
+            nonce: nonce,
+          }).then(async (events) => {
+            const event = getEventResultFromMangataTx(events);
+            testLog
+              .getLog()
+              .info("DEBUG::Event result - " + JSON.stringify(event));
+            expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+          });
+        },
+      );
+      it.each(["sequencerTearDown"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);

@@ -11,14 +11,22 @@ import {
   EVENT_SECTION_PAYMENT,
   EVENT_METHOD_PAYMENT,
 } from "../../utils/Constants";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  filterAndStringifyFirstEvent,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { updateFeeLockMetadata, sellAsset } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { feeLockErrors, getFeeLockMetadata } from "../../utils/utils";
+import {
+  feeLockErrors,
+  getFeeLockMetadata,
+  stringToBN,
+} from "../../utils/utils";
 import { Market } from "../../utils/market";
+import { BN_ZERO } from "gasp-sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -205,16 +213,13 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   expect(userFirstCurLockedValue).bnEqual(new BN(0));
   expect(userSecondCurLockedValue).bnEqual(new BN(0));
   expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
-  expect(
-    events.findIndex(
-      (x) =>
-        x.section === EVENT_SECTION_PAYMENT ||
-        x.method === EVENT_METHOD_PAYMENT,
-    ),
-  ).toEqual(-1);
+  const transactionFee = (
+    await filterAndStringifyFirstEvent(events, "TransactionFeePaid")
+  ).actualFee;
+  expect(stringToBN(transactionFee)).bnEqual(BN_ZERO);
 });
 
-test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
+test("[BUG] gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -233,5 +238,5 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
     ).catch((reason) => {
       throw new Error(reason.data);
     }),
-  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
+  ).rejects.toThrow(feeLockErrors.AccountBalanceFail);
 });

@@ -634,13 +634,12 @@ describe("Pre-operation withdrawal tests -", () => {
     //since there is no token in the Arbitrum chain by default, we create a new one
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
     await SequencerStaking.removeAddedSequencers();
-    await signTx(
-      await getApi(),
+    await Sudo.batchAsSudoFinalized(
       await SequencerStaking.provideSequencerStaking(
+        testUser.keyRingPair.address,
         minToBeSequencer.addn(1234),
         "Arbitrum",
       ),
-      testUser.keyRingPair,
     );
     await Rolldown.waitForReadRights(
       testUser.keyRingPair.address,

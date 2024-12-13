@@ -140,7 +140,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.NotEnoughReserve);
+      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -161,7 +161,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.NotEnoughReserve);
+      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -188,16 +188,12 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       secondAssetAmount.sub(new BN(1)),
       buyPriceLocal.sub(new BN(1)),
     ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "BuyAssetFailedDueToSlippage",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
 
     await validateUserPaidFeeForFailedTx(
-      buyPriceLocal,
       testUser1,
       firstCurrency,
       secondCurrency,
@@ -369,7 +365,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
         thirdCurrency,
         firstCurrency,
         amountToBuy,
-        buyPriceLocal,
+        buyPriceLocal.addn(1),
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [
