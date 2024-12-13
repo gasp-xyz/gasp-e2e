@@ -17,7 +17,10 @@ import {
   waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import {
+  getCurrentNonce,
+  getEventResultFromMangataTx,
+} from "../../utils/txHandler";
 import { signTx } from "gasp-sdk";
 import { stringToBN } from "../../utils/utils";
 
@@ -64,6 +67,9 @@ it("GIVEN User provides a stake by using StakeOnly action THEN User is not a seq
       false,
     ),
     sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   );
   const { isUserJoinedAsSeq, userAddress, userStakeAmount } =
     await getProvidingSeqStakeData(events);
@@ -86,6 +92,9 @@ it("GIVEN User provides a stake by using StakeAndJoinActiveSet action AND his st
       true,
     ),
     sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   ).then(async (events) => {
     await waitSudoOperationFail(events, ["NotEnoughSequencerStake"]);
   });
@@ -105,6 +114,9 @@ it("GIVEN User provides a stake by using StakeAndJoinActiveSet action AND his st
       true,
     ),
     sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   ).then(async (events) => {
     const eventResponse = getEventResultFromMangataTx(events);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -125,6 +137,9 @@ it("GIVEN User provides a stake by using StakeOnly action And User use rejoinAct
       false,
     ),
     sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   ).then((events) => {
     const eventResponse = getEventResultFromMangataTx(events);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -141,6 +156,9 @@ it("GIVEN User provides a stake by using StakeOnly action And User use rejoinAct
       testUser4.keyRingPair.address,
     ),
     sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   ).then((events) => {
     const eventResponse = getEventResultFromMangataTx(events);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
@@ -160,6 +178,9 @@ it("Happy path - A user can join and leave sequencing", async () => {
       chain,
     ),
     sudoUser.keyRingPair,
+    {
+      nonce: await getCurrentNonce(sudoUser.keyRingPair.address),
+    },
   );
   const eventFiltered = filterAndStringifyFirstEvent(events, "StakeProvided");
   expect(eventFiltered.chain).toEqual(chain);
