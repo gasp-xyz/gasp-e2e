@@ -1,3 +1,8 @@
+/*
+ *
+ * @group nonTransToken
+ */
+
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
@@ -17,7 +22,7 @@ import {
 import { FoundationMembers } from "../../utils/FoundationMembers";
 import { Market } from "../../utils/market";
 import { BN } from "ethereumjs-util/dist/externals";
-import { BN_THOUSAND, BN_ZERO } from "gasp-sdk";
+import { BN_THOUSAND, BN_ZERO, signTx } from "gasp-sdk";
 import { getLiquidityAssetId } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -62,12 +67,13 @@ test("Founder can create GASP pool", async () => {
 
   foundationMembers = await FoundationMembers.getFoundationMembers();
 
-  const [firstCurrency] = await Assets.setupUserWithCurrencies(
+  const [tokenId] = await Assets.setupUserWithCurrencies(
     sudo,
     [new BN(250000)],
     sudo,
   );
 
+  //Since we can't add GASP tokens to the founder, we need to add sudo to FoundationMembers
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationMembers[2],
@@ -81,16 +87,16 @@ test("Founder can create GASP pool", async () => {
   expect(foundationMembers).toContain(sudo.keyRingPair.address);
 
   await Sudo.batchAsSudoFinalized(
-    await Sudo.sudoAs(
+    Sudo.sudoAs(
       sudo,
-      Market.createPool(GASP_ASSET_ID, BN_THOUSAND, firstCurrency, BN_THOUSAND),
+      Market.createPool(GASP_ASSET_ID, BN_THOUSAND, tokenId, BN_THOUSAND),
     ),
   ).then((events) => {
     const eventResponse = getEventResultFromMangataTx(events);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, firstCurrency);
+  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
   expect(poolId).bnGt(BN_ZERO);
 });
 
@@ -109,16 +115,16 @@ test("Ordinary user can't create GASP pool", async () => {
   foundationMembers = await FoundationMembers.getFoundationMembers();
   expect(foundationMembers).not.toContain(sudo.keyRingPair.address);
 
-  const [firstCurrency] = await Assets.setupUserWithCurrencies(
+  const [tokenId] = await Assets.setupUserWithCurrencies(
     sudo,
     [new BN(250000)],
     sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
-    await Sudo.sudoAs(
+    Sudo.sudoAs(
       sudo,
-      Market.createPool(GASP_ASSET_ID, BN_THOUSAND, firstCurrency, BN_THOUSAND),
+      Market.createPool(GASP_ASSET_ID, BN_THOUSAND, tokenId, BN_THOUSAND),
     ),
   ).then(async (events) => {
     const errorEvent = await getEventErrorFromSudo(events);
@@ -126,6 +132,51 @@ test("Ordinary user can't create GASP pool", async () => {
     expect(errorEvent.data).toBe("NontransferableToken");
   });
 
-  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, firstCurrency);
+  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
   expect(poolId).bnLt(BN_ZERO);
+});
+
+test("Non-transferable token can't be sold", async () => {
+  //Add sudo to FoundationMembers to create a pool
+  const foundationMembers = await FoundationMembers.getFoundationMembers();
+
+  const [tokenId] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [new BN(250000)],
+    sudo,
+  );
+
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      foundationMembers[2],
+      FoundationMembers.changeKey(sudo),
+    ),
+  ).then((events) => {
+    const res = getEventResultFromMangataTx(events);
+    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      sudo,
+      Market.createPool(GASP_ASSET_ID, BN_THOUSAND, tokenId, BN_THOUSAND),
+    ),
+  ).then((events) => {
+    const eventResponse = getEventResultFromMangataTx(events);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
+  expect(poolId).bnGt(BN_ZERO);
+
+  const api = getApi();
+  await signTx(
+    api,
+    Market.sellAsset(poolId, GASP_ASSET_ID, tokenId, new BN(1000)),
+    sudo.keyRingPair,
+  ).then((events) => {
+    const eventResponse = getEventResultFromMangataTx(events);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("NontransferableToken");
+  });
 });
