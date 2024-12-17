@@ -239,6 +239,11 @@ export class Rolldown {
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqBlockNumber);
   }
 
+  static setDisputePeriod(chain: ChainName, disputePeriodLength: number) {
+    const api = getApi();
+    return api.tx.rolldown.setDisputePeriod(chain, disputePeriodLength);
+  }
+
   static async forceCancelRequestFromL1(
     chainId: ChainName,
     reqBlockNumber: number,
