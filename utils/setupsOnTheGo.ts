@@ -80,6 +80,7 @@ import { ApiPromise } from "@polkadot/api";
 import { privateKeyToAccount } from "viem/accounts";
 import { estimateMaxPriorityFeePerGas } from "viem/actions";
 import { Market } from "./market";
+import fs from "fs";
 Assets.legacy = true;
 const L1_CHAIN = "Ethereum";
 
@@ -520,7 +521,62 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
+export async function printAllSequencerUpdates(
+  userAddress: string = "",
+  filePath = "Sequencers",
+  fromBlock = 11136,
+  filterMethod = "updateL2FromL1",
+  filterSection = "rolldown",
+) {
+  await setupUsers();
+  await setupApi();
+  const api = await getApi();
+  let currBlock = fromBlock || (await getBlockNumber());
+  const allUpdates = userAddress.length === 0;
 
+  while (currBlock > 0) {
+    const blockHash = await api.rpc.chain.getBlockHash(currBlock);
+    const block = await api.rpc.chain.getBlock(blockHash);
+    let txs = block.block.extrinsics
+      .filter(
+        (x: any) =>
+          x.method.method.toString() === filterMethod &&
+          x.method.section.toString() === filterSection,
+      )
+      .map((x: any) => x.toHuman());
+    testLog.getLog().info(block);
+    //testLog
+    //  .getLog()
+    //  .info(
+    //    JSON.stringify(block.block.extrinsics.map((x: any) => x.toHuman())),
+    //  );
+    testLog.getLog().info(JSON.stringify(txs));
+    if (txs.length && !allUpdates) {
+      txs = txs.filter((x: any) => {
+        return (
+          x.signer.toString() === userAddress ||
+          JSON.stringify(x).includes(userAddress)
+        );
+      });
+    }
+    const readabaleTxs = txs; // txs.map((x: any) => x.toHuman());
+    // testLog.getLog().info("Block " + currBlock);
+    if (txs.length > 0) {
+      testLog.getLog().info("Block " + currBlock);
+      testLog.getLog().info(JSON.stringify(readabaleTxs));
+      testLog.getLog().info(JSON.stringify(txs));
+      for (let i = 0; i < readabaleTxs.length; i++) {
+        fs.appendFileSync(
+          filePath,
+          `${currBlock} , ${readabaleTxs[i].signer} , ${JSON.stringify(
+            readabaleTxs[i],
+          )} \n`,
+        );
+      }
+    }
+    currBlock--;
+  }
+}
 export async function printAllTxsDoneByUser(userAddress: string) {
   await setupUsers();
   await setupApi();

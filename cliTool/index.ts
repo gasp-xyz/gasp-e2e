@@ -52,6 +52,7 @@ import {
   sendUpdateToL1,
   createSequencers,
   monitorSequencers,
+  printAllSequencerUpdates,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -139,10 +140,15 @@ async function app(): Promise<any> {
         "sync updates",
         "add sequencers like hell",
         "monitor sequencers",
+        "listExtrinsics",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("listExtrinsics")) {
+        await printAllSequencerUpdates();
+      }
+
       if (answers.option.includes("add sequencers like hell")) {
         await createSequencers(1000);
       }
