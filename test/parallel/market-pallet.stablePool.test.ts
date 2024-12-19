@@ -27,6 +27,7 @@ import {
   filterAndStringifyFirstEvent,
 } from "../../utils/eventListeners";
 import { stringToBN } from "../../utils/utils";
+import { activateLiquidity, getRewardsInfo } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -182,7 +183,7 @@ test("Happy path - Burn stableSwap pool liquidity token", async () => {
   await testUser.refreshAmounts(AssetWallet.BEFORE);
   await signTx(
     api,
-    Market.burnLiquidity(poolId, firstCurrency, BN_THOUSAND),
+    Market.burnLiquidity(poolId, BN_THOUSAND),
     testUser.keyRingPair,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
@@ -198,7 +199,26 @@ test("Happy path - Burn stableSwap pool liquidity token", async () => {
     .getAsset(poolId)
     ?.amountBefore.free!.sub(testUser.getAsset(poolId)?.amountAfter.free!);
   expect(firstCurrencyDiff).bnGt(BN_ZERO);
-  expect(liqTokenDiff).bnGt(BN_THOUSAND);
+  expect(liqTokenDiff).bnEqual(BN_THOUSAND);
+});
+
+test("Happy path - Activate rewards for stableSwap pool", async () => {
+  const event = await signTx(
+    api,
+    Market.createPool(
+      firstCurrency,
+      BN_HUNDRED_THOUSAND,
+      secondCurrency,
+      BN_THOUSAND,
+      "StableSwap",
+    ),
+    testUser.keyRingPair,
+  );
+  const poolId = await getPoolIdFromEvent(event);
+  await Sudo.batchAsSudoFinalized(Assets.promotePool(poolId.toNumber(), 20));
+  await activateLiquidity(testUser.keyRingPair, poolId, BN_HUNDRED_THOUSAND);
+  const rewards = await getRewardsInfo(testUser.keyRingPair.address, poolId);
+  expect(rewards.activatedAmount).bnEqual(BN_HUNDRED_THOUSAND);
 });
 
 async function getPoolIdFromEvent(event: MangataGenericEvent[]) {

@@ -33,6 +33,23 @@ export class ProofOfStake {
       currSession + whenEnding,
     );
   }
+  static async rewardStablePool(
+    poolId: BN,
+    tokenId: BN,
+    amount: BN,
+    whenEnding: number,
+  ) {
+    setupApi();
+    const api = getApi();
+    const currSession = (await api.query.session.currentIndex()).toNumber();
+    return api.tx.proofOfStake.rewardPool(
+      //@ts-ignore
+      poolId,
+      tokenId,
+      amount,
+      currSession + whenEnding,
+    );
+  }
   static async deactivateLiquidityFor3rdpartyRewards(
     liquidityTokenId: BN,
     amount: BN,
