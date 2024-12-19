@@ -17,9 +17,11 @@ import {
 import { getBlockNumber } from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ApiPromise } from "@polkadot/api";
 
 let testUser: User;
 let chain: any;
+let api: ApiPromise;
 
 beforeAll(async () => {
   await initApi();
@@ -27,6 +29,7 @@ beforeAll(async () => {
   await setupApi();
   getApi();
   chain = "Ethereum";
+  api = getApi();
 });
 
 beforeEach(async () => {
@@ -36,7 +39,6 @@ beforeEach(async () => {
 });
 
 test("Dispute periods can be changed for sequencers, and new values are considered for upcoming updates", async () => {
-  const api = getApi();
   await SequencerStaking.setupASequencer(testUser, chain);
 
   const oldPeriodLength = (
@@ -94,4 +96,52 @@ test("Dispute periods can be changed for sequencers, and new values are consider
   ).then(async (events) => {
     await waitSudoOperationSuccess(events);
   });
+});
+
+test("GIVEN try to setup a sequencer with non-sudo call THEN fail returned", async () => {
+  await signTx(
+    api,
+    api.tx.sequencerStaking.provideSequencerStake(
+      chain,
+      await SequencerStaking.minimalStakeAmount(),
+      null,
+      "StakeAndJoinActiveSet",
+      //@ts-ignore
+      testUser.keyRingPair.address,
+    ),
+    testUser.keyRingPair,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("UnknownError");
+  });
+
+  const activeSequencers = (
+    await SequencerStaking.activeSequencers()
+  ).toHuman();
+
+  expect(activeSequencers.Ethereum).not.toContain(testUser.keyRingPair.address);
+});
+
+test("GIVEN try to leave the sequencer with non-sudo call THEN the extrinsic completes successfully", async () => {
+  let activeSequencers: any;
+
+  await SequencerStaking.setupASequencer(testUser, chain);
+
+  activeSequencers = (await SequencerStaking.activeSequencers()).toHuman();
+
+  expect(activeSequencers.Ethereum).toContain(testUser.keyRingPair.address);
+
+  await signTx(
+    api,
+    api.tx.sequencerStaking.leaveActiveSequencers(chain),
+    testUser.keyRingPair,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  activeSequencers = (await SequencerStaking.activeSequencers()).toHuman();
+
+  expect(activeSequencers.Ethereum).not.toContain(testUser.keyRingPair.address);
 });
