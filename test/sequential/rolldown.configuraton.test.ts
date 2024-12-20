@@ -22,6 +22,7 @@ import { ApiPromise } from "@polkadot/api";
 let testUser: User;
 let chain: any;
 let api: ApiPromise;
+let startPeriodLength: number;
 
 beforeAll(async () => {
   await initApi();
@@ -30,6 +31,7 @@ beforeAll(async () => {
   getApi();
   chain = "Ethereum";
   api = getApi();
+  startPeriodLength = (await Rolldown.disputePeriodLength(chain)).toNumber();
 });
 
 beforeEach(async () => {
@@ -41,9 +43,6 @@ beforeEach(async () => {
 test("Dispute periods can be changed for sequencers, and new values are considered for upcoming updates", async () => {
   await SequencerStaking.setupASequencer(testUser, chain);
 
-  const oldPeriodLength = (
-    await Rolldown.disputePeriodLength(chain)
-  ).toNumber();
   await Rolldown.waitForReadRights(testUser.keyRingPair.address);
   const txIndex1 = await Rolldown.lastProcessedRequestOnL2(chain);
 
@@ -62,8 +61,8 @@ test("Dispute periods can be changed for sequencers, and new values are consider
   const disputeStartBlockNumber1 = await getBlockNumber();
   const disputeEndBlockNumber1 = Rolldown.getDisputeEndBlockNumber(eventBefore);
   const disputeLength1 = disputeEndBlockNumber1 - disputeStartBlockNumber1;
-  expect(disputeLength1).toEqual(oldPeriodLength);
-  const newPeriodLength = oldPeriodLength + 5;
+  expect(disputeLength1).toEqual(startPeriodLength);
+  const newPeriodLength = startPeriodLength + 5;
 
   await Sudo.asSudoFinalized(
     Sudo.sudo(Rolldown.setDisputePeriod(chain, newPeriodLength)),
@@ -90,12 +89,6 @@ test("Dispute periods can be changed for sequencers, and new values are consider
   const disputeEndBlockNumber2 = Rolldown.getDisputeEndBlockNumber(eventAfter);
   const disputeLength2 = disputeEndBlockNumber2 - disputeStartBlockNumber2;
   expect(disputeLength2).toEqual(newPeriodLength);
-
-  await Sudo.asSudoFinalized(
-    Sudo.sudo(Rolldown.setDisputePeriod(chain, oldPeriodLength)),
-  ).then(async (events) => {
-    await waitSudoOperationSuccess(events);
-  });
 });
 
 test("GIVEN try to setup a sequencer with non-sudo call THEN fail returned", async () => {
@@ -144,4 +137,12 @@ test("GIVEN try to leave the sequencer with non-sudo call THEN the extrinsic com
   activeSequencers = (await SequencerStaking.activeSequencers()).toHuman();
 
   expect(activeSequencers.Ethereum).not.toContain(testUser.keyRingPair.address);
+});
+
+afterAll(async () => {
+  await Sudo.asSudoFinalized(
+    Sudo.sudo(Rolldown.setDisputePeriod(chain, startPeriodLength)),
+  ).then(async (events) => {
+    await waitSudoOperationSuccess(events);
+  });
 });
