@@ -4,15 +4,21 @@ import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { FoundationMembers } from "../../utils/FoundationMembers";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { BN_BILLION } from "@polkadot/util";
 import { Sudo } from "../../utils/sudo";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Market } from "../../utils/market";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_MILLION, BN_THOUSAND, BN_ZERO } from "gasp-sdk";
-import { sellAsset } from "../../utils/tx";
+import {
+  BN_MILLION,
+  BN_TEN_THOUSAND,
+  BN_ZERO,
+  isMultiSwapAssetTransactionSuccessful,
+  MangataGenericEvent,
+  signTx,
+} from "gasp-sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -23,6 +29,23 @@ let token1: BN;
 let token2: BN;
 let token3: BN;
 let token4: BN;
+let liqIds: BN[];
+
+async function getPoolId(events: MangataGenericEvent[]) {
+  const poolIds: BN[] = [];
+  let poolId: BN;
+  let i = 0;
+  const poolCreatedEvents = JSON.parse(
+    JSON.stringify(events.filter((events) => events.method === "PoolCreated")),
+  );
+  const length = poolCreatedEvents.length;
+  while (i < length - 1) {
+    poolId = new BN(poolCreatedEvents[i].event.data[1]);
+    poolIds.push(poolId);
+    i++;
+  }
+  return poolIds;
+}
 
 beforeAll(async () => {
   try {
@@ -34,11 +57,6 @@ beforeAll(async () => {
   await setupApi();
   await setupUsers();
   sudo = getSudoUser();
-
-  const api = getApi();
-  const a = await api.query.xyk.pools([]);
-  expect(a).not.toBeEmpty();
-  expect(a).toBeEmpty();
 });
 
 beforeEach(async () => {
@@ -63,7 +81,7 @@ beforeEach(async () => {
   foundationMembers = await FoundationMembers.getFoundationMembers();
   expect(foundationMembers).toContain(sudo.keyRingPair.address);
 
-  await Sudo.batchAsSudoFinalized(
+  const poolEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       sudo,
       Market.createPool(token1, BN_MILLION, token2, BN_MILLION, "StableSwap"),
@@ -92,33 +110,55 @@ beforeEach(async () => {
       sudo,
       Market.createPool(token3, BN_MILLION, token4, BN_MILLION),
     ),
-  ).then((events) => {
-    const eventResponse = getEventResultFromMangataTx(events);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
+  );
+  const eventResponse = getEventResultFromMangataTx(poolEvents);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  liqIds = await getPoolId(poolEvents);
   await Sudo.asSudoFinalized(
     Sudo.sudoAs(sudo, getApi().tx.foundationMembers.changeKey(oldFounder)),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
     expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
+  sudo.addAsset(token1);
 });
 
 test("User can buy GASP in multiswap operation", async () => {
-  await sellAsset(
+  await sudo.refreshAmounts(AssetWallet.BEFORE);
+  await signTx(
+    getApi(),
+    Market.multiswapAssetSell(
+      [liqIds[0], liqIds[1]],
+      token1,
+      BN_TEN_THOUSAND,
+      GASP_ASSET_ID,
+      BN_ZERO,
+    ),
     sudo.keyRingPair,
-    token1,
-    GASP_ASSET_ID,
-    BN_THOUSAND,
-    BN_ZERO,
   ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result, [
-      "xyk",
-      "AssetsSwapped",
-      sudo.keyRingPair.address,
-    ]);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    return result;
+    const eventResult = isMultiSwapAssetTransactionSuccessful(result);
+    expect(eventResult).toEqual(true);
+  });
+  await sudo.refreshAmounts(AssetWallet.AFTER);
+  expect(sudo.getAsset(token1)?.amountBefore.free!).bnGt(
+    sudo.getAsset(token1)?.amountAfter.free!,
+  );
+});
+
+test("User can't sell GASP in multiswap operation", async () => {
+  await signTx(
+    getApi(),
+    Market.multiswapAssetSell(
+      [liqIds[1], liqIds[0]],
+      GASP_ASSET_ID,
+      BN_TEN_THOUSAND,
+      token1,
+      BN_ZERO,
+    ),
+    sudo.keyRingPair,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("NontransferableToken");
   });
 });
