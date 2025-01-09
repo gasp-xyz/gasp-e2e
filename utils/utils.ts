@@ -811,3 +811,37 @@ export function expectExtrinsicFail(res: MangataGenericEvent[]) {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
   return eventResponse;
 }
+export interface Withdrawal {
+  requestId: number;
+  txHash: string;
+  address: string;
+  created: number;
+  updated: number;
+  status: string;
+  type: string;
+  chain: string;
+  amount: string;
+  asset_chainId: string;
+  asset_address: string;
+  proof?: string;
+  calldata?: string;
+  closedBy: string | null;
+}
+export interface DepositWithdrawalRecord {
+  key: string;
+  data: Withdrawal;
+}
+export interface Deposit {
+  requestId: number;
+  txHash: string;
+  address: string;
+  created: number;
+  updated: number;
+  status: string;
+  type: string;
+  chain: string;
+  amount: string;
+  asset_chainId: string;
+  asset_address: string;
+  closedBy: string | null;
+}
