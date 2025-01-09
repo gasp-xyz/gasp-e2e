@@ -2,7 +2,10 @@ import { BN_TEN, BN_TEN_THOUSAND, BN_THOUSAND } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
 import { Ferry } from "../../utils/rollDown/Ferry";
 import { L2Update, Rolldown } from "../../utils/rollDown/Rolldown";
-import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
+import {
+  ChainName,
+  SequencerStaking,
+} from "../../utils/rollDown/SequencerStaking";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { AssetWallet, User } from "../../utils/User";
 import { ApiPromise } from "@polkadot/api";
@@ -16,12 +19,13 @@ import {
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { stringToBN, waitForNBlocks } from "../../utils/utils";
+import BN from "bn.js";
 
 let api: ApiPromise;
 let recipient: User;
 let sequencer: User;
 let ferrier: User;
-let chain: any;
+const chain: ChainName = "Ethereum";
 let waitingPeriod: number;
 let txIndex: number;
 let gaspL1Address: string;
@@ -153,8 +157,8 @@ it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispu
   expect(recipientDiff).bnEqual(BN_THOUSAND);
 });
 
-it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispute period  AND WHEN a dispute happens AND resolution is True AND another update comes with the same id, THEN the ferrier will get those back after the dispute period", async () => {
-  let event: any;
+it("GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the dispute period  AND WHEN a dispute happens AND resolution is True AND another update comes with the same id, THEN the ferrier will get those back after the dispute period", async () => {
+  const depositAmount = BN_TEN_THOUSAND;
   const [judge] = setupUsers();
   const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
 
@@ -177,7 +181,7 @@ it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the
       txIndex,
       recipient.keyRingPair.address,
       gaspL1Address,
-      BN_TEN_THOUSAND,
+      depositAmount,
       0,
       ferryTip,
     )
@@ -186,10 +190,10 @@ it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the
   await recipient.refreshAmounts(AssetWallet.BEFORE);
   await ferrier.refreshAmounts(AssetWallet.BEFORE);
   expect(recipient.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
-    BN_TEN_THOUSAND.sub(ferryTip),
+    depositAmount.sub(ferryTip),
   );
   await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
-  event = await Sudo.batchAsSudoFinalized(
+  const event = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       sequencer.keyRingPair.address,
       update1.buildUnsafe(),
@@ -210,29 +214,29 @@ it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the
     Sudo.sudoAsWithAddressString(
       judge.keyRingPair.address,
       new L2Update(api)
-        .withCancelResolution(txIndex, reqIdCanceled, true)
+        .withDeposit(
+          txIndex,
+          recipient.keyRingPair.address,
+          gaspL1Address,
+          depositAmount,
+          0,
+          ferryTip,
+        )
+        .withCancelResolution(txIndex + 1, reqIdCanceled, true)
         .on(chain)
         .buildUnsafe(),
     ),
   );
-
-  await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
-  event = await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      sequencer.keyRingPair.address,
-      update1.buildUnsafe(),
-    ),
-  );
-  await expectMGAExtrinsicSuDidSuccess(event);
+  await Rolldown.waitForL2UpdateExecuted(new BN(txIndex + 1));
   await waitForNBlocks(disputePeriodLength);
 
   await recipient.refreshAmounts(AssetWallet.AFTER);
   await ferrier.refreshAmounts(AssetWallet.AFTER);
-  //tokens must be returned to ferrier, but there are on recipient's account
+  //tokens must be returned to ferrier, AND on recipient's account
   expect(recipient.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
     recipient.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
   );
-  expect(ferrier.getAsset(GASP_ASSET_ID)?.amountBefore.free!).bnEqual(
-    ferrier.getAsset(GASP_ASSET_ID)?.amountAfter.free!,
-  );
+  expect(
+    ferrier.getAsset(GASP_ASSET_ID)?.amountBefore.free!.add(depositAmount),
+  ).bnEqual(ferrier.getAsset(GASP_ASSET_ID)?.amountAfter.free!);
 });
