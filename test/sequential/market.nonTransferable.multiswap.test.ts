@@ -60,6 +60,7 @@ beforeAll(async () => {
   await setupApi();
   await setupUsers();
   sudo = getSudoUser();
+  await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
 });
 
 beforeEach(async () => {
