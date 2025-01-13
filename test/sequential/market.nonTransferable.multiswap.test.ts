@@ -4,28 +4,34 @@ import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { FoundationMembers } from "../../utils/FoundationMembers";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
-import { AssetWallet, User } from "../../utils/User";
+import { User } from "../../utils/User";
 import { BN_BILLION } from "@polkadot/util";
 import { Sudo } from "../../utils/sudo";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  waitSudoOperationFail,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { Market } from "../../utils/market";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
+  BN_HUNDRED_BILLIONS,
   BN_MILLION,
   BN_TEN_THOUSAND,
   BN_ZERO,
-  isMultiSwapAssetTransactionSuccessful,
   MangataGenericEvent,
-  signTx,
 } from "gasp-sdk";
 import { getLiquidityAssetId } from "../../utils/tx";
+import { ApiPromise } from "@polkadot/api";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
+let api: ApiPromise;
 let sudo: User;
+let testUser: string;
 let token1: BN;
 let token2: BN;
 let token3: BN;
@@ -60,7 +66,8 @@ beforeAll(async () => {
   await setupApi();
   await setupUsers();
   sudo = getSudoUser();
-  await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
+  testUser = "0x798d4ba9baf0064ec19eb4f0a1a45785ae9d6dfc";
+  api = getApi();
 });
 
 beforeEach(async () => {
@@ -75,24 +82,34 @@ beforeEach(async () => {
       sudo,
     );
 
-  const oldFounder = foundationMembers[2];
-
+  const oldFounder2 = foundationMembers[2];
   await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(oldFounder, FoundationMembers.changeKey(sudo)),
+    Sudo.sudoAsWithAddressString(
+      oldFounder2,
+      api.tx.foundationMembers.changeKey(testUser),
+    ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
     expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
   foundationMembers = await FoundationMembers.getFoundationMembers();
-  expect(foundationMembers).toContain(sudo.keyRingPair.address);
+  expect(foundationMembers).toContain(testUser);
 
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(api.tx.tokens.mint(token1, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(api.tx.tokens.mint(token2, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(api.tx.tokens.mint(token3, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(api.tx.tokens.mint(token4, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(api.tx.tokens.mint(token5, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(api.tx.tokens.mint(token6, testUser, BN_HUNDRED_BILLIONS)),
+  );
   const poolEvents = await Sudo.batchAsSudoFinalized(
-    Sudo.sudoAs(
-      sudo,
+    Sudo.sudoAsWithAddressString(
+      testUser,
       Market.createPool(token1, BN_MILLION, token2, BN_MILLION, "StableSwap"),
     ),
-    Sudo.sudoAs(
-      sudo,
+    Sudo.sudoAsWithAddressString(
+      testUser,
       Market.createPool(
         token2,
         BN_MILLION,
@@ -101,8 +118,8 @@ beforeEach(async () => {
         "StableSwap",
       ),
     ),
-    Sudo.sudoAs(
-      sudo,
+    Sudo.sudoAsWithAddressString(
+      testUser,
       Market.createPool(
         GASP_ASSET_ID,
         BN_MILLION,
@@ -111,16 +128,16 @@ beforeEach(async () => {
         "StableSwap",
       ),
     ),
-    Sudo.sudoAs(
-      sudo,
+    Sudo.sudoAsWithAddressString(
+      testUser,
       Market.createPool(token3, BN_MILLION, token4, BN_MILLION, "StableSwap"),
     ),
-    Sudo.sudoAs(
-      sudo,
+    Sudo.sudoAsWithAddressString(
+      testUser,
       Market.createPool(token4, BN_MILLION, token5, BN_MILLION, "StableSwap"),
     ),
-    Sudo.sudoAs(
-      sudo,
+    Sudo.sudoAsWithAddressString(
+      testUser,
       Market.createPool(token5, BN_MILLION, token6, BN_MILLION),
     ),
   );
@@ -128,123 +145,150 @@ beforeEach(async () => {
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   liqIds = await getStablePoolId(poolEvents);
   await Sudo.asSudoFinalized(
-    Sudo.sudoAs(sudo, getApi().tx.foundationMembers.changeKey(oldFounder)),
+    Sudo.sudoAsWithAddressString(
+      testUser,
+      api.tx.foundationMembers.changeKey(oldFounder2),
+    ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
     expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
-  sudo.addAsset(token1);
-  sudo.addAsset(token3);
-  sudo.addAsset(token4);
-  sudo.addAsset(token5);
-  sudo.addAsset(token6);
 });
 
 test("User can buy GASP in multiswap operation", async () => {
-  await sudo.refreshAmounts(AssetWallet.BEFORE);
-  await signTx(
-    getApi(),
-    Market.multiswapAssetSell(
-      [liqIds[0], liqIds[1]],
-      token1,
-      BN_TEN_THOUSAND,
-      GASP_ASSET_ID,
-      BN_ZERO,
+  const userBalanceBeforeSwap = await api.query.tokens.accounts(
+    testUser,
+    token1,
+  );
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser,
+      Market.multiswapAssetSell(
+        [liqIds[0], liqIds[1]],
+        token1,
+        BN_TEN_THOUSAND,
+        GASP_ASSET_ID,
+        BN_ZERO,
+      ),
     ),
-    sudo.keyRingPair,
-  ).then((result) => {
-    const eventResult = isMultiSwapAssetTransactionSuccessful(result);
-    expect(eventResult).toEqual(true);
+  ).then(async (result) => {
+    await waitSudoOperationSuccess(result, "SudoAsDone");
   });
-  await sudo.refreshAmounts(AssetWallet.AFTER);
-  expect(sudo.getAsset(token1)?.amountBefore.free!).bnGt(
-    sudo.getAsset(token1)?.amountAfter.free!,
+  const userBalanceAfterSwap = await api.query.tokens.accounts(
+    testUser,
+    token1,
+  );
+  expect(userBalanceAfterSwap.free).bnEqual(
+    userBalanceBeforeSwap.free.sub(BN_TEN_THOUSAND),
   );
 });
 
 test("User can't sell GASP in multiswap operation (GASP token at the beginning)", async () => {
-  await signTx(
-    getApi(),
-    Market.multiswapAssetSell(
-      [liqIds[1], liqIds[0]],
-      GASP_ASSET_ID,
-      BN_TEN_THOUSAND,
-      token1,
-      BN_ZERO,
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser,
+      Market.multiswapAssetSell(
+        [liqIds[1], liqIds[0]],
+        GASP_ASSET_ID,
+        BN_TEN_THOUSAND,
+        token1,
+        BN_ZERO,
+      ),
     ),
-    sudo.keyRingPair,
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NontransferableToken");
+  ).then(async (result) => {
+    await waitSudoOperationFail(result, ["NontransferableToken"], "SudoAsDone");
   });
 });
 
 test("User can't sell GASP in multiswap operation (GASP token in the middle)", async () => {
-  await signTx(
-    getApi(),
-    Market.multiswapAssetSell(
-      [liqIds[1], liqIds[2]],
-      token2,
-      BN_TEN_THOUSAND,
-      token3,
-      BN_ZERO,
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser,
+      Market.multiswapAssetSell(
+        [liqIds[1], liqIds[2]],
+        token2,
+        BN_TEN_THOUSAND,
+        token3,
+        BN_ZERO,
+      ),
     ),
-    sudo.keyRingPair,
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NontransferableToken");
+  ).then(async (result) => {
+    await waitSudoOperationFail(result, ["NontransferableToken"], "SudoAsDone");
   });
 });
 
 test("Happy path - multiswap with only stable pools", async () => {
-  await sudo.refreshAmounts(AssetWallet.BEFORE);
-  await signTx(
-    getApi(),
-    Market.multiswapAssetSell(
-      [liqIds[3], liqIds[4]],
-      token3,
-      BN_TEN_THOUSAND,
-      token5,
-      BN_ZERO,
+  const userBalance1BeforeSwap = await api.query.tokens.accounts(
+    testUser,
+    token3,
+  );
+  const userBalance2BeforeSwap = await api.query.tokens.accounts(
+    testUser,
+    token5,
+  );
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser,
+      Market.multiswapAssetSell(
+        [liqIds[3], liqIds[4]],
+        token3,
+        BN_TEN_THOUSAND,
+        token5,
+        BN_ZERO,
+      ),
     ),
-    sudo.keyRingPair,
-  ).then((result) => {
-    const eventResult = isMultiSwapAssetTransactionSuccessful(result);
-    expect(eventResult).toEqual(true);
+  ).then(async (result) => {
+    await waitSudoOperationSuccess(result, "SudoAsDone");
   });
-  await sudo.refreshAmounts(AssetWallet.AFTER);
-  expect(sudo.getAsset(token3)?.amountBefore.free!).bnGt(
-    sudo.getAsset(token3)?.amountAfter.free!,
+  const userBalance1AfterSwap = await api.query.tokens.accounts(
+    testUser,
+    token3,
   );
-  expect(sudo.getAsset(token5)?.amountBefore.free!).bnLt(
-    sudo.getAsset(token5)?.amountAfter.free!,
+  const userBalance2AfterSwap = await api.query.tokens.accounts(
+    testUser,
+    token5,
   );
+  expect(userBalance1AfterSwap.free).bnEqual(
+    userBalance1BeforeSwap.free.sub(BN_TEN_THOUSAND),
+  );
+  expect(userBalance2AfterSwap.free).bnGt(userBalance2BeforeSwap.free);
 });
 
 test("Happy path - multiswap with stable and xyk pools", async () => {
   liqIds[5] = await getLiquidityAssetId(token5, token6);
-  await sudo.refreshAmounts(AssetWallet.BEFORE);
-  await signTx(
-    getApi(),
-    Market.multiswapAssetSell(
-      [liqIds[4], liqIds[5]],
-      token4,
-      BN_TEN_THOUSAND,
-      token6,
-      BN_ZERO,
+
+  const userBalance1BeforeSwap = await api.query.tokens.accounts(
+    testUser,
+    token4,
+  );
+  const userBalance2BeforeSwap = await api.query.tokens.accounts(
+    testUser,
+    token6,
+  );
+  await Sudo.asSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      testUser,
+      Market.multiswapAssetSell(
+        [liqIds[4], liqIds[5]],
+        token4,
+        BN_TEN_THOUSAND,
+        token6,
+        BN_ZERO,
+      ),
     ),
-    sudo.keyRingPair,
-  ).then((result) => {
-    const eventResult = isMultiSwapAssetTransactionSuccessful(result);
-    expect(eventResult).toEqual(true);
+  ).then(async (result) => {
+    await waitSudoOperationSuccess(result, "SudoAsDone");
   });
-  await sudo.refreshAmounts(AssetWallet.AFTER);
-  expect(sudo.getAsset(token4)?.amountBefore.free!).bnGt(
-    sudo.getAsset(token4)?.amountAfter.free!,
+  const userBalance1AfterSwap = await api.query.tokens.accounts(
+    testUser,
+    token4,
   );
-  expect(sudo.getAsset(token6)?.amountBefore.free!).bnLt(
-    sudo.getAsset(token6)?.amountAfter.free!,
+  const userBalance2AfterSwap = await api.query.tokens.accounts(
+    testUser,
+    token6,
   );
+  expect(userBalance1AfterSwap.free).bnEqual(
+    userBalance1BeforeSwap.free.sub(BN_TEN_THOUSAND),
+  );
+  expect(userBalance2AfterSwap.free).bnGt(userBalance2BeforeSwap.free);
 });
