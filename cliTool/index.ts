@@ -1049,7 +1049,8 @@ async function app(): Promise<any> {
             }
 
             const res = deposits.filter(
-              (r) => r.data.address === answers.address,
+              (r) =>
+                r.data.address.toLowerCase() === answers.address.toLowerCase(),
             );
             console.log(res);
 
