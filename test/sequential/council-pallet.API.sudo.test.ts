@@ -54,77 +54,7 @@ beforeAll(async () => {
   );
 });
 
-test("temp", async () => {
-  const propEvents = await Sudo.asSudoFinalized(
-    Sudo.sudoAs(
-      councilUsers[0],
-      Sudo.batch(
-        Council.propose(
-          3,
-          api.tx.tokens.mint(
-            GASP_ASSET_ID,
-            testUser.keyRingPair.address,
-            BN_THOUSAND,
-          ),
-          44,
-        ),
-      ),
-    ),
-  );
-  const hash = propEvents
-    .filter((x) => x.event.method === "Proposed")
-    .flatMap((x) => x.eventData[2].data.toString());
-  await Council.voteProposal(hash[0], [
-    councilUsers[0],
-    councilUsers[1],
-    councilUsers[2],
-  ]);
-
-  const propIndex = JSON.parse(
-    JSON.stringify(await api.query.council.voting(hash[0])),
-  ).index;
-  const foundationMembers = await FoundationMembers.getFoundationMembers();
-  await Sudo.asSudoFinalized(
-    Sudo.sudoAsWithAddressString(
-      foundationMembers[1],
-      Council.close(hash[0], propIndex),
-    ),
-  );
-});
-
-test("temp2", async () => {
-  const propEvents = await signTx(
-    api,
-    Council.propose(
-      3,
-      api.tx.sudoOrigin.sudo(
-        api.tx.tokens.mint(
-          GASP_ASSET_ID,
-          testUser.keyRingPair.address,
-          BN_THOUSAND,
-        ),
-      ),
-      44,
-    ),
-    councilUsers[0].keyRingPair,
-  );
-
-  const hash = propEvents
-    .filter((x) => x.event.method === "Proposed")
-    .flatMap((x) => x.eventData[2].data.toString());
-
-  const proposal = await api.query.council.voting(hash[0]);
-  for (let i = 0; i < 3; i++) {
-    const tx = Council.vote(
-      hash[0],
-      JSON.parse(JSON.stringify(proposal.toHuman())).index,
-      "aye",
-    );
-    await signTx(api, tx, councilUsers[i].keyRingPair);
-  }
-});
-
-test("temp3", async () => {
+test("Founder can close voting without sudo account", async () => {
   const [newFounder] = await setupUsers();
 
   const propEvents = await Sudo.asSudoFinalized(
