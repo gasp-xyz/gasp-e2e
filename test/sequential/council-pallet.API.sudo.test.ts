@@ -11,6 +11,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { FoundationMembers } from "../../utils/FoundationMembers";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
+import { stringToBN } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -18,7 +19,6 @@ process.env.NODE_ENV = "test";
 
 let councilUsers: User[];
 let sudo: User;
-let testUser: User;
 let api: ApiPromise;
 
 beforeAll(async () => {
@@ -32,7 +32,6 @@ beforeAll(async () => {
   sudo = getSudoUser();
   api = getApi();
   councilUsers = await setupUsers();
-  [testUser] = await setupUsers();
 
   councilUsers.push(sudo);
   await Sudo.batchAsSudoFinalized(
@@ -55,21 +54,21 @@ beforeAll(async () => {
 });
 
 test("Founder can close voting without sudo account", async () => {
-  const [newFounder] = await setupUsers();
+  const [testUser, newFounder] = await setupUsers();
 
   const propEvents = await Sudo.asSudoFinalized(
     Sudo.sudoAs(
       councilUsers[0],
-      Sudo.batch(
-        Council.propose(
-          3,
+      Council.propose(
+        3,
+        api.tx.sudoOrigin.sudo(
           api.tx.tokens.mint(
             GASP_ASSET_ID,
             testUser.keyRingPair.address,
             BN_THOUSAND,
           ),
-          44,
         ),
+        44,
       ),
     ),
   );
@@ -106,4 +105,14 @@ test("Founder can close voting without sudo account", async () => {
   );
 
   await signTx(api, Council.close(hash[0], propIndex), newFounder.keyRingPair);
+
+  const tokenAmount = stringToBN(
+    (
+      await api.query.tokens.accounts(
+        testUser.keyRingPair.address,
+        GASP_ASSET_ID,
+      )
+    ).free.toString(),
+  );
+  expect(tokenAmount).bnEqual(BN_THOUSAND);
 });
