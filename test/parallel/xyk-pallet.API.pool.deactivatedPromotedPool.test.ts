@@ -38,7 +38,7 @@ let testUser1: User;
 let sudo: User;
 let token1: BN;
 let liquidityId: BN;
-const defaultCurrencyValue = new BN(250000000);
+const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
   try {
