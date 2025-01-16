@@ -34,6 +34,7 @@ const SUCCESS_MODAL = "transfer-success";
 const CLOSE_BUTTON = "close";
 const TOKEN_LIST_AMOUNT = "token-amount";
 const DEPOSIT_ERROR = "deposit-status-error";
+const BACK_BUTTON = "deposit-status-back";
 
 export enum DepositActionType {
   Deposit,
@@ -55,7 +56,7 @@ export class DepositModal {
     [DepositActionType.Approve]: "Approve Deposit",
     [DepositActionType.Deposit]: "Deposit",
     [DepositActionType.Network]: "Switch to Holesky",
-    [DepositActionType.NetworkArbitrum]: "Switch to Arbitrum",
+    [DepositActionType.NetworkArbitrum]: "Switch to Arbitrum One",
     [DepositActionType.Approving]: "Enabling Deposit...",
     [DepositActionType.Done]: "Ok, I understand",
   };
@@ -185,6 +186,11 @@ export class DepositModal {
     await clickElement(this.driver, xpath);
   }
 
+  async goBack() {
+    const xpath = buildDataTestIdXpath(BACK_BUTTON);
+    await clickElement(this.driver, xpath);
+  }
+
   async clickContinue() {
     const continueBtn = buildDataTestIdXpath(BTN_SUBMIT);
     await clickElement(this.driver, continueBtn);
@@ -231,6 +237,11 @@ export class DepositModal {
     throw new Error(
       `Timeout: Element value not as desired after ${timeout} milliseconds`,
     );
+  }
+
+  async getModalText() {
+    const xpath = buildDataTestIdXpath(DEPOSIT_MODAL_CONTENT);
+    return await this.driver.findElement(By.xpath(xpath)).getText();
   }
 
   async waitTokenListAmountChange(

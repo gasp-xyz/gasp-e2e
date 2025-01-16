@@ -63,8 +63,8 @@ export async function setupPage(driver: WebDriver) {
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
   await mainPage.skipWelcomeMessage();
-  await mainPage.skipMailerIframe();
-  await mainPage.skipLaunchMessage();
+  // await mainPage.skipMailerIframe();
+  // await mainPage.skipLaunchMessage();
 }
 
 export async function setupPageWithState(driver: WebDriver, acc_name: string) {
@@ -72,7 +72,7 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   await mainPage.go();
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
-  await mainPage.skipLaunchMessage();
+  //await mainPage.skipLaunchMessage();
 
   const walletWrapper = new WalletWrapper(driver);
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
@@ -122,7 +122,7 @@ export async function waitForActionNotification(
 ) {
   switch (transaction) {
     case TransactionType.ApproveContract:
-      await MetaMask.acceptContractInDifferentWindow(driver);
+      await MetaMask.signTransactionInDifferentWindow(driver);
       break;
     case TransactionType.Deposit:
       const depositModal = new DepositModal(driver);

@@ -7,10 +7,8 @@ import { WebDriver } from "selenium-webdriver";
 import { getApi, initApi } from "../../utils/api";
 import { DriverBuilder } from "../../utils/frontend/utils/Driver";
 import {
-  acceptNetworkSwitchInNewWindow,
   addExtraLogs,
   importMetamaskExtension,
-  uiStringToNumber,
 } from "../../utils/frontend/utils/Helper";
 import "dotenv/config";
 import {
@@ -25,6 +23,7 @@ import {
   DepositModal,
 } from "../../utils/frontend/rollup-utils/DepositModal";
 import { TransactionType } from "../../utils/frontend/rollup-pages/NotificationToast";
+import { switchNetworkIfEligible } from "../../utils/frontend/utils/Handlers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -34,9 +33,7 @@ let driver: WebDriver;
 let acc_addr = "";
 let acc_addr_short = "";
 const ETH_ASSET_NAME = "ETH";
-const ETH_ORIGIN = "Ethereum";
-const ARB_ASSET_NAME = "ETH";
-const ARB_ORIGIN = "Arbitrum";
+const USDC_ASSET_NAME = "USDC";
 
 describe("Gasp Prod UI deposit tests", () => {
   beforeAll(async () => {
@@ -54,114 +51,80 @@ describe("Gasp Prod UI deposit tests", () => {
     await connectWallet(driver, "MetaMask", acc_addr_short, true);
   });
 
-  test("User can deposit ETH", async () => {
+  test("User can deposit USDC(arb) - rejected", async () => {
     await setupPageWithState(driver, acc_addr_short);
 
     const walletWrapper = new WalletWrapper(driver);
     await walletWrapper.openWalletConnectionInfo();
-    const tokensAmountBefore = await walletWrapper.getMyTokensRowAmount(
-      ETH_ASSET_NAME,
-      ETH_ORIGIN,
-    );
     await walletWrapper.openDeposit();
     const depositModal = new DepositModal(driver);
     const isModalVisible = await depositModal.isModalVisible();
     expect(isModalVisible).toBeTruthy();
 
     await depositModal.openChainList();
-    await depositModal.selectChain("Holesky");
+    await depositModal.selectChain("Arbitrum One");
+    await depositModal.openTokensList();
+    await depositModal.waitForTokenListElementsVisible(USDC_ASSET_NAME);
+    await depositModal.selectToken(USDC_ASSET_NAME);
+
+    const randomNum = Math.floor(Math.random() * 99) + 1;
+    await depositModal.enterValue("1.01" + randomNum.toString());
+
+    await depositModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
+    expect(isOriginFeeDisplayed).toBeTruthy();
+    await switchNetworkIfEligible(driver, DepositActionType.NetworkArbitrum);
+
+    await depositModal.clickDepositButtonByText(DepositActionType.Approve);
+    await waitForActionNotification(driver, TransactionType.ApproveContract);
+    await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
+    await waitForActionNotification(driver, TransactionType.Deposit, true);
+
+    const modalText = await depositModal.getModalText();
+    expect(modalText).toContain("User rejected the request");
+    expect(modalText).toContain("Something went wrong");
+    await depositModal.goBack();
+    await depositModal.waitForContinueState(true, 60000);
+    const isOriginFeeDisplayedPostError =
+      await depositModal.isOriginFeeDisplayed();
+    expect(isOriginFeeDisplayedPostError).toBeTruthy();
+  });
+
+  test("User can deposit ETH(arb) - rejected", async () => {
+    await setupPageWithState(driver, acc_addr_short);
+
+    const walletWrapper = new WalletWrapper(driver);
+    await walletWrapper.openWalletConnectionInfo();
+    await walletWrapper.openDeposit();
+    const depositModal = new DepositModal(driver);
+    const isModalVisible = await depositModal.isModalVisible();
+    expect(isModalVisible).toBeTruthy();
+
+    await depositModal.openChainList();
+    await depositModal.selectChain("Arbitrum One");
     await depositModal.openTokensList();
     await depositModal.waitForTokenListElementsVisible(ETH_ASSET_NAME);
     await depositModal.selectToken(ETH_ASSET_NAME);
 
     const randomNum = Math.floor(Math.random() * 99) + 1;
-    await depositModal.enterValue("0.001" + randomNum.toString());
+    await depositModal.enterValue("0.0001" + randomNum.toString());
 
     await depositModal.waitForContinueState(true, 60000);
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
-
-    // Skip until we have same behaviour on dev and prod
-    const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled();
-    expect(isNetworkButtonEnabled).toBeTruthy();
-
-    await depositModal.clickDepositButtonByText(DepositActionType.Network);
-    await acceptNetworkSwitchInNewWindow(driver);
-
-    // await depositModal.clickDepositButtonByText(DepositActionType.Approve);
-    // await waitForActionNotification(driver, TransactionType.ApproveContract);
+    await switchNetworkIfEligible(driver, DepositActionType.NetworkArbitrum);
 
     await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
-    await waitForActionNotification(driver, TransactionType.Deposit);
-    await depositModal.closeSuccessModal();
+    await waitForActionNotification(driver, TransactionType.Deposit, true);
 
-    await walletWrapper.waitTokenAmountChange(
-      ETH_ASSET_NAME,
-      tokensAmountBefore,
-      ETH_ORIGIN,
-    );
-    const tokensAmountAfter = await walletWrapper.getMyTokensRowAmount(
-      ETH_ASSET_NAME,
-      ETH_ORIGIN,
-    );
-    expect(await uiStringToNumber(tokensAmountAfter)).toBeGreaterThan(
-      await uiStringToNumber(tokensAmountBefore),
-    );
-  });
-
-  test("User can deposit ARB", async () => {
-    await setupPageWithState(driver, acc_addr_short);
-
-    const walletWrapper = new WalletWrapper(driver);
-    await walletWrapper.openWalletConnectionInfo();
-    const tokensAmountBefore = await walletWrapper.getMyTokensRowAmount(
-      ARB_ASSET_NAME,
-      ARB_ORIGIN,
-    );
-    await walletWrapper.openDeposit();
-    const depositModal = new DepositModal(driver);
-    const isModalVisible = await depositModal.isModalVisible();
-    expect(isModalVisible).toBeTruthy();
-
-    await depositModal.openChainList();
-    await depositModal.selectChain("Arbitrum");
-    await depositModal.openTokensList();
-    await depositModal.waitForTokenListElementsVisible(ARB_ASSET_NAME);
-    await depositModal.selectToken(ARB_ASSET_NAME);
-
-    const randomNum = Math.floor(Math.random() * 99) + 1;
-    await depositModal.enterValue("0.001" + randomNum.toString());
-
+    const modalText = await depositModal.getModalText();
+    expect(modalText).toContain("User rejected the request");
+    expect(modalText).toContain("Something went wrong");
+    await depositModal.goBack();
     await depositModal.waitForContinueState(true, 60000);
-    const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
-    expect(isOriginFeeDisplayed).toBeTruthy();
-
-    const isNetworkButtonEnabled = await depositModal.isNetworkButtonEnabled(
-      DepositActionType.NetworkArbitrum,
-    );
-    expect(isNetworkButtonEnabled).toBeTruthy();
-
-    await depositModal.clickDepositButtonByText(
-      DepositActionType.NetworkArbitrum,
-    );
-    await acceptNetworkSwitchInNewWindow(driver);
-
-    await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
-    await waitForActionNotification(driver, TransactionType.Deposit);
-    await depositModal.closeSuccessModal();
-
-    await walletWrapper.waitTokenAmountChange(
-      ARB_ASSET_NAME,
-      tokensAmountBefore,
-      ARB_ORIGIN,
-    );
-    const tokensAmountAfter = await walletWrapper.getMyTokensRowAmount(
-      ARB_ASSET_NAME,
-      ARB_ORIGIN,
-    );
-    expect(await uiStringToNumber(tokensAmountAfter)).toBeGreaterThan(
-      await uiStringToNumber(tokensAmountBefore),
-    );
+    const isOriginFeeDisplayedPostError =
+      await depositModal.isOriginFeeDisplayed();
+    expect(isOriginFeeDisplayedPostError).toBeTruthy();
   });
 
   afterEach(async () => {

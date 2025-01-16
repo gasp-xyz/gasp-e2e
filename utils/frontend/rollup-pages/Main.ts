@@ -41,7 +41,7 @@ export class Main {
   }
 
   async skipWelcomeMessage() {
-    const betaButton = buildXpathByElementText("button", "Get Started");
+    const betaButton = buildXpathByElementText("button", "Start trading");
     try {
       await clickElement(this.driver, betaButton);
     } catch (error) {

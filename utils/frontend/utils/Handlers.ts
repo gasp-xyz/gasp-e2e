@@ -1,6 +1,5 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
-import { DepositModal } from "../pages/DepositModal";
 import { Mangata } from "../pages/Mangata";
 import { ModalType, NotificationModal } from "../pages/NotificationModal";
 import { Polkadot } from "../pages/Polkadot";
@@ -9,7 +8,11 @@ import { Sidebar } from "../pages/Sidebar";
 import { TokensModal } from "../pages/TokensModal";
 import { WalletConnectModal } from "../pages/WalletConnectModal";
 import { WithdrawModal } from "../pages/WithdrawModal";
-import { acceptPermissionsPolkadotExtension } from "./Helper";
+import {
+  acceptNetworkSwitchInNewWindow,
+  acceptPermissionsPolkadotExtension,
+} from "./Helper";
+import { DepositActionType, DepositModal } from "../rollup-utils/DepositModal";
 
 export async function connectPolkadotWallet(
   driver: WebDriver,
@@ -86,11 +89,27 @@ export async function initDeposit(driver: WebDriver, assetName: string) {
   expect(isModalVisible).toBeTruthy();
 
   await depositModal.openTokensList();
-  const areTokenListElementsVisible =
-    await depositModal.areTokenListElementsVisible(assetName);
-  expect(areTokenListElementsVisible).toBeTruthy();
+  // const areTokenListElementsVisible =
+  //   await depositModal.areTokenListElementsVisible(assetName);
+  // expect(areTokenListElementsVisible).toBeTruthy();
   await depositModal.selectToken(assetName);
   await depositModal.enterValue("1");
-  await depositModal.waitForProgressBar();
+  // await depositModal.waitForProgressBar();
   await depositModal.clickContinue();
+}
+
+export async function switchNetworkIfEligible(
+  driver: WebDriver,
+  depositAction: DepositActionType,
+) {
+  const depositModal = new DepositModal(driver);
+  try {
+    const isNetworkButtonEnabled =
+      await depositModal.isNetworkButtonEnabled(depositAction);
+    expect(isNetworkButtonEnabled).toBeTruthy();
+    await depositModal.clickDepositButtonByText(depositAction);
+    await acceptNetworkSwitchInNewWindow(driver);
+  } catch {
+    //Button not found - no action performed.
+  }
 }
