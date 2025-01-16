@@ -22,7 +22,7 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, signTx } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
@@ -41,6 +41,7 @@ import { getCurrentNonce } from "../../utils/tx";
 import { waitForNBlocks } from "../../utils/utils";
 import { System } from "../../utils/System";
 import { Assets } from "../../utils/Assets";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -50,7 +51,7 @@ let api: ApiPromise;
 let tests: { [K: string]: [Extrinsic, User] } = {};
 let sequencer: User;
 let user: User;
-const foundationAccountAddress = FOUNDATION_ADDRESS_1;
+let foundationAccountAddress: string;
 
 async function setupMm() {
   await Sudo.batchAsSudoFinalized(
@@ -112,6 +113,8 @@ describe.each(["mm", "upgradabilityMm"])(
       api = await getApi();
       [user] = setupUsers();
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
+      const foundationMembers = await FoundationMembers.getFoundationMembers();
+      foundationAccountAddress = foundationMembers[0];
     });
 
     beforeEach(async () => {
@@ -262,15 +265,9 @@ describe.each(["mm", "upgradabilityMm"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);
-          let signer: User;
           const [extrinsic, testsSigner] = tests[testName];
-          if (mmMode === "mm") {
-            signer = testsSigner;
-          } else {
-            signer = user;
-          }
-          const nonce = await getCurrentNonce(signer.keyRingPair.address);
-          await signTx(api, extrinsic, signer.keyRingPair, {
+          const nonce = await getCurrentNonce(testsSigner.keyRingPair.address);
+          await signTx(api, extrinsic, testsSigner.keyRingPair, {
             nonce: nonce,
           }).then(async (events) => {
             const event = getEventResultFromMangataTx(events);

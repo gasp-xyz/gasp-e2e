@@ -6,7 +6,7 @@ import { jest } from "@jest/globals";
 import { hexToU8a } from "@polkadot/util";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
@@ -19,6 +19,7 @@ import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
 import { checkMaintenanceStatus } from "../../utils/validators";
 import { Market } from "../../utils/market";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -28,9 +29,9 @@ let testUser1: User;
 //let keyring: Keyring;
 let firstCurrency: BN;
 let liqId: BN;
+let foundationAccountAddress: string;
 const defaultCurrencyValue = new BN(1000000000000000);
 const defaultPoolVolumeValue = new BN(10000000000);
-const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 beforeAll(async () => {
   try {
@@ -42,6 +43,9 @@ beforeAll(async () => {
   [testUser1] = setupUsers();
 
   await setupApi();
+
+  const foundationMembers = await FoundationMembers.getFoundationMembers();
+  foundationAccountAddress = foundationMembers[0];
 
   firstCurrency = await Assets.issueAssetToUser(
     sudo,
