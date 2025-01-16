@@ -58,6 +58,10 @@ beforeAll(async () => {
   testUser5.addAsset(GASP_ASSET_ID);
 });
 
+beforeEach(async () => {
+  await SequencerStaking.removeAddedSequencers();
+});
+
 it("GIVEN User provides a stake by using StakeOnly action THEN User is not a sequencer", async () => {
   const events = await signTx(
     getApi(),

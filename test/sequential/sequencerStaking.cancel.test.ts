@@ -12,7 +12,7 @@ import {
 } from "../../utils/rollDown/Rolldown";
 import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
-import { waitForNBlocks } from "../../utils/utils";
+import { stringToBN, waitForNBlocks } from "../../utils/utils";
 import { AssetWallet, User } from "../../utils/User";
 import { Sudo } from "../../utils/sudo";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
@@ -21,6 +21,7 @@ import { BN_ZERO } from "@polkadot/util";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 import BN from "bn.js";
+import { testLog } from "../../utils/Logger";
 
 let api: any;
 const chain = "Ethereum";
@@ -98,6 +99,16 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     testUser1.keyRingPair.address,
   );
   expect(filteredEvent[0].data[2]).bnEqual(BN_ZERO);
+  testLog.getLog().info("slashFineAmount -", slashFineAmount.toString());
+  testLog
+    .getLog()
+    .info("slashFineAmount - 0.8%", slashFineAmount.muln(0.8).toString());
+  testLog
+    .getLog()
+    .info(
+      "slashFineAmount - 0.8% converted",
+      stringToBN(slashFineAmount.toString()).muln(0.8).toString(),
+    );
   expect(filteredEvent[0].data[3]).bnEqual(slashFineAmount.muln(0.8));
 
   const tokenAddress = testUser1.keyRingPair.address;
