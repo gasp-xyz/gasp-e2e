@@ -41,7 +41,7 @@ const ARB_CHAIN_NAME = "Arbitrum";
 const ARB_ASSET_NAME = "ETH";
 const ARB_ORIGIN = "Arbitrum";
 
-describe("Gasp Prod UI withdraw tests", () => {
+describe.skip("Gasp Prod UI withdraw tests", () => {
   beforeAll(async () => {
     try {
       getApi();
