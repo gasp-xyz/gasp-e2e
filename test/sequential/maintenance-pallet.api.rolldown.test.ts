@@ -115,6 +115,7 @@ describe.each(["mm", "upgradabilityMm"])(
       await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
       const foundationMembers = await FoundationMembers.getFoundationMembers();
       foundationAccountAddress = foundationMembers[0];
+      await SequencerStaking.removeAllSequencers();
     });
 
     beforeEach(async () => {
@@ -265,9 +266,15 @@ describe.each(["mm", "upgradabilityMm"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);
+          let signer: User;
           const [extrinsic, testsSigner] = tests[testName];
-          const nonce = await getCurrentNonce(testsSigner.keyRingPair.address);
-          await signTx(api, extrinsic, testsSigner.keyRingPair, {
+          if (mmMode === "mm") {
+            signer = testsSigner;
+          } else {
+            signer = user;
+          }
+          const nonce = await getCurrentNonce(signer.keyRingPair.address);
+          await signTx(api, extrinsic, signer.keyRingPair, {
             nonce: nonce,
           }).then(async (events) => {
             const event = getEventResultFromMangataTx(events);
