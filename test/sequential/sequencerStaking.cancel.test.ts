@@ -102,14 +102,14 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   testLog.getLog().info("slashFineAmount -" + slashFineAmount.toString());
   testLog
     .getLog()
-    .info("slashFineAmount - 0.8%" + slashFineAmount.muln(0.8).toString());
+    .info("slashFineAmount - 0.8%" + slashFineAmount.muln(8).divn(10).toString());
   testLog
     .getLog()
     .info(
       "slashFineAmount - 0.8% converted" +
-        stringToBN(slashFineAmount.toString()).muln(0.8).toString(),
+        stringToBN(slashFineAmount.toString()).muln(8).divn(10).toString(),
     );
-  expect(filteredEvent[0].data[3]).bnEqual(slashFineAmount.muln(0.8));
+  expect(filteredEvent[0].data[3]).bnEqual(slashFineAmount.muln(8).divn(10));
 
   const tokenAddress = testUser1.keyRingPair.address;
   const didDepositRun = await Rolldown.isTokenBalanceIncreased(
