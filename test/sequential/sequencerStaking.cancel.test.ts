@@ -102,7 +102,9 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
   testLog.getLog().info("slashFineAmount -" + slashFineAmount.toString());
   testLog
     .getLog()
-    .info("slashFineAmount - 0.8%" + slashFineAmount.muln(8).divn(10).toString());
+    .info(
+      "slashFineAmount - 0.8%" + slashFineAmount.muln(8).divn(10).toString(),
+    );
   testLog
     .getLog()
     .info(
@@ -134,7 +136,7 @@ it("GIVEN a sequencer, WHEN <correctly> canceling an update THEN a % of the slas
     ?.amountBefore.reserved!.sub(
       testUser1.getAsset(GASP_ASSET_ID)?.amountAfter.reserved!,
     );
-  expect(cancelerRewardValue).bnEqual(slashFineAmount.muln(0.2));
+  expect(cancelerRewardValue).bnEqual(slashFineAmount.muln(2).divn(10));
   expect(updaterPenaltyValue).bnEqual(slashFineAmount);
 });
 
