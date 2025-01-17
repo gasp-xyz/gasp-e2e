@@ -106,19 +106,23 @@ describe.each(["mm", "upgradabilityMm"])(
   "On [%s] - regular l1 updates must be forbidden",
   (mmMode) => {
     let previous = "";
-    // hacky trick to avoid double setup
-
     beforeAll(async () => {
       await setupApi();
       api = await getApi();
-      [user] = setupUsers();
-      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
+      [user, sequencer] = setupUsers();
+      const minSeq = (await SequencerStaking.minimalStakeAmount()).muln(100);
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintNative(user),
+        Assets.mintNative(sequencer, minSeq),
+      );
       const foundationMembers = await FoundationMembers.getFoundationMembers();
       foundationAccountAddress = foundationMembers[0];
       await SequencerStaking.removeAllSequencers();
+      await SequencerStaking.setupASequencer(sequencer);
     });
 
     beforeEach(async () => {
+      // hacky trick to avoid double setup
       if (previous !== mmMode) {
         previous = mmMode;
         try {
@@ -126,7 +130,7 @@ describe.each(["mm", "upgradabilityMm"])(
         } catch (e) {
           await initApi();
         }
-        sequencer = await SequencerStaking.getSequencerUser();
+        sequencer = await SequencerStaking.getBaltatharSeqUser();
         users.push(...setupUsers());
         users.push(sequencer);
         await waitForNBlocks(2);
