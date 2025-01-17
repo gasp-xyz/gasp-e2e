@@ -49,12 +49,17 @@ beforeAll(async () => {
     Assets.mintNative(testUser3),
     Assets.mintNative(testUser4),
     Assets.mintNative(testUser5),
+    Assets.mintNative(sudoUser, stakeAmount.muln(10)),
   );
   testUser1.addAsset(GASP_ASSET_ID);
   testUser2.addAsset(GASP_ASSET_ID);
   testUser3.addAsset(GASP_ASSET_ID);
   testUser4.addAsset(GASP_ASSET_ID);
   testUser5.addAsset(GASP_ASSET_ID);
+});
+
+beforeEach(async () => {
+  await SequencerStaking.removeAddedSequencers();
 });
 
 it("GIVEN User provides a stake by using StakeOnly action THEN User is not a sequencer", async () => {

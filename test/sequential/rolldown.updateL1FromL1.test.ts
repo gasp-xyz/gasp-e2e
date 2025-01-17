@@ -60,7 +60,7 @@ describe.skip("updateL1FromL1", () => {
   beforeEach(async () => {
     await initApi();
     setupUsers();
-    sequencer = await SequencerStaking.getSequencerUser();
+    sequencer = await SequencerStaking.getBaltatharSeqUser();
     await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
   });
   it("Updates are accepted", async () => {
@@ -451,7 +451,7 @@ describe.skip("updateL1FromL1 - errors", () => {
   beforeEach(async () => {
     await initApi();
     setupUsers();
-    sequencer = await SequencerStaking.getSequencerUser();
+    sequencer = await SequencerStaking.getBaltatharSeqUser();
     await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
   });
   describe.each([true, false])(`Update with gap: %s`, (withGap) => {

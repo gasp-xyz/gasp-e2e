@@ -18,7 +18,7 @@ import { Assets } from "../../utils/Assets";
 import { BN_THOUSAND } from "@polkadot/util";
 import { BN_HUNDRED, MangataGenericEvent } from "gasp-sdk";
 import { User } from "../../utils/User";
-import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { findErrorMetadata, waitForNBlocks } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Maintenance } from "../../utils/Maintenance";
@@ -30,11 +30,13 @@ import { Option } from "@polkadot/types-codec";
 import { Call } from "@polkadot/types/interfaces";
 import { Council } from "../../utils/Council";
 import BN from "bn.js";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
 let councilUsers: User[];
 let proposalHashes: string[];
+let foundationMembers: any;
 type TestItem = { address: string; validate: Function };
 const testCases: { [id: string]: TestItem } = {};
 
@@ -55,6 +57,8 @@ describe.each(["mmON", "mmOFF"])(
       await setupApi();
       maintenanceMode["mmON"] = Maintenance.switchMaintenanceModeOn();
       maintenanceMode["mmOFF"] = Maintenance.switchMaintenanceModeOff();
+
+      foundationMembers = await FoundationMembers.getFoundationMembers();
 
       councilUsers = await setupUsers();
       councilUsers.push(alice);
@@ -79,7 +83,7 @@ describe.each(["mmON", "mmOFF"])(
         Sudo.sudo(Council.setMembers(councilUsers)),
       );
       testCases["Foundation"] = {
-        address: FOUNDATION_ADDRESS_1,
+        address: foundationMembers[0],
         //fundation can only close motions when mm is ON.
         validate: validateExtrinsicSuccess,
       };
@@ -101,7 +105,7 @@ describe.each(["mmON", "mmOFF"])(
         await waitForNBlocks(61);
       }
       const event = await await Sudo.asSudoFinalized(
-        Sudo.sudoAsWithAddressString(FOUNDATION_ADDRESS_1, maintenanceMode[mm]),
+        Sudo.sudoAsWithAddressString(foundationMembers[0], maintenanceMode[mm]),
       );
       expectMGAExtrinsicSuDidSuccess(event);
     });
@@ -249,7 +253,7 @@ it("Test that Closing a motion requires some time for Council mebers but not for
   expect(err.name).toEqual("TooEarlyToCloseByNonFoundationAccount");
   const eventsFundationUser = await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
-      FOUNDATION_ADDRESS_1,
+      foundationMembers[0],
       Council.close(proposal[0], propIndex),
     ),
   );
