@@ -130,7 +130,6 @@ describe.each(["mm", "upgradabilityMm"])(
         } catch (e) {
           await initApi();
         }
-        sequencer = await SequencerStaking.getBaltatharSeqUser();
         users.push(...setupUsers());
         users.push(sequencer);
         await waitForNBlocks(2);
