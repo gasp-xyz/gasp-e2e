@@ -25,10 +25,8 @@ export class SequencerStaking {
     return await Sudo.batchAsSudoFinalized(Assets.mintNative(user), extrinsic);
   }
 
-  static async getSequencerUser() {
+  static async getBaltatharSeqUser() {
     setupUsers();
-    //const api = await getApi();
-    //const sequencer = await api.query.sequencerStaking.selectedSequencer();
     // @ts-ignore
     const pkey = wellKnownUsers[baltathar];
     return new EthUser(new Keyring({ type: "ethereum" }), pkey);

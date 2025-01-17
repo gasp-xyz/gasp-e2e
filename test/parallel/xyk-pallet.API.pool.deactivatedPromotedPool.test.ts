@@ -12,7 +12,6 @@ import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
-  claimRewards,
   compoundRewards,
   getLiquidityAssetId,
   getRewardsInfo,
@@ -21,7 +20,11 @@ import {
   getBalanceOfPool,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
+import {
+  expectMGAExtrinsicSuDidSuccess,
+  ExtrinsicResult,
+  waitForRewards,
+} from "../../utils/eventListeners";
 import { BN_ZERO } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { Market } from "../../utils/market";
@@ -113,9 +116,10 @@ test("GIVEN user create a pool, wait for rewards and then deactivate the pool WH
     liquidityTokenId: liquidityId.toString(),
   });
 
-  await claimRewards(testUser1, liquidityId).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(testUser1, await ProofOfStake.claimNativeRewards(liquidityId)),
+  ).then((result) => {
+    expectMGAExtrinsicSuDidSuccess(result);
   });
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);

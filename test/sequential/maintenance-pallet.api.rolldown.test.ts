@@ -22,7 +22,7 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, signTx } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
@@ -41,6 +41,7 @@ import { getCurrentNonce } from "../../utils/tx";
 import { waitForNBlocks } from "../../utils/utils";
 import { System } from "../../utils/System";
 import { Assets } from "../../utils/Assets";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -50,7 +51,7 @@ let api: ApiPromise;
 let tests: { [K: string]: [Extrinsic, User] } = {};
 let sequencer: User;
 let user: User;
-const foundationAccountAddress = FOUNDATION_ADDRESS_1;
+let foundationAccountAddress: string;
 
 async function setupMm() {
   await Sudo.batchAsSudoFinalized(
@@ -105,16 +106,23 @@ describe.each(["mm", "upgradabilityMm"])(
   "On [%s] - regular l1 updates must be forbidden",
   (mmMode) => {
     let previous = "";
-    // hacky trick to avoid double setup
-
     beforeAll(async () => {
       await setupApi();
       api = await getApi();
-      [user] = setupUsers();
-      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
+      [user, sequencer] = setupUsers();
+      const minSeq = (await SequencerStaking.minimalStakeAmount()).muln(100);
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintNative(user),
+        Assets.mintNative(sequencer, minSeq),
+      );
+      const foundationMembers = await FoundationMembers.getFoundationMembers();
+      foundationAccountAddress = foundationMembers[0];
+      await SequencerStaking.removeAllSequencers();
+      await SequencerStaking.setupASequencer(sequencer);
     });
 
     beforeEach(async () => {
+      // hacky trick to avoid double setup
       if (previous !== mmMode) {
         previous = mmMode;
         try {
@@ -122,7 +130,7 @@ describe.each(["mm", "upgradabilityMm"])(
         } catch (e) {
           await initApi();
         }
-        sequencer = await SequencerStaking.getSequencerUser();
+        sequencer = await SequencerStaking.getBaltatharSeqUser();
         users.push(...setupUsers());
         users.push(sequencer);
         await waitForNBlocks(2);
