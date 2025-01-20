@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       API_URL: "wss://collator-01-ws-rollup-holesky.gasp.xyz/"
-      UI_URL: https://holesky.gasp.xyz/
+      UI_URL: https://app.gasp.xyz/
       TEST_SUDO_NAME: ${{ secrets.DEV_SUDO_NAME }}
       MNEMONIC_META: ${{ secrets.MNEMONIC_PROD_META }}
       PRIVKEY_META: ${{ secrets.PRIVKEY_PROD_META }}
@@ -66,8 +66,6 @@ jobs:
             --args "-timeout 300s" --browsers 'chrome:119.0;chrome:129.0'
 
       - uses: actions/checkout@v3
-        with:
-          ref: ci/temp-prod-fe-branch
       - uses: actions/setup-node@v3
         with:
           node-version: 18
