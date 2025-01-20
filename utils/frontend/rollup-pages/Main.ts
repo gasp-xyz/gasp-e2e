@@ -1,5 +1,5 @@
 import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars } from "../../utils";
+import { getEnvironmentRequiredVars, sleep } from "../../utils";
 import {
   buildDataTestIdXpath,
   buildXpathByElementText,
@@ -43,6 +43,7 @@ export class Main {
   async skipWelcomeMessage() {
     const welcomeButton = buildXpathByElementText("button", "Start trading");
     const welcomeButtonAlternate = buildXpathByElementText("button", "START TRADING");
+    await sleep(3000);
     try {
       await waitForElementVisible(this.driver, welcomeButton, 5000);
       await clickElement(this.driver, welcomeButton);
