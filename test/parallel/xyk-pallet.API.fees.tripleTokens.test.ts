@@ -253,7 +253,13 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
   const workAroundFromBug = swapValueThreshold.muln(1.5);
   await signTx(
     api,
-    Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue, workAroundFromBug),
+    Market.sellAsset(
+      liqId,
+      firstCurrency,
+      secondCurrency,
+      saleAssetValue,
+      workAroundFromBug,
+    ),
     testUser1.keyRingPair,
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -273,7 +279,13 @@ test("[BUG] GIVEN User has a very limited GASP & a very limited ETH AND we have 
 
   await signTx(
     api,
-    Market.sellAsset(liqId, secondCurrency, firstCurrency, saleAssetValue, workAroundFromBug),
+    Market.sellAsset(
+      liqId,
+      secondCurrency,
+      firstCurrency,
+      saleAssetValue,
+      workAroundFromBug,
+    ),
     testUser1.keyRingPair,
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -295,16 +307,20 @@ test("[BUG] GIVEN User has a very limited amount of GASP & a minimal amount of E
   try {
     await signTx(
       api,
-      Market.sellAsset(liqId, firstCurrency, secondCurrency, saleAssetValue, workAroundFromBug),
+      Market.sellAsset(
+        liqId,
+        firstCurrency,
+        secondCurrency,
+        saleAssetValue,
+        workAroundFromBug,
+      ),
       testUser1.keyRingPair,
     );
   } catch (error) {
     clientError = error;
   }
   //Goncer - fixing until this is done. https://mangatafinance.atlassian.net/browse/GASP-1723
-  expect(clientError.data).toContain(
-    "1010: Invalid Transaction: Inability to pay some fees , e.g. account balance too low",
-  );
+  expect(clientError.data).toContain(feeLockErrors.FeeLockingFail);
 });
 
 test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", async () => {

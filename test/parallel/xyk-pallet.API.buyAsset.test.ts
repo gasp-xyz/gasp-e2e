@@ -27,7 +27,7 @@ import {
 import { Assets } from "../../utils/Assets";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
-import { calculateFees, xykErrors } from "../../utils/utils";
+import { calculateFees, feeLockErrors, xykErrors } from "../../utils/utils";
 import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -151,18 +151,27 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
 
   test("Buy all assets from the the pool", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
-    await buyAsset(
-      testUser1.keyRingPair,
-      firstCurrency,
-      secondCurrency,
-      secondAssetAmount,
-      new BN(100000000),
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
-    });
+    let error = false;
+    let errorMessage = "";
+    try {
+      await buyAsset(
+        testUser1.keyRingPair,
+        firstCurrency,
+        secondCurrency,
+        secondAssetAmount,
+        new BN(100000000),
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
+      });
+    } catch (e) {
+      error = true;
+      //@ts-ignore
+      errorMessage = e.data;
+    }
+    expect(error).toBeTruthy();
+    expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
 
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
       firstAssetAmount,
@@ -194,6 +203,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     });
 
     await validateUserPaidFeeForFailedTx(
+      buyPriceLocal,
       testUser1,
       firstCurrency,
       secondCurrency,
