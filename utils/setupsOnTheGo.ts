@@ -2110,7 +2110,7 @@ export async function depositHell(num: number, txIndexer = 0) {
   } else {
     txIndex = txIndexer;
   }
-  const sequencer = await SequencerStaking.getSequencerUser();
+  const sequencer = await SequencerStaking.getBaltatharSeqUser();
   await Rolldown.waitForReadRights(sequencer.ethAddress.toLowerCase());
   testLog.getLog().info("Depositing " + num + " transactions from " + txIndex);
   const depositBatch = new L2Update(api)

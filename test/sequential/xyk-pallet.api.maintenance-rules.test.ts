@@ -17,7 +17,7 @@ import {
   setupUsers,
 } from "../../utils/setup";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_MILLION } from "gasp-sdk";
 import { BN_ONE, BN_HUNDRED, signTx } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
@@ -33,6 +33,7 @@ import { getLiquidityAssetId } from "../../utils/tx";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { User } from "../../utils/User";
 import { getPoolIdsInfo, Market } from "../../utils/market";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -44,7 +45,7 @@ let swapOperations: { [K: string]: Extrinsic } = {};
 let testUser1: User;
 let testUser2: User;
 let minStk: BN;
-const foundationAccountAddress = FOUNDATION_ADDRESS_1;
+let foundationAccountAddress: string;
 //TODO: Goncer Need to change getTokenIds function in setup5PoolsChained
 describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not allowed", () => {
   beforeAll(async () => {
@@ -56,6 +57,10 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
     await setupApi();
     ({ users, tokenIds } = await setup5PoolsChained(users));
     api = await getApi();
+
+    const foundationMembers = await FoundationMembers.getFoundationMembers();
+    foundationAccountAddress = foundationMembers[0];
+
     const liq = await getLiquidityAssetId(tokenIds.slice(-1)[0], GASP_ASSET_ID);
     const {
       swapPoolList: poolIds,

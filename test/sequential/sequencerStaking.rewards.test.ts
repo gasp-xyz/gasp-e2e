@@ -22,7 +22,7 @@ import {
   leaveSequencing,
   SequencerStaking,
 } from "../../utils/rollDown/SequencerStaking";
-import { setupApi, setupUsers } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   stringToBN,
@@ -33,6 +33,7 @@ import {
 import { AssetWallet, User } from "../../utils/User";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { testLog } from "../../utils/Logger";
+import { Issuance } from "../../utils/Issuance";
 
 let testUser: User;
 const chainEth = "Ethereum";
@@ -65,6 +66,7 @@ beforeEach(async () => {
   [testUser] = setupUsers();
   testUser.addAsset(GASP_ASSET_ID);
   await SequencerStaking.removeAllSequencers();
+  await Sudo.asSudoFinalized(Assets.mintNative(getSudoUser(), (await SequencerStaking.minimalStakeAmount()).muln(100)));
   await SequencerStaking.setupASequencer(testUser, chainEth);
   testUser.addAsset(GASP_ASSET_ID);
 });
@@ -73,10 +75,11 @@ it("Sequencer budget is set when initializing issuance config", async () => {
   const events = await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
+    await Issuance.setIssuanceConfig(40,40,20)
   );
   const filteredEvent = await filterAndStringifyFirstEvent(
     events,
-    "IssuanceConfigInitialized",
+    "IssuanceConfigSet",
   );
   const seqPercentageValue = stringToBN(
     filteredEvent[0].sequencersSplit.slice(0, -4),
