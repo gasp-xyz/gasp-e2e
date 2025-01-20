@@ -8,9 +8,7 @@ import { Sidebar } from "../pages/Sidebar";
 import { TokensModal } from "../pages/TokensModal";
 import { WalletConnectModal } from "../pages/WalletConnectModal";
 import { WithdrawModal } from "../pages/WithdrawModal";
-import {
-  acceptPermissionsPolkadotExtension,
-} from "./Helper";
+import { acceptPermissionsPolkadotExtension } from "./Helper";
 import { DepositModal } from "../rollup-utils/DepositModal";
 
 export async function connectPolkadotWallet(

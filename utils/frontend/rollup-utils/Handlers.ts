@@ -1,7 +1,10 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
 import { Polkadot } from "../pages/Polkadot";
-import { acceptNetworkSwitchInNewWindow, acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
+import {
+  acceptNetworkSwitchInNewWindow,
+  acceptPermissionsWalletExtensionInNewWindow,
+} from "../utils/Helper";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { Main } from "../rollup-pages/Main";
@@ -225,9 +228,7 @@ export async function addLiqTokenMicroapps(
   });
 }
 
-export async function approveContractIfEligible(
-  driver: WebDriver,
-) {
+export async function approveContractIfEligible(driver: WebDriver) {
   const depositModal = new DepositModal(driver);
   try {
     await depositModal.clickDepositButtonByText(DepositActionType.Approve);

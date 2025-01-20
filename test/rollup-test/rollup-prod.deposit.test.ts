@@ -76,7 +76,7 @@ describe("Gasp Prod UI deposit tests", () => {
     expect(isOriginFeeDisplayed).toBeTruthy();
     await switchNetworkIfEligible(driver, DepositActionType.NetworkArbitrum);
     await approveContractIfEligible(driver);
-    
+
     await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
     await waitForActionNotification(driver, TransactionType.Deposit, true);
 
