@@ -64,7 +64,7 @@ export async function setupPage(driver: WebDriver) {
   expect(appLoaded).toBeTruthy();
   await mainPage.skipWelcomeMessage();
   // await mainPage.skipMailerIframe();
-  // await mainPage.skipLaunchMessage();
+  await mainPage.skipLaunchMessage();
 }
 
 export async function setupPageWithState(driver: WebDriver, acc_name: string) {
