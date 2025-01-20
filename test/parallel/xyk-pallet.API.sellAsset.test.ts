@@ -24,7 +24,7 @@ import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsSwappedEvent } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { stringToBN, xykErrors } from "../../utils/utils";
+import { feeLockErrors, stringToBN, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
 import { Sudo } from "../../utils/sudo";
@@ -119,33 +119,29 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     const thirdCurrencyValueBeforeSelling =
       testUser1.getAsset(thirdCurrency)?.amountAfter.free!;
 
-    await new FeeTxs()
-      .sellAsset(
-        testUser1.keyRingPair,
-        thirdCurrency,
-        secondCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0),
-      )
-      .then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-      });
-
-    await new FeeTxs()
-      .sellAsset(
-        testUser1.keyRingPair,
-        secondCurrency,
-        thirdCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0),
-      )
-      .then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-      });
+    let except = false;
+    let errorMessage: any;
+    try {
+      await new FeeTxs()
+        .sellAsset(
+          testUser1.keyRingPair,
+          thirdCurrency,
+          secondCurrency,
+          firstAssetAmount.div(new BN(2)),
+          new BN(0),
+        )
+        .then((result) => {
+          const eventResponse = getEventResultFromMangataTx(result);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+          expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
+        });
+    } catch (error) {
+      except = true;
+      //@ts-ignore
+      errorMessage = error.data;
+    }
+    expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
+    expect(except).toBeTruthy();
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
