@@ -42,8 +42,15 @@ export class Main {
 
   async skipWelcomeMessage() {
     const welcomeButton = buildXpathByElementText("button", "Start trading");
+    const welcomeButtonAlternate = buildXpathByElementText("button", "START TRADING");
     try {
-      await waitForElementVisible(this.driver, welcomeButton, 10000);
+      await waitForElementVisible(this.driver, welcomeButton, 5000);
+      await clickElement(this.driver, welcomeButton);
+    } catch (error) {
+      //Button not found - no action performed.
+    }
+    try {
+      await waitForElementVisible(this.driver, welcomeButtonAlternate, 5000);
       await clickElement(this.driver, welcomeButton);
     } catch (error) {
       //Button not found - no action performed.
