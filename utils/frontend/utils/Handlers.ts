@@ -9,10 +9,9 @@ import { TokensModal } from "../pages/TokensModal";
 import { WalletConnectModal } from "../pages/WalletConnectModal";
 import { WithdrawModal } from "../pages/WithdrawModal";
 import {
-  acceptNetworkSwitchInNewWindow,
   acceptPermissionsPolkadotExtension,
 } from "./Helper";
-import { DepositActionType, DepositModal } from "../rollup-utils/DepositModal";
+import { DepositModal } from "../rollup-utils/DepositModal";
 
 export async function connectPolkadotWallet(
   driver: WebDriver,
