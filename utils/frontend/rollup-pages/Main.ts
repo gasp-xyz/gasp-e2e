@@ -6,6 +6,7 @@ import {
   buildXpathByText,
   clickElement,
   elementExists,
+  hoverElement,
   isDisplayed,
   waitForElementVisible,
 } from "../utils/Helper";
@@ -42,18 +43,11 @@ export class Main {
 
   async skipWelcomeMessage() {
     const welcomeButton = buildXpathByElementText("button", "Start trading");
-    const welcomeButtonAlternate = buildXpathByElementText("button", "START TRADING");
-    await sleep(3000);
 
     await waitForElementVisible(this.driver, welcomeButton, 3000);
+    await hoverElement(this.driver, welcomeButton);
+    await sleep(500);
     await clickElement(this.driver, welcomeButton);
-
-    try {
-      await waitForElementVisible(this.driver, welcomeButtonAlternate, 3000);
-      await clickElement(this.driver, welcomeButton);
-    } catch (error) {
-      //Button not found - no action performed.
-    }
   }
 
   async skipLaunchMessage() {
