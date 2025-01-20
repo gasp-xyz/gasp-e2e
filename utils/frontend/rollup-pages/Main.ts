@@ -8,6 +8,7 @@ import {
   elementExists,
   hoverElement,
   isDisplayed,
+  waitForElementToDissapear,
   waitForElementVisible,
 } from "../utils/Helper";
 
@@ -48,6 +49,7 @@ export class Main {
     await hoverElement(this.driver, welcomeButton);
     await sleep(500);
     await clickElement(this.driver, welcomeButton);
+    await waitForElementToDissapear(this.driver, welcomeButton);
   }
 
   async skipLaunchMessage() {
