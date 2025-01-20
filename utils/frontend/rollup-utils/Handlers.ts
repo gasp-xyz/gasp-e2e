@@ -1,7 +1,7 @@
 import { WebDriver } from "selenium-webdriver";
 import { ApiContext } from "../../Framework/XcmHelper";
 import { Polkadot } from "../pages/Polkadot";
-import { acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
+import { acceptNetworkSwitchInNewWindow, acceptPermissionsWalletExtensionInNewWindow } from "../utils/Helper";
 import { BN_TEN } from "@mangata-finance/sdk";
 import { BN } from "@polkadot/util";
 import { Main } from "../rollup-pages/Main";
@@ -12,7 +12,7 @@ import {
   NotificationToast,
   ToastType,
 } from "../rollup-pages/NotificationToast";
-import { DepositModal } from "./DepositModal";
+import { DepositActionType, DepositModal } from "./DepositModal";
 import { WithdrawModal } from "../rollup-pages/WithdrawModal";
 import { WalletConnectModal } from "../rollup-pages/WalletConnectModal";
 
@@ -223,4 +223,32 @@ export async function addLiqTokenMicroapps(
       ],
     },
   });
+}
+
+export async function approveContractIfEligible(
+  driver: WebDriver,
+) {
+  const depositModal = new DepositModal(driver);
+  try {
+    await depositModal.clickDepositButtonByText(DepositActionType.Approve);
+    await waitForActionNotification(driver, TransactionType.ApproveContract);
+  } catch {
+    //Button not found - no action performed.
+  }
+}
+
+export async function switchNetworkIfEligible(
+  driver: WebDriver,
+  depositAction: DepositActionType,
+) {
+  const depositModal = new DepositModal(driver);
+  try {
+    const isNetworkButtonEnabled =
+      await depositModal.isNetworkButtonEnabled(depositAction);
+    expect(isNetworkButtonEnabled).toBeTruthy();
+    await depositModal.clickDepositButtonByText(depositAction);
+    await acceptNetworkSwitchInNewWindow(driver);
+  } catch {
+    //Button not found - no action performed.
+  }
 }

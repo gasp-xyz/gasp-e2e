@@ -12,9 +12,11 @@ import {
 } from "../../utils/frontend/utils/Helper";
 import "dotenv/config";
 import {
+  approveContractIfEligible,
   connectWallet,
   setupPage,
   setupPageWithState,
+  switchNetworkIfEligible,
   waitForActionNotification,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
@@ -23,7 +25,6 @@ import {
   DepositModal,
 } from "../../utils/frontend/rollup-utils/DepositModal";
 import { TransactionType } from "../../utils/frontend/rollup-pages/NotificationToast";
-import { switchNetworkIfEligible } from "../../utils/frontend/utils/Handlers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 
@@ -74,9 +75,8 @@ describe("Gasp Prod UI deposit tests", () => {
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
     expect(isOriginFeeDisplayed).toBeTruthy();
     await switchNetworkIfEligible(driver, DepositActionType.NetworkArbitrum);
-
-    await depositModal.clickDepositButtonByText(DepositActionType.Approve);
-    await waitForActionNotification(driver, TransactionType.ApproveContract);
+    await approveContractIfEligible(driver);
+    
     await depositModal.clickDepositButtonByText(DepositActionType.Deposit);
     await waitForActionNotification(driver, TransactionType.Deposit, true);
 

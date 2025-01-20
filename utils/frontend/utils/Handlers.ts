@@ -97,19 +97,3 @@ export async function initDeposit(driver: WebDriver, assetName: string) {
   // await depositModal.waitForProgressBar();
   await depositModal.clickContinue();
 }
-
-export async function switchNetworkIfEligible(
-  driver: WebDriver,
-  depositAction: DepositActionType,
-) {
-  const depositModal = new DepositModal(driver);
-  try {
-    const isNetworkButtonEnabled =
-      await depositModal.isNetworkButtonEnabled(depositAction);
-    expect(isNetworkButtonEnabled).toBeTruthy();
-    await depositModal.clickDepositButtonByText(depositAction);
-    await acceptNetworkSwitchInNewWindow(driver);
-  } catch {
-    //Button not found - no action performed.
-  }
-}
