@@ -1,14 +1,12 @@
 import { WebDriver } from "selenium-webdriver";
-import { getEnvironmentRequiredVars, sleep } from "../../utils";
+import { getEnvironmentRequiredVars } from "../../utils";
 import {
   buildDataTestIdXpath,
   buildXpathByElementText,
   buildXpathByText,
   clickElement,
   elementExists,
-  hoverElement,
   isDisplayed,
-  waitForElementToDissapear,
   waitForElementVisible,
 } from "../utils/Helper";
 
@@ -44,12 +42,12 @@ export class Main {
 
   async skipWelcomeMessage() {
     const welcomeButton = buildXpathByElementText("button", "Start trading");
-
-    await waitForElementVisible(this.driver, welcomeButton, 3000);
-    await hoverElement(this.driver, welcomeButton);
-    await sleep(500);
-    await clickElement(this.driver, welcomeButton);
-    await waitForElementToDissapear(this.driver, welcomeButton);
+    try {
+      await waitForElementVisible(this.driver, welcomeButton, 5000);
+      await clickElement(this.driver, welcomeButton);
+    } catch (error) {
+      //Button not found - no action performed.
+    }
   }
 
   async skipLaunchMessage() {
