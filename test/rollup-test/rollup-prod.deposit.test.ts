@@ -1,6 +1,6 @@
 /*
  *
- * @group rollupDepositProd
+ * @group rollupDepositProdDesktop
  */
 import { jest } from "@jest/globals";
 import { WebDriver } from "selenium-webdriver";

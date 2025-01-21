@@ -119,7 +119,6 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   expect(appLoaded).toBeTruthy();
 
   const walletWrapper = new WalletWrapper(driver);
-  await walletWrapper.openWalletConnectionInfo();
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
   expect(isAccInfoDisplayed).toBeTruthy();
 }
