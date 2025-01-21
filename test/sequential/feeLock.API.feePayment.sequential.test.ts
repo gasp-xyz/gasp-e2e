@@ -114,7 +114,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
     firstCurrency,
     GASP_ASSET_ID,
     thresholdValue.sub(new BN(100)),
-    feeLockErrors.AccountBalanceFail,
+    feeLockErrors.FeeLockFail,
   );
 });
 

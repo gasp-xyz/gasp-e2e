@@ -25,7 +25,7 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { TokensErrorCodes, xykErrors } from "../../utils/utils";
+import { feeLockErrors, TokensErrorCodes, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Sudo } from "../../utils/sudo";
 import { BN_ONE } from "gasp-sdk";
@@ -196,17 +196,27 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
   });
 
   test("Sell [MAX -2] assets to a wallet with Max-1000,1000 => overflow.", async () => {
-    await sellAsset(
-      testUser2.keyRingPair,
-      firstCurrency,
-      secondCurrency,
-      MAX_BALANCE.sub(new BN(10)),
-      new BN(1),
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
-    });
+    let exception = false;
+    let errorMessage = "";
+    try {
+      await sellAsset(
+        testUser2.keyRingPair,
+        firstCurrency,
+        secondCurrency,
+        MAX_BALANCE.sub(new BN(10)),
+        new BN(1),
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
+      });
+    } catch (e) {
+      exception = true;
+      //@ts-ignore
+      errorMessage = e.data;
+    }
+    expect(exception).toBeTruthy();
+    expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
     await testUser2.refreshAmounts(AssetWallet.AFTER);
 
     expect(testUser2.getAsset(firstCurrency)?.amountAfter.free).bnEqual(

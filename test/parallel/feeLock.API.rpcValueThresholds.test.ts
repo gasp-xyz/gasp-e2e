@@ -171,7 +171,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         thresholdValue,
       )
     ).toString(),
-  ).toEqual("false");
+  ).toEqual("true");
 
   //MGA paired token
   expect(
@@ -206,7 +206,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         amount.addn(1),
       )
     ).toString(),
-  ).toEqual("false");
+  ).toEqual("true");
 
   expect(
     (
@@ -248,7 +248,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
         amountReqToGetThreshold!.addn(1),
       )
     ).toString(),
-  ).toEqual("false");
+  ).toEqual("true");
 });
 
 test("gasless- isFree works same as multiswap of two", async () => {

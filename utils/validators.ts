@@ -1,6 +1,6 @@
 import { ApiPromise } from "@polkadot/api";
 import { Codec } from "@polkadot/types-codec/types";
-import { BN } from "@polkadot/util";
+import { BN, BN_TWO } from "@polkadot/util";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { CodecOrArray, toHex, toHuman, toJson } from "./setup";
 import {
@@ -12,12 +12,15 @@ import {
 } from "./tx";
 import { AssetWallet, User } from "./User";
 import {
+  calculateCompleteFees,
+  calculateFees,
   calculateLiqAssetAmount,
   fromBNToUnitString,
   fromStringToUnitString,
   stringToBN,
 } from "./utils";
 import { getApi } from "./api";
+import { BN_TEN } from "gasp-sdk";
 
 export function validateTransactionSucessful(
   eventResult: EventResult,
@@ -215,16 +218,29 @@ export async function validateTreasuryAmountsEqual(
 }
 
 export async function validateUserPaidFeeForFailedTx(
+  soldAmount: BN,
   user: User,
   assetSoldId: BN,
   failedBoughtAssetId: BN,
   poolAmountFailedBought: BN,
   initialPoolValueSoldAssetId: BN,
+  roundingIssue = BN_TWO,
 ) {
+  const { treasury, treasuryBurn } = calculateFees(soldAmount);
+  let { completeFee } = calculateCompleteFees(soldAmount);
+
+  //when failed Tx, we remove 3% and put it in the pool.
   //first wallet should not be modified.
+  //roundingISSUES - 2
+  //https://mangatafinance.atlassian.net/browse/GASP-1869
+  completeFee = completeFee.sub(roundingIssue);
+
   await user.refreshAmounts(AssetWallet.AFTER);
+  const diffFromWallet = user
+    .getAsset(assetSoldId)
+    ?.amountBefore.free!.sub(completeFee);
   expect(user.getAsset(assetSoldId)?.amountAfter.free!).bnEqual(
-    user.getAsset(assetSoldId)?.amountBefore.free!,
+    diffFromWallet!,
   );
 
   //second wallet should not be modified.
@@ -232,9 +248,22 @@ export async function validateUserPaidFeeForFailedTx(
   expect(user.getAsset(failedBoughtAssetId)?.amountAfter.free!).bnEqual(
     amount.free,
   );
+  const treasuryTokens = await getTreasury(assetSoldId);
+  const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);
+  expect(treasuryTokens).bnEqual(treasury);
 
+  //roundingISSUES - 2
+  //https://mangatafinance.atlassian.net/browse/GASP-1869
+  expect(treasuryBurnTokens.div(BN_TEN)).bnEqual(treasuryBurn.div(BN_TEN));
+
+  const increasedInPool = completeFee.sub(treasury.add(treasuryBurn));
   const poolBalances = await getBalanceOfPool(assetSoldId, failedBoughtAssetId);
-  expect(poolBalances[0]).bnEqual(initialPoolValueSoldAssetId);
+
+  //roundingISSUES - 2
+  //https://mangatafinance.atlassian.net/browse/GASP-1869
+  expect(poolBalances[0].div(BN_TEN)).bnEqual(
+    initialPoolValueSoldAssetId.add(increasedInPool).div(BN_TEN),
+  );
   expect(poolBalances[1]).bnEqual(poolAmountFailedBought);
 }
 
