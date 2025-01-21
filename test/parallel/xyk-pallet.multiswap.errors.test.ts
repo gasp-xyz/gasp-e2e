@@ -160,7 +160,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
           throw new Error(reason.data);
         },
       ),
-    ).rejects.toThrow(feeLockErrors.AccountBalanceFail);
+    ).rejects.toThrow(feeLockErrors.FeeLockFail);
     expect(exception).toBeTruthy();
   });
   test.skip("[gasless] Fail on swap when selling remove all MGAs", async () => {

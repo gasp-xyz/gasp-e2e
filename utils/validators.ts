@@ -224,6 +224,7 @@ export async function validateUserPaidFeeForFailedTx(
   failedBoughtAssetId: BN,
   poolAmountFailedBought: BN,
   initialPoolValueSoldAssetId: BN,
+  roundingIssue = BN_TWO,
 ) {
   const { treasury, treasuryBurn } = calculateFees(soldAmount);
   let { completeFee } = calculateCompleteFees(soldAmount);
@@ -232,7 +233,7 @@ export async function validateUserPaidFeeForFailedTx(
   //first wallet should not be modified.
   //roundingISSUES - 2
   //https://mangatafinance.atlassian.net/browse/GASP-1869
-  completeFee = completeFee.sub(BN_TWO);
+  completeFee = completeFee.sub(roundingIssue);
 
   await user.refreshAmounts(AssetWallet.AFTER);
   const diffFromWallet = user

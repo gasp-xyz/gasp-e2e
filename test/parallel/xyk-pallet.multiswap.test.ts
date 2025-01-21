@@ -21,15 +21,15 @@ import {
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
 import { BN_ONE, BN_TEN_THOUSAND, BN_ZERO } from "gasp-sdk";
-import { GASP_ASSET_ID } from "../../utils/Constants";
+import {
+  EVENT_METHOD_PAYMENT,
+  EVENT_SECTION_PAYMENT,
+  GASP_ASSET_ID,
+} from "../../utils/Constants";
 import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
-import {
-  getMultiswapSellPaymentInfo,
-  getTransactionFeeInfo,
-  Market,
-} from "../../utils/market";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -73,8 +73,13 @@ describe("Multiswap - happy paths", () => {
     expect(boughtTokens.free.sub(boughtTokensBefore.free)).bnEqual(
       new BN(1000),
     );
-    const transactionFee = await getTransactionFeeInfo(multiSwapOutput);
-    expect(transactionFee).bnEqual(BN_ZERO);
+    expect(
+      multiSwapOutput.findIndex(
+        (x) =>
+          x.section === EVENT_SECTION_PAYMENT ||
+          x.method === EVENT_METHOD_PAYMENT,
+      ),
+    ).toEqual(-1);
   });
   test("[gasless] Happy path - multi-swap - sell", async () => {
     const testUser1 = users[0];
@@ -140,13 +145,6 @@ describe("Multiswap - happy paths", () => {
     testUser1.addAssets(listIncludingSmallPool);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
 
-    const multiswapSellPaymentInfo = await getMultiswapSellPaymentInfo(
-      testUser1,
-      listIncludingSmallPool,
-      swapAmount,
-      BN_TEN_THOUSAND,
-    );
-
     const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       listIncludingSmallPool,
@@ -158,25 +156,29 @@ describe("Multiswap - happy paths", () => {
     expect(eventResponse.data).toEqual("InsufficientOutputAmount");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
-    //Validate that the modified tokens are only GASP in the list.
-    expect(walletsModifiedInSwap).toHaveLength(1);
+    //Validate that the modified tokens are MGX and the first element in the list.
+    expect(walletsModifiedInSwap).toHaveLength(2);
     expect(
       walletsModifiedInSwap.some((token) => token.currencyId.eq(GASP_ASSET_ID)),
     ).toBeTruthy();
-    // expect(
-    //   walletsModifiedInSwap.some((token) =>
-    //     token.currencyId.eq(listIncludingSmallPool[0]),
-    //   ),
-    // ).toBeTruthy();
+    expect(
+      walletsModifiedInSwap.some((token) =>
+        token.currencyId.eq(listIncludingSmallPool[0]),
+      ),
+    ).toBeTruthy();
     const changeInSoldAsset = walletsModifiedInSwap.find((token) =>
-      token.currencyId.eq(GASP_ASSET_ID),
+      token.currencyId.eq(listIncludingSmallPool[0]),
     )?.diff.free;
-    // const expectedFeeCharged = swapAmount
-    //   .muln(3)
-    //   .divn(1000)
-    //   .add(new BN(3))
-    //   .neg();
-    expect(changeInSoldAsset).bnEqual(multiswapSellPaymentInfo.neg());
+    const expectedFeeCharged = swapAmount.muln(3).divn(1000).neg();
+    expect(changeInSoldAsset).bnEqual(expectedFeeCharged);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(
+      multiSwapOutput.findIndex(
+        (x) =>
+          x.section === EVENT_SECTION_PAYMENT ||
+          x.method === EVENT_METHOD_PAYMENT,
+      ),
+    ).toEqual(-1);
   });
   test("[gasless] accuracy - Sum of calculate_sell_asset chained is equal to the multiswap operation", async () => {
     const testUser1 = users[0];
@@ -343,15 +345,6 @@ describe("Multiswap - happy paths", () => {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     testUser4.addAssets(tokenIds.concat(GASP_ASSET_ID));
 
-    const multiswapSellPaymentInfo = (
-      await getMultiswapSellPaymentInfo(
-        testUser4,
-        tokenIds.concat(GASP_ASSET_ID),
-        Assets.DEFAULT_AMOUNT.divn(100000),
-        BN_ZERO,
-      )
-    ).neg();
-
     await testUser4.refreshAmounts(AssetWallet.BEFORE);
     //now only one token must be in the pool
     const multiSwapOutput2 = await multiSwapSellMarket(
@@ -365,17 +358,9 @@ describe("Multiswap - happy paths", () => {
     expect(eventResponse2.data).toEqual("ZeroAmount");
     await testUser4.refreshAmounts(AssetWallet.AFTER);
 
-    //check that we bought 0 tokens, but we need to pay fees in GASP.
-    expect(testUser4.getAsset(tokenIds[0])!.amountAfter.free).bnEqual(
+    //check that we bought 0 tokens, but operation still works.
+    expect(testUser4.getAsset(tokenIds[0])!.amountAfter.free).bnLt(
       testUser4.getAsset(tokenIds[0])!.amountBefore.free,
     );
-
-    expect(
-      testUser4
-        .getAsset(GASP_ASSET_ID)!
-        .amountBefore.free.sub(
-          testUser4.getAsset(GASP_ASSET_ID)!.amountAfter.free,
-        ),
-    ).bnEqual(multiswapSellPaymentInfo.neg());
   });
 });

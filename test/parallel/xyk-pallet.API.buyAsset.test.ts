@@ -68,7 +68,7 @@ beforeAll(async () => {
 });
 
 describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
       testUser1,
       [defaultCurrencyValue, defaultCurrencyValue.add(new BN(1))],
@@ -203,9 +203,13 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
   });
 
   test("Buy assets with a high expectation: maxInput -1", async () => {
+    const poolBalanceBefore = await getBalanceOfPool(
+      firstCurrency,
+      secondCurrency,
+    );
     const buyPriceLocal = await calculate_buy_price_rpc(
-      firstAssetAmount,
-      secondAssetAmount,
+      poolBalanceBefore[0],
+      poolBalanceBefore[1],
       secondAssetAmount.sub(new BN(1)),
     );
     await sudo.mint(firstCurrency, testUser1, new BN(buyPriceLocal));
@@ -222,6 +226,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
+
     await validateUserPaidFeeForFailedTx(
       buyPriceLocal,
       testUser1,
