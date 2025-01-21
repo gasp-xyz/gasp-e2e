@@ -25,7 +25,7 @@ import {
   GASP_ASSET_NAME,
 } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
-import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
+import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { feeLockErrors } from "../../utils/utils";
 import { signTx } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
@@ -320,7 +320,7 @@ test("[BUG] GIVEN User has a very limited amount of GASP & a minimal amount of E
     clientError = error;
   }
   //Goncer - fixing until this is done. https://mangatafinance.atlassian.net/browse/GASP-1723
-  expect(clientError.data).toContain(feeLockErrors.FeeLockingFail);
+  expect(clientError.data).toContain(feeLockErrors.FeeLockFail);
 });
 
 test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", async () => {
@@ -347,10 +347,9 @@ test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", asyn
 });
 
 async function getDeductedTokens(testUser: User, tokenId: BN) {
-  const deductedTokens = testUser
+  return testUser
     .getAsset(tokenId)!
     .amountBefore.free.sub(testUser.getAsset(tokenId)!.amountAfter.free!);
-  return deductedTokens;
 }
 
 async function runMintingLiquidity(

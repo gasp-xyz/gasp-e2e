@@ -21,15 +21,10 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import {
-  calculateFees,
-  getEnvironmentRequiredVars,
-  stringToBN,
-} from "../../utils/utils";
+import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { getSudoUser } from "../../utils/setup";
-import { BN_ZERO } from "gasp-sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -141,10 +136,11 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     testUser1.keyRingPair.address,
   ]);
   expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  const transactionFee = (
-    await filterAndStringifyFirstEvent(event, "TransactionFeePaid")
-  ).actualFee;
-  expect(stringToBN(transactionFee)).bnEqual(BN_ZERO);
+  const transactionFee = await filterAndStringifyFirstEvent(
+    event,
+    "TransactionFeePaid",
+  );
+  expect(transactionFee).toBeUndefined();
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);

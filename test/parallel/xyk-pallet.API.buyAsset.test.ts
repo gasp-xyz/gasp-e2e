@@ -91,34 +91,53 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       [defaultCurrencyValue],
       sudo,
     );
+    let exception = false;
+    let errorMessage = "";
+    try {
+      await new FeeTxs()
+        .buyAsset(
+          testUser1.keyRingPair,
+          thirdCurrency,
+          secondCurrency,
+          firstAssetAmount.div(new BN(2)),
+          new BN(0),
+        )
+        .then((result) => {
+          const eventResponse = getEventResultFromMangataTx(result);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+          expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
+        });
+    } catch (e) {
+      exception = true;
+      //@ts-ignore
+      errorMessage = e.data;
+    }
+    expect(exception).toBeTruthy();
+    expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
 
-    await new FeeTxs()
-      .buyAsset(
-        testUser1.keyRingPair,
-        thirdCurrency,
-        secondCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0),
-      )
-      .then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-      });
-
-    await new FeeTxs()
-      .buyAsset(
-        testUser1.keyRingPair,
-        secondCurrency,
-        thirdCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0),
-      )
-      .then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-      });
+    exception = false;
+    errorMessage = "";
+    try {
+      await new FeeTxs()
+        .buyAsset(
+          testUser1.keyRingPair,
+          secondCurrency,
+          thirdCurrency,
+          firstAssetAmount.div(new BN(2)),
+          new BN(0),
+        )
+        .then((result) => {
+          const eventResponse = getEventResultFromMangataTx(result);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+          expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
+        });
+    } catch (e) {
+      exception = true;
+      //@ts-ignore
+      errorMessage = e.data;
+    }
+    expect(exception).toBeTruthy();
+    expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
 
     await validateUnmodified(
       thirdCurrency,
@@ -151,6 +170,10 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
 
   test("Buy all assets from the the pool", async () => {
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
+    const poolBalanceBefore = await getBalanceOfPool(
+      firstCurrency,
+      secondCurrency,
+    );
     let error = false;
     let errorMessage = "";
     try {
@@ -172,16 +195,14 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     }
     expect(error).toBeTruthy();
     expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
-
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
     await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
-      firstAssetAmount,
-      secondAssetAmount,
+      poolBalanceBefore[0],
+      poolBalanceBefore[1],
     ]);
   });
 
   test("Buy assets with a high expectation: maxInput -1", async () => {
-    await testUser1.refreshAmounts(AssetWallet.BEFORE);
-
     const buyPriceLocal = await calculate_buy_price_rpc(
       firstAssetAmount,
       secondAssetAmount,
@@ -201,7 +222,6 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
       expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
     });
-
     await validateUserPaidFeeForFailedTx(
       buyPriceLocal,
       testUser1,

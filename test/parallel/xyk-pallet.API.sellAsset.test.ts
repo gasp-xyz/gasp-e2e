@@ -292,15 +292,15 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       expect(feeId).toBeUndefined();
     });
     //fee: 603 ??  //TODO: validate with Stano.
-    //const feeToAvoidFrontRunning = new BN(603);
+    const feeToAvoidFrontRunning = new BN(600);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
     //To Gonzalo: Should we take this fee yet?
-    // const diffFromWallet = testUser1
-    //   .getAsset(thirdCurrency)
-    //   ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
+    const diffFromWallet = testUser1
+      .getAsset(thirdCurrency)
+      ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
     expect(testUser1.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
-      testUser1.getAsset(thirdCurrency)?.amountBefore.free!,
+      testUser1.getAsset(diffFromWallet)?.amountBefore.free!,
     );
 
     //second wallet should not be modified.
