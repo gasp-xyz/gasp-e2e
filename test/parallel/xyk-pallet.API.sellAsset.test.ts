@@ -300,7 +300,7 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       .getAsset(thirdCurrency)
       ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
     expect(testUser1.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
-      testUser1.getAsset(diffFromWallet)?.amountBefore.free!,
+      diffFromWallet!,
     );
 
     //second wallet should not be modified.

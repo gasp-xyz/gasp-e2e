@@ -16,7 +16,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import {
-  calculate_buy_price_local_no_fee,
+  calculate_buy_price_local,
   getBalanceOfAssetStr,
   getBalanceOfPool,
   getLiquidityAssetId,
@@ -309,7 +309,7 @@ describe("Proof of stake tests", () => {
     });
     test("Min liq valuation is required setup rewards", async () => {
       const pool = await getBalanceOfPool(GASP_ASSET_ID, newToken);
-      const thresholdAmount = calculate_buy_price_local_no_fee(
+      const thresholdAmount = calculate_buy_price_local(
         pool[0],
         pool[1],
         TEN_DOLLARS,

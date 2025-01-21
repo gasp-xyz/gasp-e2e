@@ -889,8 +889,13 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     await signSendFinalized(
       Market.sellAsset(liq, sell, buy, amount),
       user2,
-    ).catch(checkError(error));
-    testLog.getLog().info("ExpectNoChange On:sellAssetFail");
+    ).catch((exc) => {
+      // eslint-disable-next-line jest/no-conditional-expect
+      expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
+        "1010: Invalid Transaction: The swap prevalidation has failed",
+      );
+    });
+    testLog.getLog().info("ExpectNoChange On:sellAssetFail" + error);
     //https://mangatafinance.atlassian.net/browse/GASP-1872
     //await expectNoChange();
   }
