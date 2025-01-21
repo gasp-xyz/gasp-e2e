@@ -155,6 +155,10 @@ export function getEnvironmentRequiredVars() {
     ? process.env.OAK_URL
     : "ws://127.0.0.1:9949";
 
+  const nodeDockerComposeNetwork = process.env.NODE_DOCKER_COMPOSE_NETWORK
+    ? process.env.NODE_DOCKER_COMPOSE_NETWORK
+    : "mangata-node_default";
+
   return {
     ethSudoAddress:
       "0x5fb92d6e98884f76de468fa3f6278f8807c48bebc13595d45af5bdc4da702133",
@@ -186,6 +190,7 @@ export function getEnvironmentRequiredVars() {
     clusterNodeF: clusterNodeF,
     fees: fees,
     oakUri: oakUri,
+    nodeDockerComposeNetwork: nodeDockerComposeNetwork,
   };
 }
 
