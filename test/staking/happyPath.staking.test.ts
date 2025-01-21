@@ -17,6 +17,7 @@ import {
   waitNewStakingRound,
   waitUntilCollatorProducesBlocks,
   waitUntilUserCollatorRewarded,
+  getEnvironmentRequiredVars,
 } from "../../utils/utils";
 import { signSendAndWaitToFinishTx } from "../../utils/txHandler";
 import "jest-extended";
@@ -140,7 +141,7 @@ async function startDockerImage() {
       },
       HostConfig: {
         AutoRemove: true,
-        NetworkMode: "mangata-node_default",
+        NetworkMode: getEnvironmentRequiredVars().nodeDockerComposeNetwork,
         PortBindings: {
           "9944": [
             {
