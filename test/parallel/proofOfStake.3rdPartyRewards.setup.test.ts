@@ -16,7 +16,6 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import "jest-extended";
 import {
-  calculate_buy_price_local,
   getBalanceOfAssetStr,
   getBalanceOfPool,
   getLiquidityAssetId,
@@ -38,6 +37,17 @@ let newToken: BN;
 let newToken2: BN;
 let newToken3: BN;
 const TEN_DOLLARS = new BN(17250).mul(Assets.MG_UNIT);
+
+function calculateValuation(
+  inputReserve: BN,
+  outputReserve: BN,
+  TEN_DOLLARS: BN,
+) {
+  //input * output_reserve / input_reserve
+  const num = TEN_DOLLARS.mul(outputReserve);
+  return num.div(inputReserve);
+}
+
 describe("Proof of stake tests", () => {
   beforeAll(async () => {
     try {
@@ -309,11 +319,8 @@ describe("Proof of stake tests", () => {
     });
     test("Min liq valuation is required setup rewards", async () => {
       const pool = await getBalanceOfPool(GASP_ASSET_ID, newToken);
-      const thresholdAmount = calculate_buy_price_local(
-        pool[0],
-        pool[1],
-        TEN_DOLLARS,
-      );
+
+      const thresholdAmount = calculateValuation(pool[0], pool[1], TEN_DOLLARS);
       await waitIfSessionWillChangeInNblocks(6);
       await Sudo.asSudoFinalized(
         Sudo.sudoAs(
