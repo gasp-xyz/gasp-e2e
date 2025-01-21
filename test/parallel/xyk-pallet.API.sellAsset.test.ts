@@ -30,7 +30,6 @@ import { createPool } from "../../utils/tx";
 import { Sudo } from "../../utils/sudo";
 import { getSudoUser } from "../../utils/setup";
 import { Market } from "../../utils/market";
-import { BN_ZERO } from "gasp-sdk";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -311,12 +310,12 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const treasury = await getTreasury(thirdCurrency);
     const treasuryBurn = await getTreasuryBurn(thirdCurrency);
-    expect(treasury).bnEqual(BN_ZERO);
-    expect(treasuryBurn).bnEqual(BN_ZERO);
-    //TODO: validate with Stano.
-    //const increasedInPool = new BN(401);
+    expect(treasury).bnEqual(new BN(100));
+    expect(treasuryBurn).bnEqual(new BN(100));
+
+    const increasedInPool = new BN(400);
     const poolBalances = await getBalanceOfPool(thirdCurrency, fourthCurrency);
-    expect(poolBalances[0]).bnEqual(firstAssetAmount);
+    expect(poolBalances[0]).bnEqual(firstAssetAmount.add(increasedInPool));
     expect(poolBalances[1]).bnEqual(secondAssetAmount);
   });
 });

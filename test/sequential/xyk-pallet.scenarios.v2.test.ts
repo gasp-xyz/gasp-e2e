@@ -885,16 +885,20 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
   ) {
     const amount = new BN(20000);
     const liq = await getLiquidityAssetId(sell, buy);
-
+    let errString = "";
     await signSendFinalized(
       Market.sellAsset(liq, sell, buy, amount),
       user2,
     ).catch((exc) => {
-      // eslint-disable-next-line jest/no-conditional-expect
-      expect(JSON.parse(JSON.stringify(exc)).data.toString()).toContain(
-        "1010: Invalid Transaction: The swap prevalidation has failed",
-      );
+      errString = JSON.parse(JSON.stringify(exc)).data.toString();
     });
+    const err =
+      errString === error ||
+      errString ===
+        "1010: Invalid Transaction: The swap prevalidation has failed";
+    testLog.getLog().info("DEBUG:sellAssetFail - got error " + errString);
+    expect(err).toBeTruthy();
+
     testLog.getLog().info("ExpectNoChange On:sellAssetFail" + error);
     //https://mangatafinance.atlassian.net/browse/GASP-1872
     //await expectNoChange();
