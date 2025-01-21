@@ -156,7 +156,7 @@ export function getEnvironmentRequiredVars() {
     : "ws://127.0.0.1:9949";
 
   const nodeDockerComposeNetwork = process.env.NODE_DOCKER_COMPOSE_NETWORK
-    ? process.env.GASP_NODE_DOCKER_COMPOSE_NETWORK
+    ? process.env.NODE_DOCKER_COMPOSE_NETWORK
     : "mangata-node_default";
 
   return {
