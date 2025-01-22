@@ -1,3 +1,8 @@
+/*
+ *
+ * @group nonTransToken
+ */
+
 import { jest } from "@jest/globals";
 import { BN } from "ethereumjs-util";
 import { getApi, initApi } from "../../utils/api";
@@ -22,14 +27,13 @@ import {
   BN_ZERO,
   MangataGenericEvent,
 } from "gasp-sdk";
-import { getLiquidityAssetId } from "../../utils/tx";
-import { ApiPromise } from "@polkadot/api";
+import { getLiquidityAssetId, getTokensAccountInfo } from "../../utils/tx";
+import { stringToBN } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-let api: ApiPromise;
 let sudo: User;
 let testUser: string;
 let token1: BN;
@@ -67,7 +71,6 @@ beforeAll(async () => {
   await setupUsers();
   sudo = getSudoUser();
   testUser = "0x798d4ba9baf0064ec19eb4f0a1a45785ae9d6dfc";
-  api = getApi();
 });
 
 beforeEach(async () => {
@@ -86,7 +89,7 @@ beforeEach(async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       oldFounder2,
-      api.tx.foundationMembers.changeKey(testUser),
+      FoundationMembers.changeKey(testUser),
     ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -96,12 +99,12 @@ beforeEach(async () => {
   expect(foundationMembers).toContain(testUser);
 
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(api.tx.tokens.mint(token1, testUser, BN_HUNDRED_BILLIONS)),
-    Sudo.sudo(api.tx.tokens.mint(token2, testUser, BN_HUNDRED_BILLIONS)),
-    Sudo.sudo(api.tx.tokens.mint(token3, testUser, BN_HUNDRED_BILLIONS)),
-    Sudo.sudo(api.tx.tokens.mint(token4, testUser, BN_HUNDRED_BILLIONS)),
-    Sudo.sudo(api.tx.tokens.mint(token5, testUser, BN_HUNDRED_BILLIONS)),
-    Sudo.sudo(api.tx.tokens.mint(token6, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(Assets.mintTokenAddress(token1, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(Assets.mintTokenAddress(token2, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(Assets.mintTokenAddress(token3, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(Assets.mintTokenAddress(token4, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(Assets.mintTokenAddress(token5, testUser, BN_HUNDRED_BILLIONS)),
+    Sudo.sudo(Assets.mintTokenAddress(token6, testUser, BN_HUNDRED_BILLIONS)),
   );
   const poolEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -147,7 +150,7 @@ beforeEach(async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
-      api.tx.foundationMembers.changeKey(oldFounder2),
+      FoundationMembers.changeKey(oldFounder2),
     ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -156,10 +159,7 @@ beforeEach(async () => {
 });
 
 test("User can buy GASP in multiswap operation", async () => {
-  const userBalanceBeforeSwap = await api.query.tokens.accounts(
-    testUser,
-    token1,
-  );
+  const userBalanceBeforeSwap = await getTokensAccountInfo(testUser, token1);
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
@@ -174,12 +174,9 @@ test("User can buy GASP in multiswap operation", async () => {
   ).then(async (result) => {
     await waitSudoOperationSuccess(result, "SudoAsDone");
   });
-  const userBalanceAfterSwap = await api.query.tokens.accounts(
-    testUser,
-    token1,
-  );
-  expect(userBalanceAfterSwap.free).bnEqual(
-    userBalanceBeforeSwap.free.sub(BN_TEN_THOUSAND),
+  const userBalanceAfterSwap = await getTokensAccountInfo(testUser, token1);
+  expect(stringToBN(userBalanceAfterSwap.free)).bnEqual(
+    stringToBN(userBalanceBeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
 });
 
@@ -218,14 +215,8 @@ test("User can't sell GASP in multiswap operation (GASP token in the middle)", a
 });
 
 test("Happy path - multiswap with only stable pools", async () => {
-  const userBalance1BeforeSwap = await api.query.tokens.accounts(
-    testUser,
-    token3,
-  );
-  const userBalance2BeforeSwap = await api.query.tokens.accounts(
-    testUser,
-    token5,
-  );
+  const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token3);
+  const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token5);
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
@@ -240,36 +231,26 @@ test("Happy path - multiswap with only stable pools", async () => {
   ).then(async (result) => {
     await waitSudoOperationSuccess(result, "SudoAsDone");
   });
-  const userBalance1AfterSwap = await api.query.tokens.accounts(
-    testUser,
-    token3,
+  const userBalance1AfterSwap = await getTokensAccountInfo(testUser, token3);
+  const userBalance2AfterSwap = await getTokensAccountInfo(testUser, token5);
+  expect(stringToBN(userBalance1AfterSwap.free)).bnEqual(
+    stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
-  const userBalance2AfterSwap = await api.query.tokens.accounts(
-    testUser,
-    token5,
+  expect(stringToBN(userBalance2AfterSwap.free)).bnGt(
+    stringToBN(userBalance2BeforeSwap.free),
   );
-  expect(userBalance1AfterSwap.free).bnEqual(
-    userBalance1BeforeSwap.free.sub(BN_TEN_THOUSAND),
-  );
-  expect(userBalance2AfterSwap.free).bnGt(userBalance2BeforeSwap.free);
 });
 
 test("Happy path - multiswap with stable and xyk pools", async () => {
-  liqIds[5] = await getLiquidityAssetId(token5, token6);
+  const liqIdXyk = await getLiquidityAssetId(token5, token6);
 
-  const userBalance1BeforeSwap = await api.query.tokens.accounts(
-    testUser,
-    token4,
-  );
-  const userBalance2BeforeSwap = await api.query.tokens.accounts(
-    testUser,
-    token6,
-  );
+  const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token4);
+  const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token6);
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
       Market.multiswapAssetSell(
-        [liqIds[4], liqIds[5]],
+        [liqIds[4], liqIdXyk],
         token4,
         BN_TEN_THOUSAND,
         token6,
@@ -279,16 +260,12 @@ test("Happy path - multiswap with stable and xyk pools", async () => {
   ).then(async (result) => {
     await waitSudoOperationSuccess(result, "SudoAsDone");
   });
-  const userBalance1AfterSwap = await api.query.tokens.accounts(
-    testUser,
-    token4,
+  const userBalance1AfterSwap = await getTokensAccountInfo(testUser, token4);
+  const userBalance2AfterSwap = await getTokensAccountInfo(testUser, token6);
+  expect(stringToBN(userBalance1AfterSwap.free)).bnEqual(
+    stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
-  const userBalance2AfterSwap = await api.query.tokens.accounts(
-    testUser,
-    token6,
+  expect(stringToBN(userBalance2AfterSwap.free)).bnGt(
+    stringToBN(userBalance2BeforeSwap.free),
   );
-  expect(userBalance1AfterSwap.free).bnEqual(
-    userBalance1BeforeSwap.free.sub(BN_TEN_THOUSAND),
-  );
-  expect(userBalance2AfterSwap.free).bnGt(userBalance2BeforeSwap.free);
 });
