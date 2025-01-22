@@ -1,3 +1,7 @@
+/*
+ *
+ * @group sudo-removing
+ */
 import { jest } from "@jest/globals";
 import { BN_HUNDRED, BN_THOUSAND, signTx } from "gasp-sdk";
 import { getApi, initApi } from "../../utils/api";
@@ -12,6 +16,7 @@ import { FoundationMembers } from "../../utils/FoundationMembers";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { stringToBN } from "../../utils/utils";
+import { getTokensAccountInfo } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -55,7 +60,6 @@ beforeAll(async () => {
 
 test("Founder can close voting without sudo account", async () => {
   const [testUser, newFounder] = await setupUsers();
-
   const propEvents = await Sudo.asSudoFinalized(
     Sudo.sudoAs(
       councilUsers[0],
@@ -75,12 +79,15 @@ test("Founder can close voting without sudo account", async () => {
   const hash = propEvents
     .filter((x) => x.event.method === "Proposed")
     .flatMap((x) => x.eventData[2].data.toString());
-  await Council.voteProposal(hash[0], [
+  const voteEvent = await Council.voteProposal(hash[0], [
     councilUsers[0],
     councilUsers[1],
     councilUsers[2],
   ]);
-
+  const result = JSON.parse(
+    JSON.stringify(await getEventResultFromMangataTx(voteEvent, ["Voted"])),
+  );
+  expect(result.data.voted).toBeTrue();
   const propIndex = JSON.parse(
     JSON.stringify(await api.query.council.voting(hash[0])),
   ).index;
@@ -89,7 +96,7 @@ test("Founder can close voting without sudo account", async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationMembers[2],
-      api.tx.foundationMembers.changeKey(newFounder.keyRingPair.address),
+      FoundationMembers.changeKey(newFounder.keyRingPair.address),
     ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -101,18 +108,21 @@ test("Founder can close voting without sudo account", async () => {
       newFounder,
       BN_HUNDRED.mul(BN_THOUSAND).mul(Assets.MG_UNIT),
     ),
-    Sudo.sudo(api.tx.sudo.removeKey()),
+    Sudo.removeKey(),
   );
 
-  await signTx(api, Council.close(hash[0], propIndex), newFounder.keyRingPair);
+  await signTx(
+    api,
+    Council.close(hash[0], propIndex),
+    newFounder.keyRingPair,
+  ).then((events) => {
+    const res = getEventResultFromMangataTx(events);
+    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
 
   const tokenAmount = stringToBN(
-    (
-      await api.query.tokens.accounts(
-        testUser.keyRingPair.address,
-        GASP_ASSET_ID,
-      )
-    ).free.toString(),
+    (await getTokensAccountInfo(testUser.keyRingPair.address, GASP_ASSET_ID))
+      .free,
   );
   expect(tokenAmount).bnEqual(BN_THOUSAND);
 });
