@@ -13,8 +13,8 @@ import {
 import "dotenv/config";
 import {
   connectWallet,
-  setupPage,
   setupPageWithStatePr,
+  setupPagProd,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletConnectModal } from "../../utils/frontend/rollup-pages/WalletConnectModal";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
@@ -40,7 +40,7 @@ describe("Gasp UI wallet tests", () => {
     acc_addr = await importMetamaskExtension(driver, true);
     acc_addr_short = acc_addr.slice(-3);
 
-    await setupPage(driver);
+    await setupPagProd(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short);
   });
 
