@@ -26,6 +26,11 @@ export class Sudo {
     return api.tx.sudo.sudoAs(address, tx as any as Call);
   }
 
+  static removeKey(): Extrinsic {
+    const api = getApi();
+    return api.tx.sudo.sudo(api.tx.sudo.removeKey());
+  }
+
   static batch(...txs: Extrinsic[]): Extrinsic {
     return api.tx.utility.batchAll(txs as any as Call[]);
   }
