@@ -14,8 +14,8 @@ import "dotenv/config";
 import {
   approveContractIfEligible,
   connectWallet,
-  setupPage,
   setupPageWithState,
+  setupPagProd,
   switchNetworkIfEligible,
   waitForActionNotification,
 } from "../../utils/frontend/rollup-utils/Handlers";
@@ -48,7 +48,7 @@ describe("Gasp Prod UI deposit tests", () => {
     acc_addr = await importMetamaskExtension(driver, true);
     acc_addr_short = acc_addr.slice(-4).toUpperCase();
 
-    await setupPage(driver);
+    await setupPagProd(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short, true);
   });
 

@@ -70,6 +70,16 @@ export async function setupPage(driver: WebDriver) {
   await mainPage.skipLaunchMessage();
 }
 
+export async function setupPagProd(driver: WebDriver) {
+  const mainPage = new Main(driver);
+  await mainPage.go();
+  const appLoaded = await mainPage.isAppLoaded();
+  expect(appLoaded).toBeTruthy();
+  await mainPage.skipWelcomeMessageProd();
+  // await mainPage.skipMailerIframe();
+  await mainPage.skipLaunchMessage();
+}
+
 export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   const mainPage = new Main(driver);
   await mainPage.go();

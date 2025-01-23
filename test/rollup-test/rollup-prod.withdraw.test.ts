@@ -15,8 +15,8 @@ import {
 import "dotenv/config";
 import {
   connectWallet,
-  setupPage,
   setupPageWithState,
+  setupPagProd,
   waitForActionNotification,
 } from "../../utils/frontend/rollup-utils/Handlers";
 import { WalletWrapper } from "../../utils/frontend/rollup-pages/WalletWrapper";
@@ -53,7 +53,7 @@ describe.skip("Gasp Prod UI withdraw tests", () => {
     acc_addr = await importMetamaskExtension(driver, true);
     acc_addr_short = acc_addr.slice(-4).toUpperCase();
 
-    await setupPage(driver);
+    await setupPagProd(driver);
     await connectWallet(driver, "MetaMask", acc_addr_short, true);
   });
 
