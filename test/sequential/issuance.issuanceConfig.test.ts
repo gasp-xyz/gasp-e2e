@@ -9,6 +9,7 @@ import { Sudo } from "../../utils/sudo";
 import {
   activateLiquidity,
   claimRewards,
+  deactivateLiquidity,
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
@@ -20,11 +21,14 @@ jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
 process.env.NODE_ENV = "test";
 
-let testUser: User;
 let sudo: User;
 let token1: BN;
 let liqId: BN;
-let oldConfig: any;
+let miningSplitBefore: number;
+let stakingSplitBefore: number;
+let sequencersSplitBefore: number;
+let splitAmountGeneral: number;
+const poolValue = new BN(2500000);
 
 beforeAll(async () => {
   try {
@@ -39,30 +43,33 @@ beforeAll(async () => {
   await setupApi();
   setupUsers();
 
-  await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
+  await Sudo.batchAsSudoFinalized(
+    Assets.FinalizeTge(),
+    Assets.initIssuance(),
+    Assets.mintNative(sudo),
+  );
 
-  oldConfig = await Assets.getIssuanceConfig();
-  expect(oldConfig).not.toBeEmpty();
+  const issuanceConfigBefore = await Assets.getIssuanceConfig();
+  miningSplitBefore = issuanceConfigBefore.liquidityMiningSplit;
+  stakingSplitBefore = issuanceConfigBefore.stakingSplit;
+  sequencersSplitBefore = issuanceConfigBefore.sequencersSplit;
+  splitAmountGeneral =
+    issuanceConfigBefore.liquidityMiningSplit +
+    issuanceConfigBefore.sequencersSplit +
+    issuanceConfigBefore.stakingSplit;
 });
 
 test("Compare amount of rewards for 2 difference configuration", async () => {
-  [testUser] = setupUsers();
-
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
-    [new BN(2500000)],
+    [poolValue.muln(2)],
     sudo,
   );
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(
       sudo,
-      Market.createPool(
-        GASP_ASSET_ID,
-        Assets.DEFAULT_AMOUNT.divn(2),
-        token1,
-        Assets.DEFAULT_AMOUNT.divn(2),
-      ),
+      Market.createPool(GASP_ASSET_ID, poolValue, token1, poolValue),
     ),
   );
 
@@ -70,35 +77,92 @@ test("Compare amount of rewards for 2 difference configuration", async () => {
 
   await Sudo.batchAsSudoFinalized(Assets.promotePool(liqId.toNumber(), 20));
 
-  [testUser] = setupUsers();
+  const [testUser1, testUser2] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(liqId, testUser, Assets.DEFAULT_AMOUNT.divn(2)),
+    Assets.mintToken(liqId, testUser1, poolValue),
+    Assets.mintNative(testUser1),
+    Assets.mintToken(liqId, testUser2, poolValue),
+    Assets.mintNative(testUser2),
   );
 
-  testUser.addAssets([GASP_ASSET_ID, liqId]);
+  testUser1.addAssets([GASP_ASSET_ID, liqId]);
 
-  await activateLiquidity(
-    testUser.keyRingPair,
-    liqId,
-    Assets.DEFAULT_AMOUNT.divn(2),
-  );
+  await activateLiquidity(testUser1.keyRingPair, liqId, poolValue.divn(10));
 
-  await waitForRewards(testUser, liqId);
+  await waitForRewards(testUser1, liqId);
 
-  const userTokenBeforeClaiming = await getRewardsInfo(
-    testUser.keyRingPair.address,
-    liqId,
-  );
-
-  await claimRewards(testUser, liqId);
-
-  const userTokenAfterClaiming = await getRewardsInfo(
-    testUser.keyRingPair.address,
+  const userTokenBeforeClaiming1 = await getRewardsInfo(
+    testUser1.keyRingPair.address,
     liqId,
   );
 
-  expect(userTokenBeforeClaiming.activatedAmount).bnGt(BN_ZERO);
-  expect(userTokenBeforeClaiming.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
-  expect(userTokenAfterClaiming.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  await claimRewards(testUser1, liqId);
+
+  const userTokenAfterClaiming1 = await getRewardsInfo(
+    testUser1.keyRingPair.address,
+    liqId,
+  );
+
+  await deactivateLiquidity(testUser1.keyRingPair, liqId, poolValue.divn(10));
+
+  expect(userTokenBeforeClaiming1.activatedAmount).bnGt(BN_ZERO);
+  expect(userTokenBeforeClaiming1.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(userTokenAfterClaiming1.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+
+  const miningSplitAfter = miningSplitBefore / 2;
+  const stakingSplitAfter = stakingSplitBefore / 2;
+  const sequencersSplitAfter =
+    splitAmountGeneral - miningSplitAfter - stakingSplitAfter;
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      getApi().tx.issuance.setIssuanceConfig(
+        null,
+        null,
+        miningSplitAfter,
+        stakingSplitAfter,
+        sequencersSplitAfter,
+      ),
+    ),
+  );
+
+  testUser2.addAssets([GASP_ASSET_ID, liqId]);
+
+  await activateLiquidity(testUser2.keyRingPair, liqId, poolValue.divn(10));
+
+  await waitForRewards(testUser2, liqId);
+
+  const userTokenBeforeClaiming2 = await getRewardsInfo(
+    testUser2.keyRingPair.address,
+    liqId,
+  );
+
+  await claimRewards(testUser2, liqId);
+
+  const userTokenAfterClaiming2 = await getRewardsInfo(
+    testUser2.keyRingPair.address,
+    liqId,
+  );
+
+  await deactivateLiquidity(testUser2.keyRingPair, liqId, poolValue.divn(10));
+
+  expect(userTokenBeforeClaiming2.activatedAmount).bnGt(BN_ZERO);
+  expect(userTokenBeforeClaiming2.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
+  expect(userTokenAfterClaiming2.rewardsAlreadyClaimed).bnGt(BN_ZERO);
+  expect(userTokenAfterClaiming2.rewardsAlreadyClaimed).bnEqual(
+    userTokenAfterClaiming1.rewardsAlreadyClaimed.divn(2),
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudo(
+      getApi().tx.issuance.setIssuanceConfig(
+        null,
+        null,
+        miningSplitBefore,
+        stakingSplitBefore,
+        sequencersSplitBefore,
+      ),
+    ),
+  );
 });
