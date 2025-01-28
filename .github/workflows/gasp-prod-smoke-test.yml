@@ -12,6 +12,11 @@ jobs:
       testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
 
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: yarn
+
       - name: Install testmo
         run: yarn global add @testmo/testmo-cli
 
@@ -68,10 +73,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: yarn
-      - name: Install testmo
-        run: yarn global add @testmo/testmo-cli
 
       - name: Install dependencies with Yarn
         run: yarn
@@ -145,6 +148,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: yarn
+          
       - name: Install testmo
         run: yarn global add @testmo/testmo-cli
 
