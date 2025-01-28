@@ -49,7 +49,7 @@ jobs:
         command: ["first"]
     runs-on: ubuntu-latest
     env:
-      API_URL: "wss://collator-01-ws-rollup-holesky.gasp.xyz/"
+      API_URL: "wss://collator-01-ws-rollup-prod.gasp.xyz"
       UI_URL: https://app.gasp.xyz/
       TEST_SUDO_NAME: ${{ secrets.DEV_SUDO_NAME }}
       MNEMONIC_META: ${{ secrets.MNEMONIC_PROD_META }}
