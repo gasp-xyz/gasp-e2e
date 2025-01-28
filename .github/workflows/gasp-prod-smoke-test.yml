@@ -12,11 +12,6 @@ jobs:
       testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
 
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: yarn
-
       - name: Install testmo
         run: yarn global add @testmo/testmo-cli
 
@@ -148,11 +143,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: yarn
-          
       - name: Install testmo
         run: yarn global add @testmo/testmo-cli
 
@@ -183,18 +173,18 @@ jobs:
             testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
           GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
 
-  slack-notify-nook:
-    needs: [e2e-tm]
-    if: failure()
-    runs-on: ubuntu-latest
+  # slack-notify-nook:
+  #   needs: [e2e-tm]
+  #   if: failure()
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Slack Notification - Error
-        uses: bryannice/gitactions-slack-notification@2.0.0
-        env:
-          SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
-          SLACK_TITLE: "PROD GASP smoke UI tests - results - NOOK"
-          SLACK_COLOR: "#ff0011"
-          SLACK_MESSAGE: "Test failures [ ${{ env.TEST_SCRIPT }} ]
-            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
-          GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
+  #   steps:
+  #     - name: Slack Notification - Error
+  #       uses: bryannice/gitactions-slack-notification@2.0.0
+  #       env:
+  #         SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
+  #         SLACK_TITLE: "PROD GASP smoke UI tests - results - NOOK"
+  #         SLACK_COLOR: "#ff0011"
+  #         SLACK_MESSAGE: "Test failures [ ${{ env.TEST_SCRIPT }} ]
+  #           testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
+  #         GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
