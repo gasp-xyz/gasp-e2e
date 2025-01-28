@@ -3,7 +3,12 @@ import { BN } from "ethereumjs-util/dist/externals";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { waitForRewards } from "../../utils/eventListeners";
+import {
+  expectMGAExtrinsicSuDidSuccess,
+  filterAndStringifyFirstEvent,
+  getSessionIndex,
+  waitForRewards,
+} from "../../utils/eventListeners";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -13,9 +18,17 @@ import {
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { Market } from "../../utils/market";
 import { BN_ZERO } from "gasp-sdk";
+import { Issuance } from "../../utils/Issuance";
+import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
+import { createAnUpdate, Rolldown } from "../../utils/rollDown/Rolldown";
+import {
+  stringToBN,
+  waitBlockNumber,
+  waitForSessionN,
+} from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -24,10 +37,9 @@ process.env.NODE_ENV = "test";
 let sudo: User;
 let token1: BN;
 let liqId: BN;
-let miningSplitBefore: number;
-let stakingSplitBefore: number;
-let sequencersSplitBefore: number;
-let splitAmountGeneral: number;
+let miningSplitBeginning: number;
+let stakingSplitBeginning: number;
+let sequencersSplitBeginning: number;
 const poolValue = new BN(2500000);
 
 beforeAll(async () => {
@@ -46,20 +58,24 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
-    Assets.mintNative(sudo),
+    Assets.mintNative(
+      sudo,
+      (await SequencerStaking.minimalStakeAmount()).muln(100),
+    ),
   );
-
-  const issuanceConfigBefore = await Assets.getIssuanceConfig();
-  miningSplitBefore = issuanceConfigBefore.liquidityMiningSplit;
-  stakingSplitBefore = issuanceConfigBefore.stakingSplit;
-  sequencersSplitBefore = issuanceConfigBefore.sequencersSplit;
-  splitAmountGeneral =
-    issuanceConfigBefore.liquidityMiningSplit +
-    issuanceConfigBefore.sequencersSplit +
-    issuanceConfigBefore.stakingSplit;
 });
 
-test("Compare amount of rewards for 2 difference configuration", async () => {
+beforeEach(async () => {
+  //remember the initial system parameters for recovery after tests
+  const issuanceConfigBefore = await Assets.getIssuanceConfig();
+  miningSplitBeginning = issuanceConfigBefore.liquidityMiningSplit / 10000000;
+  stakingSplitBeginning = issuanceConfigBefore.stakingSplit / 10000000;
+  sequencersSplitBeginning = issuanceConfigBefore.sequencersSplit / 10000000;
+  //we use integers in the tests to make things simpler
+  await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(40, 20, 40));
+});
+
+test("Compare amount of mining rewards for 2 difference configuration", async () => {
   [token1] = await Assets.setupUserWithCurrencies(
     sudo,
     [poolValue.muln(2)],
@@ -110,22 +126,7 @@ test("Compare amount of rewards for 2 difference configuration", async () => {
   expect(userTokenBeforeClaiming1.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(userTokenAfterClaiming1.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 
-  const miningSplitAfter = miningSplitBefore / 2;
-  const stakingSplitAfter = stakingSplitBefore / 2;
-  const sequencersSplitAfter =
-    splitAmountGeneral - miningSplitAfter - stakingSplitAfter;
-
-  await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      getApi().tx.issuance.setIssuanceConfig(
-        null,
-        null,
-        miningSplitAfter,
-        stakingSplitAfter,
-        sequencersSplitAfter,
-      ),
-    ),
-  );
+  await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(20, 40, 40));
 
   testUser2.addAssets([GASP_ASSET_ID, liqId]);
 
@@ -153,16 +154,91 @@ test("Compare amount of rewards for 2 difference configuration", async () => {
   expect(userTokenAfterClaiming2.rewardsAlreadyClaimed).bnEqual(
     userTokenAfterClaiming1.rewardsAlreadyClaimed.divn(2),
   );
+});
 
+test("Compare amount of sequencer rewards for 2 difference configuration", async () => {
+  const [testUser] = setupUsers();
+  const disputePeriodLength = (
+    await Rolldown.disputePeriodLength("Ethereum")
+  ).toNumber();
+
+  await SequencerStaking.removeAddedSequencers();
+  await SequencerStaking.setupASequencer(testUser, "Ethereum");
+  testUser.addAsset(GASP_ASSET_ID);
+
+  const { disputeEndBlockNumber: disputeEndBlockNumber1 } =
+    await createAnUpdate(testUser, "Ethereum");
+  const rewardsSessionNumber1 = await getSessionIndex();
+  const registrationBlock1 = disputeEndBlockNumber1 + 1;
+  await waitBlockNumber(registrationBlock1.toString(), disputePeriodLength * 2);
+  await waitForSessionN(rewardsSessionNumber1 + 2);
+  await testUser.refreshAmounts(AssetWallet.BEFORE);
+  const rewardInfo1 = await SequencerStaking.roundSequencerRewardInfo(
+    testUser.keyRingPair.address,
+    rewardsSessionNumber1,
+  );
+  const payoutEvent1 = await Sudo.asSudoFinalized(
+    Sudo.sudoAs(
+      testUser,
+      SequencerStaking.payoutRewards(testUser.keyRingPair.address, 2),
+    ),
+  );
+  expectMGAExtrinsicSuDidSuccess(payoutEvent1);
+  const filteredEvent1 = await filterAndStringifyFirstEvent(
+    payoutEvent1,
+    "Rewarded",
+  );
+  const sequencerRewards1 = stringToBN(filteredEvent1[2]);
+  await testUser.refreshAmounts(AssetWallet.AFTER);
+  const diff1 = testUser.getWalletDifferences()[0].diff.free;
+  expect(filteredEvent1[0]).toEqual(rewardsSessionNumber1.toString());
+  expect(diff1).bnEqual(sequencerRewards1);
+  expect(rewardInfo1).bnEqual(sequencerRewards1);
+
+  await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(40, 40, 20));
+
+  const [testUser2] = setupUsers();
+  await SequencerStaking.removeAddedSequencers();
+  await SequencerStaking.setupASequencer(testUser2, "Ethereum");
+  testUser2.addAsset(GASP_ASSET_ID);
+
+  const { disputeEndBlockNumber: disputeEndBlockNumber2 } =
+    await createAnUpdate(testUser2, "Ethereum");
+  const rewardsSessionNumber2 = await getSessionIndex();
+  const registrationBlock2 = disputeEndBlockNumber2 + 1;
+  await waitBlockNumber(registrationBlock2.toString(), disputePeriodLength * 2);
+  await waitForSessionN(rewardsSessionNumber2 + 2);
+  await testUser2.refreshAmounts(AssetWallet.BEFORE);
+  const rewardInfo2 = await SequencerStaking.roundSequencerRewardInfo(
+    testUser2.keyRingPair.address,
+    rewardsSessionNumber2,
+  );
+  const payoutEvent2 = await Sudo.asSudoFinalized(
+    Sudo.sudoAs(
+      testUser2,
+      SequencerStaking.payoutRewards(testUser2.keyRingPair.address, 2),
+    ),
+  );
+  expectMGAExtrinsicSuDidSuccess(payoutEvent2);
+  const filteredEvent2 = await filterAndStringifyFirstEvent(
+    payoutEvent2,
+    "Rewarded",
+  );
+  const sequencerRewards2 = stringToBN(filteredEvent2[2]);
+  await testUser2.refreshAmounts(AssetWallet.AFTER);
+  const diff2 = testUser2.getWalletDifferences()[0].diff.free;
+  expect(filteredEvent2[0]).toEqual(rewardsSessionNumber2.toString());
+  expect(diff2).bnEqual(sequencerRewards2);
+  expect(rewardInfo2).bnEqual(sequencerRewards2);
+  expect(sequencerRewards1).bnEqual(sequencerRewards2.muln(2));
+});
+
+afterEach(async () => {
   await Sudo.batchAsSudoFinalized(
-    Sudo.sudo(
-      getApi().tx.issuance.setIssuanceConfig(
-        null,
-        null,
-        miningSplitBefore,
-        stakingSplitBefore,
-        sequencersSplitBefore,
-      ),
+    await Issuance.setIssuanceConfig(
+      miningSplitBeginning,
+      stakingSplitBeginning,
+      sequencersSplitBeginning,
     ),
   );
 });
