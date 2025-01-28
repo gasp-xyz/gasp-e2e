@@ -67,7 +67,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   //remember the initial system parameters for recovery after tests
-  const issuanceConfigBefore = await Assets.getIssuanceConfig();
+  const issuanceConfigBefore = await Issuance.getIssuanceConfig();
   miningSplitBeginning = issuanceConfigBefore.liquidityMiningSplit / 10000000;
   stakingSplitBeginning = issuanceConfigBefore.stakingSplit / 10000000;
   sequencersSplitBeginning = issuanceConfigBefore.sequencersSplit / 10000000;

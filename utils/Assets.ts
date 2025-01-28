@@ -263,14 +263,6 @@ export class Assets {
     return Sudo.sudo(api!.tx.issuance.initIssuanceConfig());
   }
 
-  static async getIssuanceConfig() {
-    const api = await getApi();
-    const issuanceConfig = JSON.parse(
-      JSON.stringify(await api.query.issuance.issuanceConfigStore()),
-    );
-    return issuanceConfig;
-  }
-
   static promotePool(liquidityId: number, weight: number = 20): Extrinsic {
     return Sudo.sudo(
       api!.tx.proofOfStake.updatePoolPromotion(liquidityId, weight),
