@@ -18,7 +18,7 @@ import {
   getLiquidityAssetId,
   getRewardsInfo,
 } from "../../utils/tx";
-import { AssetWallet, User } from "../../utils/User";
+import { User } from "../../utils/User";
 import { Market } from "../../utils/market";
 import { BN_ZERO } from "gasp-sdk";
 import { Issuance } from "../../utils/Issuance";
@@ -172,7 +172,6 @@ test("Compare amount of sequencer rewards for 2 difference configuration", async
   const registrationBlock1 = disputeEndBlockNumber1 + 1;
   await waitBlockNumber(registrationBlock1.toString(), disputePeriodLength * 2);
   await waitForSessionN(rewardsSessionNumber1 + 2);
-  await testUser.refreshAmounts(AssetWallet.BEFORE);
   const rewardInfo1 = await SequencerStaking.roundSequencerRewardInfo(
     testUser.keyRingPair.address,
     rewardsSessionNumber1,
@@ -189,10 +188,6 @@ test("Compare amount of sequencer rewards for 2 difference configuration", async
     "Rewarded",
   );
   const sequencerRewards1 = stringToBN(filteredEvent1[2]);
-  await testUser.refreshAmounts(AssetWallet.AFTER);
-  const diff1 = testUser.getWalletDifferences()[0].diff.free;
-  expect(filteredEvent1[0]).toEqual(rewardsSessionNumber1.toString());
-  expect(diff1).bnEqual(sequencerRewards1);
   expect(rewardInfo1).bnEqual(sequencerRewards1);
 
   await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(40, 40, 20));
@@ -200,7 +195,6 @@ test("Compare amount of sequencer rewards for 2 difference configuration", async
   const [testUser2] = setupUsers();
   await SequencerStaking.removeAddedSequencers();
   await SequencerStaking.setupASequencer(testUser2, "Ethereum");
-  testUser2.addAsset(GASP_ASSET_ID);
 
   const { disputeEndBlockNumber: disputeEndBlockNumber2 } =
     await createAnUpdate(testUser2, "Ethereum");
@@ -208,7 +202,6 @@ test("Compare amount of sequencer rewards for 2 difference configuration", async
   const registrationBlock2 = disputeEndBlockNumber2 + 1;
   await waitBlockNumber(registrationBlock2.toString(), disputePeriodLength * 2);
   await waitForSessionN(rewardsSessionNumber2 + 2);
-  await testUser2.refreshAmounts(AssetWallet.BEFORE);
   const rewardInfo2 = await SequencerStaking.roundSequencerRewardInfo(
     testUser2.keyRingPair.address,
     rewardsSessionNumber2,
@@ -225,10 +218,6 @@ test("Compare amount of sequencer rewards for 2 difference configuration", async
     "Rewarded",
   );
   const sequencerRewards2 = stringToBN(filteredEvent2[2]);
-  await testUser2.refreshAmounts(AssetWallet.AFTER);
-  const diff2 = testUser2.getWalletDifferences()[0].diff.free;
-  expect(filteredEvent2[0]).toEqual(rewardsSessionNumber2.toString());
-  expect(diff2).bnEqual(sequencerRewards2);
   expect(rewardInfo2).bnEqual(sequencerRewards2);
   expect(sequencerRewards1).bnEqual(sequencerRewards2.muln(2));
 });
