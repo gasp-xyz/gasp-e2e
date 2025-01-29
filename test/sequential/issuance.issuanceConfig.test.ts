@@ -1,3 +1,8 @@
+/*
+ *
+ * @group issuanceConfig
+ */
+
 import { jest } from "@jest/globals";
 import { BN } from "ethereumjs-util/dist/externals";
 import { getApi, initApi } from "../../utils/api";
@@ -28,6 +33,7 @@ import {
   stringToBN,
   waitBlockNumber,
   waitForSessionN,
+  waitUntilUserCollatorRewarded,
 } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -41,6 +47,12 @@ let miningSplitBeginning: number;
 let stakingSplitBeginning: number;
 let sequencersSplitBeginning: number;
 const poolValue = new BN(2500000);
+
+async function getRewardsAmount(event: any) {
+  const filterData = JSON.parse(JSON.stringify(event))[0].event.data;
+  //const rewardAmountString = filterData[2].replace("0x", "");
+  return stringToBN(filterData[2]);
+}
 
 beforeAll(async () => {
   try {
@@ -127,6 +139,7 @@ test("Compare amount of mining rewards for 2 difference configuration", async ()
   expect(userTokenAfterClaiming1.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 
   await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(20, 40, 40));
+  await waitForSessionN((await getSessionIndex()) + 1);
 
   testUser2.addAssets([GASP_ASSET_ID, liqId]);
 
@@ -191,6 +204,7 @@ test("Compare amount of sequencer rewards for 2 difference configuration", async
   expect(rewardInfo1).bnEqual(sequencerRewards1);
 
   await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(40, 40, 20));
+  await waitForSessionN((await getSessionIndex()) + 1);
 
   const [testUser2] = setupUsers();
   await SequencerStaking.removeAddedSequencers();
@@ -220,6 +234,20 @@ test("Compare amount of sequencer rewards for 2 difference configuration", async
   const sequencerRewards2 = stringToBN(filteredEvent2[2]);
   expect(rewardInfo2).bnEqual(sequencerRewards2);
   expect(sequencerRewards1).bnEqual(sequencerRewards2.muln(2));
+});
+
+test("Compare amount of parachainStaking.Rewarded for 2 difference configuration", async () => {
+  await waitForSessionN((await getSessionIndex()) + 3);
+  const firstEvent = await waitUntilUserCollatorRewarded(sudo);
+  const rewardAmount1 = await getRewardsAmount(firstEvent);
+
+  await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(45, 10, 45));
+  await waitForSessionN((await getSessionIndex()) + 3);
+
+  const secondEvent = await waitUntilUserCollatorRewarded(sudo);
+  const rewardAmount2 = await getRewardsAmount(secondEvent);
+
+  expect(rewardAmount2).bnEqual(rewardAmount1.divn(2));
 });
 
 afterEach(async () => {
