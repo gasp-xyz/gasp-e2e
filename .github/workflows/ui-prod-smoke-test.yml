@@ -69,7 +69,7 @@ jobs:
           ref: ci/mangata-tests-fe-branch
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: yarn
       - name: Install testmo
         run: yarn global add @testmo/testmo-cli

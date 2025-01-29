@@ -69,7 +69,7 @@ describe("Gasp Prod UI deposit tests", () => {
     await depositModal.selectToken(USDC_ASSET_NAME);
 
     const randomNum = Math.floor(Math.random() * 99) + 1;
-    await depositModal.enterValue("1.01" + randomNum.toString());
+    await depositModal.enterValue("0.01" + randomNum.toString());
 
     await depositModal.waitForContinueState(true, 60000);
     const isOriginFeeDisplayed = await depositModal.isOriginFeeDisplayed();
