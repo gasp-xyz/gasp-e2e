@@ -188,7 +188,13 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       .debug(`treasury before: ${treasuryBefore}, sell price: ${sellPrice}`);
     //asset_amount1 as max should be enough, now the client validates the existance of the max.
     await signSendFinalized(
-      Market.buyAsset(liqId, GASP_ASSET_ID, currency, buyAssetAmount, asset_amount1),
+      Market.buyAsset(
+        liqId,
+        GASP_ASSET_ID,
+        currency,
+        buyAssetAmount,
+        asset_amount1,
+      ),
       user,
     );
 

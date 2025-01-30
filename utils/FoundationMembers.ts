@@ -1,9 +1,8 @@
 import { api } from "./setup";
-import { User } from "./User";
 
 export class FoundationMembers {
-  static changeKey(user: User) {
-    const event = api.tx.foundationMembers.changeKey(user.keyRingPair.address);
+  static changeKey(userAddress: string) {
+    const event = api.tx.foundationMembers.changeKey(userAddress);
     return event;
   }
 
