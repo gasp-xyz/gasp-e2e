@@ -160,6 +160,10 @@ beforeEach(async () => {
 
 test("User can buy GASP in multiswap operation", async () => {
   const userBalanceBeforeSwap = await getTokensAccountInfo(testUser, token1);
+  const userBalanceGaspBeforeSwap = await getTokensAccountInfo(
+    testUser,
+    BN_ZERO,
+  );
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
@@ -175,9 +179,18 @@ test("User can buy GASP in multiswap operation", async () => {
     await waitSudoOperationSuccess(result, "SudoAsDone");
   });
   const userBalanceAfterSwap = await getTokensAccountInfo(testUser, token1);
+  const userBalanceGaspAfterSwap = await getTokensAccountInfo(
+    testUser,
+    BN_ZERO,
+  );
+  const gaspDiff = stringToBN(userBalanceGaspAfterSwap.free).sub(
+    stringToBN(userBalanceGaspBeforeSwap.free),
+  );
   expect(stringToBN(userBalanceAfterSwap.free)).bnEqual(
     stringToBN(userBalanceBeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
+  expect(gaspDiff).bnGt(BN_ZERO);
+  expect(gaspDiff).bnLte(BN_TEN_THOUSAND);
 });
 
 test("User can't sell GASP in multiswap operation (GASP token at the beginning)", async () => {
