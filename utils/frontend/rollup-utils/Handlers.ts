@@ -18,6 +18,7 @@ import {
 import { DepositActionType, DepositModal } from "./DepositModal";
 import { WithdrawModal } from "../rollup-pages/WithdrawModal";
 import { WalletConnectModal } from "../rollup-pages/WalletConnectModal";
+import { WalletWrapperMobile } from "../rollup-pages/WalletWrapperMobile";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -60,6 +61,47 @@ export async function connectWallet(
   expect(isWalletConnected).toBeTruthy();
 }
 
+export async function connectWalletMobile(
+  driver: WebDriver,
+  walletType: string,
+  acc_addr: string,
+  prod = false,
+) {
+  const walletWrapper = new WalletWrapperMobile(driver);
+  const isWalletStatus = await walletWrapper.isWalletStatusDisplayed();
+  expect(isWalletStatus).toBeTruthy();
+
+  await walletWrapper.openWalletConnectionInfo();
+  let isWalletConnected = await walletWrapper.isWalletDetailsConnected();
+  expect(isWalletConnected).toBeFalsy();
+  await walletWrapper.pickWallet(walletType);
+
+  const walletConnectModal = new WalletConnectModal(driver);
+  let isWalletConnectModalDisplayed = await walletConnectModal.displayed();
+  expect(isWalletConnectModalDisplayed).toBeTruthy();
+
+  await acceptPermissionsWalletExtensionInNewWindow(driver, walletType);
+  if (prod) {
+    // await acceptNetworkSwitchInNewWindow(driver);
+  }
+
+  await walletConnectModal.waitForaccountsDisplayed();
+  const areAccountsDisplayed = await walletConnectModal.accountsDisplayed();
+  expect(areAccountsDisplayed).toBeTruthy();
+
+  try {
+    await walletConnectModal.pickAccount(acc_addr);
+  } catch (e) {
+    await walletConnectModal.pickAccount(acc_addr.toUpperCase());
+  }
+
+  isWalletConnectModalDisplayed = await walletConnectModal.displayed();
+  expect(isWalletConnectModalDisplayed).toBeFalsy();
+
+  isWalletConnected = await walletWrapper.isWalletDetailsConnected();
+  expect(isWalletConnected).toBeTruthy();
+}
+
 export async function setupPage(driver: WebDriver) {
   const mainPage = new Main(driver);
   await mainPage.go();
@@ -67,7 +109,7 @@ export async function setupPage(driver: WebDriver) {
   expect(appLoaded).toBeTruthy();
   await mainPage.skipWelcomeMessage();
   // await mainPage.skipMailerIframe();
-  await mainPage.skipLaunchMessage();
+  // await mainPage.skipLaunchMessage();
 }
 
 export async function setupPagProd(driver: WebDriver) {
@@ -85,11 +127,28 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   await mainPage.go();
   const appLoaded = await mainPage.isAppLoaded();
   expect(appLoaded).toBeTruthy();
-  //await mainPage.skipLaunchMessage();
 
   const walletWrapper = new WalletWrapper(driver);
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
   expect(isAccInfoDisplayed).toBeTruthy();
+}
+
+export async function setupPageWithStateMobile(
+  driver: WebDriver,
+  acc_name: string,
+) {
+  const mainPage = new Main(driver);
+  await mainPage.go();
+  const appLoaded = await mainPage.isAppLoaded();
+  expect(appLoaded).toBeTruthy();
+
+  const walletWrapper = new WalletWrapperMobile(driver);
+  await walletWrapper.openWalletConnectionInfo();
+  await walletWrapper.waitWalletOpened();
+  const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
+  expect(isAccInfoDisplayed).toBeTruthy();
+  await walletWrapper.closeWalletConnectionInfo();
+  await walletWrapper.waitWalletClosed();
 }
 
 export async function setupPageWithStatePr(driver: WebDriver) {

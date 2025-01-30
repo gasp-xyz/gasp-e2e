@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: ["first"]
+        command: ["first", "second"]
     runs-on: ubuntu-latest
     env:
       API_URL: "wss://collator-01-ws-rollup-prod.gasp.xyz"
