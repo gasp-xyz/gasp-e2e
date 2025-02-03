@@ -20,4 +20,12 @@ export class Issuance {
       ),
     );
   }
+
+  static async getIssuanceConfig() {
+    const api = await getApi();
+    const issuanceConfig = JSON.parse(
+      JSON.stringify(await api.query.issuance.issuanceConfigStore()),
+    );
+    return issuanceConfig;
+  }
 }

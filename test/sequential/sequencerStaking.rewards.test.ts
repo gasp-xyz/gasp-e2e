@@ -66,7 +66,12 @@ beforeEach(async () => {
   [testUser] = setupUsers();
   testUser.addAsset(GASP_ASSET_ID);
   await SequencerStaking.removeAllSequencers();
-  await Sudo.asSudoFinalized(Assets.mintNative(getSudoUser(), (await SequencerStaking.minimalStakeAmount()).muln(100)));
+  await Sudo.asSudoFinalized(
+    Assets.mintNative(
+      getSudoUser(),
+      (await SequencerStaking.minimalStakeAmount()).muln(100),
+    ),
+  );
   await SequencerStaking.setupASequencer(testUser, chainEth);
   testUser.addAsset(GASP_ASSET_ID);
 });
@@ -75,7 +80,7 @@ it("Sequencer budget is set when initializing issuance config", async () => {
   const events = await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
-    await Issuance.setIssuanceConfig(40,40,20)
+    await Issuance.setIssuanceConfig(40, 40, 20),
   );
   const filteredEvent = await filterAndStringifyFirstEvent(
     events,
@@ -90,7 +95,7 @@ it("Sequencer budget is set when initializing issuance config", async () => {
 it("Sequencers get paid on every session BUT only when they submit valid updates ( Succeeded extrinsics )", async () => {
   await Sudo.batchAsSudoFinalized(Assets.FinalizeTge(), Assets.initIssuance());
   const disputePeriodLength = (
-    await Rolldown.disputePeriodLength(chainArb)
+    await Rolldown.disputePeriodLength(chainEth)
   ).toNumber();
   const { disputeEndBlockNumber } = await createAnUpdate(testUser, chainEth);
   const rewardsSessionNumber = await getSessionIndex();
