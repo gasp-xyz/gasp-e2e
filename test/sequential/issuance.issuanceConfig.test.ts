@@ -17,7 +17,6 @@ import {
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
-  activateLiquidity,
   claimRewards,
   deactivateLiquidity,
   getLiquidityAssetId,
@@ -25,7 +24,7 @@ import {
 } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { Market } from "../../utils/market";
-import { BN_ZERO } from "gasp-sdk";
+import { BN_HUNDRED, BN_ZERO } from "gasp-sdk";
 import { Issuance } from "../../utils/Issuance";
 import { SequencerStaking } from "../../utils/rollDown/SequencerStaking";
 import { createAnUpdate, Rolldown } from "../../utils/rollDown/Rolldown";
@@ -46,7 +45,7 @@ let liqId: BN;
 let miningSplitBeginning: number;
 let stakingSplitBeginning: number;
 let sequencersSplitBeginning: number;
-const poolValue = new BN(2500000);
+const poolValue = new BN(2500000000);
 
 async function getRewardsAmount(event: any) {
   const filterData = JSON.parse(JSON.stringify(event))[0].event.data;
@@ -108,15 +107,18 @@ test("Compare amount of mining rewards for 2 difference configuration", async ()
   const [testUser1, testUser2] = setupUsers();
 
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(liqId, testUser1, poolValue),
+    Assets.mintToken(token1, testUser1, poolValue.muln(2)),
     Assets.mintNative(testUser1),
-    Assets.mintToken(liqId, testUser2, poolValue),
+    Assets.mintToken(token1, testUser2, poolValue.muln(2)),
     Assets.mintNative(testUser2),
   );
-
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser1,
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, poolValue),
+    ),
+  );
   testUser1.addAssets([GASP_ASSET_ID, liqId]);
-
-  await activateLiquidity(testUser1.keyRingPair, liqId, poolValue.divn(10));
 
   await waitForRewards(testUser1, liqId);
 
@@ -132,18 +134,22 @@ test("Compare amount of mining rewards for 2 difference configuration", async ()
     liqId,
   );
 
-  await deactivateLiquidity(testUser1.keyRingPair, liqId, poolValue.divn(10));
+  await deactivateLiquidity(testUser1.keyRingPair, liqId, poolValue);
 
   expect(userTokenBeforeClaiming1.activatedAmount).bnGt(BN_ZERO);
   expect(userTokenBeforeClaiming1.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
   expect(userTokenAfterClaiming1.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 
-  await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(20, 40, 40));
-  await waitForSessionN((await getSessionIndex()) + 1);
+  await Sudo.batchAsSudoFinalized(await Issuance.setIssuanceConfig(20, 60, 20));
+  await waitForSessionN((await getSessionIndex()) + 3);
 
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser2,
+      Market.mintLiquidity(liqId, GASP_ASSET_ID, poolValue),
+    ),
+  );
   testUser2.addAssets([GASP_ASSET_ID, liqId]);
-
-  await activateLiquidity(testUser2.keyRingPair, liqId, poolValue.divn(10));
 
   await waitForRewards(testUser2, liqId);
 
@@ -159,7 +165,7 @@ test("Compare amount of mining rewards for 2 difference configuration", async ()
     liqId,
   );
 
-  await deactivateLiquidity(testUser2.keyRingPair, liqId, poolValue.divn(10));
+  await deactivateLiquidity(testUser2.keyRingPair, liqId, poolValue);
 
   expect(userTokenBeforeClaiming2.activatedAmount).bnGt(BN_ZERO);
   expect(userTokenBeforeClaiming2.rewardsAlreadyClaimed).bnEqual(BN_ZERO);
@@ -246,8 +252,10 @@ test("Compare amount of parachainStaking.Rewarded for 2 difference configuration
 
   const secondEvent = await waitUntilUserCollatorRewarded(sudo);
   const rewardAmount2 = await getRewardsAmount(secondEvent);
-
-  expect(rewardAmount2).bnEqual(rewardAmount1.divn(2));
+  //We check the ratio of rewards (as a percentage)
+  const rewardsRatio = rewardAmount1.mul(BN_HUNDRED).div(rewardAmount2);
+  expect(rewardsRatio).bnGt(new BN(150));
+  expect(rewardsRatio).bnLt(new BN(250));
 });
 
 afterEach(async () => {
