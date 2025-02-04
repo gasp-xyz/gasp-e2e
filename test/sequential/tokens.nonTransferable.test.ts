@@ -77,7 +77,7 @@ test("Founder can create GASP pool", async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationMembers[2],
-      FoundationMembers.changeKey(sudo),
+      FoundationMembers.changeKey(sudo.keyRingPair.address),
     ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -108,7 +108,10 @@ test("Ordinary user can't create GASP pool", async () => {
   if (foundationMembers.includes(sudo.keyRingPair.address)) {
     const [testUser] = setupUsers();
     await Sudo.asSudoFinalized(
-      Sudo.sudoAs(sudo, FoundationMembers.changeKey(testUser)),
+      Sudo.sudoAs(
+        sudo,
+        FoundationMembers.changeKey(testUser.keyRingPair.address),
+      ),
     );
   }
 
@@ -149,7 +152,7 @@ test("Non-transferable token can't be sold", async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationMembers[2],
-      FoundationMembers.changeKey(sudo),
+      FoundationMembers.changeKey(sudo.keyRingPair.address),
     ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
