@@ -1,8 +1,6 @@
-//Example: ts-node performance/index.ts
-//Options:
-// run transfer
-
-//npx ts-node ./performance/index.ts threadNumber=3 testCaseName=transfer duration=1000 totalTransactions=25000 nodes=ws://ws1,ws://ws2
+//Example:
+// yarn add tsx
+// npx tsx  ./performance/index.ts transfer threadNumber=3 testCaseName=ConcurrentTest duration=1000 totalTransactions=25000 nodes=ws://127.0.0.1:9946
 
 import { TestParams } from "./testParams";
 import { Commands, TestFactory, TestsCases } from "./testFactory";

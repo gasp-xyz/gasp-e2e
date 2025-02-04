@@ -67,6 +67,7 @@
     "tiny-async-pool": "^1.2.0",
     "truffle": "^5.4.7",
     "ts-node": "^10.9.1",
+    "tsx": "^4.19.2",
     "typescript": "5.2.2",
     "viem": "^2.7.15",
     "web3": "^4.4.0",
