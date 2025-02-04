@@ -5,11 +5,11 @@
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
 import {
-  multiSwapBuy,
-  multiSwapSell,
   calculate_sell_price_id_rpc,
   burnLiquidity,
   calculate_buy_price_id_rpc,
+  multiSwapBuyMarket,
+  multiSwapSellMarket,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -55,7 +55,7 @@ describe("Multiswap - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       testUser1,
     );
-    const multiSwapOutput = await multiSwapBuy(
+    const multiSwapOutput = await multiSwapBuyMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -87,7 +87,7 @@ describe("Multiswap - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       testUser1,
     );
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -108,7 +108,7 @@ describe("Multiswap - happy paths", () => {
     const testUser2 = users[1];
     testUser2.addAssets(tokenIds);
     await testUser2.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapBuy(
+    const multiSwapOutput = await multiSwapBuyMarket(
       testUser2,
       tokenIds,
       new BN(1000),
@@ -127,7 +127,7 @@ describe("Multiswap - happy paths", () => {
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
-  test("[gasless] Fees - multi-swap roll backs all the swaps when one fail but 0.3% is charged", async () => {
+  test("[gasless] Fees - multi-swap roll backs all the swaps when one fail but we take fees in GASP tokens", async () => {
     const assetIdWithSmallPool = new BN(7);
     await Sudo.batchAsSudoFinalized(
       Assets.mintToken(assetIdWithSmallPool, sudo, new BN(1)),
@@ -144,16 +144,16 @@ describe("Multiswap - happy paths", () => {
     const listIncludingSmallPool = tokenIds.concat([assetIdWithSmallPool]);
     testUser1.addAssets(listIncludingSmallPool);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapSell(
+
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       listIncludingSmallPool,
       swapAmount,
       BN_TEN_THOUSAND,
     );
-    const eventResponse = getEventResultFromMangataTx(multiSwapOutput, [
-      "xyk",
-      "MultiSwapAssetFailedOnAtomicSwap",
-    ]);
+    const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("InsufficientOutputAmount");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
     //Validate that the modified tokens are MGX and the first element in the list.
@@ -169,14 +169,9 @@ describe("Multiswap - happy paths", () => {
     const changeInSoldAsset = walletsModifiedInSwap.find((token) =>
       token.currencyId.eq(listIncludingSmallPool[0]),
     )?.diff.free;
-    const expectedFeeCharged = swapAmount
-      .muln(3)
-      .divn(1000)
-      .add(new BN(3))
-      .neg();
+    const expectedFeeCharged = swapAmount.muln(3).divn(1000).neg();
     expect(changeInSoldAsset).bnEqual(expectedFeeCharged);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    //check only 0.3%
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(
       multiSwapOutput.findIndex(
         (x) =>
@@ -216,7 +211,7 @@ describe("Multiswap - happy paths", () => {
     );
     testUser1.addAssets(tokenIds);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -286,7 +281,7 @@ describe("Multiswap - happy paths", () => {
     );
     testUser1.addAssets(tokenIds);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
-    const multiSwapOutput = await multiSwapBuy(
+    const multiSwapOutput = await multiSwapBuyMarket(
       testUser1,
       tokenIds,
       new BN(1000),
@@ -337,7 +332,7 @@ describe("Multiswap - happy paths", () => {
       tokenIds[tokenIds.length - 1],
       Assets.DEFAULT_AMOUNT.divn(2).subn(1000),
     );
-    const multiSwapOutput = await multiSwapSell(
+    const multiSwapOutput = await multiSwapSellMarket(
       testUser4,
       tokenIds.concat(GASP_ASSET_ID),
       Assets.DEFAULT_AMOUNT.divn(100000),
@@ -349,19 +344,18 @@ describe("Multiswap - happy paths", () => {
     ]);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     testUser4.addAssets(tokenIds.concat(GASP_ASSET_ID));
+
     await testUser4.refreshAmounts(AssetWallet.BEFORE);
     //now only one token must be in the pool
-    const multiSwapOutput2 = await multiSwapSell(
+    const multiSwapOutput2 = await multiSwapSellMarket(
       testUser4,
       tokenIds.concat(GASP_ASSET_ID),
       Assets.DEFAULT_AMOUNT.divn(100000),
       BN_ZERO,
     );
-    const eventResponse2 = getEventResultFromMangataTx(multiSwapOutput2, [
-      "xyk",
-      "MultiSwapAssetFailedOnAtomicSwap",
-    ]);
-    expect(eventResponse2.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    const eventResponse2 = getEventResultFromMangataTx(multiSwapOutput2);
+    expect(eventResponse2.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse2.data).toEqual("ZeroAmount");
     await testUser4.refreshAmounts(AssetWallet.AFTER);
 
     //check that we bought 0 tokens, but operation still works.

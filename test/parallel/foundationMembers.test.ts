@@ -39,7 +39,7 @@ test("A founder can update his own foundation address", async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAddress,
-      FoundationMembers.changeKey(testUser),
+      FoundationMembers.changeKey(testUser.keyRingPair.address),
     ),
   ).then((events) => {
     const res = getEventResultFromMangataTx(events);
@@ -79,7 +79,7 @@ test("Council can not execute this extrinsic", async () => {
           councilUsers.length,
           api.tx.sudo.sudoAs(
             foundationAddress,
-            FoundationMembers.changeKey(testUser),
+            FoundationMembers.changeKey(testUser.keyRingPair.address),
           ),
           44,
         ),
@@ -112,11 +112,11 @@ test("Council can not execute this extrinsic", async () => {
 });
 
 test("Extrinsic must fail if sudo request any foundation modification", async () => {
-  await Sudo.batchAsSudoFinalized(FoundationMembers.changeKey(testUser)).then(
-    (events) => {
-      const res = getEventResultFromMangataTx(events);
-      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(res.data).toEqual("NotMember");
-    },
-  );
+  await Sudo.batchAsSudoFinalized(
+    FoundationMembers.changeKey(testUser.keyRingPair.address),
+  ).then((events) => {
+    const res = getEventResultFromMangataTx(events);
+    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(res.data).toEqual("NotMember");
+  });
 });

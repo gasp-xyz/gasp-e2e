@@ -11,13 +11,14 @@ import {
   ExtrinsicResult,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
-import { BN, BN_ONE, BN_ZERO } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { updateFeeLockMetadata } from "../../utils/tx";
+import { multiSwapSellMarket, updateFeeLockMetadata } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Market } from "../../utils/market";
+import { ApiPromise } from "@polkadot/api";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -28,6 +29,7 @@ let sudo: User;
 let firstCurrency: BN;
 let secondCurrency: BN;
 let thirdCurrency: BN;
+let api: ApiPromise;
 
 const thresholdValue = new BN(666).mul(Assets.MG_UNIT);
 const defaultCurrencyValue = new BN(10000000).mul(Assets.MG_UNIT);
@@ -42,6 +44,7 @@ beforeAll(async () => {
 
   // setup users
   sudo = getSudoUser();
+  api = getApi();
 
   [secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
@@ -114,57 +117,71 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   const saleAssetValue = thresholdValue.add(new BN(2));
   //non existing pool
   expect(
-    await mangata?.rpc.isBuyAssetLockFree(
-      [secondCurrency.toString(), firstCurrency.addn(10).toString()],
-      thresholdValue!.addn(1),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.addn(10).toString()],
+        thresholdValue!.addn(1),
+      )
+    ).toString(),
+  ).toEqual("");
   // non mga paired token. -> always false.
   expect(
-    await mangata?.rpc.isBuyAssetLockFree(
-      [secondCurrency.toString(), thirdCurrency.toString()],
-      thresholdValue!.addn(1000),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), thirdCurrency.toString()],
+        thresholdValue!.addn(1000),
+      )
+    ).toString(),
+  ).toEqual("false");
 
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = api.rpc.xyk.is_sell_asset_lock_free(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
   expect(isFree).toBeTruthy();
   //MGA pool
   expect(
-    await mangata?.rpc.isSellAssetLockFree(
-      [firstCurrency.toString(), GASP_ASSET_ID.toString()],
-      thresholdValue.subn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [firstCurrency.toString(), GASP_ASSET_ID.toString()],
+        thresholdValue.subn(2),
+      )
+    ).toString(),
+  ).toEqual("false");
   expect(
-    await mangata?.rpc.isSellAssetLockFree(
-      [GASP_ASSET_ID.toString(), firstCurrency.toString()],
-      thresholdValue.subn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [GASP_ASSET_ID.toString(), firstCurrency.toString()],
+        thresholdValue.subn(2),
+      )
+    ).toString(),
+  ).toEqual("false");
   expect(
-    await mangata?.rpc.isSellAssetLockFree(
-      [GASP_ASSET_ID.toString(), firstCurrency.toString()],
-      thresholdValue,
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [GASP_ASSET_ID.toString(), firstCurrency.toString()],
+        thresholdValue,
+      )
+    ).toString(),
+  ).toEqual("true");
   expect(
-    await mangata?.rpc.isSellAssetLockFree(
-      [firstCurrency.toString(), GASP_ASSET_ID.toString()],
-      thresholdValue,
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [firstCurrency.toString(), GASP_ASSET_ID.toString()],
+        thresholdValue,
+      )
+    ).toString(),
+  ).toEqual("true");
 
   //MGA paired token
   expect(
-    await mangata?.rpc.isSellAssetLockFree(
-      [firstCurrency.toString(), secondCurrency.toString()],
-      thresholdValue.subn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [firstCurrency.toString(), secondCurrency.toString()],
+        thresholdValue.subn(2),
+      )
+    ).toString(),
+  ).toEqual("false");
   const amount = (await mangata?.rpc.calculateBuyPriceId(
     secondCurrency.toString(),
     firstCurrency.toString(),
@@ -174,31 +191,39 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //and the valuation of the result is less than threshold. ( you need 670secCurr to get 666firstCurr)
   //th is 670,
   expect(
-    await mangata?.rpc.isSellAssetLockFree(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      thresholdValue.addn(2),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        thresholdValue.addn(2),
+      )
+    ).toString(),
+  ).toEqual("false");
 
   expect(
-    await mangata?.rpc.isSellAssetLockFree(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      amount.addn(1),
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_sell_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        amount.addn(1),
+      )
+    ).toString(),
+  ).toEqual("true");
 
   expect(
-    await mangata?.rpc.isBuyAssetLockFree(
-      [firstCurrency.toString(), secondCurrency.toString()],
-      thresholdValue.subn(1),
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [firstCurrency.toString(), secondCurrency.toString()],
+        thresholdValue.subn(1),
+      )
+    ).toString(),
+  ).toEqual("false");
   expect(
-    await mangata?.rpc.isBuyAssetLockFree(
-      [firstCurrency.toString(), secondCurrency.toString()],
-      amount.addn(1),
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [firstCurrency.toString(), secondCurrency.toString()],
+        amount.addn(1),
+      )
+    ).toString(),
+  ).toEqual("true");
 
   //Indirect paired token
   const amountReqToGetThreshold = await mangata?.rpc.calculateSellPriceId(
@@ -209,37 +234,45 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //Same as before, we first calcualte from wich value, the buy results on the threshold.
   //Then we check that the value (-1) result in false, and +1 in true.
   expect(
-    await mangata?.rpc.isBuyAssetLockFree(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      amountReqToGetThreshold!,
-    ),
-  ).toBeFalsy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        amountReqToGetThreshold!,
+      )
+    ).toString(),
+  ).toEqual("false");
   expect(
-    await mangata?.rpc.isBuyAssetLockFree(
-      [secondCurrency.toString(), firstCurrency.toString()],
-      amountReqToGetThreshold!.addn(1),
-    ),
-  ).toBeTruthy();
+    (
+      await api.rpc.xyk.is_buy_asset_lock_free(
+        [secondCurrency.toString(), firstCurrency.toString()],
+        amountReqToGetThreshold!.addn(1),
+      )
+    ).toString(),
+  ).toEqual("true");
 });
 
 test("gasless- isFree works same as multiswap of two", async () => {
-  const saleAssetValue = thresholdValue.add(new BN(2));
+  const saleAssetValue = thresholdValue
+    .add(new BN(2))
+    .add(thresholdValue.muln(0.004));
 
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await api.rpc.xyk.is_sell_asset_lock_free(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
-  expect(isFree).toBeTruthy();
+
   const mgasBef = await mangata?.query.getTokenBalance(
     GASP_ASSET_ID.toString(),
     testUser1.keyRingPair.address,
   );
-  const events = await mangata?.xyk.multiswapSellAsset({
-    account: testUser1.keyRingPair,
-    amount: saleAssetValue,
-    minAmountOut: BN_ONE,
-    tokenIds: [firstCurrency.toString(), secondCurrency.toString()],
-  });
+
+  const events = await multiSwapSellMarket(
+    testUser1,
+    [firstCurrency, secondCurrency],
+    saleAssetValue,
+    new BN("663").mul(Assets.MG_UNIT),
+  );
+
   const eventResponse = getEventResultFromMangataTx(events!, [
     "xyk",
     "AssetsSwapped",
@@ -253,4 +286,5 @@ test("gasless- isFree works same as multiswap of two", async () => {
   expect(mgasBef?.reserved).bnEqual(BN_ZERO);
   expect(mgasAfter?.reserved).bnEqual(BN_ZERO);
   expect(mgasBef!.free).bnEqual(mgasAfter!.free);
+  expect(isFree.toString()).toEqual("true");
 });

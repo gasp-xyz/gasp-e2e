@@ -4,7 +4,14 @@ import BN from "bn.js";
 import { Assets } from "./Assets";
 import { MAX_BALANCE, GASP_ASSET_ID } from "./Constants";
 import { waitForRewards } from "./eventListeners";
-import { alice, Extrinsic, setupApi, setupUsers, sudo } from "./setup";
+import {
+  alice,
+  Extrinsic,
+  getSudoUser,
+  setupApi,
+  setupUsers,
+  sudo,
+} from "./setup";
 import { Sudo } from "./sudo";
 import { xxhashAsHex } from "@polkadot/util-crypto";
 import { SudoDB } from "./SudoDB";
@@ -26,7 +33,7 @@ import {
   stringToBN,
 } from "./utils";
 import { api, getApi, getMangataInstance, initApi } from "./api";
-import { BN_ZERO, signTx } from "gasp-sdk";
+import { BN_BILLION, BN_ZERO, signTx } from "gasp-sdk";
 import { getBalanceOfPool } from "./txHandler";
 import { Bytes, StorageKey } from "@polkadot/types";
 import { Codec, ITuple } from "@polkadot/types/types";
@@ -62,6 +69,7 @@ import {
   getPublicClient,
   getWalletClient,
   ROLL_DOWN_CONTRACT_ADDRESS,
+  account,
 } from "./rollup/ethUtils";
 import Web3 from "web3";
 import { L2Update, Rolldown } from "./rollDown/Rolldown";
@@ -72,6 +80,7 @@ import { ApiPromise } from "@polkadot/api";
 import { privateKeyToAccount } from "viem/accounts";
 import { estimateMaxPriorityFeePerGas } from "viem/actions";
 import { Market } from "./market";
+import fs from "fs";
 Assets.legacy = true;
 const L1_CHAIN = "Ethereum";
 
@@ -113,6 +122,45 @@ export async function claimForAllAvlRewards() {
 
 const tokenOrigin = tokenOriginEnum.AvailableBalance;
 
+export async function createSequencers(num: number) {
+  let txs = [];
+  await setupApi();
+  setupUsers();
+  const sudo = getSudoUser();
+  for (let i = 0; i < num; i++) {
+    const user = new User(new Keyring({ type: "ethereum" }));
+    txs.push(Assets.mintNative(user));
+    txs.push(
+      Sudo.sudoAs(
+        sudo,
+        await SequencerStaking.provideSequencerStaking(
+          user.keyRingPair.address,
+          BN_BILLION,
+        ),
+      ),
+    );
+    if (i % 5 === 0) {
+      await Sudo.batchAsSudoFinalized(...txs);
+      txs = [];
+    }
+  }
+  await Sudo.batchAsSudoFinalized(...txs);
+}
+export async function monitorSequencers() {
+  return new Promise<[number, number][]>(async (_2, _) => {
+    let selectedSeq = "";
+    await setupApi();
+    const api = await getApi();
+    await api.rpc.chain.subscribeNewHeads(async (head): Promise<void> => {
+      const seqcs = await api?.query.sequencerStaking.selectedSequencer();
+      const selected = JSON.stringify(seqcs);
+      if (selectedSeq !== selected) {
+        selectedSeq = selected;
+        testLog.getLog().info(head.number.toNumber() + " - " + selectedSeq);
+      }
+    });
+  });
+}
 export async function vetoMotion(motionId: number) {
   //const fundAcc = "5Gc1GyxLPr1A4jE1U7u9LFYuFftDjeSYZWQXHgejQhSdEN4s";
   const fundAcc = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY";
@@ -473,7 +521,62 @@ export async function setupTokenWithRewardsForDefaultUsers() {
   await waitForRewards(testUser4, liqId);
   return { users, liqId, sudo, token2 };
 }
+export async function printAllSequencerUpdates(
+  userAddress: string = "",
+  filePath = "Sequencers",
+  fromBlock = 11136,
+  filterMethod = "updateL2FromL1",
+  filterSection = "rolldown",
+) {
+  await setupUsers();
+  await setupApi();
+  const api = await getApi();
+  let currBlock = fromBlock || (await getBlockNumber());
+  const allUpdates = userAddress.length === 0;
 
+  while (currBlock > 0) {
+    const blockHash = await api.rpc.chain.getBlockHash(currBlock);
+    const block = await api.rpc.chain.getBlock(blockHash);
+    let txs = block.block.extrinsics
+      .filter(
+        (x: any) =>
+          x.method.method.toString() === filterMethod &&
+          x.method.section.toString() === filterSection,
+      )
+      .map((x: any) => x.toHuman());
+    testLog.getLog().info(block);
+    //testLog
+    //  .getLog()
+    //  .info(
+    //    JSON.stringify(block.block.extrinsics.map((x: any) => x.toHuman())),
+    //  );
+    testLog.getLog().info(JSON.stringify(txs));
+    if (txs.length && !allUpdates) {
+      txs = txs.filter((x: any) => {
+        return (
+          x.signer.toString() === userAddress ||
+          JSON.stringify(x).includes(userAddress)
+        );
+      });
+    }
+    const readabaleTxs = txs; // txs.map((x: any) => x.toHuman());
+    // testLog.getLog().info("Block " + currBlock);
+    if (txs.length > 0) {
+      testLog.getLog().info("Block " + currBlock);
+      testLog.getLog().info(JSON.stringify(readabaleTxs));
+      testLog.getLog().info(JSON.stringify(txs));
+      for (let i = 0; i < readabaleTxs.length; i++) {
+        fs.appendFileSync(
+          filePath,
+          `${currBlock} , ${readabaleTxs[i].signer} , ${JSON.stringify(
+            readabaleTxs[i],
+          )} \n`,
+        );
+      }
+    }
+    currBlock--;
+  }
+}
 export async function printAllTxsDoneByUser(userAddress: string) {
   await setupUsers();
   await setupApi();
@@ -2007,7 +2110,7 @@ export async function depositHell(num: number, txIndexer = 0) {
   } else {
     txIndex = txIndexer;
   }
-  const sequencer = await SequencerStaking.getSequencerUser();
+  const sequencer = await SequencerStaking.getBaltatharSeqUser();
   await Rolldown.waitForReadRights(sequencer.ethAddress.toLowerCase());
   testLog.getLog().info("Depositing " + num + " transactions from " + txIndex);
   const depositBatch = new L2Update(api)
@@ -2025,12 +2128,10 @@ export async function create10sequencers(nw = "Ethereum") {
     const users = await setupUsers();
     txs.push(Assets.mintNativeAddress(users[0].keyRingPair.address));
     txs.push(
-      Sudo.sudoAsWithAddressString(
+      await SequencerStaking.provideSequencerStaking(
         users[0].keyRingPair.address,
-        await SequencerStaking.provideSequencerStaking(
-          BN_ZERO,
-          nw as ChainName,
-        ),
+        BN_ZERO,
+        nw as ChainName,
       ),
     );
   }
@@ -2092,6 +2193,7 @@ export async function closeL1Item(
       functionName: closingItem,
       //@ts-ignore
       args: [withdrawal, root.toHuman(), proof.toHuman()],
+      account,
     });
     return viemClient
       .writeContract(request)

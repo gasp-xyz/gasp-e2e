@@ -11,7 +11,10 @@ import {
   EVENT_SECTION_PAYMENT,
   EVENT_METHOD_PAYMENT,
 } from "../../utils/Constants";
-import { waitSudoOperationSuccess } from "../../utils/eventListeners";
+import {
+  filterAndStringifyFirstEvent,
+  waitSudoOperationSuccess,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -205,16 +208,14 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   expect(userFirstCurLockedValue).bnEqual(new BN(0));
   expect(userSecondCurLockedValue).bnEqual(new BN(0));
   expect(userMgaLockedValue).bnEqual(new BN(feeLockAmount));
-  expect(
-    events.findIndex(
-      (x) =>
-        x.section === EVENT_SECTION_PAYMENT ||
-        x.method === EVENT_METHOD_PAYMENT,
-    ),
-  ).toEqual(-1);
+  const transactionFee = await filterAndStringifyFirstEvent(
+    events,
+    "TransactionFeePaid",
+  );
+  expect(transactionFee).toBeUndefined();
 });
 
-test("gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
+test("[BUG] gasless- Given a feeLock correctly configured WHEN the user swaps two tokens that are not defined in the thresholds AND the user has not enough MGAs AND swapValue > threshold THEN the extrinsic can not be submited", async () => {
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
@@ -233,5 +234,5 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
     ).catch((reason) => {
       throw new Error(reason.data);
     }),
-  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
+  ).rejects.toThrow(feeLockErrors.FeeLockFail);
 });

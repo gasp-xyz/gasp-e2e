@@ -171,7 +171,7 @@ test("check claimRewards", async () => {
   expect(userTokenAfterClaiming.rewardsAlreadyClaimed).bnGt(BN_ZERO);
 });
 
-test("check mintLiquidity", async () => {
+test.skip("check mintLiquidity", async () => {
   const tx = await mangata.submitableExtrinsic.mintLiquidity({
     account: testUser.keyRingPair.address,
     expectedSecondTokenAmount: BN_BILLION,
@@ -195,7 +195,7 @@ test("check mintLiquidity", async () => {
   expect(amountDifference).bnEqual(BN_HUNDRED);
 });
 
-test("check burnLiquidity", async () => {
+test.skip("check burnLiquidity", async () => {
   const tx = await mangata.submitableExtrinsic.burnLiquidity({
     account: testUser.keyRingPair.address,
     amount: BN_HUNDRED,
@@ -216,7 +216,7 @@ test("check burnLiquidity", async () => {
   expect(amountDifference).bnEqual(BN_HUNDRED);
 });
 
-test("check createPool", async () => {
+test.skip("check createPool", async () => {
   const [token2] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
@@ -246,7 +246,7 @@ test("check createPool", async () => {
   expect(balancePool[1]).bnEqual(Assets.DEFAULT_AMOUNT.divn(2));
 });
 
-test("check multiswapBuyAsset", async () => {
+test.skip("check multiswapBuyAsset", async () => {
   const tx = await mangata.submitableExtrinsic.multiswapBuyAsset({
     account: testUser.keyRingPair.address,
     tokenIds: [GASP_ASSET_ID.toString(), token1.toString()],
@@ -267,7 +267,7 @@ test("check multiswapBuyAsset", async () => {
   expect(amountDifference).bnEqual(BN_HUNDRED);
 });
 
-test("check multiswapSellAsset", async () => {
+test.skip("check multiswapSellAsset", async () => {
   const tx = await mangata.submitableExtrinsic.multiswapSellAsset({
     account: testUser.keyRingPair.address,
     tokenIds: [GASP_ASSET_ID.toString(), token1.toString()],

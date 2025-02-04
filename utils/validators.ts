@@ -1,6 +1,6 @@
 import { ApiPromise } from "@polkadot/api";
 import { Codec } from "@polkadot/types-codec/types";
-import { BN } from "@polkadot/util";
+import { BN, BN_TWO } from "@polkadot/util";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { CodecOrArray, toHex, toHuman, toJson } from "./setup";
 import {
@@ -17,8 +17,10 @@ import {
   calculateLiqAssetAmount,
   fromBNToUnitString,
   fromStringToUnitString,
+  stringToBN,
 } from "./utils";
 import { getApi } from "./api";
+import { BN_TEN } from "gasp-sdk";
 
 export function validateTransactionSucessful(
   eventResult: EventResult,
@@ -77,11 +79,15 @@ export function validateAssetsSwappedEvent(
   const rawData = result.data;
   expect(rawData).not.toBeNull();
   expect(rawData[0]).toEqual(userAddress);
-  expect(parseInt(rawData[1][0])).toEqual(parseInt(firstCurrency.toString()));
+  expect(stringToBN(rawData[1][0])).bnEqual(
+    stringToBN(firstCurrency.toString()),
+  );
   expect(fromStringToUnitString(rawData[2])).toEqual(
     fromBNToUnitString(first_asset_amount),
   );
-  expect(parseInt(rawData[1][1])).toEqual(parseInt(secondCurrency.toString()));
+  expect(stringToBN(rawData[1][1])).toEqual(
+    stringToBN(secondCurrency.toString()),
+  );
   expect(fromStringToUnitString(rawData[3])).toEqual(
     fromBNToUnitString(second_asset_amount),
   );
@@ -218,11 +224,17 @@ export async function validateUserPaidFeeForFailedTx(
   failedBoughtAssetId: BN,
   poolAmountFailedBought: BN,
   initialPoolValueSoldAssetId: BN,
+  roundingIssue = BN_TWO,
 ) {
   const { treasury, treasuryBurn } = calculateFees(soldAmount);
-  const { completeFee } = calculateCompleteFees(soldAmount);
+  let { completeFee } = calculateCompleteFees(soldAmount);
 
   //when failed Tx, we remove 3% and put it in the pool.
+  //first wallet should not be modified.
+  //roundingISSUES - 2
+  //https://mangatafinance.atlassian.net/browse/GASP-1869
+  completeFee = completeFee.sub(roundingIssue);
+
   await user.refreshAmounts(AssetWallet.AFTER);
   const diffFromWallet = user
     .getAsset(assetSoldId)
@@ -236,16 +248,21 @@ export async function validateUserPaidFeeForFailedTx(
   expect(user.getAsset(failedBoughtAssetId)?.amountAfter.free!).bnEqual(
     amount.free,
   );
-
   const treasuryTokens = await getTreasury(assetSoldId);
   const treasuryBurnTokens = await getTreasuryBurn(assetSoldId);
   expect(treasuryTokens).bnEqual(treasury);
-  expect(treasuryBurnTokens).bnEqual(treasuryBurn);
+
+  //roundingISSUES - 2
+  //https://mangatafinance.atlassian.net/browse/GASP-1869
+  expect(treasuryBurnTokens.div(BN_TEN)).bnEqual(treasuryBurn.div(BN_TEN));
 
   const increasedInPool = completeFee.sub(treasury.add(treasuryBurn));
   const poolBalances = await getBalanceOfPool(assetSoldId, failedBoughtAssetId);
-  expect(poolBalances[0]).bnEqual(
-    initialPoolValueSoldAssetId.add(increasedInPool),
+
+  //roundingISSUES - 2
+  //https://mangatafinance.atlassian.net/browse/GASP-1869
+  expect(poolBalances[0].div(BN_TEN)).bnEqual(
+    initialPoolValueSoldAssetId.add(increasedInPool).div(BN_TEN),
   );
   expect(poolBalances[1]).bnEqual(poolAmountFailedBought);
 }

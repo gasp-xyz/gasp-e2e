@@ -29,13 +29,14 @@ import { FoundationMembers } from "../../utils/FoundationMembers";
 import { Maintenance } from "../../utils/Maintenance";
 import {
   expectMGAExtrinsicSuDidSuccess,
+  getEventError,
   waitForEvents,
   waitNewBlock,
 } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { AssetWallet, User } from "../../utils/User";
 import { getAssetIdFromErc20 } from "../../utils/rollup/ethUtils";
-import { MAX_BALANCE } from "../../utils/Constants";
+import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
 
 async function checkAndSwitchMmOff() {
   let maintenanceStatus: any;
@@ -54,17 +55,12 @@ async function checkAndSwitchMmOff() {
   expect(maintenanceStatus.isMaintenance.toString()).toEqual("false");
 }
 
-async function getEventError(events: any, eventNumber: number = 0) {
-  const stringifyEvent = JSON.parse(JSON.stringify(events));
-  return stringifyEvent[eventNumber].event.data[2].err;
-}
-
 describe.skip("updateL1FromL1", () => {
   let sequencer: EthUser;
   beforeEach(async () => {
     await initApi();
     setupUsers();
-    sequencer = await SequencerStaking.getSequencerUser();
+    sequencer = await SequencerStaking.getBaltatharSeqUser();
     await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
   });
   it("Updates are accepted", async () => {
@@ -455,7 +451,7 @@ describe.skip("updateL1FromL1 - errors", () => {
   beforeEach(async () => {
     await initApi();
     setupUsers();
-    sequencer = await SequencerStaking.getSequencerUser();
+    sequencer = await SequencerStaking.getBaltatharSeqUser();
     await Rolldown.waitForReadRights(sequencer.keyRingPair.address);
   });
   describe.each([true, false])(`Update with gap: %s`, (withGap) => {
@@ -499,7 +495,7 @@ describe.skip("updateL1FromL1 - errors", () => {
 });
 
 describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
-  let chain: any;
+  const chain = "Ethereum";
   let api: ApiPromise;
   let sequencer: User;
   let txIndex: number;
@@ -514,11 +510,12 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
 
   beforeEach(async () => {
     await SequencerStaking.removeAddedSequencers(10);
-    chain = "Ethereum";
+
     [sequencer] = await setupUsers();
     await SequencerStaking.setupASequencer(sequencer, chain);
     txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     waitingPeriod = (await SequencerStaking.getBlocksNumberForSeqUpdate()) * 5;
+    await checkAndSwitchMmOff();
   });
 
   it("When a cancel resolution fail, maintenance mode will be triggered automatically", async () => {
@@ -546,7 +543,6 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
   });
 
   it("[BUG] When a cancel resolution fail, the whole update wont be stored", async () => {
-    await checkAndSwitchMmOff();
     await Rolldown.waitForReadRights(
       sequencer.keyRingPair.address,
       waitingPeriod,
@@ -568,20 +564,17 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
-    const resolutionErr = await getEventError(event);
-    const depositErr = await getEventError(event, 1);
-    expect(depositErr).toEqual(undefined);
-    expect(resolutionErr).toEqual("WrongCancelRequestId");
+    const error = await getEventError(event);
+    expect(error).toEqual("WrongCancelRequestId");
+    //lets wait a couple of blocks just in case the deposit happens a few blocks later
+    await waitForNBlocks(2);
     const currencyId = await getAssetIdFromErc20(
       sequencer.keyRingPair.address,
       "EthAnvil",
     );
     sequencer.addAsset(currencyId);
-    await sequencer.refreshAmounts(AssetWallet.AFTER);
-    expect(sequencer.getAsset(currencyId)?.amountAfter.free!).bnEqual(
-      BN_HUNDRED,
-    );
-    await checkAndSwitchMmOff();
+    expect(currencyId).bnEqual(GASP_ASSET_ID);
+    //if above is true => no token has been created => token is not avl to the user.
   });
 
   it("When we have a failed deposit and send it again, it will result in no-execution again", async () => {
@@ -605,7 +598,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event1 = await waitForEvents(
       api,
       "rolldown.RequestProcessedOnL2",
-      (await Rolldown.disputePeriodLength()).toNumber() * 4,
+      (await Rolldown.disputePeriodLength(chain)).toNumber() * 4,
     );
     const error1 = await getEventError(event1);
     expect(error1).toEqual("Overflow");
@@ -636,7 +629,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event2 = await waitForEvents(
       api,
       "rolldown.RequestProcessedOnL2",
-      (await Rolldown.disputePeriodLength()).toNumber() * 4,
+      (await Rolldown.disputePeriodLength(chain)).toNumber() * 4,
     );
     const error = await getEventError(event2);
     expect(error).toEqual(undefined);
@@ -675,7 +668,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
-    const error = await getEventError(event, 1);
+    const error = await getEventError(event);
     expect(error).toEqual("MintError");
     const currencyId = await getAssetIdFromErc20(
       sequencer.keyRingPair.address,

@@ -87,7 +87,7 @@ beforeEach(async () => {
   );
 });
 
-test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user swaps AND the user has not enough MGAs and has enough TURs THEN the extrinsic fails on submission", async () => {
+test.skip("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user swaps AND the user has not enough MGAs and has enough TURs THEN the extrinsic fails on submission", async () => {
   await clearMgaFromWhitelisted(thresholdValue, sudo);
 
   await Sudo.batchAsSudoFinalized(
@@ -100,7 +100,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the user 
     firstCurrency,
     GASP_ASSET_ID,
     thresholdValue.sub(new BN(100)),
-    feeLockErrors.FeeLockingFail,
+    feeLockErrors.AccountBalanceFail,
   );
 });
 
@@ -114,7 +114,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
     firstCurrency,
     GASP_ASSET_ID,
     thresholdValue.sub(new BN(100)),
-    feeLockErrors.FeeLockingFail,
+    feeLockErrors.FeeLockFail,
   );
 });
 

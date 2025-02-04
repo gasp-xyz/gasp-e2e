@@ -8,11 +8,7 @@ import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Withdraw } from "../../utils/rolldown";
-import {
-  ETH_ASSET_ID,
-  FOUNDATION_ADDRESS_3,
-  GASP_ASSET_ID,
-} from "../../utils/Constants";
+import { ETH_ASSET_ID, GASP_ASSET_ID } from "../../utils/Constants";
 import { ApiPromise } from "@polkadot/api";
 import {
   ChainName,
@@ -27,8 +23,8 @@ import {
 } from "../../utils/eventListeners";
 import { Maintenance } from "../../utils/Maintenance";
 import { L1Type } from "../../utils/rollup/l1s";
-import { waitForNBlocks } from "../../utils/utils";
 import { BN } from "@polkadot/util";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 let testUser: User;
 let sudo: User;
@@ -416,6 +412,7 @@ describe("Pre-operation withdrawal tests -", () => {
   });
 
   test("GIven a utility.batch ( batched tx of 35 and last item in the utility.batch is the mm_on ) When maintenance mode, THEN No automatic batch can happen", async () => {
+    const foundationMembers = await FoundationMembers.getFoundationMembers();
     const batchBefore = await Rolldown.getL2RequestsBatchLast();
     await Sudo.batchAsSudoFinalized(
       ...(await Rolldown.createABatchWithWithdrawals(
@@ -424,7 +421,7 @@ describe("Pre-operation withdrawal tests -", () => {
         batchSize,
       )),
       Sudo.sudoAsWithAddressString(
-        FOUNDATION_ADDRESS_3,
+        foundationMembers[2],
         Maintenance.switchMaintenanceModeOn(),
       ),
     );
@@ -441,7 +438,7 @@ describe("Pre-operation withdrawal tests -", () => {
     expect(batchAfter).toEqual(batchBefore);
     await Sudo.batchAsSudoFinalized(
       Sudo.sudoAsWithAddressString(
-        FOUNDATION_ADDRESS_3,
+        foundationMembers[2],
         Maintenance.switchMaintenanceModeOff(),
       ),
     );
@@ -634,16 +631,13 @@ describe("Pre-operation withdrawal tests -", () => {
   test("GIVEN manual batch THEN requires as parameter of the Arb Chain", async () => {
     //since there is no token in the Arbitrum chain by default, we create a new one
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    const blocksForSequencerUpdate =
-      await SequencerStaking.getBlocksNumberForSeqUpdate();
     await SequencerStaking.removeAddedSequencers();
-    await signTx(
-      await getApi(),
+    await Sudo.batchAsSudoFinalized(
       await SequencerStaking.provideSequencerStaking(
+        testUser.keyRingPair.address,
         minToBeSequencer.addn(1234),
         "Arbitrum",
       ),
-      testUser.keyRingPair,
     );
     await Rolldown.waitForReadRights(
       testUser.keyRingPair.address,
@@ -665,7 +659,7 @@ describe("Pre-operation withdrawal tests -", () => {
       const res = getEventResultFromMangataTx(events);
       expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitForNBlocks(blocksForSequencerUpdate + 1);
+    await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
     const arbAssetId = await api.query.assetRegistry.l1AssetToId({
       Arbitrum: testUser.keyRingPair.address,
     });

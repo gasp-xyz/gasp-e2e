@@ -18,24 +18,21 @@ export const wellKnownUsers: Record<string, string> = {
 export class SequencerStaking {
   static async setupASequencer(user: User, chain: ChainName = "Ethereum") {
     const extrinsic = await SequencerStaking.provideSequencerStaking(
+      user.keyRingPair.address,
       (await SequencerStaking.minimalStakeAmount()).addn(1000),
       chain,
     );
-    return await Sudo.batchAsSudoFinalized(
-      Assets.mintNative(user),
-      Sudo.sudoAs(user, extrinsic),
-    );
+    return await Sudo.batchAsSudoFinalized(Assets.mintNative(user), extrinsic);
   }
 
-  static async getSequencerUser() {
+  static async getBaltatharSeqUser() {
     setupUsers();
-    //const api = await getApi();
-    //const sequencer = await api.query.sequencerStaking.selectedSequencer();
     // @ts-ignore
     const pkey = wellKnownUsers[baltathar];
     return new EthUser(new Keyring({ type: "ethereum" }), pkey);
   }
   static async provideSequencerStaking(
+    sender: string,
     amount: BN = BN_ZERO,
     chainName: ChainName = "Ethereum",
     stakeAndJoin = true,
@@ -52,17 +49,27 @@ export class SequencerStaking {
       amountToStake = await SequencerStaking.minimalStakeAmount();
       amountToStake = amountToStake.addn(1000);
     }
-    return api.tx.sequencerStaking.provideSequencerStake(
-      chainName,
-      stringToBN(amountToStake.toString()),
-      null,
-      stakeAction,
+    return Sudo.sudo(
+      api.tx.sequencerStaking.provideSequencerStake(
+        chainName,
+        stringToBN(amountToStake.toString()),
+        null,
+        stakeAction,
+        //@ts-ignore
+        sender,
+      ),
     );
   }
 
-  static async rejoinActiveSequencers(chainName: ChainName = "Ethereum") {
+  static async rejoinActiveSequencers(
+    chainName: ChainName = "Ethereum",
+    sender: string,
+  ) {
     const api = await getApi();
-    return api.tx.sequencerStaking.rejoinActiveSequencers(chainName);
+    return Sudo.sudo(
+      //@ts-ignore
+      api.tx.sequencerStaking.rejoinActiveSequencers(chainName, sender),
+    );
   }
 
   static async leaveSequencerStaking(chainName: ChainName = "Ethereum") {

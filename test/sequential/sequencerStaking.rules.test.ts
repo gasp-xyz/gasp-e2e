@@ -42,15 +42,14 @@ async function setupASequencer(chain: ChainName = "Ethereum") {
   const notYetSequencer = await findACollatorButNotSequencerUser();
   await Sudo.batchAsSudoFinalized(Assets.mintNative(notYetSequencer));
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  await signTx(
-    await getApi(),
+  await Sudo.batchAsSudoFinalized(
     await SequencerStaking.provideSequencerStaking(
+      notYetSequencer.keyRingPair.address,
       minToBeSequencer.addn(1234),
       chain,
     ),
-    notYetSequencer.keyRingPair,
-  ).then((events) => {
-    expectExtrinsicSucceed(events);
+  ).then(async (events) => {
+    await waitSudoOperationSuccess(events);
   });
   return notYetSequencer;
 }
@@ -67,13 +66,15 @@ describe("sequencerStaking", () => {
     await setupApi();
     //Add a few tokes becaus esome tests may end up on slashing them
     await Sudo.batchAsSudoFinalized(
-      Sudo.sudoAsWithAddressString(
+      await SequencerStaking.provideSequencerStaking(
         preSetupSequencers.Ethereum,
-        await SequencerStaking.provideSequencerStaking(BN_ZERO, "Ethereum"),
+        BN_ZERO,
+        "Ethereum",
       ),
-      Sudo.sudoAsWithAddressString(
+      await SequencerStaking.provideSequencerStaking(
         preSetupSequencers.Arbitrum,
-        await SequencerStaking.provideSequencerStaking(BN_ZERO, "Arbitrum"),
+        BN_ZERO,
+        "Arbitrum",
       ),
     );
   });
@@ -95,16 +96,15 @@ describe("sequencerStaking", () => {
   it("Active Sequencer - mint less than min amount -> Not in active", async () => {
     const notYetSequencer = await findACollatorButNotSequencerUser();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    await signTx(
-      await getApi(),
+    await Sudo.batchAsSudoFinalized(
       await SequencerStaking.provideSequencerStaking(
+        notYetSequencer.keyRingPair.address,
         minToBeSequencer.subn(1234),
         "Ethereum",
         false,
       ),
-      notYetSequencer.keyRingPair,
-    ).then((events) => {
-      expectExtrinsicSucceed(events);
+    ).then(async (events) => {
+      await waitSudoOperationSuccess(events);
     });
     const sequencers = await SequencerStaking.activeSequencers();
     expect(sequencers.toHuman().Ethereum).not.toContain(
@@ -113,25 +113,25 @@ describe("sequencerStaking", () => {
   });
 
   it("Active Sequencer -> Active -> pending update -> Can not leave", async () => {
+    const chain = "Arbitrum";
     const notYetSequencer = await findACollatorButNotSequencerUser();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    await signTx(
-      await getApi(),
+    await Sudo.batchAsSudoFinalized(
       await SequencerStaking.provideSequencerStaking(
+        notYetSequencer.keyRingPair.address,
         minToBeSequencer.addn(1234),
-        "Arbitrum",
+        chain,
       ),
-      notYetSequencer.keyRingPair,
-    ).then((events) => {
-      expectExtrinsicSucceed(events);
+    ).then(async (events) => {
+      await waitSudoOperationSuccess(events);
     });
     const sequencers = await SequencerStaking.activeSequencers();
     expect(sequencers.toHuman().Arbitrum).toContain(
       notYetSequencer.keyRingPair.address,
     );
     const seq = notYetSequencer;
-    await Rolldown.waitForReadRights(seq.keyRingPair.address, 50, "Arbitrum");
-    const txIndex = await Rolldown.lastProcessedRequestOnL2("Arbitrum");
+    await Rolldown.waitForReadRights(seq.keyRingPair.address, 50, chain);
+    const txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
     const api = getApi();
     const update = new L2Update(api)
       .withDeposit(
@@ -140,21 +140,21 @@ describe("sequencerStaking", () => {
         seq.keyRingPair.address,
         BN_MILLION,
       )
-      .on("Arbitrum")
+      .on(chain)
       .buildUnsafe();
     await signTx(api, update, seq.keyRingPair).then((events) => {
       expectExtrinsicSucceed(events);
     });
     await signTx(
       api,
-      await SequencerStaking.leaveSequencerStaking("Arbitrum"),
+      await SequencerStaking.leaveSequencerStaking(chain),
       seq.keyRingPair,
     ).then((events) => {
       expectExtrinsicSucceed(events);
     });
     await signTx(
       api,
-      await SequencerStaking.unstake("Arbitrum"),
+      await SequencerStaking.unstake(chain),
       seq.keyRingPair,
     ).then((events) => {
       const res = expectExtrinsicFail(events);
@@ -163,17 +163,19 @@ describe("sequencerStaking", () => {
         "SequencerAwaitingCancelResolution",
       ]).toContain(res.data.toString());
     });
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(
+      (await Rolldown.disputePeriodLength(chain)).toNumber(),
+    );
     await signTx(
       api,
-      await SequencerStaking.unstake("Arbitrum"),
+      await SequencerStaking.unstake(chain),
       seq.keyRingPair,
     ).then((events) => {
       expectExtrinsicSucceed(events);
     });
     const res = await SequencerStaking.sequencerStake(
       seq.keyRingPair.address,
-      "Arbitrum",
+      chain,
     );
     expect(res.toHuman()).toBe("0");
   });
@@ -203,14 +205,13 @@ describe("sequencerStaking", () => {
       );
     });
     // A user that did not provide the min stake -> can not submit update
-    await signTx(
-      api,
+    await Sudo.batchAsSudoFinalized(
       await SequencerStaking.provideSequencerStaking(
+        user.keyRingPair.address,
         (await SequencerStaking.minimalStakeAmount()).subn(10),
         chain,
         false,
       ),
-      user.keyRingPair,
     );
     const activeSequencers = await SequencerStaking.activeSequencers();
     expect(activeSequencers.toHuman().Arbitrum).not.toContain(
@@ -223,10 +224,12 @@ describe("sequencerStaking", () => {
         "OnlySelectedSequencerisAllowedToUpdate",
       );
     });
-    await signTx(
-      api,
-      await SequencerStaking.provideSequencerStaking(new BN(11), chain),
-      user.keyRingPair,
+    await Sudo.batchAsSudoFinalized(
+      await SequencerStaking.provideSequencerStaking(
+        user.keyRingPair.address,
+        new BN(11),
+        chain,
+      ),
     );
     const activeSequencersAfterUpdatingStake =
       await SequencerStaking.activeSequencers();
@@ -246,7 +249,9 @@ describe("sequencerStaking", () => {
       expect(eventFiltered.range.start).toEqual(txIndex.toString());
       expect(eventFiltered.range.end).toEqual(txIndex.toString());
     });
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(
+      (await Rolldown.disputePeriodLength(chain)).toNumber(),
+    );
     await signTx(
       api,
       await SequencerStaking.leaveSequencerStaking(chain),
@@ -284,7 +289,9 @@ describe("sequencerStaking", () => {
       expect(eventResponse.data).toEqual("OperationFailed");
     });
 
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(
+      (await Rolldown.disputePeriodLength(chain)).toNumber(),
+    );
     const sequencerStatusAfterWaiting = await Rolldown.sequencerRights(
       chain,
       sequencer.keyRingPair.address,
@@ -361,7 +368,9 @@ describe("sequencerStaking", () => {
     expect(eventFiltered.range.start).toEqual(txIndex.toString());
     expect(eventFiltered.range.end).toEqual(txIndex.toString());
     await waitSudoOperationSuccess(cancelResolution, "SudoAsDone");
-    await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+    await waitForNBlocks(
+      (await Rolldown.disputePeriodLength(chain)).toNumber(),
+    );
 
     sequencerStatus = await Rolldown.sequencerRights(
       chain,
@@ -392,9 +401,10 @@ describe("sequencerStaking", () => {
       const [user] = setupUsers();
       const tx = await Sudo.batchAsSudoFinalized(
         Assets.mintNative(user),
-        Sudo.sudoAs(
-          user,
-          await SequencerStaking.provideSequencerStaking(BN_ZERO, "Arbitrum"),
+        await SequencerStaking.provideSequencerStaking(
+          user.keyRingPair.address,
+          BN_ZERO,
+          "Arbitrum",
         ),
       );
       await waitSudoOperationSuccess(tx, "SudoAsDone");

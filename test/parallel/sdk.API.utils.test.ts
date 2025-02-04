@@ -9,10 +9,14 @@ import { BN } from "@polkadot/util";
 import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { Xyk } from "../../utils/xyk";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { multiSwapBuy, multiSwapSell } from "../../utils/tx";
 import {
+  getLiquidityAssetId,
+  multiSwapBuyMarket,
+  multiSwapSellMarket,
+} from "../../utils/tx";
+import {
+  BN_ONE,
   BN_TEN_THOUSAND,
   isMultiSwapAssetTransactionSuccessful,
   signTx,
@@ -29,6 +33,7 @@ let testUser: User;
 let testUser1: User;
 let sudo: User;
 let token1: BN;
+let liqId: BN;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -73,12 +78,13 @@ beforeEach(async () => {
     Assets.mintNative(testUser1),
     Assets.mintToken(token1, testUser1, BN_TEN_THOUSAND),
   );
+  liqId = await getLiquidityAssetId(GASP_ASSET_ID, token1);
 });
 
 test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const buyAssetEvent = await signTx(
     api,
-    Xyk.buyAsset(GASP_ASSET_ID, token1, new BN(1000)),
+    Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -91,15 +97,10 @@ test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransaction
 });
 
 test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
+  //fixed to make the op fail, but executed.
   const buyAssetEvent = await signTx(
     api,
-    Xyk.buyAsset(token1, token2, new BN(1000)),
+    Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000), new BN(1)),
     testUser1.keyRingPair,
   );
 
@@ -108,14 +109,14 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
   expect(getEventResultFromMangataTx(buyAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed,
   );
-  expect(getEventResultFromMangataTx(buyAssetEvent).data).toEqual("NoSuchPool");
+  expect(getEventResultFromMangataTx(buyAssetEvent).data).toEqual("ExcesiveInputAmount");
   expect(eventResult).toEqual(false);
 });
 
 test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const sellAssetEvent = await signTx(
     api,
-    Xyk.sellAsset(GASP_ASSET_ID, token1, new BN(1000)),
+    Market.sellAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -128,15 +129,9 @@ test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactio
 });
 
 test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
   const sellAssetEvent = await signTx(
     api,
-    Xyk.sellAsset(token1, token2, new BN(1000)),
+    Market.sellAsset(liqId, token1, GASP_ASSET_ID, new BN(1000), new BN(1000000)),
     testUser1.keyRingPair,
   );
 
@@ -146,7 +141,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(sellAssetEvent).data).toEqual(
-    "NoSuchPool",
+    "InsufficientOutputAmount",
   );
   expect(eventResult).toEqual(false);
 });
@@ -154,7 +149,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
 test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [GASP_ASSET_ID, token1];
 
-  const multiSwapBuyEvent = await multiSwapBuy(
+  const multiSwapBuyEvent = await multiSwapBuyMarket(
     testUser1,
     tokenIds,
     new BN(1000),
@@ -170,18 +165,16 @@ test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransac
 });
 
 test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
-  const tokenIds = [token1, token2];
-
-  const multiSwapBuyEvent = await multiSwapBuy(
-    testUser1,
-    tokenIds,
-    new BN(1000),
+  const multiSwapBuyEvent = await signTx(
+    api,
+    Market.multiswapAssetBuy(
+      [liqId],
+      GASP_ASSET_ID,
+      new BN(1000),
+      token1,
+      BN_ONE,
+    ),
+    testUser.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapBuyEvent);
@@ -190,7 +183,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).data).toEqual(
-    "NoSuchPool",
+    "ExcesiveInputAmount",
   );
   expect(eventResult).toEqual(false);
 });
@@ -198,7 +191,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
 test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const tokenIds = [GASP_ASSET_ID, token1];
 
-  const multiSwapSellEvent = await multiSwapSell(
+  const multiSwapSellEvent = await multiSwapSellMarket(
     testUser1,
     tokenIds,
     new BN(1000),
@@ -213,18 +206,16 @@ test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransa
 });
 
 test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
-  const [token2] = await Assets.setupUserWithCurrencies(
-    sudo,
-    [defaultCurrencyValue],
-    sudo,
-  );
-
-  const tokenIds = [token1, token2];
-
-  const multiSwapSellEvent = await multiSwapSell(
-    testUser1,
-    tokenIds,
-    new BN(1000),
+  const multiSwapSellEvent = await signTx(
+    api,
+    Market.multiswapAssetSell(
+      [liqId],
+      GASP_ASSET_ID,
+      new BN(1000),
+      token1,
+      new BN(100000000),
+    ),
+    testUser.keyRingPair,
   );
 
   const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapSellEvent);
@@ -233,7 +224,7 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransacti
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapSellEvent).data).toEqual(
-    "NoSuchPool",
+    "InsufficientOutputAmount",
   );
   expect(eventResult).toEqual(false);
 });

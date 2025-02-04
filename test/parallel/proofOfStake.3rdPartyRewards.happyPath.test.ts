@@ -87,6 +87,8 @@ describe("Proof of stake tests", () => {
           Assets.DEFAULT_AMOUNT,
         ),
       ),
+    );
+    await Sudo.batchAsSudoFinalized(
       Sudo.sudoAs(
         testUser1,
         await ProofOfStake.rewardPool(

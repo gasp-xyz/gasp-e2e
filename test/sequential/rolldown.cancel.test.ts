@@ -24,35 +24,37 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { signTx } from "gasp-sdk";
 
 let api: any;
-let chain: any;
+const chain = "Arbitrum";
 let testUser1: User;
 let testUser2: User;
 let testUser2Address: string;
 let disputePeriodLength: number;
-let stakeAndJoinExtrinsic: any;
 
 beforeAll(async () => {
   await initApi();
   await setupApi();
   api = getApi();
-  disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
+  disputePeriodLength = (await Rolldown.disputePeriodLength(chain)).toNumber();
 });
 
 beforeEach(async () => {
   //There shouldn't be any sequencer in activeSequencers
   [testUser1, testUser2] = setupUsers();
   await SequencerStaking.removeAllSequencers();
-  chain = "Arbitrum";
   const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-  stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
-    minToBeSequencer.addn(1000),
-    chain,
-  );
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser1),
     Assets.mintNative(testUser2),
-    Sudo.sudoAs(testUser1, stakeAndJoinExtrinsic),
-    Sudo.sudoAs(testUser2, stakeAndJoinExtrinsic),
+    await SequencerStaking.provideSequencerStaking(
+      testUser1.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
+    await SequencerStaking.provideSequencerStaking(
+      testUser2.keyRingPair.address,
+      minToBeSequencer.addn(1000),
+      chain,
+    ),
   );
   const sequencers = await SequencerStaking.activeSequencers();
   expect(sequencers.toHuman().Arbitrum).toContain(
@@ -79,7 +81,9 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
   ).then((events) => {
     expectExtrinsicSucceed(events);
   });
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(
+    (await Rolldown.disputePeriodLength(chain)).toNumber() + 5,
+  );
   await signTx(
     api,
     await SequencerStaking.unstake(chain),
@@ -103,7 +107,9 @@ it("Active Sequencer -> Active -> canceled update -> Can not leave", async () =>
     ),
   );
   await waitSudoOperationSuccess(cancelResolutionEvents, "SudoAsDone");
-  await waitForNBlocks((await Rolldown.disputePeriodLength()).toNumber());
+  await waitForNBlocks(
+    (await Rolldown.disputePeriodLength(chain)).toNumber() + 5,
+  );
 
   //then the user must be able to unstake and leave
   await signTx(

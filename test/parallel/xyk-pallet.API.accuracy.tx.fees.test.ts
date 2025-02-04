@@ -6,7 +6,12 @@
  */
 import { jest } from "@jest/globals";
 import { getApi, initApi } from "../../utils/api";
-import { getCurrentNonce, createPool, buyAsset } from "../../utils/tx";
+import {
+  getCurrentNonce,
+  createPool,
+  buyAsset,
+  getLiquidityAssetId,
+} from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -40,7 +45,7 @@ const second_asset_amount = new BN(50000);
 
 let cost: RuntimeDispatchInfo;
 
-const defaultCurrecyValue = new BN(250000);
+const defaultCurrencyValue = new BN(250000);
 
 beforeEach(async () => {
   try {
@@ -58,7 +63,7 @@ beforeEach(async () => {
   //add two curerncies and balance to testUser:
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     testUser1,
-    [defaultCurrecyValue, defaultCurrecyValue.add(new BN(1))],
+    [defaultCurrencyValue, defaultCurrencyValue.add(new BN(1))],
     sudo,
   );
   //add zero MGA tokens.
@@ -75,8 +80,8 @@ beforeEach(async () => {
       testUser1.getAsset(secondCurrency)?.amountBefore.free!,
     ],
     [
-      defaultCurrecyValue.toNumber(),
-      defaultCurrecyValue.add(new BN(1)).toNumber(),
+      defaultCurrencyValue.toNumber(),
+      defaultCurrencyValue.add(new BN(1)).toNumber(),
     ],
   );
 });
@@ -88,8 +93,9 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
     nonce: nonce,
     tip: 0,
   };
-  cost = await api?.tx.xyk
+  cost = await api?.tx.market
     .createPool(
+      "Xyk",
       firstCurrency,
       first_asset_amount,
       secondCurrency,
@@ -119,8 +125,8 @@ test("xyk-pallet - Calculate required MGA fee - CreatePool", async () => {
 
 test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
   await testUser1.createPoolToAsset(
-    defaultCurrecyValue.div(new BN(10)),
-    defaultCurrecyValue.div(new BN(10)),
+    defaultCurrencyValue.div(new BN(10)),
+    defaultCurrencyValue.div(new BN(10)),
     firstCurrency,
     secondCurrency,
   );
@@ -135,8 +141,15 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
     tip: 0,
   };
 
-  cost = await api.tx.xyk
-    .buyAsset(firstCurrency, secondCurrency, new BN(100), new BN(1000000))
+  const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  cost = await api.tx.market
+    .multiswapAssetBuy(
+      [liqId],
+      firstCurrency,
+      new BN(100),
+      secondCurrency,
+      new BN(1000000),
+    )
     .paymentInfo(testUser1.keyRingPair, opt);
   await buyAsset(
     testUser1.keyRingPair,

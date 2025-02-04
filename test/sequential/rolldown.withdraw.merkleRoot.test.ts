@@ -19,8 +19,11 @@ import {
 } from "../../utils/rollDown/Rolldown";
 import { BN_HUNDRED, BN_MILLION, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { ExtrinsicResult, filterEventData } from "../../utils/eventListeners";
-import { waitForNBlocks } from "../../utils/utils";
+import {
+  ExtrinsicResult,
+  filterEventData,
+  getEventError,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 
 let testUser: User;
@@ -64,16 +67,19 @@ describe("Withdraw & Batches tests -", () => {
     await SequencerStaking.removeAddedSequencers();
     const [testUser2] = setupUsers();
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    const stakeAndJoinExtrinsic =
-      await SequencerStaking.provideSequencerStaking(
-        minToBeSequencer.addn(1000),
-        chain,
-      );
     await Sudo.batchAsSudoFinalized(
       Assets.mintNative(testUser),
       Assets.mintNative(testUser2),
-      Sudo.sudoAs(testUser, stakeAndJoinExtrinsic),
-      Sudo.sudoAs(testUser2, stakeAndJoinExtrinsic),
+      await SequencerStaking.provideSequencerStaking(
+        testUser.keyRingPair.address,
+        minToBeSequencer.addn(1000),
+        chain,
+      ),
+      await SequencerStaking.provideSequencerStaking(
+        testUser2.keyRingPair.address,
+        minToBeSequencer.addn(1000),
+        chain,
+      ),
     );
     await createAnUpdateAndCancelIt(
       testUser,
@@ -143,16 +149,13 @@ describe("Withdraw & Batches tests -", () => {
   test("GIVEN <batchSize - 1> withdraws, AND manually generated batch and create another withdraw for some other network (arb) THEN the batch is not generated", async () => {
     //since there is no token in the Arbitrum chain by default, we create a new one
     const minToBeSequencer = await SequencerStaking.minimalStakeAmount();
-    const blocksForSequencerUpdate =
-      await SequencerStaking.getBlocksNumberForSeqUpdate();
     await SequencerStaking.removeAddedSequencers();
-    await signTx(
-      await getApi(),
+    await Sudo.batchAsSudoFinalized(
       await SequencerStaking.provideSequencerStaking(
+        testUser.keyRingPair.address,
         minToBeSequencer.addn(1234),
         "Arbitrum",
       ),
-      testUser.keyRingPair,
     );
     await Rolldown.waitForReadRights(
       testUser.keyRingPair.address,
@@ -174,7 +177,7 @@ describe("Withdraw & Batches tests -", () => {
       const res = getEventResultFromMangataTx(events);
       expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
-    await waitForNBlocks(blocksForSequencerUpdate);
+    await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
 
     //we need to run <batchSize> extrinsic to update the start of the automatic batching period
     await Sudo.batchAsSudoFinalized(
@@ -239,12 +242,11 @@ describe("Withdraw & Batches tests -", () => {
       update,
     );
 
-    const event = JSON.parse(
-      JSON.stringify(
-        await Rolldown.waitForL2UpdateExecuted(new BN(depositEvent.txIndex)),
-      ),
+    const event = await Rolldown.waitForL2UpdateExecuted(
+      new BN(depositEvent.txIndex),
     );
-    expect(event[0].data[2].err).toEqual("Overflow");
+    const errEvent = await getEventError(event);
+    expect(errEvent).toEqual("Overflow");
 
     await signTx(
       getApi(),

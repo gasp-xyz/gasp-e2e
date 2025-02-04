@@ -49,6 +49,7 @@ import {
   PrivateKeyAccount,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import { GenericEvent } from "@polkadot/types";
 
 export class Rolldown {
   static getUpdateIdFromEvents(
@@ -88,10 +89,15 @@ export class Rolldown {
     const txs = [];
     for (let index = 0; index < num; index++) {
       let withdrawAmount = amount;
-      if(amount.eq(BN_ONE)){
+      if (amount.eq(BN_ONE)) {
         withdrawAmount = new BN(Math.floor(Math.random() * 100));
       }
-      const tx = Rolldown.withdraw(l1, userAddress, erc20Address, withdrawAmount);
+      const tx = Rolldown.withdraw(
+        l1,
+        userAddress,
+        erc20Address,
+        withdrawAmount,
+      );
       txs.push(tx);
     }
     return txs;
@@ -208,9 +214,11 @@ export class Rolldown {
     throw new Error("Max blocks reached without getting read rights");
   }
 
-  static async disputePeriodLength() {
+  static async disputePeriodLength(chain: string = "Ethereum") {
     const api = getApi();
-    return (await api.consts.rolldown.disputePeriodLength) as any as BN;
+    const dp = await api.query.rolldown.disputePeriod(chain);
+    const dpHuman = dp.toHuman();
+    return stringToBN(dpHuman!.toString());
   }
 
   static getMerkleRootBatchPeriod(extraBlocksNumber = 0) {
@@ -229,6 +237,11 @@ export class Rolldown {
   static async cancelRequestFromL1(chainId: ChainName, reqBlockNumber: number) {
     const api = getApi();
     return api.tx.rolldown.cancelRequestsFromL1(chainId, reqBlockNumber);
+  }
+
+  static setDisputePeriod(chain: ChainName, disputePeriodLength: number) {
+    const api = getApi();
+    return api.tx.rolldown.setDisputePeriod(chain, disputePeriodLength);
   }
 
   static async forceCancelRequestFromL1(
@@ -304,15 +317,12 @@ export class Rolldown {
     return filteredEvent[0] !== undefined;
   }
 
-  static async getRegisteredAssetId(blockNumber: number) {
-    const api = getApi();
-    const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
-    const events = await api.query.system.events.at(blockHash);
+  static async getRegisteredAssetIdByEvents(events: GenericEvent[]) {
     const filteredEvent = events.filter(
-      (result: any) => result.event.method === "RegisteredAsset",
+      (result: GenericEvent) => result.method === "RegisteredAsset",
     );
-    // @ts-ignore
-    return new BN(filteredEvent[0].event.data.assetId.toString());
+    //@ts-ignore
+    return stringToBN(filteredEvent[0].data.assetId.toString());
   }
 
   static async waitCancelResolution(chain = "Ethereum") {
@@ -394,7 +404,7 @@ export class Rolldown {
   static async waitForL2UpdateExecuted(requestId: BN) {
     const event = await waitForAllEventsFromMatchingBlock(
       getApi(),
-      20,
+      30,
       (ev) =>
         ev.method === "RequestProcessedOnL2" &&
         ev.section === "rolldown" &&

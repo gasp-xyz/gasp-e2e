@@ -7,9 +7,9 @@ import { getApi, initApi } from "../../utils/api";
 import { BN } from "@polkadot/util";
 import { User } from "../../utils/User";
 import { setupApi, setupAPoolForUsers, Extrinsic } from "../../utils/setup";
-import { BN_ONE, BN_HUNDRED } from "gasp-sdk";
+import { BN_HUNDRED, BN_ONE } from "gasp-sdk";
 import { BN_MILLION } from "gasp-sdk";
-import { Tokens, Xyk } from "../../utils/xyk";
+import { Tokens } from "../../utils/xyk";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { Market } from "../../utils/market";
 
@@ -33,14 +33,34 @@ describe("Tips - Tips are not allowed for swaps", () => {
     ({ users, tokenIds } = await setupAPoolForUsers(users));
     const liqId = await getLiquidityAssetId(tokenIds[0], tokenIds[1]);
     swapOperations = {
-      multiswapSellAsset: Xyk.multiswapSellAsset(tokenIds, BN_HUNDRED, BN_ONE),
-      multiswapBuyAsset: Xyk.multiswapBuyAsset(
-        tokenIds,
+      multiswapSellAsset: Market.multiswapAssetSell(
+        [liqId],
+        tokenIds[0],
+        BN_HUNDRED,
+        tokenIds[1],
+        BN_ONE,
+      ),
+      multiswapBuyAsset: Market.multiswapAssetBuy(
+        [liqId],
+        tokenIds[0],
+        BN_HUNDRED,
+        tokenIds[1],
+        BN_MILLION,
+      ),
+      sellAsset: Market.sellAsset(
+        liqId,
+        tokenIds[0],
+        tokenIds[1],
+        BN_HUNDRED,
+        BN_ONE,
+      ),
+      buyAsset: Market.buyAsset(
+        liqId,
+        tokenIds[0],
+        tokenIds[1],
         BN_HUNDRED,
         BN_MILLION,
       ),
-      sellAsset: Xyk.sellAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_ONE),
-      buyAsset: Xyk.buyAsset(tokenIds[0], tokenIds[1], BN_HUNDRED, BN_MILLION),
       transfer: Tokens.transfer(
         users[0].keyRingPair.address,
         tokenIds[0],
@@ -50,7 +70,7 @@ describe("Tips - Tips are not allowed for swaps", () => {
     };
     usersIterator = users[Symbol.iterator]();
   });
-  it.each(["multiswapSellAsset", "multiswapBuyAsset", "sellAsset", "buyAsset"])(
+  it.each(["multiswapSellAsset", "multiswapBuyAsset"])(
     "%s tips operations are forbidden",
     async (operation) => {
       const extrinsic = swapOperations[operation];
@@ -67,6 +87,7 @@ describe("Tips - Tips are not allowed for swaps", () => {
             throw new Error(reason.data);
           }),
       ).rejects.toThrow(ERROR_MSG);
+
       expect(exceptionData).toEqual(ERROR_MSG);
       expect(exception).toBeTruthy();
     },

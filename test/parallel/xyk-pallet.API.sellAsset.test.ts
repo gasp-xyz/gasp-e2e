@@ -15,13 +15,16 @@ import {
   getTreasuryBurn,
   FeeTxs,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  filterAndStringifyFirstEvent,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { validateAssetsSwappedEvent } from "../../utils/validators";
 import { Assets } from "../../utils/Assets";
-import { xykErrors } from "../../utils/utils";
+import { feeLockErrors, xykErrors } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { createPool } from "../../utils/tx";
 import { Sudo } from "../../utils/sudo";
@@ -114,33 +117,29 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     const thirdCurrencyValueBeforeSelling =
       testUser1.getAsset(thirdCurrency)?.amountAfter.free!;
 
-    await new FeeTxs()
-      .sellAsset(
-        testUser1.keyRingPair,
-        thirdCurrency,
-        secondCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0),
-      )
-      .then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-      });
-
-    await new FeeTxs()
-      .sellAsset(
-        testUser1.keyRingPair,
-        secondCurrency,
-        thirdCurrency,
-        firstAssetAmount.div(new BN(2)),
-        new BN(0),
-      )
-      .then((result) => {
-        const eventResponse = getEventResultFromMangataTx(result);
-        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
-      });
+    let except = false;
+    let errorMessage: any;
+    try {
+      await new FeeTxs()
+        .sellAsset(
+          testUser1.keyRingPair,
+          thirdCurrency,
+          secondCurrency,
+          firstAssetAmount.div(new BN(2)),
+          new BN(0),
+        )
+        .then((result) => {
+          const eventResponse = getEventResultFromMangataTx(result);
+          expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+          expect(eventResponse.data).toEqual(xykErrors.NoSuchPool);
+        });
+    } catch (error) {
+      except = true;
+      //@ts-ignore
+      errorMessage = error.data;
+    }
+    expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
+    expect(except).toBeTruthy();
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -177,7 +176,6 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       secondAssetAmount,
       remainingOfCurrency1.sub(new BN(1)),
     );
-
     await sellAsset(
       testUser1.keyRingPair,
       firstCurrency,
@@ -202,17 +200,27 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       .sub(secondAssetAmount)
       .add(sellPriceLocal);
 
-    await sellAsset(
-      testUser1.keyRingPair,
-      firstCurrency,
-      secondCurrency,
-      remainingOfCurrency1.add(new BN(1)),
-      new BN(0),
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
-    });
+    let expception = false;
+    let errorMessage: any = "";
+    try {
+      await sellAsset(
+        testUser1.keyRingPair,
+        firstCurrency,
+        secondCurrency,
+        remainingOfCurrency1.add(new BN(1)),
+        new BN(0),
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+        expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssets);
+      });
+    } catch (e) {
+      expception = true;
+      //@ts-ignore
+      errorMessage = e.data;
+    }
+    expect(errorMessage).toEqual(feeLockErrors.SwapApprovalFail);
+    expect(expception).toBeTruthy();
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
@@ -271,18 +279,22 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       fourthCurrency,
       remainingOfCurrency1.free,
       sellPriceLocal.add(new BN(1)),
-    ).then((result) => {
-      const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
-        "SellAssetFailedDueToSlippage",
-        testUser1.keyRingPair.address,
-      ]);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    ).then(async (result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual("InsufficientOutputAmount");
+
+      const feeId = await filterAndStringifyFirstEvent(
+        result,
+        "TransactionFeePaid",
+      );
+      expect(feeId).toBeUndefined();
     });
     //fee: 603 ??  //TODO: validate with Stano.
-    const feeToAvoidFrontRunning = new BN(603);
+    const feeToAvoidFrontRunning = new BN(600);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
 
+    //To Gonzalo: Should we take this fee yet?
     const diffFromWallet = testUser1
       .getAsset(thirdCurrency)
       ?.amountBefore.free!.sub(feeToAvoidFrontRunning);
@@ -298,10 +310,10 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
 
     const treasury = await getTreasury(thirdCurrency);
     const treasuryBurn = await getTreasuryBurn(thirdCurrency);
-    expect(treasury).bnEqual(new BN(101));
-    expect(treasuryBurn).bnEqual(new BN(101));
-    //TODO: validate with Stano.
-    const increasedInPool = new BN(401);
+    expect(treasury).bnEqual(new BN(100));
+    expect(treasuryBurn).bnEqual(new BN(100));
+
+    const increasedInPool = new BN(400);
     const poolBalances = await getBalanceOfPool(thirdCurrency, fourthCurrency);
     expect(poolBalances[0]).bnEqual(firstAssetAmount.add(increasedInPool));
     expect(poolBalances[1]).bnEqual(secondAssetAmount);

@@ -22,7 +22,7 @@ import {
   getEventErrorFromSudo,
   getEventResultFromMangataTx,
 } from "../../utils/txHandler";
-import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, signTx } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { ApiPromise } from "@polkadot/api";
@@ -41,6 +41,7 @@ import { getCurrentNonce } from "../../utils/tx";
 import { waitForNBlocks } from "../../utils/utils";
 import { System } from "../../utils/System";
 import { Assets } from "../../utils/Assets";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -50,7 +51,7 @@ let api: ApiPromise;
 let tests: { [K: string]: [Extrinsic, User] } = {};
 let sequencer: User;
 let user: User;
-const foundationAccountAddress = FOUNDATION_ADDRESS_1;
+let foundationAccountAddress: string;
 
 async function setupMm() {
   await Sudo.batchAsSudoFinalized(
@@ -105,16 +106,23 @@ describe.each(["mm", "upgradabilityMm"])(
   "On [%s] - regular l1 updates must be forbidden",
   (mmMode) => {
     let previous = "";
-    // hacky trick to avoid double setup
-
     beforeAll(async () => {
       await setupApi();
       api = await getApi();
-      [user] = setupUsers();
-      await Sudo.batchAsSudoFinalized(Assets.mintNative(user));
+      [user, sequencer] = setupUsers();
+      const minSeq = (await SequencerStaking.minimalStakeAmount()).muln(100);
+      await Sudo.batchAsSudoFinalized(
+        Assets.mintNative(user),
+        Assets.mintNative(sequencer, minSeq),
+      );
+      const foundationMembers = await FoundationMembers.getFoundationMembers();
+      foundationAccountAddress = foundationMembers[0];
+      await SequencerStaking.removeAllSequencers();
+      await SequencerStaking.setupASequencer(sequencer);
     });
 
     beforeEach(async () => {
+      // hacky trick to avoid double setup
       if (previous !== mmMode) {
         previous = mmMode;
         try {
@@ -122,7 +130,6 @@ describe.each(["mm", "upgradabilityMm"])(
         } catch (e) {
           await initApi();
         }
-        sequencer = await SequencerStaking.getSequencerUser();
         users.push(...setupUsers());
         users.push(sequencer);
         await waitForNBlocks(2);
@@ -140,9 +147,8 @@ describe.each(["mm", "upgradabilityMm"])(
         const tokenAddress = JSON.parse(token.toString()).ethereum;
         await setupUsersWithBalances(users, tokenIds.concat([GASP_ASSET_ID]));
         await Sudo.batchAsSudoFinalized(
-          Sudo.sudoAs(
-            users[2],
-            await SequencerStaking.provideSequencerStaking(),
+          await SequencerStaking.provideSequencerStaking(
+            users[2].keyRingPair.address,
           ),
         ).then((value) => {
           testLog
@@ -186,10 +192,6 @@ describe.each(["mm", "upgradabilityMm"])(
                 .forceBuild(),
             ),
             getSudoUser(),
-          ],
-          sequencerSetup: [
-            await SequencerStaking.provideSequencerStaking(),
-            users[1],
           ],
           sequencerTearDown: [
             await SequencerStaking.leaveSequencerStaking(),
@@ -236,7 +238,34 @@ describe.each(["mm", "upgradabilityMm"])(
             );
           });
       });
-      it.each(["sequencerSetup", "sequencerTearDown"])(
+      it.each(["sequencerSetup"])(
+        "%s operations are allowed in mm",
+        async (testName) => {
+          testLog.getLog().info("DEBUG::TestName - " + testName);
+          let usr: User;
+
+          if (mmMode === "mm") {
+            usr = users[1];
+          } else {
+            usr = user;
+          }
+          const extrinsic = await SequencerStaking.provideSequencerStaking(
+            usr.keyRingPair.address,
+          );
+          const signer = getSudoUser();
+          const nonce = await getCurrentNonce(signer.keyRingPair.address);
+          await signTx(api, extrinsic, signer.keyRingPair, {
+            nonce: nonce,
+          }).then(async (events) => {
+            const event = getEventResultFromMangataTx(events);
+            testLog
+              .getLog()
+              .info("DEBUG::Event result - " + JSON.stringify(event));
+            expect(event.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+          });
+        },
+      );
+      it.each(["sequencerTearDown"])(
         "%s operations are allowed in mm",
         async (testName) => {
           testLog.getLog().info("DEBUG::TestName - " + testName);

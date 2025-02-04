@@ -50,12 +50,18 @@ import {
   create10sequencers,
   closeL1Item,
   sendUpdateToL1,
+  createSequencers,
+  monitorSequencers,
+  printAllSequencerUpdates,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
   getEnvironmentRequiredVars,
   printCandidatePowers,
   swapEachNBlocks,
+  Withdrawal,
+  DepositWithdrawalRecord,
+  Deposit,
 } from "../utils/utils";
 import { Node } from "../utils/Framework/Node/Node";
 import { SudoUser } from "../utils/Framework/User/SudoUser";
@@ -73,6 +79,7 @@ import { Rolldown } from "../utils/rollDown/Rolldown";
 import inquirer from "inquirer";
 import { randomBytes } from "crypto";
 import { getAssetIdFromErc20 } from "../utils/rollup/ethUtils";
+import Redis from "ioredis-rejson";
 
 async function app(): Promise<any> {
   return inquirer
@@ -135,10 +142,25 @@ async function app(): Promise<any> {
         "Close All L1 items",
         "1000 withdrawals",
         "sync updates",
+        "add sequencers like hell",
+        "monitor sequencers",
+        "listExtrinsics",
+        "Track deposit transaction",
+        "Track withdrawal transaction",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
+      if (answers.option.includes("listExtrinsics")) {
+        await printAllSequencerUpdates();
+      }
+
+      if (answers.option.includes("add sequencers like hell")) {
+        await createSequencers(1000);
+      }
+      if (answers.option.includes("monitor sequencers")) {
+        await monitorSequencers();
+      }
       if (answers.option.includes("sync updates")) {
         await sendUpdateToL1();
       }
@@ -150,15 +172,22 @@ async function app(): Promise<any> {
         await setupApi();
         await setupUsers();
         const addr = "0x" + randomBytes(20).toString("hex");
-        await sudo.registerL1Asset(null,addr, chainName);
+        await sudo.registerL1Asset(null, addr, chainName);
         await Sudo.asSudoFinalized(
           Sudo.sudo(
-            Assets.mintTokenAddress(await getAssetIdFromErc20(addr,chain), userAddress )
-          )
+            Assets.mintTokenAddress(
+              await getAssetIdFromErc20(addr, chain),
+              userAddress,
+            ),
+          ),
         );
-        await Rolldown.createWithdrawalsInBatch(1, userAddress, ethTokenAddress, "EthAnvil");
+        await Rolldown.createWithdrawalsInBatch(
+          1,
+          userAddress,
+          ethTokenAddress,
+          "EthAnvil",
+        );
         await Rolldown.createWithdrawalsInBatch(500, userAddress, addr, chain);
-        
       }
       if (answers.option.includes("Close All L1 items")) {
         return inquirer
@@ -987,6 +1016,85 @@ async function app(): Promise<any> {
           .then(async (answers: { ethPrivateKey: string; txHex: string }) => {
             await initApi();
             await signEthUserTxByMetamask(answers.txHex, answers.ethPrivateKey);
+            return app();
+          });
+      }
+      if (answers.option.includes("Track deposit transaction")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "address",
+              message: "Address",
+            },
+          ])
+          .then(async (answers: { address: string }) => {
+            const redis = new Redis({
+              host: process.env.PROD_HOST,
+              port: process.env.PROD_PORT,
+              password: process.env.PROD_PASSWORD,
+            });
+
+            const keys = await redis.keys("deposits:*");
+            if (!keys) {
+              console.log('No data found for the key "deposits".');
+              return app();
+            }
+            const deposits: DepositWithdrawalRecord[] = [];
+            for (const key of keys) {
+              if (key !== "deposits:index:hash") {
+                const deposit = await redis.json_get(key);
+                deposits.push({ key, data: deposit as Deposit });
+              }
+            }
+
+            const res = deposits.filter(
+              (r) =>
+                r.data.address.toLowerCase() === answers.address.toLowerCase(),
+            );
+            console.log(res);
+
+            await redis.quit();
+            return app();
+          });
+      }
+      if (answers.option.includes("Track withdrawal transaction")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "address",
+              message: "Address",
+            },
+          ])
+          .then(async (answers: { address: string }) => {
+            const redis = new Redis({
+              host: process.env.PROD_HOST,
+              port: process.env.PROD_PORT,
+              password: process.env.PROD_PASSWORD,
+            });
+
+            const keys = await redis.keys("withdrawals:*");
+            if (!keys) {
+              console.log('No data found for the key "withdrawals".');
+              return app();
+            }
+            const withdrawals: DepositWithdrawalRecord[] = [];
+            for (const key of keys) {
+              if (key !== "withdrawals:index:hash") {
+                const withdrawal = await redis.json_get(key);
+                withdrawals.push({ key, data: withdrawal as Withdrawal });
+              }
+            }
+
+            const res = withdrawals.filter(
+              (r) =>
+                r.data.address.toLowerCase() === answers.address.toLowerCase(),
+            );
+
+            console.log(res);
+
+            await redis.quit();
             return app();
           });
       }

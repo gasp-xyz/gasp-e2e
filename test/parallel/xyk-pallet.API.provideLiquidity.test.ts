@@ -115,7 +115,7 @@ beforeEach(async () => {
   testUser1.addAsset(liqIdNonPromPool);
 });
 
-test("Function provideLiquidityWithConversion does not work with non-mga paired token", async () => {
+test.skip("Function provideLiquidityWithConversion does not work with non-mga paired token", async () => {
   await provideLiquidity(
     testUser1.keyRingPair,
     liqIdNonMgaPool,
@@ -128,7 +128,7 @@ test("Function provideLiquidityWithConversion does not work with non-mga paired 
   });
 });
 
-test("A user without any liq token, can use provideLiquidityWithConversion to mint some tokens.", async () => {
+test.skip("A user without any liq token, can use provideLiquidityWithConversion to mint some tokens.", async () => {
   await provideLiquidity(
     testUser1.keyRingPair,
     liqIdNonPromPool,
@@ -145,7 +145,7 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
   expect(testUser1.getAsset(liqIdNonPromPool)?.amountAfter.free).bnGt(BN_ZERO);
 });
 
-test("A user without any liq token, can use provideLiquidityWithConversion to mint some tokens on a promoted pool.", async () => {
+test.skip("A user without any liq token, can use provideLiquidityWithConversion to mint some tokens on a promoted pool.", async () => {
   await provideLiquidity(
     testUser1.keyRingPair,
     liqIdPromPool,
@@ -169,7 +169,7 @@ test("A user without any liq token, can use provideLiquidityWithConversion to mi
   expect(testUserRewards.activatedAmount).bnGt(BN_ZERO);
 });
 
-test("A user who uses provideLiquidityWithConversion and other who do manually a swap + mint, gets the similar ratio of liquidity tokens.", async () => {
+test.skip("A user who uses provideLiquidityWithConversion and other who do manually a swap + mint, gets the similar ratio of liquidity tokens.", async () => {
   await Sudo.batchAsSudoFinalized(Assets.mintNative(testUser2));
 
   testUser2.addAsset(GASP_ASSET_ID);

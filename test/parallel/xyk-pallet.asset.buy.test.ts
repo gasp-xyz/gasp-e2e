@@ -13,7 +13,10 @@ import {
   getBalanceOfPool,
   buyAsset,
 } from "../../utils/tx";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  filterAndStringifyFirstEvent,
+} from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
@@ -21,10 +24,6 @@ import { Assets } from "../../utils/Assets";
 import { calculateFees, getEnvironmentRequiredVars } from "../../utils/utils";
 import { testLog } from "../../utils/Logger";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import {
-  EVENT_SECTION_PAYMENT,
-  EVENT_METHOD_PAYMENT,
-} from "../../utils/Constants";
 import { getSudoUser } from "../../utils/setup";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -123,27 +122,25 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
   const soldAssetId = firstCurrency;
   const boughtAssetId = secondCurrency;
 
-  await buyAsset(
+  const event = await buyAsset(
     testUser1.keyRingPair,
     soldAssetId,
     boughtAssetId,
     amount,
     new BN(1000000),
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result, [
-      "xyk",
-      "AssetsSwapped",
-      testUser1.keyRingPair.address,
-    ]);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-    expect(
-      result.findIndex(
-        (x) =>
-          x.section === EVENT_SECTION_PAYMENT ||
-          x.method === EVENT_METHOD_PAYMENT,
-      ),
-    ).toEqual(-1);
-  });
+  );
+
+  const eventResponse = getEventResultFromMangataTx(event, [
+    "xyk",
+    "AssetsSwapped",
+    testUser1.keyRingPair.address,
+  ]);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  const transactionFee = await filterAndStringifyFirstEvent(
+    event,
+    "TransactionFeePaid",
+  );
+  expect(transactionFee).toBeUndefined();
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);

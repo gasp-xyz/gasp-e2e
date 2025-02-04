@@ -38,13 +38,13 @@ beforeAll(async () => {
 beforeEach(async () => {
   await SequencerStaking.removeAllSequencers();
   [recipient, sequencer] = setupUsers();
-  const extrinsic = await SequencerStaking.provideSequencerStaking(
-    (await SequencerStaking.minimalStakeAmount()).muln(2),
-    chain,
-  );
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(sequencer),
-    Sudo.sudoAs(sequencer, extrinsic),
+    await SequencerStaking.provideSequencerStaking(
+      sequencer.keyRingPair.address,
+      (await SequencerStaking.minimalStakeAmount()).muln(2),
+      chain,
+    ),
   );
   ferrier = await Ferry.setupFerrier("EthAnvil");
   txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
@@ -157,14 +157,14 @@ it("[BUG] GIVEN a ferrier, when ferry a deposit THEN user gets tokens BEFORE the
   let event: any;
   const [judge] = setupUsers();
   const disputePeriodLength = (await Rolldown.disputePeriodLength()).toNumber();
-  const stakeAndJoinExtrinsic = await SequencerStaking.provideSequencerStaking(
-    (await SequencerStaking.minimalStakeAmount()).addn(1000),
-    chain,
-  );
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(judge),
-    Sudo.sudoAs(judge, stakeAndJoinExtrinsic),
+    await SequencerStaking.provideSequencerStaking(
+      judge.keyRingPair.address,
+      (await SequencerStaking.minimalStakeAmount()).addn(1000),
+      chain,
+    ),
   );
   await Rolldown.waitForReadRights(
     sequencer.keyRingPair.address,

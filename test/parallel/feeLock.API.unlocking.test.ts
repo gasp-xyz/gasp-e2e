@@ -107,7 +107,7 @@ beforeAll(async () => {
   await Sudo.batchAsSudoFinalized(...txs);
 });
 
-test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
+test("[BUG] gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period did not finished THEN the operation can not be submitted", async () => {
   await testUsers[0].addGASPTokens(sudo, feeLockAmount);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
@@ -128,7 +128,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
     ).catch((reason) => {
       throw new Error(reason.data);
     }),
-  ).rejects.toThrow(feeLockErrors.FeeLockingFail);
+  ).rejects.toThrow(feeLockErrors.FeeLockFail);
 });
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {

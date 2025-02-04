@@ -6,27 +6,20 @@ import { jest } from "@jest/globals";
 import { hexToU8a } from "@polkadot/util";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { FOUNDATION_ADDRESS_1, GASP_ASSET_ID } from "../../utils/Constants";
+import { GASP_ASSET_ID } from "../../utils/Constants";
 import { MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { Maintenance } from "../../utils/Maintenance";
-import {
-  compoundRewards,
-  getLiquidityAssetId,
-  sellAsset,
-} from "../../utils/tx";
+import { getLiquidityAssetId, sellAsset } from "../../utils/tx";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import {
-  EventResult,
-  ExtrinsicResult,
-  waitForRewards,
-} from "../../utils/eventListeners";
+import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
 import { checkMaintenanceStatus } from "../../utils/validators";
 import { Market } from "../../utils/market";
+import { FoundationMembers } from "../../utils/FoundationMembers";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -35,11 +28,10 @@ process.env.NODE_ENV = "test";
 let testUser1: User;
 //let keyring: Keyring;
 let firstCurrency: BN;
-let eventResponse: EventResult;
 let liqId: BN;
+let foundationAccountAddress: string;
 const defaultCurrencyValue = new BN(1000000000000000);
 const defaultPoolVolumeValue = new BN(10000000000);
-const foundationAccountAddress = FOUNDATION_ADDRESS_1;
 
 beforeAll(async () => {
   try {
@@ -51,6 +43,9 @@ beforeAll(async () => {
   [testUser1] = setupUsers();
 
   await setupApi();
+
+  const foundationMembers = await FoundationMembers.getFoundationMembers();
+  foundationAccountAddress = foundationMembers[0];
 
   firstCurrency = await Assets.issueAssetToUser(
     sudo,
@@ -170,7 +165,7 @@ test("check UpgradabilityOn can only be set after MaintenanceModeOn is set and M
   await checkMaintenanceStatus(false, false);
 });
 
-test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
+test("maintenance- check we can sell GASP tokens THEN switch maintenanceMode to on, repeat the operation and receive error", async () => {
   testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
   testUser1.addAsset(liqId);
@@ -190,11 +185,6 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  await compoundRewards(testUser1, liqId).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
-
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
@@ -202,26 +192,19 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     ),
   );
 
-  await expect(
-    sellAsset(
-      testUser1.keyRingPair,
-      firstCurrency,
-      GASP_ASSET_ID,
-      new BN(10000),
-      new BN(1),
-    ).catch((reason) => {
-      throw new Error(reason.data);
-    }),
-  ).rejects.toThrow(
-    "1010: Invalid Transaction: The swap prevalidation has failed",
-  );
+  await sellAsset(
+    testUser1.keyRingPair,
+    firstCurrency,
+    GASP_ASSET_ID,
+    new BN(10000),
+    new BN(1),
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("TradingBlockedByMaintenanceMode");
+  });
 
   await waitForRewards(testUser1, liqId);
-
-  const compoundMaintenanceOn = await compoundRewards(testUser1, liqId);
-  eventResponse = getEventResultFromMangataTx(compoundMaintenanceOn);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toContain("TradingBlockedByMaintenanceMode");
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -248,11 +231,9 @@ test("maintenance- check we can sell MGX tokens and compoundRewards THEN switch 
     ?.amountBefore.free!.sub(
       testUser1.getAsset(firstCurrency)?.amountAfter.free!,
     );
-
-  expect(currencyAssetDifference).bnEqual(new BN(20000));
-  expect(testUser1.getAsset(liqId)?.amountBefore.reserved!).bnLt(
-    testUser1.getAsset(liqId)?.amountAfter.reserved!,
-  );
+  // it failed before, that means a 0.3% fee was applied on the failed swap at L195,
+  // changed from 20000 to 20030
+  expect(currencyAssetDifference).bnEqual(new BN(20030));
 });
 async function getSudoError(
   mangataEvent: MangataGenericEvent[],

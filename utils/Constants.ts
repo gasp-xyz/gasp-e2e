@@ -25,6 +25,7 @@ export const USDC_ASSET_NAME = "mUSD";
 export const TUR_ASSET_ID = new BN(7);
 export const TUR_ASSET_NAME = "TUR";
 export const MAX_BALANCE = new BN("340282366920938463463374607431768211455"); //max balance
+export const MAX_ARRAY_LENGTH = new BN("4294967295"); //max u32 value
 export const EVENT_SECTION_PAYMENT = "transactionPayment";
 export const EVENT_METHOD_PAYMENT = "TransactionFeePaid";
 //https://github.com/mangata-finance/mangata-node/pull/716/files#diff-7bbcc3b35c4a5ccc06d27e2fbc592c65d70a996c5578c7dd079cb28a68bd71f7R1094
