@@ -246,6 +246,8 @@ test("Happy path - multiswap with only stable pools", async () => {
   });
   const userBalance1AfterSwap = await getTokensAccountInfo(testUser, token3);
   const userBalance2AfterSwap = await getTokensAccountInfo(testUser, token5);
+  //TODO: we need to use RPC function here (when market RPCs would work) so we can assert the values more precisely
+  //https://github.com/gasp-xyz/gasp-e2e/pull/550#discussion_r1923929580
   expect(stringToBN(userBalance1AfterSwap.free)).bnEqual(
     stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
@@ -275,6 +277,7 @@ test("Happy path - multiswap with stable and xyk pools", async () => {
   });
   const userBalance1AfterSwap = await getTokensAccountInfo(testUser, token4);
   const userBalance2AfterSwap = await getTokensAccountInfo(testUser, token6);
+  //TODO: we need to use RPC function here (when market RPCs would work) so we can assert the values more precisely
   expect(stringToBN(userBalance1AfterSwap.free)).bnEqual(
     stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
