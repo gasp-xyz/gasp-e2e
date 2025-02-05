@@ -2120,6 +2120,49 @@ export async function depositHell(num: number, txIndexer = 0) {
   await signTx(api, depositBatch, sequencer.keyRingPair);
   return txIndex + num;
 }
+export async function depositHellSustained(num: number) {
+  await setupApi();
+  const api = await getApi();
+  let txIndex;
+  let txIndexer: any = {};
+  const [user1, user2, user3] = setupUsers();
+  const users = [user1, user2, user3];
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(user1, Assets.MG_UNIT.muln(100000)),
+    Assets.mintNative(user2, Assets.MG_UNIT.muln(100000)),
+    Assets.mintNative(user3, Assets.MG_UNIT.muln(100000)),
+  );
+  await SequencerStaking.removeAllSequencers();
+  await SequencerStaking.setupASequencer(user1, "Ethereum");
+  await SequencerStaking.setupASequencer(user1, "Arbitrum");
+  await SequencerStaking.setupASequencer(user1, "Base");
+
+  const sequencers = await SequencerStaking.activeSequencers();
+  for (const chain in sequencers) {
+    if (txIndexer[chain] === 0) {
+      txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+    } else {
+      txIndex = txIndexer[chain];
+    }
+    const sequencer = JSON.parse(sequencers.toHuman().toString())[chain][0];
+    const user = users.find(
+      (u) => u.toString().toLowerCase() === sequencer.toLowerCase(),
+    )!;
+    const rights = await Rolldown.sequencerRights(chain, sequencer);
+    if (rights.readRights.toBn().gtn(0)) {
+      testLog
+        .getLog()
+        .info("Depositing " + num + " transactions from " + txIndex);
+      const depositBatch = new L2Update(api)
+        .withDeposit(txIndex, sequencer.toString(), sequencer.toString(), 1001)
+        .on(chain)
+        .clone(txIndex, num)
+        .buildUnsafe();
+      await signTx(api, depositBatch, user.keyRingPair);
+      txIndexer[chain] = txIndex + num;
+    }
+  }
+}
 
 export async function create10sequencers(nw = "Ethereum") {
   await setupApi();

@@ -8,7 +8,7 @@ import { User } from "../User";
 import { Sudo } from "../sudo";
 import { Assets } from "../Assets";
 
-export type ChainName = "Ethereum" | "Arbitrum";
+export type ChainName = "Ethereum" | "Arbitrum" | "Base";
 const baltathar = "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0";
 export const wellKnownUsers: Record<string, string> = {
   "0x3cd0a705a2dc65e5b1e1205896baa2be8a07c6e0":

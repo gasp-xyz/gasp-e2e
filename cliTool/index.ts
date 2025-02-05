@@ -53,6 +53,7 @@ import {
   createSequencers,
   monitorSequencers,
   printAllSequencerUpdates,
+  depositHellSustained,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -136,6 +137,7 @@ async function app(): Promise<any> {
         "Read L2 updates",
         "RollDownMonitor",
         "depositHell",
+        "SustainedDeposits",
         "getPolkAddress",
         "create10sequencers",
         "Close L1 item",
@@ -257,6 +259,11 @@ async function app(): Promise<any> {
       if (answers.option.includes("depositHell")) {
         while (true) {
           await depositHell(5000);
+        }
+      }
+      if (answers.option.includes("SustainedDeposits")) {
+        while (true) {
+          await depositHellSustained(5000);
         }
       }
       if (answers.option.includes("Read L2 updates")) {
