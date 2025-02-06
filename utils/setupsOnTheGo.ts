@@ -2124,7 +2124,7 @@ export async function depositHellSustained(num: number) {
   await setupApi();
   const api = await getApi();
   let txIndex;
-  let txIndexer: any = {};
+  const txIndexer: any = {};
   const [user1, user2, user3] = setupUsers();
   const users = [user1, user2, user3];
   await Sudo.batchAsSudoFinalized(
@@ -2134,32 +2134,44 @@ export async function depositHellSustained(num: number) {
   );
   await SequencerStaking.removeAllSequencers();
   await SequencerStaking.setupASequencer(user1, "Ethereum");
-  await SequencerStaking.setupASequencer(user1, "Arbitrum");
-  await SequencerStaking.setupASequencer(user1, "Base");
+  await SequencerStaking.setupASequencer(user2, "Arbitrum");
+  await SequencerStaking.setupASequencer(user3, "Base");
 
-  const sequencers = await SequencerStaking.activeSequencers();
-  for (const chain in sequencers) {
-    if (txIndexer[chain] === 0) {
-      txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
-    } else {
-      txIndex = txIndexer[chain];
-    }
-    const sequencer = JSON.parse(sequencers.toHuman().toString())[chain][0];
-    const user = users.find(
-      (u) => u.toString().toLowerCase() === sequencer.toLowerCase(),
-    )!;
-    const rights = await Rolldown.sequencerRights(chain, sequencer);
-    if (rights.readRights.toBn().gtn(0)) {
-      testLog
-        .getLog()
-        .info("Depositing " + num + " transactions from " + txIndex);
-      const depositBatch = new L2Update(api)
-        .withDeposit(txIndex, sequencer.toString(), sequencer.toString(), 1001)
-        .on(chain)
-        .clone(txIndex, num)
-        .buildUnsafe();
-      await signTx(api, depositBatch, user.keyRingPair);
-      txIndexer[chain] = txIndex + num;
+  const sequencers = (await SequencerStaking.activeSequencers()).toHuman()!;
+  while (true) {
+    await Rolldown.waitForReadRights(user1.keyRingPair.address);
+    for (const chain in sequencers) {
+      txIndex = 1;
+      if (txIndexer[chain] === 0 || txIndexer[chain] === undefined) {
+        txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+      } else {
+        txIndex = txIndexer[chain];
+      }
+      //@ts-ignore
+      const seqs = JSON.parse(JSON.stringify(sequencers).toLowerCase());
+      testLog.getLog().info("seqs " + JSON.stringify(seqs));
+      const sequencer = seqs[chain.toLowerCase()][0];
+      const user = users.find(
+        (u) => u.toString().toLowerCase() === sequencer.toLowerCase(),
+      )!;
+      const rights = await Rolldown.sequencerRights(chain, sequencer);
+      if (rights.readRights.toBn().gtn(0)) {
+        testLog
+          .getLog()
+          .info("Depositing " + num + " transactions from " + txIndex);
+        const depositBatch = new L2Update(api)
+          .withDeposit(
+            txIndex,
+            sequencer.toString(),
+            sequencer.toString(),
+            1001,
+          )
+          .on(chain)
+          .clone(txIndex, num)
+          .buildUnsafe();
+        await signTx(api, depositBatch, user.keyRingPair);
+        txIndexer[chain] = txIndex + num;
+      }
     }
   }
 }

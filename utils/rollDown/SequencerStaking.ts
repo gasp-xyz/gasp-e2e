@@ -192,11 +192,14 @@ export class SequencerStaking {
 export async function leaveSequencing(userAddr: string) {
   const stakedEth = await SequencerStaking.sequencerStake(userAddr, "Ethereum");
   const stakedArb = await SequencerStaking.sequencerStake(userAddr, "Arbitrum");
+  const stakedBase = await SequencerStaking.sequencerStake(userAddr, "Base");
   let chain = "";
   if (stakedEth.toHuman() !== "0") {
     chain = "Ethereum";
   } else if (stakedArb.toHuman() !== "0") {
     chain = "Arbitrum";
+  } else if (stakedBase.toHuman() !== "0") {
+    chain = "Base";
   }
   if (chain !== "") {
     await Sudo.asSudoFinalized(
