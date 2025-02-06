@@ -1357,18 +1357,20 @@ export async function createProposal() {
   await Sudo.asSudoFinalized(Sudo.sudoAs(alice, tx));
 }
 export async function migrate() {
+  const apiUrlFrom = "wss://collator-01-ws-rollup-prod.gasp.xyz";
   await setupApi();
   await setupUsers();
-  await initApi("wss://kusama-archive.mangata.online");
+  await initApi(apiUrlFrom);
   const api = await getApi();
-  const allPallets = await listStorages();
+  const allPallets = await listStorages(apiUrlFrom);
   const storageToMigrate1 = allPallets
     .filter(
       (x: any) =>
         x[0] === "AssetRegistry" ||
         x[0] === "Tokens" ||
         x[0] === "Issuance" ||
-        x[0] === "Xyk",
+        x[0] === "Xyk" ||
+        x[0] === "stableSwap",
     )
     .flatMap((item: any) =>
       item[1].map((element: any) => {
@@ -1431,7 +1433,7 @@ export async function migrate() {
     console.warn(
       "::: starting with :::" + JSON.stringify(storageToMigrate[dataId]),
     );
-    await initApi("wss://kusama-archive.mangata.online");
+    await initApi();
     let allKeys = [];
     let cont = true;
     let keys = await api.rpc.state.getKeysPaged(key, 100);
@@ -1476,7 +1478,6 @@ export async function migrate() {
       ]);
       txs.push(Sudo.sudo(tx));
     });
-
     await Sudo.batchAsSudoFinalized(...txs);
   }
 }
