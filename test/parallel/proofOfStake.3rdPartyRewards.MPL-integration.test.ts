@@ -12,7 +12,7 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_HUNDRED, BN_ONE, BN_THOUSAND, BN_ZERO, signTx } from "gasp-sdk";
+import { BN_HUNDRED, BN_ONE, BN_TEN_THOUSAND, BN_THOUSAND, BN_ZERO, signTx } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { testLog } from "../../utils/Logger";
@@ -65,7 +65,7 @@ describe("Proof of stake tests", () => {
       Assets.mintToken(newToken, testUser4, Assets.DEFAULT_AMOUNT),
       Assets.mintNative(testUser0, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
-      Assets.mintNative(testUser2),
+      Assets.mintNative(testUser2, Assets.DEFAULT_AMOUNT.muln(10)),
       Assets.mintNative(testUser3),
       Assets.mintNative(testUser4),
       Sudo.sudoAs(
