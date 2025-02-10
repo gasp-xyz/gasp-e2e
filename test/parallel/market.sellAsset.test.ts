@@ -101,8 +101,8 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> thr
   const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
   const sellPrice = calculate_sell_price_local(
-    poolBalance[1],
     poolBalance[0],
+    poolBalance[1],
     threshold.add(threshold.divn(2)),
   );
 
