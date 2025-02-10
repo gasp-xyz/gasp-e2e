@@ -7,7 +7,12 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { Market } from "../../utils/market";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { getLiquidityAssetId, updateFeeLockMetadata } from "../../utils/tx";
+import {
+  calculate_sell_price_local,
+  getBalanceOfPool,
+  getLiquidityAssetId,
+  updateFeeLockMetadata,
+} from "../../utils/tx";
 import { stringToBN } from "../../utils/utils";
 import { ApiPromise } from "@polkadot/api";
 import { signTx } from "gasp-sdk";
@@ -93,7 +98,15 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> thr
 
   const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 
-  await signTx(
+  const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
+
+  const sellPrice = calculate_sell_price_local(
+    poolBalance[1],
+    poolBalance[0],
+    threshold.add(threshold.divn(2)),
+  );
+
+  const events = await signTx(
     api,
     Market.sellAsset(
       liqId,
@@ -102,8 +115,9 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> thr
       threshold.add(threshold.divn(2)),
     ),
     testUser.keyRingPair,
-  ).then((events) => {
-    const res = getEventResultFromMangataTx(events);
-    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  );
+  const res = getEventResultFromMangataTx(events);
+  expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  const filterEvents = events.filter((x) => x.method === "Endowed");
+  expect(filterEvents[2].eventData[2].data).bnEqual(sellPrice);
 });
