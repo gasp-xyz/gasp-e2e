@@ -60,12 +60,12 @@ describe("Proof of stake tests", () => {
       Assets.mintToken(newToken, testUser0, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken, testUser2, Assets.DEFAULT_AMOUNT),
+      Assets.mintToken(newToken, testUser2, BN_TEN_THOUSAND.mul(Assets.MG_UNIT)),
       Assets.mintToken(newToken, testUser3, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(newToken, testUser4, Assets.DEFAULT_AMOUNT),
       Assets.mintNative(testUser0, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
       Assets.mintNative(testUser1, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),
-      Assets.mintNative(testUser2, Assets.DEFAULT_AMOUNT.muln(10)),
+      Assets.mintNative(testUser2, BN_TEN_THOUSAND.mul(Assets.MG_UNIT)),
       Assets.mintNative(testUser3),
       Assets.mintNative(testUser4),
       Sudo.sudoAs(
@@ -86,8 +86,8 @@ describe("Proof of stake tests", () => {
         Market.mintLiquidity(
           liqId,
           GASP_ASSET_ID,
-          Assets.DEFAULT_AMOUNT.divn(2),
-          Assets.DEFAULT_AMOUNT,
+          BN_TEN_THOUSAND.mul(Assets.MG_UNIT).divn(2),
+          BN_TEN_THOUSAND.mul(Assets.MG_UNIT),
         ),
       ),
       Sudo.sudoAs(
