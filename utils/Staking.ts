@@ -12,6 +12,7 @@ import { getEventResultFromMangataTx } from "./txHandler";
 import { ExtrinsicResult } from "./eventListeners";
 import { ProofOfStake } from "./ProofOfStake";
 import { Market } from "./market";
+import { testLog } from "./Logger";
 
 export enum tokenOriginEnum {
   AvailableBalance = "AvailableBalance",
@@ -236,6 +237,11 @@ export class Staking {
       user.keyRingPair,
     ).then((events) => {
       const res = getEventResultFromMangataTx(events);
+      testLog
+        .getLog()
+        .info(
+          `Delegated ${amountToDelegate} to ${collatorAddress} with result: ${res.state} , ${res.data}`,
+        );
       expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
     return amountToDelegate;
