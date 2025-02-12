@@ -50,8 +50,6 @@ beforeAll(async () => {
   );
   sudo = getSudoUser();
 
-  await updateFeeLockMetadata(sudo, null, null, null, [[GASP_ASSET_ID, true]]);
-
   await Sudo.batchAsSudoFinalized(
     Assets.FinalizeTge(),
     Assets.initIssuance(),
