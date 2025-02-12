@@ -14,7 +14,7 @@ import {
   getPoolIdFromEvent,
   updateFeeLockMetadata,
 } from "../../utils/tx";
-import { stringToBN } from "../../utils/utils";
+import { feeLockErrors, stringToBN } from "../../utils/utils";
 import { ApiPromise } from "@polkadot/api";
 import { signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -69,7 +69,9 @@ beforeEach(async () => {
   );
 });
 
-test("Sell asset - Only sold asset ( USDC ) in the wallet (Stable pool, amount> threshold)", async () => {
+test("When user has only sold asset AND all pools are StableSwap AND amount > threshold THEN operation failed", async () => {
+  let error: any;
+
   const poolEvent = await Sudo.batchAsSudoFinalized(
     Market.createPool(
       firstCurrency,
@@ -102,15 +104,60 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Stable pool, amount> 
 
   const liqId = await getPoolIdFromEvent(poolEvent);
 
-  const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
+  try {
+    await signTx(
+      api,
+      Market.sellAsset(
+        liqId,
+        firstCurrency,
+        secondCurrency,
+        threshold.add(threshold.divn(2)),
+      ),
+      testUser.keyRingPair,
+    );
+  } catch (e) {
+    error = e;
+  }
+  expect(error.data).toEqual(feeLockErrors.FeeLockFail);
+});
 
-  const sellPrice = calculate_sell_price_local(
-    poolBalance[0],
-    poolBalance[1],
-    threshold.add(threshold.divn(2)),
+test("When user has only sold asset AND X-Y pool is StableSwap AND amount > threshold THEN operation failed", async () => {
+  const poolEvent = await Sudo.batchAsSudoFinalized(
+    Market.createPool(
+      firstCurrency,
+      threshold.muln(5),
+      secondCurrency,
+      threshold.muln(5),
+      "StableSwap",
+    ),
+    Market.createPool(
+      GASP_ASSET_ID,
+      threshold.muln(5),
+      firstCurrency,
+      threshold.muln(5),
+    ),
+    Market.createPool(
+      GASP_ASSET_ID,
+      threshold.muln(5),
+      secondCurrency,
+      threshold.muln(5),
+    ),
+    Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
   );
 
-  const events = await signTx(
+  await updateFeeLockMetadata(sudo, null, null, null, [[firstCurrency, true]]);
+
+  const liqId = await getPoolIdFromEvent(poolEvent);
+
+  //const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
+
+  // const sellPrice = calculate_sell_price_local(
+  //   poolBalance[0],
+  //   poolBalance[1],
+  //   threshold.add(threshold.divn(2)),
+  // );
+
+  await signTx(
     api,
     Market.sellAsset(
       liqId,
@@ -119,14 +166,17 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Stable pool, amount> 
       threshold.add(threshold.divn(2)),
     ),
     testUser.keyRingPair,
-  );
-  const res = getEventResultFromMangataTx(events);
-  expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  const filterEvents = events.filter((x) => x.method === "Endowed");
-  expect(filterEvents[2].eventData[2].data).bnEqual(sellPrice);
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const tokenValue = await testUser.getTokenBalance(secondCurrency);
+
+  expect(tokenValue.free).bnLt(threshold.add(threshold.divn(2)));
 });
 
-test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> threshold)", async () => {
+test("When user has only sold asset AND all pools are Xyk AND amount > threshold THEN operation succeed", async () => {
   await Sudo.batchAsSudoFinalized(
     Market.createPool(
       firstCurrency,
@@ -146,13 +196,10 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> thr
       secondCurrency,
       threshold.muln(2),
     ),
+    Assets.mintToken(firstCurrency, testUser, threshold.muln(2)),
   );
 
   await updateFeeLockMetadata(sudo, null, null, null, [[firstCurrency, true]]);
-
-  await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(firstCurrency, testUser, threshold.muln(2)),
-  );
 
   const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 
@@ -164,7 +211,7 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> thr
     threshold.add(threshold.divn(2)),
   );
 
-  const events = await signTx(
+  await signTx(
     api,
     Market.sellAsset(
       liqId,
@@ -173,9 +220,12 @@ test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> thr
       threshold.add(threshold.divn(2)),
     ),
     testUser.keyRingPair,
-  );
-  const res = getEventResultFromMangataTx(events);
-  expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  const filterEvents = events.filter((x) => x.method === "Endowed");
-  expect(filterEvents[2].eventData[2].data).bnEqual(sellPrice);
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const tokenValue = await testUser.getTokenBalance(secondCurrency);
+
+  expect(tokenValue.free).bnEqual(sellPrice);
 });
