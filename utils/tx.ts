@@ -34,7 +34,10 @@ import {
 import { User } from "./User";
 import { getEnvironmentRequiredVars, stringToBN } from "./utils";
 import Keyring from "@polkadot/keyring";
-import { ExtrinsicResult } from "./eventListeners";
+import {
+  ExtrinsicResult,
+  filterAndStringifyFirstEvent,
+} from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { getSudoUser, setupApi, setupUsers } from "./setup";
@@ -286,6 +289,15 @@ export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
     return new BN(-1);
   }
   return new BN(liquidity_asset_id.toString());
+}
+
+export async function getPoolIdFromEvent(event: MangataGenericEvent[]) {
+  const filteredEvent = await filterAndStringifyFirstEvent(
+    event,
+    "PoolCreated",
+  );
+  const poolId = stringToBN(filteredEvent.poolId);
+  return poolId;
 }
 
 export async function getLiquiditybalance(liquidityAssetId: BN) {

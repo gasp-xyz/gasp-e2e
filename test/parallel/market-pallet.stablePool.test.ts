@@ -27,7 +27,7 @@ import {
   filterAndStringifyFirstEvent,
 } from "../../utils/eventListeners";
 import { stringToBN } from "../../utils/utils";
-import { activateLiquidity, getRewardsInfo } from "../../utils/tx";
+import { activateLiquidity, getPoolIdFromEvent, getRewardsInfo } from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -221,11 +221,3 @@ test("Happy path - Activate rewards for stableSwap pool", async () => {
   expect(rewards.activatedAmount).bnEqual(BN_HUNDRED_THOUSAND);
 });
 
-async function getPoolIdFromEvent(event: MangataGenericEvent[]) {
-  const filteredEvent = await filterAndStringifyFirstEvent(
-    event,
-    "PoolCreated",
-  );
-  const poolId = stringToBN(filteredEvent.poolId);
-  return poolId;
-}

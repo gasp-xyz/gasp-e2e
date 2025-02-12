@@ -11,6 +11,7 @@ import {
   calculate_sell_price_local,
   getBalanceOfPool,
   getLiquidityAssetId,
+  getPoolIdFromEvent,
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { stringToBN } from "../../utils/utils";
@@ -63,9 +64,66 @@ beforeEach(async () => {
 
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
-    [threshold.muln(10), threshold.muln(10)],
+    [threshold.muln(20), threshold.muln(20)],
     sudo,
   );
+});
+
+test("Sell asset - Only sold asset ( USDC ) in the wallet (Stable pool, amount> threshold)", async () => {
+  const poolEvent = await Sudo.batchAsSudoFinalized(
+    Market.createPool(
+      firstCurrency,
+      threshold.muln(5),
+      secondCurrency,
+      threshold.muln(5),
+      "StableSwap",
+    ),
+    Market.createPool(
+      GASP_ASSET_ID,
+      threshold.muln(5),
+      firstCurrency,
+      threshold.muln(5),
+      "StableSwap",
+    ),
+    Market.createPool(
+      GASP_ASSET_ID,
+      threshold.muln(5),
+      secondCurrency,
+      threshold.muln(5),
+      "StableSwap",
+    ),
+  );
+
+  await updateFeeLockMetadata(sudo, null, null, null, [[firstCurrency, true]]);
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
+  );
+
+  const liqId = await getPoolIdFromEvent(poolEvent);
+
+  const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
+
+  const sellPrice = calculate_sell_price_local(
+    poolBalance[0],
+    poolBalance[1],
+    threshold.add(threshold.divn(2)),
+  );
+
+  const events = await signTx(
+    api,
+    Market.sellAsset(
+      liqId,
+      firstCurrency,
+      secondCurrency,
+      threshold.add(threshold.divn(2)),
+    ),
+    testUser.keyRingPair,
+  );
+  const res = getEventResultFromMangataTx(events);
+  expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  const filterEvents = events.filter((x) => x.method === "Endowed");
+  expect(filterEvents[2].eventData[2].data).bnEqual(sellPrice);
 });
 
 test("Sell asset - Only sold asset ( USDC ) in the wallet (Xyk pool, amount> threshold)", async () => {
