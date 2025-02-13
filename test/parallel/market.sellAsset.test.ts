@@ -147,11 +147,9 @@ test("When user has only sold asset AND X-Y pool is StableSwap AND amount > thre
 
   const liqId = await getPoolIdFromEvent(poolEvent);
 
-  //const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
-
-  // const sellPrice = calculate_sell_price_local(
-  //   poolBalance[0],
-  //   poolBalance[1],
+  // const sellPrice = await api.call.marketRuntimeApi.calculateSellPrice(
+  //   liqId,
+  //   firstCurrency,
   //   threshold.add(threshold.divn(2)),
   // );
 
@@ -172,6 +170,7 @@ test("When user has only sold asset AND X-Y pool is StableSwap AND amount > thre
   const tokenValue = await testUser.getTokenBalance(secondCurrency);
 
   expect(tokenValue.free).bnLt(threshold.add(threshold.divn(2)));
+  expect(tokenValue.free).bnGt(threshold);
 });
 
 test("When user has only sold asset AND all pools are Xyk AND amount > threshold THEN operation succeed", async () => {
