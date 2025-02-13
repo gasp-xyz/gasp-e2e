@@ -387,6 +387,12 @@ export class User {
   ) {
     return await updateL1Asset(this, assetId, l1AssetChain, tokenAddress);
   }
+  async getTokenBalance(tokenId: BN) {
+    return await getApi().query.tokens.accounts(
+      this.keyRingPair.address,
+      tokenId.toString(),
+    );
+  }
   async getBalanceForEthToken(address: string) {
     const tokenId = await getApi().query.assetRegistry.l1AssetToId({
       Ethereum: address,
