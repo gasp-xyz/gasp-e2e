@@ -1003,7 +1003,7 @@ export async function fillWithDelegators(
           // @ts-ignore
           api?.tx.parachainStaking.delegate(
             targetAddress,
-            amountToJoin.muln(3),
+            amountToJoin,
             "AvailableBalance",
             // @ts-ignore - Mangata bond operation has 4 params, somehow is inheriting the bond operation from polkadot :S
             new BN(candidateDelegationCount).addn(index),
