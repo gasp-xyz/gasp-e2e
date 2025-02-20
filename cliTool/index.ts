@@ -73,12 +73,11 @@ import { BN_ZERO, Mangata } from "gasp-sdk";
 import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
-import { setupApi, setupUsers, sudo } from "../utils/setup";
+import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { toNumber } from "lodash-es";
 import { Rolldown } from "../utils/rollDown/Rolldown";
 import inquirer from "inquirer";
-import { randomBytes } from "crypto";
 import { getAssetIdFromErc20 } from "../utils/rollup/ethUtils";
 import Redis from "ioredis-rejson";
 
@@ -167,14 +166,12 @@ async function app(): Promise<any> {
         await sendUpdateToL1();
       }
       if (answers.option.includes("1000 withdrawals")) {
-        const chain = "ArbAnvil";
-        const chainName = "Arbitrum";
+        const chain = "EthAnvil";
         const userAddress = "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac";
-        const ethTokenAddress = "0xfd471836031dc5108809d173a067e8486b9047a3";
+        const ethTokenAddress = "0x736ecc5237b31edec6f1ab9a396fae2416b1d96e";
         await setupApi();
         await setupUsers();
-        const addr = "0x" + randomBytes(20).toString("hex");
-        await sudo.registerL1Asset(null, addr, chainName);
+        const addr = ethTokenAddress;
         await Sudo.asSudoFinalized(
           Sudo.sudo(
             Assets.mintTokenAddress(
@@ -182,12 +179,6 @@ async function app(): Promise<any> {
               userAddress,
             ),
           ),
-        );
-        await Rolldown.createWithdrawalsInBatch(
-          1,
-          userAddress,
-          ethTokenAddress,
-          "EthAnvil",
         );
         await Rolldown.createWithdrawalsInBatch(500, userAddress, addr, chain);
       }
