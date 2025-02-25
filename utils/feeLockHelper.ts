@@ -70,3 +70,23 @@ export async function getFeeLockMetadata() {
   const value = (await api.query.feeLock.feeLockMetadata()).value;
   return value;
 }
+
+export async function calculateSellPriceByMarket(
+  poolId: BN,
+  sellAssetId: BN,
+  sellAmount: BN,
+) {
+  const api = getApi();
+  const value = stringToBN(
+    JSON.parse(
+      JSON.stringify(
+        await api.rpc.market.calculate_sell_price(
+          poolId,
+          sellAssetId,
+          sellAmount,
+        ),
+      ),
+    ),
+  );
+  return value;
+}
