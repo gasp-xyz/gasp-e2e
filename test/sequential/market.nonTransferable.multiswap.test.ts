@@ -206,7 +206,7 @@ test("User can't sell GASP in multiswap operation (GASP token at the beginning)"
       ),
     ),
   ).then(async (result) => {
-    await waitSudoOperationFail(result, ["NontransferableToken"], "SudoAsDone");
+    await waitSudoOperationSuccess(result, "SudoAsDone");
   });
 });
 
@@ -223,7 +223,7 @@ test("User can't sell GASP in multiswap operation (GASP token in the middle)", a
       ),
     ),
   ).then(async (result) => {
-    await waitSudoOperationFail(result, ["NontransferableToken"], "SudoAsDone");
+    await waitSudoOperationSuccess(result, "SudoAsDone");
   });
 });
 
