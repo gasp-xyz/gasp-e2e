@@ -131,14 +131,12 @@ async function sellTokenAndReceiveSuccess(
     currencies[0],
     soldAssetAmount,
   );
-  testLog.getLog().info("sellPrice is " + sellPrice);
 
   const sellPriceNoFee = calculate_sell_price_local_no_fee(
     poolBalance[0],
     poolBalance[1],
     soldAssetAmount,
   );
-  testLog.getLog().info("sellPriceNoFee is " + sellPriceNoFee);
 
   testLog.getLog().info("selling asset " + currencies[0]);
   await signTx(
