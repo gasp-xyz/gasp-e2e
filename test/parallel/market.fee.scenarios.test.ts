@@ -19,7 +19,7 @@ import { Market } from "../../utils/market";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
   calculate_buy_price_local,
-  calculate_sell_price_local,
+  calculate_sell_price_local_no_fee,
   getBalanceOfPool,
   getLiquidityAssetId,
   getPoolIdFromEvent,
@@ -32,6 +32,7 @@ import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import {
+  calculateBuyPriceByMarket,
   calculateSellPriceByMarket,
   getFeeLockMetadata,
 } from "../../utils/feeLockHelper";
@@ -122,8 +123,23 @@ async function sellTokenAndReceiveSuccess(
   currencies: [firstCurrency: BN, secondCurrency: BN],
   liqId: BN,
   soldAssetAmount: BN,
-  sellPrice: BN,
 ) {
+  const poolBalance = await getBalanceOfPool(currencies[0], currencies[1]);
+
+  const sellPrice = await calculateSellPriceByMarket(
+    liqId,
+    currencies[0],
+    soldAssetAmount,
+  );
+  testLog.getLog().info("sellPrice is " + sellPrice);
+
+  const sellPriceNoFee = calculate_sell_price_local_no_fee(
+    poolBalance[0],
+    poolBalance[1],
+    soldAssetAmount,
+  );
+  testLog.getLog().info("sellPriceNoFee is " + sellPriceNoFee);
+
   testLog.getLog().info("selling asset " + currencies[0]);
   await signTx(
     api,
@@ -136,6 +152,9 @@ async function sellTokenAndReceiveSuccess(
 
   const tokenValue = await user.getTokenBalance(secondCurrency);
   expect(tokenValue.free).bnEqual(sellPrice);
+  expect(sellPriceNoFee.sub(sellPrice)).bnEqual(
+    soldAssetAmount.muln(3).divn(1000),
+  );
 }
 
 async function getSwappingTokenError(
@@ -273,6 +292,15 @@ describe("SingleSell, user has only sold asset", () => {
       firstCurrency,
       sellAmount,
     );
+
+    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
+
+    const sellPriceNoFee = calculate_sell_price_local_no_fee(
+      poolBalance[0],
+      poolBalance[1],
+      sellAmount,
+    );
+
     await signTx(
       api,
       Market.sellAsset(liqId, firstCurrency, secondCurrency, sellAmount),
@@ -283,6 +311,9 @@ describe("SingleSell, user has only sold asset", () => {
     });
     const tokenValue = await testUser.getTokenBalance(secondCurrency);
     expect(tokenValue.free).bnEqual(sellPrice);
+    expect(sellPriceNoFee.sub(sellPrice)).bnEqual(
+      sellAmount.muln(3).divn(1000),
+    );
   });
 
   //When we don't mention pool in comments it means that all pool is Xyk
@@ -301,21 +332,14 @@ describe("SingleSell, user has only sold asset", () => {
     ]);
 
     const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
-    const sellAmount = threshold.muln(3).divn(2);
 
-    const sellPrice = calculate_sell_price_local(
-      poolBalance[0],
-      poolBalance[1],
-      sellAmount,
-    );
+    const sellAmount = threshold.muln(3).divn(2);
 
     await sellTokenAndReceiveSuccess(
       testUser,
       [firstCurrency, secondCurrency],
       liqId,
       sellAmount,
-      sellPrice,
     );
   });
 
@@ -427,21 +451,13 @@ describe("SingleSell, user has only sold asset", () => {
     ]);
 
     const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     const sellAmount = threshold.muln(3).divn(2);
-
-    const sellPrice = calculate_sell_price_local(
-      poolBalance[0],
-      poolBalance[1],
-      sellAmount,
-    );
 
     await sellTokenAndReceiveSuccess(
       testUser,
       [firstCurrency, secondCurrency],
       liqId,
       sellAmount,
-      sellPrice,
     );
     const gaspTokenAmount = await getTokensAccountInfo(
       testUser.keyRingPair.address,
@@ -517,21 +533,13 @@ describe("SingleSell, user has sold asset and GASP", () => {
     ]);
 
     const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     const sellAmount = threshold.muln(3).divn(2);
-
-    const sellPrice = calculate_sell_price_local(
-      poolBalance[0],
-      poolBalance[1],
-      sellAmount,
-    );
 
     await sellTokenAndReceiveSuccess(
       testUser,
       [firstCurrency, secondCurrency],
       liqId,
       sellAmount,
-      sellPrice,
     );
 
     const gaspTokenAmount = await getTokensAccountInfo(
@@ -557,21 +565,13 @@ describe("SingleSell, user has sold asset and GASP", () => {
     ]);
 
     const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     const sellAmount = threshold.muln(3).divn(2);
-
-    const sellPrice = calculate_sell_price_local(
-      poolBalance[0],
-      poolBalance[1],
-      sellAmount,
-    );
 
     await sellTokenAndReceiveSuccess(
       testUser,
       [firstCurrency, secondCurrency],
       liqId,
       sellAmount,
-      sellPrice,
     );
 
     const gaspTokenAmount = await getTokensAccountInfo(
@@ -597,21 +597,13 @@ describe("SingleSell, user has sold asset and GASP", () => {
     ]);
 
     const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
     const sellAmount = threshold.muln(3).divn(2);
-
-    const sellPrice = calculate_sell_price_local(
-      poolBalance[0],
-      poolBalance[1],
-      sellAmount,
-    );
 
     await sellTokenAndReceiveSuccess(
       testUser,
       [firstCurrency, secondCurrency],
       liqId,
       sellAmount,
-      sellPrice,
     );
     const gaspTokenAmount = await getTokensAccountInfo(
       testUser.keyRingPair.address,
@@ -723,17 +715,10 @@ describe("SingleSwap scenarios with slippage error, user has only sold asset", (
       testUser.keyRingPair.address,
       firstCurrency,
     );
-
-    const buyPrice = stringToBN(
-      JSON.parse(
-        JSON.stringify(
-          await api.rpc.market.calculate_buy_price(
-            liqId,
-            secondCurrency,
-            threshold.muln(3).divn(2),
-          ),
-        ),
-      ),
+    const buyPrice = await calculateBuyPriceByMarket(
+      liqId,
+      secondCurrency,
+      threshold.muln(3).divn(2),
     );
 
     await swapTokenAndReceiveSlippageError(
@@ -799,9 +784,7 @@ describe("SingleSwap scenarios with slippage error, user has only sold asset", (
     const tokenDiff = stringToBN(tokenValueBefore.free).sub(
       stringToBN(tokenValueAfter.free),
     );
-    expect(tokenDiff.divn(10e6)).bnEqual(
-      buyPrice.divn(1000).muln(3).divn(10e6),
-    );
+    expect(tokenDiff).bnEqual(buyPrice.divn(1000).muln(3).addn(1));
   });
 });
 
@@ -826,12 +809,15 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     await updateFeeLockMetadata(sudo, null, null, null, [
       [firstCurrency, true],
     ]);
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [thirdCurrency, true],
+    ]);
 
     const liqId = await getLiquidityAssetId(thirdCurrency, secondCurrency);
 
     await getSwappingTokenError(
       testUser,
-      [thirdCurrency, secondCurrency],
+      [firstCurrency, secondCurrency],
       liqId,
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
@@ -846,12 +832,15 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     await updateFeeLockMetadata(sudo, null, null, null, [
       [firstCurrency, true],
     ]);
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [thirdCurrency, true],
+    ]);
 
     const liqId = await getPoolIdFromEvent(poolEvent);
 
     await getSwappingTokenError(
       testUser,
-      [thirdCurrency, secondCurrency],
+      [firstCurrency, secondCurrency],
       liqId,
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
@@ -865,10 +854,16 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     );
 
     const liqId = await getLiquidityAssetId(thirdCurrency, secondCurrency);
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [firstCurrency, true],
+    ]);
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [thirdCurrency, true],
+    ]);
 
     await getSwappingTokenError(
       testUser,
-      [thirdCurrency, secondCurrency],
+      [firstCurrency, secondCurrency],
       liqId,
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
@@ -883,10 +878,16 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     );
 
     const liqId = await getPoolIdFromEvent(poolEvent);
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [firstCurrency, true],
+    ]);
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [thirdCurrency, true],
+    ]);
 
     await getSwappingTokenError(
       testUser,
-      [thirdCurrency, secondCurrency],
+      [firstCurrency, secondCurrency],
       liqId,
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,

@@ -90,3 +90,23 @@ export async function calculateSellPriceByMarket(
   );
   return value;
 }
+
+export async function calculateBuyPriceByMarket(
+  poolId: BN,
+  sellAssetId: BN,
+  sellAmount: BN,
+) {
+  const api = getApi();
+  const value = stringToBN(
+    JSON.parse(
+      JSON.stringify(
+        await api.rpc.market.calculate_buy_price(
+          poolId,
+          sellAssetId,
+          sellAmount,
+        ),
+      ),
+    ),
+  );
+  return value;
+}
