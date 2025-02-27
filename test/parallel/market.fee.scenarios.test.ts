@@ -916,6 +916,9 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
       ),
     );
 
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [firstCurrency, true],
+    ]);
     const liqId = await getPoolIdFromEvent(poolEvent);
 
     const tokenValueBefore = await getTokensAccountInfo(
@@ -940,9 +943,7 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
     const tokenDiff = stringToBN(tokenValueBefore.free).sub(
       stringToBN(tokenValueAfter.free),
     );
-    expect(tokenDiff.divn(10e6)).bnEqual(
-      swappingAmount.divn(1000).muln(3).divn(10e6),
-    );
+    expect(tokenDiff).bnEqual(swappingAmount.divn(1000).muln(3));
   });
 
   test.skip("TODO:Investigate GIVEN user tokens are not enough to pay fee AND X-Y pool is Stable THEN operation fails", async () => {
@@ -961,6 +962,9 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
       ),
     );
 
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [firstCurrency, true],
+    ]);
     const liqId = await getPoolIdFromEvent(poolEvent);
 
     await getSwappingTokenError(
@@ -988,6 +992,9 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
       ),
     );
 
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [firstCurrency, true],
+    ]);
     const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
 
     await getSwappingTokenError(
