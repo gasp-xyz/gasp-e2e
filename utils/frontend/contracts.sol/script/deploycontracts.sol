@@ -12,7 +12,7 @@ contract DeployTokens is Script {
         vm.startBroadcast(deployerPrivateKey);
 
         // Deploy TestERC20
-        USDC testERC20 = new USDC("Test USDC", "USDC");
+        USDC testERC20 = new USDC("Test Token10", "Token10");
         console.log("USDC deployed to:", address(testERC20));
 
         vm.stopBroadcast();

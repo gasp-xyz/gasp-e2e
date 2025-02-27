@@ -13,7 +13,7 @@ contract USDC is ERC20 {
     }
 
     function decimals() public pure override returns (uint8) {
-        return 6;
+        return 18;
     }
 
     function mint(address to, uint256 amount) external {
