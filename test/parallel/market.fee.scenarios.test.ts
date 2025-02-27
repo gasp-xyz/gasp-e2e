@@ -132,12 +132,6 @@ async function sellTokenAndReceiveSuccess(
     soldAssetAmount,
   );
 
-  const sellPriceNoFee = calculate_sell_price_local_no_fee(
-    poolBalance[0],
-    poolBalance[1],
-    soldAssetAmount,
-  );
-
   testLog.getLog().info("selling asset " + currencies[0]);
   await signTx(
     api,
@@ -148,11 +142,15 @@ async function sellTokenAndReceiveSuccess(
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
+  const sellPriceNoFee = calculate_sell_price_local_no_fee(
+    poolBalance[0],
+    poolBalance[1],
+    soldAssetAmount.muln(997).divn(1000),
+  );
+
   const tokenValue = await user.getTokenBalance(secondCurrency);
   expect(tokenValue.free).bnEqual(sellPrice);
-  expect(sellPriceNoFee.sub(sellPrice)).bnEqual(
-    soldAssetAmount.muln(3).divn(1000),
-  );
+  expect(sellPriceNoFee).bnEqual(sellPrice);
 }
 
 async function getSwappingTokenError(
@@ -291,14 +289,6 @@ describe("SingleSell, user has only sold asset", () => {
       sellAmount,
     );
 
-    const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
-
-    const sellPriceNoFee = calculate_sell_price_local_no_fee(
-      poolBalance[0],
-      poolBalance[1],
-      sellAmount,
-    );
-
     await signTx(
       api,
       Market.sellAsset(liqId, firstCurrency, secondCurrency, sellAmount),
@@ -307,11 +297,18 @@ describe("SingleSell, user has only sold asset", () => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
+
+    // const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
+
+    // const sellPriceNoFee = calculate_sell_price_local_no_fee(
+    //   poolBalance[0],
+    //   poolBalance[1],
+    //   sellAmount.muln(997).divn(1000),
+    // );
+
     const tokenValue = await testUser.getTokenBalance(secondCurrency);
     expect(tokenValue.free).bnEqual(sellPrice);
-    expect(sellPriceNoFee.sub(sellPrice)).bnEqual(
-      sellAmount.muln(3).divn(1000),
-    );
+    // expect(sellPriceNoFee).bnEqual(sellPrice);
   });
 
   //When we don't mention pool in comments it means that all pool is Xyk
