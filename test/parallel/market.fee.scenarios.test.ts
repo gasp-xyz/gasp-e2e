@@ -806,7 +806,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       [firstCurrency, true],
     ]);
     await updateFeeLockMetadata(sudo, null, null, null, [
-      [thirdCurrency, true],
+      [secondCurrency, true],
     ]);
 
     const liqId = await getLiquidityAssetId(thirdCurrency, secondCurrency);
@@ -829,7 +829,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       [firstCurrency, true],
     ]);
     await updateFeeLockMetadata(sudo, null, null, null, [
-      [thirdCurrency, true],
+      [secondCurrency, true],
     ]);
 
     const liqId = await getPoolIdFromEvent(poolEvent);
@@ -854,7 +854,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       [firstCurrency, true],
     ]);
     await updateFeeLockMetadata(sudo, null, null, null, [
-      [thirdCurrency, true],
+      [secondCurrency, true],
     ]);
 
     await getSwappingTokenError(
@@ -878,7 +878,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       [firstCurrency, true],
     ]);
     await updateFeeLockMetadata(sudo, null, null, null, [
-      [thirdCurrency, true],
+      [secondCurrency, true],
     ]);
 
     await getSwappingTokenError(
