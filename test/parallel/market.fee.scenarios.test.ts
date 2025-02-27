@@ -339,7 +339,7 @@ describe("SingleSell, user has only sold asset", () => {
     );
   });
 
-  test("GIVEN sale amount < threshold THEN operation fails", async () => {
+  test("GIVEN sale amount < threshold THEN operation fails on client", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -363,7 +363,7 @@ describe("SingleSell, user has only sold asset", () => {
     );
   });
 
-  test("GIVEN sold asset is not whitelisted AND sale amount > threshold THEN operation fails", async () => {
+  test("GIVEN sold asset is not whitelisted AND sale amount > threshold THEN operation fails on client", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -384,7 +384,7 @@ describe("SingleSell, user has only sold asset", () => {
     );
   });
 
-  test("GIVEN assets are not paired with GASP AND sale amount > threshold THEN operation fails", async () => {
+  test("GIVEN assets are not paired with GASP AND sale amount > threshold THEN operation fails on client", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -408,7 +408,7 @@ describe("SingleSell, user has only sold asset", () => {
     );
   });
 
-  test("GIVEN paired pools are StableSwap AND sold amount > threshold THEN operation fails", async () => {
+  test("GIVEN paired pools are StableSwap AND sold amount > threshold THEN operation fails on client", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -432,7 +432,7 @@ describe("SingleSell, user has only sold asset", () => {
     );
   });
 
-  test("GIVEN bought asset are in whitelist AND sold amount > threshold THEN operation fails", async () => {
+  test("GIVEN bought asset are in whitelist AND sold amount > threshold THEN operation succeeds", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -462,7 +462,7 @@ describe("SingleSell, user has only sold asset", () => {
     expect(stringToBN(gaspTokenAmount.reserved)).bnEqual(BN_ZERO);
   });
 
-  test("GIVEN bought asset are in whitelist AND sold amount < threshold THEN operation fails", async () => {
+  test("GIVEN bought asset are in whitelist AND sold amount < threshold THEN operation fails on client", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -488,7 +488,7 @@ describe("SingleSell, user has only sold asset", () => {
 });
 
 describe("SingleSell, user has sold asset and GASP", () => {
-  test("GIVEN GASP in the wallet < threshold AND assets are not paired with GASP AND sale amount > threshold THEN operation fails", async () => {
+  test("GIVEN GASP in the wallet < threshold AND assets are not paired with GASP AND sale amount > threshold THEN operation fails on client", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -545,7 +545,7 @@ describe("SingleSell, user has sold asset and GASP", () => {
     expect(stringToBN(gaspTokenAmount.reserved)).bnEqual(BN_ZERO);
   });
 
-  test("GIVEN GASP in the wallet > threshold AND assets are not paired with GASP AND sale amount > threshold THEN operation succeeds", async () => {
+  test("GIVEN GASP in the wallet > threshold AND assets are not paired with GASP AND sale amount > threshold THEN operation succeeds and GASPs are locked", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -577,7 +577,7 @@ describe("SingleSell, user has sold asset and GASP", () => {
     expect(stringToBN(gaspTokenAmount.reserved)).bnEqual(threshold);
   });
 
-  test("GIVEN GASP in the wallet > threshold AND sale amount > threshold THEN operation succeeds", async () => {
+  test("GIVEN GASP in the wallet > threshold AND sale amount > threshold THEN operation succeeds and GASPs are unlocked", async () => {
     await Sudo.batchAsSudoFinalized(
       ...(await addTestExtrinsic(
         [firstCurrency, secondCurrency],
@@ -797,7 +797,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     ]);
   });
 
-  test("GIVEN sellAsset operation AND sale amount > threshold THEN operation fails", async () => {
+  test("GIVEN sellAsset operation AND sale amount > threshold THEN operation fails on client", async () => {
     await prepareForMultiswapScenario(
       [firstCurrency, secondCurrency, thirdCurrency],
       "Xyk",
@@ -820,7 +820,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     );
   });
 
-  test("GIVEN sellAsset operation AND sale amount > threshold AND Y-Z pool is StableSwap THEN operation fails", async () => {
+  test("GIVEN sellAsset operation AND sale amount > threshold AND Y-Z pool is StableSwap THEN operation fails on client", async () => {
     const poolEvent = await prepareForMultiswapScenario(
       [firstCurrency, secondCurrency, thirdCurrency],
       "StableSwap",
@@ -843,7 +843,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     );
   });
 
-  test("GIVEN buyAsset operation AND amount > threshold THEN operation fails", async () => {
+  test("GIVEN buyAsset operation AND amount > threshold THEN operation fails on client", async () => {
     await prepareForMultiswapScenario(
       [firstCurrency, secondCurrency, thirdCurrency],
       "Xyk",
@@ -867,7 +867,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     );
   });
 
-  test("GIVEN buyAsset operation AND amount > threshold AND Y-Z pool is StableSwap THEN operation fails", async () => {
+  test("GIVEN buyAsset operation AND amount > threshold AND Y-Z pool is StableSwap THEN operation fails on client", async () => {
     const poolEvent = await prepareForMultiswapScenario(
       [firstCurrency, secondCurrency, thirdCurrency],
       "StableSwap",
