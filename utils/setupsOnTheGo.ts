@@ -81,6 +81,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { estimateMaxPriorityFeePerGas } from "viem/actions";
 import { Market } from "./market";
 import fs from "fs";
+import { SignedBlock } from "@polkadot/types/interfaces";
 Assets.legacy = true;
 const L1_CHAIN = "Ethereum";
 
@@ -576,6 +577,98 @@ export async function printAllSequencerUpdates(
     }
     currBlock--;
   }
+}
+export async function printAllSwapsFromPool(
+  from: number = 0,
+  to: number,
+  poolId = 19,
+) {
+  await setupUsers();
+  await setupApi();
+  testLog.getLog().info(from);
+  const api = await getApi();
+  let currBlock = await getBlockNumber();
+  testLog
+    .getLog()
+    .info("Printing tx from now to " + to + " for pool " + poolId);
+  while (currBlock > 0) {
+    const blockHash = await api.rpc.chain.getBlockHash(currBlock);
+    const block = await api.rpc.chain.getBlock(blockHash);
+    const apiAt = await api.at(blockHash);
+    const events = await apiAt.query.system.events();
+    const eventsStr = JSON.stringify(events.toHuman()).toLocaleLowerCase();
+    const timestamp = await getBlockTimestamp(block);
+    if (timestamp > to) {
+      currBlock--;
+    } else {
+      testLog.getLog().warn("done");
+      return;
+    }
+    if (
+      eventsStr.includes("assetsswapped") &&
+      eventsStr.includes(poolId.toString())
+    ) {
+      const swaps = JSON.parse(JSON.stringify(events.toHuman()));
+      const filtered = swaps
+        //@ts-ignore
+        .filter(
+          //@ts-ignore
+          (event) =>
+            event.event.section.toLowerCase() === "market" &&
+            event.event.method.toLowerCase() === "assetsswapped",
+        )
+        //@ts-ignore
+        .flatMap((event) => event.event.data.swaps) // Extract swaps array
+        //@ts-ignore
+        .filter((swap) => swap.poolId === poolId.toString()); // Filter swaps for pool 19
+
+      //@ts-ignore
+      filtered.forEach((swap) => {
+        //testLog.getLog().info("aaaaa " + JSON.stringify(swap));
+        if (JSON.parse(JSON.stringify(swap)).poolId === poolId.toString()) {
+          testLog
+            .getLog()
+            .info("Block " + currBlock + " timestamp " + timestamp);
+          testLog
+            .getLog()
+            .warn(
+              `${stringToBN(
+                JSON.parse(JSON.stringify(swap)).assetIn,
+              ).toString()}  Amount In: ${stringToBN(
+                JSON.parse(JSON.stringify(swap)).amountIn,
+              ).toString()},${stringToBN(
+                JSON.parse(JSON.stringify(swap)).assetOut,
+              ).toString()} Amount Out: ${stringToBN(
+                JSON.parse(JSON.stringify(swap)).amountOut,
+              ).toString()}`,
+            );
+        }
+      });
+      //testLog.getLog().info(JSON.stringify(swaps));
+    }
+    //
+    //    if (txs.length > 0) {
+    //      testLog.getLog().info("Block " + currBlock);
+    //      testLog.getLog().info(JSON.stringify(readabaleTxs));
+    //      testLog.getLog().info(JSON.stringify(txs));
+    //    }
+  }
+}
+async function getBlockTimestamp(block: SignedBlock): Promise<number> {
+  let timestamp = 0;
+  block.block.extrinsics.forEach(
+    //@ts-ignore
+    ({ method: { args, method, section } }) => {
+      // check for timestamp.set
+      if (section === "timestamp" && method === "set") {
+        // extract the Option<Moment> as Moment
+        //testLog.getLog().info(args[0].toHuman());
+        const moment = stringToBN(args[0].toHuman()!.toString());
+        timestamp = moment.toNumber();
+      }
+    },
+  );
+  return timestamp;
 }
 export async function printAllTxsDoneByUser(userAddress: string) {
   await setupUsers();
