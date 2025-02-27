@@ -298,6 +298,7 @@ describe("SingleSell, user has only sold asset", () => {
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
 
+    // TODO: change this code when we find the possibility to calculate sell price without fee for stableswap pools
     // const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
 
     // const sellPriceNoFee = calculate_sell_price_local_no_fee(
