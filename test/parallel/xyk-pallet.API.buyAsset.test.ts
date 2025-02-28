@@ -159,7 +159,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
+      expect(eventResponse.data).toEqual(xykErrors.ExcessiveInputAmount);
     });
     // https://mangatafinance.atlassian.net/browse/GASP-1872
     // await validateUnmodified(firstCurrency, secondCurrency, testUser1, [
@@ -186,7 +186,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       ).then((result) => {
         const eventResponse = getEventResultFromMangataTx(result);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-        expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
+        expect(eventResponse.data).toEqual(xykErrors.ExcessiveInputAmount);
       });
     } catch (e) {
       error = true;
@@ -224,7 +224,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.ExcesiveInputAmount);
+      expect(eventResponse.data).toEqual(xykErrors.ExcessiveInputAmount);
     });
 
     await validateUserPaidFeeForFailedTx(
