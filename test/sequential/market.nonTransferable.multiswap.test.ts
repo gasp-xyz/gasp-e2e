@@ -29,6 +29,7 @@ import {
 } from "gasp-sdk";
 import { getLiquidityAssetId, getTokensAccountInfo } from "../../utils/tx";
 import { stringToBN } from "../../utils/utils";
+import { calculateBuyPriceByMarket } from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -230,23 +231,15 @@ test("User can't sell GASP in multiswap operation (GASP token in the middle)", a
 test("Happy path - multiswap with only stable pools", async () => {
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token3);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token5);
-  const firstSwapAmount = stringToBN(
-    JSON.stringify(
-      await getApi().rpc.market.calculate_sell_price(
-        liqIds[3],
-        token3,
-        BN_TEN_THOUSAND,
-      ),
-    ),
+  const firstSwapAmount = await calculateBuyPriceByMarket(
+    liqIds[3],
+    token3,
+    BN_TEN_THOUSAND,
   );
-  const secondSwapAmount = stringToBN(
-    JSON.stringify(
-      await getApi().rpc.market.calculate_sell_price(
-        liqIds[4],
-        token4,
-        firstSwapAmount,
-      ),
-    ),
+  const secondSwapAmount = await calculateBuyPriceByMarket(
+    liqIds[4],
+    token4,
+    firstSwapAmount,
   );
 
   await Sudo.asSudoFinalized(
@@ -277,23 +270,15 @@ test("Happy path - multiswap with stable and xyk pools", async () => {
   const liqIdXyk = await getLiquidityAssetId(token5, token6);
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token4);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token6);
-  const firstSwapAmount = stringToBN(
-    JSON.stringify(
-      await getApi().rpc.market.calculate_sell_price(
-        liqIds[4],
-        token4,
-        BN_TEN_THOUSAND,
-      ),
-    ),
+  const firstSwapAmount = await calculateBuyPriceByMarket(
+    liqIds[4],
+    token4,
+    BN_TEN_THOUSAND,
   );
-  const secondSwapAmount = stringToBN(
-    JSON.stringify(
-      await getApi().rpc.market.calculate_sell_price(
-        liqIdXyk,
-        token5,
-        firstSwapAmount,
-      ),
-    ),
+  const secondSwapAmount = await calculateBuyPriceByMarket(
+    liqIdXyk,
+    token5,
+    firstSwapAmount,
   );
 
   await Sudo.asSudoFinalized(
