@@ -29,7 +29,7 @@ import {
 } from "gasp-sdk";
 import { getLiquidityAssetId, getTokensAccountInfo } from "../../utils/tx";
 import { stringToBN } from "../../utils/utils";
-import { calculateBuyPriceByMarket } from "../../utils/feeLockHelper";
+import { calculateSellPriceByMarket } from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -231,12 +231,12 @@ test("User can't sell GASP in multiswap operation (GASP token in the middle)", a
 test("Happy path - multiswap with only stable pools", async () => {
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token3);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token5);
-  const firstSwapAmount = await calculateBuyPriceByMarket(
+  const firstSwapAmount = await calculateSellPriceByMarket(
     liqIds[3],
     token3,
     BN_TEN_THOUSAND,
   );
-  const secondSwapAmount = await calculateBuyPriceByMarket(
+  const secondSwapAmount = await calculateSellPriceByMarket(
     liqIds[4],
     token4,
     firstSwapAmount,
@@ -270,12 +270,12 @@ test("Happy path - multiswap with stable and xyk pools", async () => {
   const liqIdXyk = await getLiquidityAssetId(token5, token6);
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token4);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token6);
-  const firstSwapAmount = await calculateBuyPriceByMarket(
+  const firstSwapAmount = await calculateSellPriceByMarket(
     liqIds[4],
     token4,
     BN_TEN_THOUSAND,
   );
-  const secondSwapAmount = await calculateBuyPriceByMarket(
+  const secondSwapAmount = await calculateSellPriceByMarket(
     liqIdXyk,
     token5,
     firstSwapAmount,
