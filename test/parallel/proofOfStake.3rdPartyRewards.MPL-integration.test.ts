@@ -12,7 +12,14 @@ import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_HUNDRED, BN_ONE, BN_TEN_THOUSAND, BN_THOUSAND, BN_ZERO, signTx } from "gasp-sdk";
+import {
+  BN_HUNDRED,
+  BN_ONE,
+  BN_TEN_THOUSAND,
+  BN_THOUSAND,
+  BN_ZERO,
+  signTx,
+} from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { testLog } from "../../utils/Logger";
@@ -60,7 +67,11 @@ describe("Proof of stake tests", () => {
       Assets.mintToken(newToken, testUser0, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
       Assets.mintToken(newToken, testUser1, Assets.DEFAULT_AMOUNT.muln(40e6)),
-      Assets.mintToken(newToken, testUser2, BN_TEN_THOUSAND.mul(Assets.MG_UNIT)),
+      Assets.mintToken(
+        newToken,
+        testUser2,
+        BN_TEN_THOUSAND.mul(Assets.MG_UNIT),
+      ),
       Assets.mintToken(newToken, testUser3, Assets.DEFAULT_AMOUNT),
       Assets.mintToken(newToken, testUser4, Assets.DEFAULT_AMOUNT),
       Assets.mintNative(testUser0, Assets.DEFAULT_AMOUNT.muln(40e6).muln(2)),

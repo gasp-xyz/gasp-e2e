@@ -323,7 +323,7 @@ export async function depositAndWait(
       .pendingDeposits[0] as unknown as PalletRolldownMessagesDeposit;
 
     const balanceBefore = await depositor.getBalanceForEthToken(
-        getL1(l1)!.contracts.dummyErc20.address,
+      getL1(l1)!.contracts.dummyErc20.address,
     );
     const res = await Ferry.ferryThisDeposit(ferrier, deposit, l1);
 
@@ -473,14 +473,14 @@ export async function waitForBatchWithRequest(
       });
 
     if (root) {
-      const range = await publicClient.readContract({ 
+      const range = await publicClient.readContract({
         address: testChain.contracts.rollDown.address,
         abi: abi,
         functionName: "merkleRootRange",
         args: [root as string],
-        blockTag: "latest"
+        blockTag: "latest",
       });
-      return { start: (range as any).start, end: (range as any).end};
+      return { start: (range as any).start, end: (range as any).end };
     }
     currBlock = await publicClient.getBlockNumber();
     await sleep(5000);

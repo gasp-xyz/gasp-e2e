@@ -623,6 +623,7 @@ export async function printAllSwapsFromPool(
         .filter((swap) => swap.poolId === poolId.toString()); // Filter swaps for pool 19
 
       //@ts-ignore
+      // eslint-disable-next-line no-loop-func
       filtered.forEach((swap) => {
         //testLog.getLog().info("aaaaa " + JSON.stringify(swap));
         if (JSON.parse(JSON.stringify(swap)).poolId === poolId.toString()) {

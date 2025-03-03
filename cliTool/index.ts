@@ -149,7 +149,7 @@ async function app(): Promise<any> {
         "listExtrinsics",
         "Track deposit transaction",
         "Track withdrawal transaction",
-        "printAllSwapsFromPool"
+        "printAllSwapsFromPool",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
