@@ -29,6 +29,7 @@ import {
 } from "gasp-sdk";
 import { getLiquidityAssetId, getTokensAccountInfo } from "../../utils/tx";
 import { stringToBN } from "../../utils/utils";
+import { calculateSellPriceByMarket } from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -230,6 +231,17 @@ test("User can't sell GASP in multiswap operation (GASP token in the middle)", a
 test("Happy path - multiswap with only stable pools", async () => {
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token3);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token5);
+  const firstSwapAmount = await calculateSellPriceByMarket(
+    liqIds[3],
+    token3,
+    BN_TEN_THOUSAND,
+  );
+  const secondSwapAmount = await calculateSellPriceByMarket(
+    liqIds[4],
+    token4,
+    firstSwapAmount,
+  );
+
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
@@ -246,21 +258,29 @@ test("Happy path - multiswap with only stable pools", async () => {
   });
   const userBalance1AfterSwap = await getTokensAccountInfo(testUser, token3);
   const userBalance2AfterSwap = await getTokensAccountInfo(testUser, token5);
-  //TODO: we need to use RPC function here (when market RPCs would work) so we can assert the values more precisely
-  //https://github.com/gasp-xyz/gasp-e2e/pull/550#discussion_r1923929580
   expect(stringToBN(userBalance1AfterSwap.free)).bnEqual(
     stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
-  expect(stringToBN(userBalance2AfterSwap.free)).bnGt(
-    stringToBN(userBalance2BeforeSwap.free),
+  expect(stringToBN(userBalance2AfterSwap.free)).bnEqual(
+    stringToBN(userBalance2BeforeSwap.free).add(secondSwapAmount),
   );
 });
 
 test("Happy path - multiswap with stable and xyk pools", async () => {
   const liqIdXyk = await getLiquidityAssetId(token5, token6);
-
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token4);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token6);
+  const firstSwapAmount = await calculateSellPriceByMarket(
+    liqIds[4],
+    token4,
+    BN_TEN_THOUSAND,
+  );
+  const secondSwapAmount = await calculateSellPriceByMarket(
+    liqIdXyk,
+    token5,
+    firstSwapAmount,
+  );
+
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
@@ -277,11 +297,10 @@ test("Happy path - multiswap with stable and xyk pools", async () => {
   });
   const userBalance1AfterSwap = await getTokensAccountInfo(testUser, token4);
   const userBalance2AfterSwap = await getTokensAccountInfo(testUser, token6);
-  //TODO: we need to use RPC function here (when market RPCs would work) so we can assert the values more precisely
   expect(stringToBN(userBalance1AfterSwap.free)).bnEqual(
     stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
-  expect(stringToBN(userBalance2AfterSwap.free)).bnGt(
-    stringToBN(userBalance2BeforeSwap.free),
+  expect(stringToBN(userBalance2AfterSwap.free)).bnEqual(
+    stringToBN(userBalance2BeforeSwap.free).add(secondSwapAmount),
   );
 });
