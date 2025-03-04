@@ -147,6 +147,7 @@
     "test-nonTransToken": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=nonTransToken --forceExit ",
     "test-sudoRemoval": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --group=sudo-removing --forceExit ",
     "test-issuanceConfig": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-seq; node --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --runInBand --group=issuanceConfig --forceExit ",
+    "test-marketSwap": "export JEST_HTML_REPORTERS_PUBLIC_PATH=reports/html-report-parallel;rm nonce.db ; rm sudo.lock; node --expose-gc --experimental-specifier-resolution=node --loader ts-node/esm --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --ci --group=marketSwap --forceExit",
     "runtimeUpgrade": " jest --verbose --ci --group=upgradeRuntime --runInBand --forceExit"
   },
   "devDependencies": {

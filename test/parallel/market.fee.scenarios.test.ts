@@ -1,6 +1,6 @@
 /*
  *
- * @group parallel
+ * @group marketSwap
  */
 
 import { jest } from "@jest/globals";
