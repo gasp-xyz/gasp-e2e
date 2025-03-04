@@ -1,6 +1,6 @@
 /*
  *
- * @group parallel
+ * @group marketFee
  */
 
 import { jest } from "@jest/globals";
