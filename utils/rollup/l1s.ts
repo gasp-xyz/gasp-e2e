@@ -42,7 +42,7 @@ export const EthAnvil: TestChain = defineChain({
   gaspName: "Ethereum",
 }) as any as TestChain;
 export const ArbAnvil: TestChain = defineChain({
-  id: 31_337,
+  id: 31_338,
   name: "ArbAnvil",
   nativeCurrency: {
     decimals: 18,

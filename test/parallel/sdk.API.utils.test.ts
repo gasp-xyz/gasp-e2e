@@ -109,7 +109,9 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
   expect(getEventResultFromMangataTx(buyAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed,
   );
-  expect(getEventResultFromMangataTx(buyAssetEvent).data).toEqual("ExcesiveInputAmount");
+  expect(getEventResultFromMangataTx(buyAssetEvent).data).toEqual(
+    "ExcesiveInputAmount",
+  );
   expect(eventResult).toEqual(false);
 });
 
@@ -131,7 +133,13 @@ test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactio
 test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuccessful THEN it returns false", async () => {
   const sellAssetEvent = await signTx(
     api,
-    Market.sellAsset(liqId, token1, GASP_ASSET_ID, new BN(1000), new BN(1000000)),
+    Market.sellAsset(
+      liqId,
+      token1,
+      GASP_ASSET_ID,
+      new BN(1000),
+      new BN(1000000),
+    ),
     testUser1.keyRingPair,
   );
 

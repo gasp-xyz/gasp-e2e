@@ -54,6 +54,7 @@ import {
   monitorSequencers,
   printAllSequencerUpdates,
   depositHellSustained,
+  printAllSwapsFromPool,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -148,12 +149,16 @@ async function app(): Promise<any> {
         "listExtrinsics",
         "Track deposit transaction",
         "Track withdrawal transaction",
+        "printAllSwapsFromPool",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
       if (answers.option.includes("listExtrinsics")) {
         await printAllSequencerUpdates();
+      }
+      if (answers.option.includes("printAllSwapsFromPool")) {
+        await printAllSwapsFromPool(0, 1740614400000);
       }
 
       if (answers.option.includes("add sequencers like hell")) {

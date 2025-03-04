@@ -18,16 +18,15 @@ import {
   BN_MILLION,
   BN_THOUSAND,
   BN_ZERO,
-  MangataGenericEvent,
   signTx,
 } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
+import { ExtrinsicResult } from "../../utils/eventListeners";
 import {
-  ExtrinsicResult,
-  filterAndStringifyFirstEvent,
-} from "../../utils/eventListeners";
-import { stringToBN } from "../../utils/utils";
-import { activateLiquidity, getRewardsInfo } from "../../utils/tx";
+  activateLiquidity,
+  getPoolIdFromEvent,
+  getRewardsInfo,
+} from "../../utils/tx";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -220,12 +219,3 @@ test("Happy path - Activate rewards for stableSwap pool", async () => {
   const rewards = await getRewardsInfo(testUser.keyRingPair.address, poolId);
   expect(rewards.activatedAmount).bnEqual(BN_HUNDRED_THOUSAND);
 });
-
-async function getPoolIdFromEvent(event: MangataGenericEvent[]) {
-  const filteredEvent = await filterAndStringifyFirstEvent(
-    event,
-    "PoolCreated",
-  );
-  const poolId = stringToBN(filteredEvent.poolId);
-  return poolId;
-}

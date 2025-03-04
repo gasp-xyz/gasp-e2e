@@ -770,11 +770,11 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
   }
 
   async function buyAsset1FromEmptyPoolTest() {
-    await buyAssetFail(assetId1, assetId2, xykErrors.ExcesiveInputAmount);
+    await buyAssetFail(assetId1, assetId2, xykErrors.ExcessiveInputAmount);
   }
 
   async function buyAsset2FromEmptyPoolTest() {
-    await buyAssetFail(assetId2, assetId1, xykErrors.ExcesiveInputAmount);
+    await buyAssetFail(assetId2, assetId1, xykErrors.ExcessiveInputAmount);
   }
 
   async function mint(user: User, other: User) {

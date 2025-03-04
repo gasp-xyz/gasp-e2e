@@ -89,7 +89,7 @@ async function createAndSignSwaps(
 
   if (isBuy) {
     tx = api!.tx.market.multiswapAssetBuy(
-      liq,
+      [liq],
       assets[0],
       new BN(100),
       assets[1],
@@ -97,7 +97,7 @@ async function createAndSignSwaps(
     );
   } else {
     tx = api!.tx.market.multiswapAsset(
-      liq,
+      [liq],
       assets[0],
       new BN(100),
       assets[1],
