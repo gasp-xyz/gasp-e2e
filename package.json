@@ -1,10 +1,9 @@
 {
-  "name": "mangata-e2e-tests",
+  "name": "gasp-e2e",
   "version": "1.0.0",
-  "description": "sets asset info for assets bridged from ethereum to mangata",
+  "description": "GASP E2E tests",
   "type": "module",
-  "main": "index.ts",
-  "author": "Gleb Urvanov",
+  "author": "Gonzalo Cerro",
   "license": "GPLv3",
   "private": true,
   "scripts": {
