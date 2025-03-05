@@ -191,7 +191,6 @@ describe("Gasp UI swap tests", () => {
 
   it("Switch transaction tokens and values", async () => {
     await setupPageWithState(driver, acc_addr_short);
-    await turnOffAutorouting(driver);
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
