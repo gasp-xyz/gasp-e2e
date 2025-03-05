@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-/* eslint-disable no-loop-func */
+
 import { BN } from "@polkadot/util";
 import { MangataInstance } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
@@ -146,7 +146,7 @@ export async function runQuery(
     nodePromises.push(asyncPool(nodeThreads, indexArray, runNodeTxs));
   }
   const results = await Promise.all(nodePromises);
-  // eslint-disable-next-line no-console
+
   console.info(
     "Test results \n --------- \n" +
       JSON.stringify(results) +

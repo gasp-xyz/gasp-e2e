@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { BN } from "@polkadot/util";
 import { removeSudoDb } from "./lock";
 import "jest-extended/all";

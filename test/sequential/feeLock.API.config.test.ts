@@ -150,7 +150,6 @@ test("gasless- Changing feeLock config parameter on the fly is works robustly. E
   let unlocked = false;
   for (let index = 0; index < tries && !unlocked; index++) {
     try {
-      // eslint-disable-next-line no-loop-func
       await unlockFee(testUser1).then((result) => {
         const eventResponse = getEventResultFromMangataTx(result);
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

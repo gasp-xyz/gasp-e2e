@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group rewards-bootstrap

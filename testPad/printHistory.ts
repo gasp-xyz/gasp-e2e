@@ -23,12 +23,11 @@ async function main() {
     const apiAt = await api.at(executionBlockHeader.hash.toHex());
     const currentBlockEvents = await apiAt.query.system.events();
 
-    // eslint-disable-next-line no-console
     const records = currentBlockEvents.toHuman();
     testLog
       .getLog()
       .info(` -- Block: ${index}  has ${(records! as any[]).length} events --`);
-    // eslint-disable-next-line no-loop-func
+
     (records! as any[]).forEach((record) => {
       // Extract the phase, event and the event types
       const { event, phase } = record;
@@ -45,7 +44,6 @@ async function main() {
     const apiAt = await api.at(executionBlockHeader.hash.toHex());
     const currentBlockEvents = await apiAt.query.system.events();
 
-    // eslint-disable-next-line no-console
     const records = currentBlockEvents.toHuman();
     testLog
       .getLog()

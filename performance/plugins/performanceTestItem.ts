@@ -240,7 +240,7 @@ export class performanceTestItem implements TestItem {
         const keyPair = user.keyRingPair;
         const nonce = await mga.query.getNonce(keyPair.address);
         //lets mint some MGA assets to pay fees
-        // eslint-disable-next-line no-loop-func
+
         assets.forEach((assetId) => {
           mintPromises.push(
             mintAsset(
