@@ -14,6 +14,7 @@ import {
   waitForElementVisible,
   writeText,
 } from "../utils/Helper";
+import { sleep } from "../../utils";
 
 const DIV_FIRST_TOKEN_CONTAINER = "firstToken-container";
 const DIV_SECOND_TOKEN_CONTAINER = "secondToken-container";
@@ -35,8 +36,12 @@ const BTN_TOGGLE_TRADE_DETAILS = "toggle-trade-details";
 const BTN_SELECT_FIRST_TOKEN = "firstToken-selector-btn";
 const BTN_SELECT_SECOND_TOKEN = "secondToken-selector-btn";
 const BTN_TRADE_ROUTE_DETAILS_CLOSE = "routingDetails-close";
+const BTN_SWAP_SETTINGS_XPATH =
+  "//button[contains(@class, 'outline-none min-w-[0] bg-transparent')]";
 const INPUT_FIRST_TOKEN = "firstToken-input";
 const INPUT_SECOND_TOKEN = "secondToken-input";
+const INPUT_AUTOROUTING_CHECKBOX_XPATH =
+  "//label[contains(@class, 'rounded-full self-start')]";
 
 export enum SwapActionType {
   Swap,
@@ -52,7 +57,7 @@ export class Swap {
 
   swapAction: Record<SwapActionType, string> = {
     [SwapActionType.Swap]: "Swap tokens",
-    [SwapActionType.Network]: "Switch to Holesky",
+    [SwapActionType.Network]: "Switch to Ethereum",
   };
 
   async isDisplayed() {
@@ -71,6 +76,20 @@ export class Swap {
   async switchTokens() {
     const switchButton = buildDataTestIdXpath(BTN_SWITCH_TOKENS);
     await clickElement(this.driver, switchButton);
+  }
+
+  async openSwapSettings() {
+    await clickElement(this.driver, BTN_SWAP_SETTINGS_XPATH);
+  }
+
+  async closeSwapSettings() {
+    await clickElement(this.driver, BTN_SWAP_SETTINGS_XPATH);
+  }
+
+  async toggleAutorouting() {
+    await waitForElementVisible(this.driver, INPUT_AUTOROUTING_CHECKBOX_XPATH);
+    await sleep(1500);
+    await clickElement(this.driver, INPUT_AUTOROUTING_CHECKBOX_XPATH);
   }
 
   async isFirstTokenSelectorDisplayed() {
@@ -141,6 +160,10 @@ export class Swap {
     return parseInt(text.split(" ")[0]);
   }
 
+  async isSwapFee() {
+    return isDisplayed(this.driver, DIV_SWAP_FEE_XPATH);
+  }
+
   async isSwapFeeAlert() {
     const swapAlertState =
       buildDataTestIdXpath(DIV_FEE) + "//*[contains(@class, 'text-alert')]";
@@ -183,6 +206,28 @@ export class Swap {
     await clickElement(this.driver, secondTokenSelectorButton);
   }
 
+  async acceptGetTokenWarning() {
+    const secondTokenSelector = buildDataTestIdXpath(
+      DIV_SECOND_TOKEN_SELECTOR_CONTENT,
+    );
+    await waitForElement(this.driver, secondTokenSelector, 2000);
+    const acceptTokenWarningAccept =
+      secondTokenSelector +
+      buildXpathByElementText("button", "Ok, I understand");
+    await clickElement(this.driver, acceptTokenWarningAccept);
+  }
+
+  async acceptPayTokenWarning() {
+    const firstTokenSelector = buildDataTestIdXpath(
+      DIV_FIRST_TOKEN_SELECTOR_CONTENT,
+    );
+    await waitForElement(this.driver, firstTokenSelector, 2000);
+    const acceptTokenWarningAccept =
+      firstTokenSelector +
+      buildXpathByElementText("button", "Ok, I understand");
+    await clickElement(this.driver, acceptTokenWarningAccept);
+  }
+
   async toggleTradeDetails() {
     const tradeDetailsToggleButton = buildDataTestIdXpath(
       BTN_TOGGLE_TRADE_DETAILS,
@@ -200,7 +245,7 @@ export class Swap {
     return await isDisplayed(this.driver, tradeRate);
   }
 
-  async areTradeDetailsDisplayed() {
+  async areTradeDetailsDisplayed(gasless = false) {
     const tradeDetailsContainer = buildDataTestIdXpath(DIV_TRADE_DETAILS);
     await waitForElement(this.driver, tradeDetailsContainer);
 
@@ -208,14 +253,22 @@ export class Swap {
     const priceImpact = buildDataTestIdXpath(DIV_PRICE_IMPACT);
     const commission = buildDataTestIdXpath(DIV_COMMISION);
     const fee = buildDataTestIdXpath(DIV_FEE);
-    await waitForElementVisible(this.driver, fee);
+    await waitForElementVisible(this.driver, commission);
 
-    return await areDisplayed(this.driver, [
-      minReceived,
-      priceImpact,
-      commission,
-      fee,
-    ]);
+    if (gasless) {
+      return await areDisplayed(this.driver, [
+        minReceived,
+        priceImpact,
+        commission,
+      ]);
+    } else {
+      return await areDisplayed(this.driver, [
+        minReceived,
+        priceImpact,
+        commission,
+        fee,
+      ]);
+    }
   }
 
   async areRouteDetailsDisplayed(

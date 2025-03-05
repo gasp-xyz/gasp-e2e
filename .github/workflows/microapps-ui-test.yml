@@ -1,4 +1,4 @@
-name: Microapps UI tests
+name: Gasp develop UI tests
 
 on:
 
@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      API_URL: 'wss://collator-01-ws-rollup-frontend.gasp.xyz'
+      API_URL: 'wss://collator-01-ws-rollup-staging.gasp.xyz'
       TEST_SUDO_NAME: ${{ secrets.TEST_SUDO_NAME }}
       TEST_SCRIPT: 'test-gasp-ui'
       TEST_ENV_TAG: 'develop'
       NODE_ENV: test
-      UI_URL : 'https://gasp-testnet-dot-direct-pixel-353917.oa.r.appspot.com/'
+      UI_URL : 'https://gasp-dev-dot-direct-pixel-353917.oa.r.appspot.com/'
       SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
       MNEMONIC_META: 'twelve insect obvious hurdle control nature search response march version cake buffalo'
       PRIVKEY_META: ${{ secrets.PRIVKEY_META }}
@@ -73,13 +73,13 @@ jobs:
       - name: Set Configuration - Develop
         if: contains(github.event.client_payload.environment, 'develop') || contains(github.event.inputs.environment, 'develop')
         run:  |
-          echo 'API_URL=wss://collator-01-ws-rollup-frontend.gasp.xyz' >> $GITHUB_ENV
+          echo 'API_URL=wss://collator-01-ws-rollup-staging.gasp.xyz' >> $GITHUB_ENV
           echo 'TEST_SUDO_NAME=${{ secrets.DEV_SUDO_NAME }}' >> $GITHUB_ENV
   
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           cache: yarn
       - name: Install testmo
         run: yarn global add @testmo/testmo-cli
@@ -203,7 +203,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 20
           cache: yarn
       - name: Install testmo
         run: yarn global add @testmo/testmo-cli
