@@ -5,7 +5,10 @@
 import { getApi, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
-import { waitIfSessionWillChangeInNblocks } from "../../utils/utils";
+import {
+  waitIfSessionWillChangeInNblocks,
+  waitNewStakingRound,
+} from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
@@ -149,6 +152,7 @@ describe("Proof of stake tests", () => {
       const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken);
       testUser.addAssets([liqId, newToken, GASP_ASSET_ID]);
       await testUser.refreshAmounts();
+      await waitNewStakingRound();
       await signTx(
         getApi(),
         await ProofOfStake.activateLiquidityFor3rdpartyRewards(
@@ -189,6 +193,7 @@ describe("Proof of stake tests", () => {
       const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken2);
       testUser.addAssets([liqId, newToken2]);
       await testUser.refreshAmounts();
+      await waitNewStakingRound();
       await signTx(
         getApi(),
         api.tx.utility.batchAll([
@@ -251,6 +256,7 @@ describe("Proof of stake tests", () => {
       await waitIfSessionWillChangeInNblocks(6);
       const totalActivatedBefore =
         await ProofOfStake.totalActivatedLiquidityForSchedules(liqId, newToken);
+      await waitNewStakingRound();
       await signTx(
         getApi(),
         api.tx.utility.batchAll([
