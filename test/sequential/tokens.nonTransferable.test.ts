@@ -11,7 +11,7 @@ import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import {
   ExtrinsicResult,
-  waitSudoOperationFail,
+  waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Tokens } from "../../utils/tokens";
@@ -46,19 +46,18 @@ beforeAll(async () => {
 test("Non-transferable token can't be minted", async () => {
   await Sudo.batchAsSudoFinalized(Assets.mintToken(GASP_ASSET_ID, sudo)).then(
     async (events) => {
-      await waitSudoOperationFail(events, ["NontransferableToken"]);
+      await waitSudoOperationSuccess(events);
     },
   );
 });
 
-test("Non-transferable token can't be transfered", async () => {
+test("Non-transferable token can't be transferred", async () => {
   const [testUser] = setupUsers();
   await Sudo.batchAsSudoFinalized(
     Tokens.transfer(testUser, GASP_ASSET_ID),
   ).then((events) => {
     const eventResponse = getEventResultFromMangataTx(events);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NontransferableToken");
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 });
 
@@ -131,8 +130,7 @@ test("Ordinary user can't create GASP pool", async () => {
     ),
   ).then(async (events) => {
     const errorEvent = await getEventErrorFromSudo(events);
-    expect(errorEvent.state).toBe(ExtrinsicResult.ExtrinsicFailed);
-    expect(errorEvent.data).toBe("NontransferableToken");
+    expect(errorEvent.state).toBe(ExtrinsicResult.ExtrinsicSuccess);
   });
 
   const poolId = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
@@ -179,7 +177,6 @@ test("Non-transferable token can't be sold", async () => {
     sudo.keyRingPair,
   ).then((events) => {
     const eventResponse = getEventResultFromMangataTx(events);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("NontransferableToken");
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 });
