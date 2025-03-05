@@ -535,7 +535,9 @@ export async function doActionInDifferentWindow(
   iterator = handle.entries();
   value = iterator.next().value;
   testLog.getLog().info("Windows:" + JSON.stringify(handle));
-  await driver.switchTo().window(value[1]);
+  if (value) {
+    await driver.switchTo().window(value[1]);
+  }
   return;
 }
 

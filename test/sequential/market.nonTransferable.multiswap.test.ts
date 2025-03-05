@@ -15,7 +15,6 @@ import { Sudo } from "../../utils/sudo";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
   ExtrinsicResult,
-  waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { Market } from "../../utils/market";

@@ -2,7 +2,7 @@
 import { BN_ONE, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
-import _ from "lodash-es";
+import * as _ from "lodash-es";
 import { getApi, getMangataInstance } from "./api";
 import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
@@ -190,7 +190,9 @@ export const waitForAllEventsFromMatchingBlock = async (
 
       events.forEach((e) => logEvent(api.runtimeChain, e));
 
-      const filtered = _.filter(events, ({ event }) => matchBlock(event));
+      const filtered = _.filter(events, ({ event }: { event: any }) =>
+        matchBlock(event),
+      );
       if (filtered.length > 0) {
         resolve(events.map(({ event }) => event));
         unsub();
@@ -225,7 +227,7 @@ export const waitForEvents = async (
 
         const filtered = _.filter(
           events,
-          ({ event }) =>
+          ({ event }: { event: any }) =>
             `${event.section}.${event.method}` === method &&
             (withData.length > 0
               ? JSON.stringify(event.data.toHuman()).includes(withData)

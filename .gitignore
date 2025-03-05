@@ -13,3 +13,5 @@ reports/**/*
 .yarn/cache
 .yarn/*.*
 *.sqlite
+
+package-lock.json

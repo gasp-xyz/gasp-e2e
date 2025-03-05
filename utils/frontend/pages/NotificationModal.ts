@@ -103,11 +103,11 @@ export class NotificationModal {
     const [headerText, txInfo] = text.split("\n");
     const regexfindValues = /([0-9]?.[0-9]+)\s/g;
     const amounts = txInfo.match(regexfindValues)!;
-    const regexfindAssetNames = /[0-9]?.[0-9]+\s(?<AssetName>[a-zA-Z]+)/gm;
+    const regexfindAssetNames = /[0-9]?.[0-9]+\s([a-zA-Z]+)/gm;
     const iterator = txInfo.matchAll(regexfindAssetNames);
     const assetNames: string[] = [];
     for (const match of iterator) {
-      assetNames.push(match.groups!.AssetName);
+      assetNames.push(match[1]);
     }
 
     return {
