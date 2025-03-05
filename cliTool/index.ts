@@ -55,6 +55,7 @@ import {
   printAllSequencerUpdates,
   depositHellSustained,
   printAllSwapsFromPool,
+  printAllCouncilActions,
 } from "../utils/setupsOnTheGo";
 import {
   findErrorMetadata,
@@ -150,12 +151,16 @@ async function app(): Promise<any> {
         "Track deposit transaction",
         "Track withdrawal transaction",
         "printAllSwapsFromPool",
+        "printAllCouncilActions",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
       console.log("Answers::: " + JSON.stringify(answers, null, "  "));
       if (answers.option.includes("listExtrinsics")) {
         await printAllSequencerUpdates();
+      }
+      if (answers.option.includes("printAllCouncilActions")) {
+        await printAllCouncilActions(0, 1740614400000);
       }
       if (answers.option.includes("printAllSwapsFromPool")) {
         await printAllSwapsFromPool(0, 1740614400000);

@@ -241,7 +241,7 @@ export async function vote(motionId: number) {
   await Sudo.batchAsSudoFinalized(...txs);
 }
 export async function close(motionId: number) {
-  const fundAcc = "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac";
+  const fundAcc = "0x8960911c51ead00db4cca88faf395672458da676";
   await setupApi();
   await setupUsers();
   await initApi();
@@ -581,7 +581,7 @@ export async function printAllSequencerUpdates(
 export async function printAllSwapsFromPool(
   from: number = 0,
   to: number,
-  poolId = 19,
+  poolId = 162,
 ) {
   await setupUsers();
   await setupApi();
@@ -655,6 +655,65 @@ export async function printAllSwapsFromPool(
     //    }
   }
 }
+
+export async function printAllCouncilActions(from: number = 0, to: number) {
+  await setupUsers();
+  await setupApi();
+  testLog.getLog().info(from);
+  const api = await getApi();
+  let currBlock = await getBlockNumber();
+  testLog.getLog().info("Printing tx from now to " + to + " for council ");
+  while (currBlock > 0) {
+    const blockHash = await api.rpc.chain.getBlockHash(currBlock);
+    const block = await api.rpc.chain.getBlock(blockHash);
+    const apiAt = await api.at(blockHash);
+    const events = await apiAt.query.system.events();
+    const eventsStr = JSON.stringify(events.toHuman()).toLocaleLowerCase();
+    const timestamp = await getBlockTimestamp(block);
+    if (timestamp > to) {
+      currBlock--;
+    } else {
+      testLog.getLog().warn("done");
+      return;
+    }
+    if (eventsStr.includes("council")) {
+      const swaps = JSON.parse(JSON.stringify(events.toHuman()));
+      const filtered = swaps
+        //@ts-ignore
+        .filter(
+          //@ts-ignore
+          (event) => event.event.section.toLowerCase() === "council",
+        );
+
+      //@ts-ignore
+      // eslint-disable-next-line no-loop-func
+      filtered.forEach((swap) => {
+        testLog.getLog().info("Block " + currBlock + " timestamp " + timestamp);
+        testLog
+          .getLog()
+          .warn(
+            `${stringToBN(
+              JSON.parse(JSON.stringify(swap)).assetIn,
+            ).toString()}  Amount In: ${stringToBN(
+              JSON.parse(JSON.stringify(swap)).amountIn,
+            ).toString()},${stringToBN(
+              JSON.parse(JSON.stringify(swap)).assetOut,
+            ).toString()} Amount Out: ${stringToBN(
+              JSON.parse(JSON.stringify(swap)).amountOut,
+            ).toString()}`,
+          );
+      });
+      //testLog.getLog().info(JSON.stringify(swaps));
+    }
+    //
+    //    if (txs.length > 0) {
+    //      testLog.getLog().info("Block " + currBlock);
+    //      testLog.getLog().info(JSON.stringify(readabaleTxs));
+    //      testLog.getLog().info(JSON.stringify(txs));
+    //    }
+  }
+}
+
 async function getBlockTimestamp(block: SignedBlock): Promise<number> {
   let timestamp = 0;
   block.block.extrinsics.forEach(
