@@ -198,7 +198,7 @@ describe("Gasp UI swap tests", () => {
     await swap.pickPayToken(GASP_ASSET_NAME, "");
     await swap.acceptPayTokenWarning();
     await swap.pickGetToken(ETH_ASSET_NAME, ETH_ORIGIN);
-    await swap.setPayTokenAmount("100");
+    await swap.setPayTokenAmount("0.01");
     const getTokenAmount = await swap.fetchGetAssetAmount();
     expect(parseFloat(getTokenAmount)).toBeGreaterThan(0);
 
