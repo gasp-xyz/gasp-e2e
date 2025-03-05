@@ -58,7 +58,7 @@ describe("Gasp UI swap tests", () => {
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
     await swap.pickPayToken(ETH_ASSET_NAME, ETH_ORIGIN);
-    await swap.pickGetToken(GASP_ASSET_NAME,"");
+    await swap.pickGetToken(GASP_ASSET_NAME, "");
     await swap.acceptGetTokenWarning();
     await swap.setPayTokenAmount("10000000");
     const getTokenAmount = await swap.fetchGetAssetAmount();
@@ -78,7 +78,7 @@ describe("Gasp UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(GASP_ASSET_NAME,"");
+    await swap.pickPayToken(GASP_ASSET_NAME, "");
     await swap.acceptPayTokenWarning();
     await swap.pickGetToken(ETH_ASSET_NAME, ETH_ORIGIN);
     await swap.setPayTokenAmount(tokensAmountBefore.toString());
@@ -102,7 +102,7 @@ describe("Gasp UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(GASP_ASSET_NAME,"");
+    await swap.pickPayToken(GASP_ASSET_NAME, "");
     await swap.acceptPayTokenWarning();
     await swap.pickGetToken(ETH_ASSET_NAME, ETH_ORIGIN);
     await swap.setPayTokenAmount("1000");
@@ -133,7 +133,7 @@ describe("Gasp UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(GASP_ASSET_NAME,"");
+    await swap.pickPayToken(GASP_ASSET_NAME, "");
     await swap.acceptPayTokenWarning();
     await swap.pickGetToken(ETH_ASSET_NAME, ETH_ORIGIN);
     await swap.setPayTokenAmount("100");
@@ -151,7 +151,7 @@ describe("Gasp UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(GASP_ASSET_NAME,"");
+    await swap.pickPayToken(GASP_ASSET_NAME, "");
     await swap.acceptPayTokenWarning();
     await swap.pickGetToken(ETH_ASSET_NAME, ETH_ORIGIN);
     await swap.setPayTokenAmount("10001");
@@ -172,7 +172,7 @@ describe("Gasp UI swap tests", () => {
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
     await swap.pickPayToken(ETH_ASSET_NAME, ETH_ORIGIN);
-    await swap.pickGetToken(GASP_ASSET_NAME,"");
+    await swap.pickGetToken(GASP_ASSET_NAME, "");
     await swap.acceptGetTokenWarning();
     await swap.setPayTokenAmount("1.01");
     const getTokenAmount = await swap.fetchGetAssetAmount();
@@ -195,7 +195,7 @@ describe("Gasp UI swap tests", () => {
     const swap = new Swap(driver);
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
-    await swap.pickPayToken(GASP_ASSET_NAME,"");
+    await swap.pickPayToken(GASP_ASSET_NAME, "");
     await swap.acceptPayTokenWarning();
     await swap.pickGetToken(ETH_ASSET_NAME, ETH_ORIGIN);
     await swap.setPayTokenAmount("100");
@@ -225,7 +225,7 @@ describe("Gasp UI swap tests", () => {
     const isSwapFrameDisplayed = await swap.isDisplayed();
     expect(isSwapFrameDisplayed).toBeTruthy();
     await swap.pickPayToken(ETH_ASSET_NAME, ETH_ORIGIN);
-    await swap.pickGetToken(GASP_ASSET_NAME,"");
+    await swap.pickGetToken(GASP_ASSET_NAME, "");
     await swap.acceptGetTokenWarning();
     await swap.setPayTokenAmount("0.0213");
     const getTokenAmount = await swap.fetchGetAssetAmount();

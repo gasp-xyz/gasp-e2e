@@ -36,10 +36,12 @@ const BTN_TOGGLE_TRADE_DETAILS = "toggle-trade-details";
 const BTN_SELECT_FIRST_TOKEN = "firstToken-selector-btn";
 const BTN_SELECT_SECOND_TOKEN = "secondToken-selector-btn";
 const BTN_TRADE_ROUTE_DETAILS_CLOSE = "routingDetails-close";
-const BTN_SWAP_SETTINGS_XPATH = "//button[contains(@class, 'outline-none min-w-[0] bg-transparent')]";
+const BTN_SWAP_SETTINGS_XPATH =
+  "//button[contains(@class, 'outline-none min-w-[0] bg-transparent')]";
 const INPUT_FIRST_TOKEN = "firstToken-input";
 const INPUT_SECOND_TOKEN = "secondToken-input";
-const INPUT_AUTOROUTING_CHECKBOX_XPATH = "//label[contains(@class, 'rounded-full self-start')]";
+const INPUT_AUTOROUTING_CHECKBOX_XPATH =
+  "//label[contains(@class, 'rounded-full self-start')]";
 
 export enum SwapActionType {
   Swap,
@@ -211,7 +213,7 @@ export class Swap {
     await waitForElement(this.driver, secondTokenSelector, 2000);
     const acceptTokenWarningAccept =
       secondTokenSelector +
-      buildXpathByElementText('button', 'Ok, I understand');
+      buildXpathByElementText("button", "Ok, I understand");
     await clickElement(this.driver, acceptTokenWarningAccept);
   }
 
@@ -222,7 +224,7 @@ export class Swap {
     await waitForElement(this.driver, firstTokenSelector, 2000);
     const acceptTokenWarningAccept =
       firstTokenSelector +
-      buildXpathByElementText('button', 'Ok, I understand');
+      buildXpathByElementText("button", "Ok, I understand");
     await clickElement(this.driver, acceptTokenWarningAccept);
   }
 
@@ -253,13 +255,13 @@ export class Swap {
     const fee = buildDataTestIdXpath(DIV_FEE);
     await waitForElementVisible(this.driver, commission);
 
-    if(gasless){
+    if (gasless) {
       return await areDisplayed(this.driver, [
         minReceived,
         priceImpact,
         commission,
       ]);
-    }else{
+    } else {
       return await areDisplayed(this.driver, [
         minReceived,
         priceImpact,
