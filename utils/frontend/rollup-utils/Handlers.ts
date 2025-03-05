@@ -18,6 +18,7 @@ import {
 import { DepositActionType, DepositModal } from "./DepositModal";
 import { WithdrawModal } from "../rollup-pages/WithdrawModal";
 import { WalletConnectModal } from "../rollup-pages/WalletConnectModal";
+import { Swap } from "../rollup-pages/Swap";
 
 export async function connectWallet(
   driver: WebDriver,
@@ -67,7 +68,7 @@ export async function setupPage(driver: WebDriver) {
   expect(appLoaded).toBeTruthy();
   await mainPage.skipWelcomeMessage();
   // await mainPage.skipMailerIframe();
-  await mainPage.skipLaunchMessage();
+  //await mainPage.skipLaunchMessage();
 }
 
 export async function setupPagProd(driver: WebDriver) {
@@ -90,6 +91,13 @@ export async function setupPageWithState(driver: WebDriver, acc_name: string) {
   const walletWrapper = new WalletWrapper(driver);
   const isAccInfoDisplayed = await walletWrapper.isAccInfoDisplayed(acc_name);
   expect(isAccInfoDisplayed).toBeTruthy();
+}
+
+export async function turnOffAutorouting(driver: WebDriver) {
+  const swap = new Swap(driver);
+  await swap.openSwapSettings();
+  await swap.toggleAutorouting();
+  await swap.closeSwapSettings();
 }
 
 export async function setupPageWithStatePr(driver: WebDriver) {
