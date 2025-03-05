@@ -193,6 +193,7 @@ describe("Proof of stake tests", () => {
       const liqId = await getLiquidityAssetId(GASP_ASSET_ID, newToken2);
       testUser.addAssets([liqId, newToken2]);
       await testUser.refreshAmounts();
+      await waitNewStakingRound();
       await signTx(
         getApi(),
         api.tx.utility.batchAll([
@@ -255,6 +256,7 @@ describe("Proof of stake tests", () => {
       await waitIfSessionWillChangeInNblocks(6);
       const totalActivatedBefore =
         await ProofOfStake.totalActivatedLiquidityForSchedules(liqId, newToken);
+      await waitNewStakingRound();
       await signTx(
         getApi(),
         api.tx.utility.batchAll([
