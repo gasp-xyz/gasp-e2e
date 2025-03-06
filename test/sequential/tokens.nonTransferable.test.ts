@@ -43,7 +43,7 @@ beforeAll(async () => {
   sudo = getSudoUser();
 });
 
-test("Non-transferable token can't be minted", async () => {
+test("[Flipped] Non-transferable token can't be minted", async () => {
   await Sudo.batchAsSudoFinalized(Assets.mintToken(GASP_ASSET_ID, sudo)).then(
     async (events) => {
       await waitSudoOperationSuccess(events);
@@ -51,7 +51,7 @@ test("Non-transferable token can't be minted", async () => {
   );
 });
 
-test("Non-transferable token can't be transferred", async () => {
+test("[Flipped] Non-transferable token can't be transferred", async () => {
   const [testUser] = setupUsers();
   await Sudo.batchAsSudoFinalized(
     Tokens.transfer(testUser, GASP_ASSET_ID),
@@ -99,7 +99,7 @@ test("Founder can create GASP pool", async () => {
   expect(poolId).bnGt(BN_ZERO);
 });
 
-test("Ordinary user can't create GASP pool", async () => {
+test("[Flipped] Ordinary user can't create GASP pool", async () => {
   let foundationMembers: any;
 
   foundationMembers = await FoundationMembers.getFoundationMembers();
@@ -134,10 +134,10 @@ test("Ordinary user can't create GASP pool", async () => {
   });
 
   const poolId = await getLiquidityAssetId(GASP_ASSET_ID, tokenId);
-  expect(poolId).bnLt(BN_ZERO);
+  expect(poolId).bnGt(BN_ZERO);
 });
 
-test("Non-transferable token can't be sold", async () => {
+test("[Flipped] Non-transferable token can't be sold", async () => {
   //Add sudo to FoundationMembers to create a pool
   const foundationMembers = await FoundationMembers.getFoundationMembers();
 

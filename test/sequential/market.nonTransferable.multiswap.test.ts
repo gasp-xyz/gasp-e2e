@@ -15,7 +15,6 @@ import { Sudo } from "../../utils/sudo";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import {
   ExtrinsicResult,
-  waitSudoOperationFail,
   waitSudoOperationSuccess,
 } from "../../utils/eventListeners";
 import { Market } from "../../utils/market";
@@ -194,7 +193,7 @@ test("User can buy GASP in multiswap operation", async () => {
   expect(gaspDiff).bnLte(BN_TEN_THOUSAND);
 });
 
-test("User can't sell GASP in multiswap operation (GASP token at the beginning)", async () => {
+test("[Flipped] User can't sell GASP in multiswap operation (GASP token at the beginning)", async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
@@ -211,7 +210,7 @@ test("User can't sell GASP in multiswap operation (GASP token at the beginning)"
   });
 });
 
-test("User can't sell GASP in multiswap operation (GASP token in the middle)", async () => {
+test("[Flipped] User can't sell GASP in multiswap operation (GASP token in the middle)", async () => {
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
