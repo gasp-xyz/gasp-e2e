@@ -9625,27 +9625,27 @@ ganache@7.9.1:
     bufferutil "4.0.5"
     utf-8-validate "5.0.7"
 
-gasp-sdk@0.0.2-feature-gasp-1840.2:
-  version "0.0.2-feature-gasp-1840.2"
-  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-feature-gasp-1840.2.tgz#c794746a6445058360b5708e5e7066f01974d40b"
-  integrity sha512-+QghQuxyhb8pdaKipqShK4Ru48BVddp8xpaEHvG+mtmOoDL5Yl1kmRI6phDyahuT+r3XufTwlEZElBSTlp8u0g==
+gasp-sdk@0.0.2-eth-rollup-develop.120:
+  version "0.0.2-eth-rollup-develop.120"
+  resolved "https://registry.yarnpkg.com/gasp-sdk/-/gasp-sdk-0.0.2-eth-rollup-develop.120.tgz#dc017d9d2b454e81eac79c17184f463541105730"
+  integrity sha512-Q1OcIA7t3ZK1x/7ofdyx0x1alKCJxzBEWdg86KrC1GlqQqXY+9kM/9aYxzx6YBVAahqkMFhtnD9f6E5MZxlzaw==
   dependencies:
     big.js "6.2.1"
-    gasp-type-definitions "0.0.2-feature-gasp-1840.2"
+    gasp-type-definitions "0.0.2-eth-rollup-develop.124"
     tslib "^2.3.0"
     tslog "4.8.2"
     viem "^2.17.4"
     wagmi "^2.10.10"
 
-gasp-type-definitions@0.0.2-feature-gasp-1840.2:
-  version "0.0.2-feature-gasp-1840.2"
-  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-feature-gasp-1840.2.tgz#f6fc7559307e0f666c11637a6c52b8bd7f73d14b"
-  integrity sha512-a+UjqRDFpX4lmfChFuW9nT1nBN5opnipwi3eUmpZroKW6kA/m8kOlJGCGaH3bhbAt27FYJtIywvW5HM2ifIhlg==
+gasp-type-definitions@0.0.2-eth-rollup-develop.124:
+  version "0.0.2-eth-rollup-develop.124"
+  resolved "https://registry.yarnpkg.com/gasp-type-definitions/-/gasp-type-definitions-0.0.2-eth-rollup-develop.124.tgz#1c4ae72a405e1dde14056cc29a77fe60da4c4184"
+  integrity sha512-eD5iXPFNnYvq//IaAMFpUFRyjx798V3kKMdCYwKYFN4GAqImEaEEZI+ijiFnB4DKfBHCJyxUpuPs/PyBOWpWtA==
 
-gasp-types@0.0.2-feature-gasp-1840.2:
-  version "0.0.2-feature-gasp-1840.2"
-  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-feature-gasp-1840.2.tgz#f3c5c873142dba8bfd6ec701eb9d1b602b34ee39"
-  integrity sha512-Venq29HvkNKjeyf9EAcV5tkuA6lir4RPYDb/eHjnHnEWDupvYqzSJ4RNKqZjfrcWihCeWD59l7qIwUM8JxHEfw==
+gasp-types@0.0.2-eth-rollup-develop.120:
+  version "0.0.2-eth-rollup-develop.120"
+  resolved "https://registry.yarnpkg.com/gasp-types/-/gasp-types-0.0.2-eth-rollup-develop.120.tgz#f3ab69c62ab823975b4e3664c8e2bd3d97353092"
+  integrity sha512-2SbG22QFXegBeczoXiF1vJBuhEXPom300ASTRxQIhIK6E2AR6H6oCHS16FEXf/ctgGqXG5geNXPKZ4aVJijJAg==
 
 gauge@^4.0.3:
   version "4.0.4"
