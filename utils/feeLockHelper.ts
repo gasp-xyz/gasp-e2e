@@ -110,3 +110,39 @@ export async function calculateBuyPriceByMarket(
   );
   return value;
 }
+
+export async function calculateSellPriceWithImpact(
+  poolId: BN,
+  sellAssetId: BN,
+  sellAmount: BN,
+) {
+  const api = getApi();
+  const value = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_sell_price_with_impact(
+        poolId,
+        sellAssetId,
+        sellAmount,
+      ),
+    ),
+  );
+  return [stringToBN(value[0]), stringToBN(value[1])];
+}
+
+export async function calculateBuyPriceWithImpact(
+  poolId: BN,
+  sellAssetId: BN,
+  sellAmount: BN,
+) {
+  const api = getApi();
+  const value = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_buy_price_with_impact(
+        poolId,
+        sellAssetId,
+        sellAmount,
+      ),
+    ),
+  );
+  return [stringToBN(value[0]), stringToBN(value[1])];
+}
