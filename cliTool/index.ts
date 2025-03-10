@@ -187,7 +187,7 @@ async function app(): Promise<any> {
         );
         await Rolldown.createWithdrawalsInBatch(500, userAddress, addr, chain);
       }
-      if (answers.option.includes("Close All L1 items")) {
+      if (answers.option === "Close All L1 items") {
         return inquirer
           .prompt([
             {

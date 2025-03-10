@@ -14,6 +14,35 @@ export interface TestChain extends Chain {
   };
   gaspName: string;
 }
+
+export const EthereumProd: TestChain = defineChain({
+  id: 1,
+  name: "EthAnvil",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Ethereum",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://eth.llamarpc.com"],
+      webSocket: ["wss://mainnet.gateway.tenderly.co"],
+    },
+  },
+  contracts: {
+    rollDown: {
+      address: "0x79d968d9017B96f202aD4673A2c1BBbdc905A4ca",
+    },
+    dummyErc20: {
+      address: "0xc351628EB244ec633d5f21fBD6621e1a683B1181",
+    },
+    native: {
+      address: "0x0000000000000000000000000000000000000001",
+    },
+  },
+  gaspName: "Ethereum",
+}) as any as TestChain;
+
 export const EthAnvil: TestChain = defineChain({
   id: 31_337,
   name: "EthAnvil",
