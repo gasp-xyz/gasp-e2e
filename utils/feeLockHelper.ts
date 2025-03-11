@@ -93,7 +93,7 @@ export async function calculateSellPriceByMarket(
 
 export async function calculateBuyPriceByMarket(
   poolId: BN,
-  sellAssetId: BN,
+  buyAssetId: BN,
   sellAmount: BN,
 ) {
   const api = getApi();
@@ -102,7 +102,7 @@ export async function calculateBuyPriceByMarket(
       JSON.stringify(
         await api.rpc.market.calculate_buy_price(
           poolId,
-          sellAssetId,
+          buyAssetId,
           sellAmount,
         ),
       ),
@@ -131,7 +131,7 @@ export async function calculateSellPriceWithImpact(
 
 export async function calculateBuyPriceWithImpact(
   poolId: BN,
-  sellAssetId: BN,
+  buyAssetId: BN,
   sellAmount: BN,
 ) {
   const api = getApi();
@@ -139,7 +139,7 @@ export async function calculateBuyPriceWithImpact(
     JSON.stringify(
       await api.rpc.market.calculate_buy_price_with_impact(
         poolId,
-        sellAssetId,
+        buyAssetId,
         sellAmount,
       ),
     ),

@@ -11,6 +11,7 @@ import { BN } from "ethereumjs-util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
   calculateBuyPriceByMarket,
+  calculateBuyPriceWithImpact,
   calculateSellPriceByMarket,
   calculateSellPriceWithImpact,
   getFeeLockMetadata,
@@ -38,6 +39,7 @@ let sudo: User;
 
 let api: ApiPromise;
 let threshold: BN;
+let liqId: BN;
 
 let firstCurrency: BN;
 let secondCurrency: BN;
@@ -71,147 +73,195 @@ beforeEach(async () => {
 
   [firstCurrency, secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
-    [threshold.muln(20), threshold.muln(20)],
+    [threshold.muln(100), threshold.muln(100)],
     sudo,
   );
 });
 
-test("RPC call calculate SellPrice for Xyk pool correctly", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Market.createPool(
-      firstCurrency,
-      threshold.muln(5),
-      secondCurrency,
-      threshold.muln(5),
-    ),
-    Assets.mintNative(testUser),
-    Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
-  );
+describe.each(["Xyk", "StableSwap"])(
+  "Check RPC calculate methods for % pools",
+  (poolType) => {
+    beforeEach(async () => {
+      const poolEvent = await Sudo.batchAsSudoFinalized(
+        Market.createPool(
+          firstCurrency,
+          threshold.muln(10),
+          secondCurrency,
+          threshold.muln(5),
+          poolType,
+        ),
+        Assets.mintNative(testUser),
+        Assets.mintToken(firstCurrency, testUser, threshold.muln(20)),
+      );
 
-  await updateFeeLockMetadata(sudo, null, null, null, [[firstCurrency, true]]);
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
 
-  const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+      if (poolType === "StableSwap") {
+        liqId = await getPoolIdFromEvent(poolEvent);
+      } else {
+        liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+      }
+    });
 
-  const sellPrice = await calculateSellPriceByMarket(
-    liqId,
-    firstCurrency,
-    threshold.muln(2),
-  );
+    test("Function calculate_sell_price works correctly", async () => {
+      const sellPrice = await calculateSellPriceByMarket(
+        liqId,
+        firstCurrency,
+        threshold.muln(2),
+      );
 
-  await signTx(
-    api,
-    Market.sellAsset(liqId, firstCurrency, secondCurrency, threshold.muln(2)),
-    testUser.keyRingPair,
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+      //we create reverse calculation to check that we receive another value
+      const sellPriceReverse = await calculateSellPriceByMarket(
+        liqId,
+        secondCurrency,
+        threshold.muln(2),
+      );
 
-  const tokenAmount = await getTokensAccountInfo(
-    testUser.keyRingPair.address,
-    secondCurrency,
-  );
+      await signTx(
+        api,
+        Market.sellAsset(
+          liqId,
+          firstCurrency,
+          secondCurrency,
+          threshold.muln(2),
+        ),
+        testUser.keyRingPair,
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
 
-  expect(stringToBN(tokenAmount.free)).bnEqual(sellPrice);
-});
+      const tokenAmount = await getTokensAccountInfo(
+        testUser.keyRingPair.address,
+        secondCurrency,
+      );
 
-test("Function calculate_sell_price_with_impact makes reliable calculations", async () => {
-  await Sudo.batchAsSudoFinalized(
-    Market.createPool(
-      firstCurrency,
-      threshold.muln(5),
-      secondCurrency,
-      threshold.muln(5),
-    ),
-    Assets.mintNative(testUser),
-    Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
-  );
+      expect(sellPrice).not.bnEqual(sellPriceReverse);
+      expect(stringToBN(tokenAmount.free)).bnEqual(sellPrice);
+    });
 
-  await updateFeeLockMetadata(sudo, null, null, null, [[firstCurrency, true]]);
+    test("Function calculate_sell_price_with_impact makes reliable calculations", async () => {
+      const sellPriceBefore = await calculateSellPriceByMarket(
+        liqId,
+        firstCurrency,
+        threshold,
+      );
 
-  const liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+      const sellPriceWithImpact = await calculateSellPriceWithImpact(
+        liqId,
+        firstCurrency,
+        threshold,
+      );
 
-  const sellPriceBefore = await calculateSellPriceByMarket(
-    liqId,
-    firstCurrency,
-    threshold.muln(2),
-  );
+      await signTx(
+        api,
+        Market.sellAsset(liqId, firstCurrency, secondCurrency, threshold),
+        testUser.keyRingPair,
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
 
-  const sellPriceWithImpact = await calculateSellPriceWithImpact(
-    liqId,
-    firstCurrency,
-    threshold.muln(2),
-  );
+      const sellPriceAfter = await calculateSellPriceByMarket(
+        liqId,
+        firstCurrency,
+        threshold,
+      );
 
-  await signTx(
-    api,
-    Market.sellAsset(liqId, firstCurrency, secondCurrency, threshold.muln(2)),
-    testUser.keyRingPair,
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+      const diff = sellPriceAfter.sub(sellPriceWithImpact[1]);
 
-  const sellPriceAfter = await calculateSellPriceByMarket(
-    liqId,
-    firstCurrency,
-    threshold.muln(2),
-  );
+      expect(sellPriceBefore).bnEqual(sellPriceWithImpact[0]);
+      expect(diff).bnLt(sellPriceAfter.muln(3).divn(1000));
+    });
 
-  const diff = sellPriceAfter.sub(sellPriceWithImpact[1]);
+    test("Function calculate_buy_price works correctly", async () => {
+      const buyPrice = await calculateBuyPriceByMarket(
+        liqId,
+        secondCurrency,
+        threshold.muln(2),
+      );
 
-  expect(sellPriceBefore).bnEqual(sellPriceWithImpact[0]);
-  //we check that the difference between predicted calculation calculate_sell_price_with_impact and calculate_sell_price is less then 0.003%
-  expect(diff).bnLt(sellPriceAfter.muln(3).divn(1000));
-});
+      //const a = JSON.parse(JSON.stringify(await api.rpc.market.get_pools(null)));
+      //const b = a.filter((data: any) => data.assets === firstCurrency.toNumber());
+      // expect(b).not.toBeNull();
 
-test("RPC call calculate BuyPrice for Stable pool correctly", async () => {
-  const poolEvent = await Sudo.batchAsSudoFinalized(
-    Market.createPool(
-      firstCurrency,
-      threshold.muln(5),
-      secondCurrency,
-      threshold.muln(5),
-      "StableSwap",
-    ),
-    Assets.mintNative(testUser),
-    Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
-  );
+      const buyPriceReverse = await calculateSellPriceByMarket(
+        liqId,
+        firstCurrency,
+        threshold.muln(2),
+      );
 
-  await updateFeeLockMetadata(sudo, null, null, null, [[firstCurrency, true]]);
+      const tokenAmountBefore = await getTokensAccountInfo(
+        testUser.keyRingPair.address,
+        firstCurrency,
+      );
 
-  const liqId = await getPoolIdFromEvent(poolEvent);
+      await signTx(
+        api,
+        Market.buyAsset(
+          liqId,
+          firstCurrency,
+          secondCurrency,
+          threshold.muln(2),
+        ),
+        testUser.keyRingPair,
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
 
-  const buyPrice = await calculateBuyPriceByMarket(
-    liqId,
-    firstCurrency,
-    threshold.muln(2),
-  );
+      const tokenAmountAfter = await getTokensAccountInfo(
+        testUser.keyRingPair.address,
+        firstCurrency,
+      );
 
-  //const a = JSON.parse(JSON.stringify(await api.rpc.market.get_pools(null)));
-  //const b = a.filter((data: any) => data.assets === firstCurrency.toNumber());
-  // expect(b).not.toBeNull();
+      expect(buyPrice).not.bnEqual(buyPriceReverse);
+      expect(
+        stringToBN(tokenAmountBefore.free).sub(
+          stringToBN(tokenAmountAfter.free),
+        ),
+      ).bnEqual(buyPrice);
+    });
 
-  const tokenAmountBefore = await getTokensAccountInfo(
-    testUser.keyRingPair.address,
-    firstCurrency,
-  );
+    test("Function calculate_buy_price_with_impact makes reliable calculations", async () => {
+      const buyPriceBefore = await calculateBuyPriceByMarket(
+        liqId,
+        firstCurrency,
+        threshold.muln(2),
+      );
 
-  await signTx(
-    api,
-    Market.buyAsset(liqId, firstCurrency, secondCurrency, threshold.muln(2)),
-    testUser.keyRingPair,
-  ).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+      const buyPriceWithImpact = await calculateBuyPriceWithImpact(
+        liqId,
+        firstCurrency,
+        threshold.muln(2),
+      );
 
-  const tokenAmountAfter = await getTokensAccountInfo(
-    testUser.keyRingPair.address,
-    firstCurrency,
-  );
+      await signTx(
+        api,
+        Market.buyAsset(
+          liqId,
+          firstCurrency,
+          secondCurrency,
+          threshold.muln(2),
+        ),
+        testUser.keyRingPair,
+      ).then((result) => {
+        const eventResponse = getEventResultFromMangataTx(result);
+        expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+      });
 
-  expect(
-    stringToBN(tokenAmountBefore.free).sub(stringToBN(tokenAmountAfter.free)),
-  ).bnEqual(buyPrice);
-});
+      const buyPriceAfter = await calculateBuyPriceByMarket(
+        liqId,
+        firstCurrency,
+        threshold.muln(2),
+      );
+
+      const diff = buyPriceAfter.sub(buyPriceWithImpact[1]);
+
+      expect(buyPriceBefore).bnEqual(buyPriceWithImpact[0]);
+      expect(diff).bnLt(buyPriceAfter.muln(3).divn(1000));
+    });
+  },
+);
