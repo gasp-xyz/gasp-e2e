@@ -204,3 +204,49 @@ export async function getPoolIdsInfo(tokenIds: BN[]) {
   }
   return { swapPoolList, firstToken, lastToken };
 }
+
+export async function getTradeableTokens() {
+  const data = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_tradeable_tokens()),
+  );
+  return data;
+}
+
+export async function getBurnAmount(poolId: BN, lpBurnAmount: BN) {
+  const data = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_burn_amount(poolId, lpBurnAmount)),
+  );
+  return {
+    firstTokenAmount: stringToBN(data[0]),
+    secondTokenAmount: stringToBN(data[1]),
+  };
+}
+
+export async function calculateExpectedLiquidityMinted(
+  poolId: BN,
+  assetId: BN,
+  assetAmount: BN,
+) {
+  const expectedSecondAmount = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_expected_amount_for_minting(
+        poolId,
+        assetId,
+        assetAmount,
+      ),
+    ),
+  );
+
+  const expectedLiquidity = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_expected_lp_minted(poolId, [
+        assetAmount,
+        expectedSecondAmount,
+      ]),
+    ),
+  );
+  return {
+    expectedSecondAmount: stringToBN(expectedSecondAmount),
+    expectedLiquidity: stringToBN(expectedLiquidity),
+  };
+}

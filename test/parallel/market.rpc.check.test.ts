@@ -6,7 +6,7 @@
 import { jest } from "@jest/globals";
 import { ApiPromise } from "@polkadot/api";
 import { getApi, initApi } from "../../utils/api";
-import { User } from "../../utils/User";
+import { AssetWallet, User } from "../../utils/User";
 import { BN } from "ethereumjs-util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
@@ -19,7 +19,12 @@ import {
 import { stringToBN } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
-import { Market } from "../../utils/market";
+import {
+  calculateExpectedLiquidityMinted,
+  getBurnAmount,
+  getTradeableTokens,
+  Market,
+} from "../../utils/market";
 import {
   getLiquidityAssetId,
   getPoolIdFromEvent,
@@ -27,7 +32,10 @@ import {
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { signTx } from "gasp-sdk";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import {
+  ExtrinsicResult,
+  filterAndStringifyFirstEvent,
+} from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -265,3 +273,147 @@ describe.each(["Xyk", "StableSwap"])(
     });
   },
 );
+
+test("check get_burn_amount", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser),
+    Assets.mintToken(firstCurrency, testUser, threshold.muln(20)),
+    Assets.mintToken(secondCurrency, testUser, threshold.muln(20)),
+  );
+
+  await signTx(
+    api,
+    Market.createPool(
+      firstCurrency,
+      threshold.muln(10),
+      secondCurrency,
+      threshold.muln(5),
+    ),
+    testUser.keyRingPair,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+  testUser.addAsset(firstCurrency);
+  testUser.addAsset(secondCurrency);
+  const burnAmount = await getBurnAmount(liqId, threshold);
+
+  liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+
+  await testUser.refreshAmounts(AssetWallet.BEFORE);
+
+  await signTx(
+    api,
+    Market.burnLiquidity(liqId, threshold),
+    testUser.keyRingPair,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await testUser.refreshAmounts(AssetWallet.AFTER);
+
+  const firstCurrencyDiff: any = testUser
+    .getAsset(firstCurrency)
+    ?.amountAfter.free.sub(
+      testUser.getAsset(firstCurrency)?.amountBefore.free!,
+    );
+
+  const secondCurrencyDiff: any = testUser
+    .getAsset(secondCurrency)
+    ?.amountAfter.free.sub(
+      testUser.getAsset(secondCurrency)?.amountBefore.free!,
+    );
+
+  expect(burnAmount.firstTokenAmount).bnEqual(firstCurrencyDiff);
+  expect(burnAmount.secondTokenAmount).bnEqual(secondCurrencyDiff);
+});
+
+test("check calculation for minting", async () => {
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintNative(testUser),
+    Assets.mintToken(firstCurrency, testUser, threshold.muln(20)),
+    Assets.mintToken(secondCurrency, testUser, threshold.muln(20)),
+  );
+
+  await signTx(
+    api,
+    Market.createPool(
+      firstCurrency,
+      threshold.muln(10),
+      secondCurrency,
+      threshold.muln(5),
+    ),
+    testUser.keyRingPair,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+
+  testUser.addAsset(liqId);
+  await testUser.refreshAmounts(AssetWallet.BEFORE);
+
+  const calculationData = await calculateExpectedLiquidityMinted(
+    liqId,
+    firstCurrency,
+    threshold,
+  );
+
+  const events = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAs(
+      testUser,
+      Market.mintLiquidity(
+        liqId,
+        firstCurrency,
+        threshold,
+        calculationData.expectedSecondAmount,
+      ),
+    ),
+  );
+  const eventResponse = getEventResultFromMangataTx(events);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  const mintingLpEvent = filterAndStringifyFirstEvent(
+    events,
+    "LiquidityMinted",
+  );
+
+  await testUser.refreshAmounts(AssetWallet.AFTER);
+
+  const diff: any = testUser
+    .getAsset(liqId)
+    ?.amountAfter.free.sub(testUser.getAsset(liqId)?.amountBefore.free!);
+  expect(stringToBN(mintingLpEvent[4])).bnEqual(
+    calculationData.expectedSecondAmount,
+  );
+  expect(diff).bnEqual(calculationData.expectedLiquidity);
+});
+
+test("check get_tradeable_token", async () => {
+  const tokensListBefore = await getTradeableTokens();
+
+  await Sudo.batchAsSudoFinalized(
+    Market.createPool(
+      firstCurrency,
+      threshold.muln(10),
+      secondCurrency,
+      threshold.muln(5),
+    ),
+    Assets.mintNative(testUser),
+    Assets.mintToken(firstCurrency, testUser, threshold.muln(20)),
+  );
+
+  liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+
+  const tokensListAfter = await getTradeableTokens();
+
+  const listBeforeFiltered = tokensListBefore.filter(
+    (data: any) => data.tokenId === liqId.toNumber(),
+  );
+  const listAfterFiltered = tokensListAfter.filter(
+    (data: any) => data.tokenId === liqId.toNumber(),
+  );
+  expect(listAfterFiltered[0].tokenId).toEqual(liqId.toNumber());
+  expect(listBeforeFiltered[0]).toBeUndefined();
+});
