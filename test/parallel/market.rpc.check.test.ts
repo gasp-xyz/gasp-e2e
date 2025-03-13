@@ -22,15 +22,11 @@ import { Assets } from "../../utils/Assets";
 import {
   calculateExpectedLiquidityMinted,
   getBurnAmount,
+  getPoolId,
   getTradeableTokens,
   Market,
 } from "../../utils/market";
-import {
-  getLiquidityAssetId,
-  getPoolIdFromEvent,
-  getTokensAccountInfo,
-  updateFeeLockMetadata,
-} from "../../utils/tx";
+import { getTokensAccountInfo, updateFeeLockMetadata } from "../../utils/tx";
 import { signTx } from "gasp-sdk";
 import {
   ExtrinsicResult,
@@ -90,7 +86,7 @@ describe.each(["Xyk", "StableSwap"])(
   "Check RPC calculate methods for % pools",
   (poolType) => {
     beforeEach(async () => {
-      const poolEvent = await Sudo.batchAsSudoFinalized(
+      await Sudo.batchAsSudoFinalized(
         Market.createPool(
           firstCurrency,
           threshold.muln(10),
@@ -106,11 +102,7 @@ describe.each(["Xyk", "StableSwap"])(
         [firstCurrency, true],
       ]);
 
-      if (poolType === "StableSwap") {
-        liqId = await getPoolIdFromEvent(poolEvent);
-      } else {
-        liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
-      }
+      liqId = await getPoolId(firstCurrency, secondCurrency);
     });
 
     test("Function calculate_sell_price works correctly", async () => {
@@ -298,7 +290,7 @@ test("check get_burn_amount", async () => {
   testUser.addAsset(secondCurrency);
   const burnAmount = await getBurnAmount(liqId, threshold);
 
-  liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  liqId = await getPoolId(firstCurrency, secondCurrency);
 
   await testUser.refreshAmounts(AssetWallet.BEFORE);
 
@@ -350,7 +342,7 @@ test("check calculation for minting", async () => {
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
-  liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  liqId = await getPoolId(firstCurrency, secondCurrency);
 
   testUser.addAsset(liqId);
   await testUser.refreshAmounts(AssetWallet.BEFORE);
@@ -404,7 +396,7 @@ test("check get_tradeable_token", async () => {
     Assets.mintToken(firstCurrency, testUser, threshold.muln(20)),
   );
 
-  liqId = await getLiquidityAssetId(firstCurrency, secondCurrency);
+  liqId = await getPoolId(firstCurrency, secondCurrency);
 
   const tokensListAfter = await getTradeableTokens();
 

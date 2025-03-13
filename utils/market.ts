@@ -250,3 +250,27 @@ export async function calculateExpectedLiquidityMinted(
     expectedLiquidity: stringToBN(expectedLiquidity),
   };
 }
+
+export async function getPoolId(firstAsset: BN, secondAsset: BN) {
+  let index = 0;
+  let result: any = [];
+
+  const events = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_pools(null)),
+  );
+
+  const length = events.length;
+
+  while (index < length) {
+    if (
+      (events[index].assets[0] === firstAsset.toNumber() &&
+        events[index].assets[1] === secondAsset.toNumber()) ||
+      (events[index].assets[0] === secondAsset.toNumber() &&
+        events[index].assets[1] === firstAsset.toNumber())
+    ) {
+      result = events[index];
+    }
+    index++;
+  }
+  return result.lpTokenId;
+}
