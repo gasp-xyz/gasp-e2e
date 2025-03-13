@@ -241,7 +241,7 @@ export async function vote(motionId: number) {
   await Sudo.batchAsSudoFinalized(...txs);
 }
 export async function close(motionId: number) {
-  const fundAcc = "0xf24FF3a9CF04c71Dbc94D0b566f7A27B94566cac";
+  const fundAcc = "0x8960911c51ead00db4cca88faf395672458da676";
   await setupApi();
   await setupUsers();
   await initApi();
