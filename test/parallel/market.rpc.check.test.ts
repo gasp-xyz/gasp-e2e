@@ -26,7 +26,11 @@ import {
   getTradeableTokens,
   Market,
 } from "../../utils/market";
-import { getTokensAccountInfo, updateFeeLockMetadata } from "../../utils/tx";
+import {
+  getLiquiditybalance,
+  getTokensAccountInfo,
+  updateFeeLockMetadata,
+} from "../../utils/tx";
 import { signTx } from "gasp-sdk";
 import {
   ExtrinsicResult,
@@ -401,11 +405,11 @@ test("check get_tradeable_token", async () => {
   const tokensListAfter = await getTradeableTokens();
 
   const listBeforeFiltered = tokensListBefore.filter(
-    (data: any) => data.tokenId === liqId.toNumber(),
+    (data: any) => data.tokenId === getLiquiditybalance,
   );
   const listAfterFiltered = tokensListAfter.filter(
-    (data: any) => data.tokenId === liqId.toNumber(),
+    (data: any) => data.tokenId === liqId,
   );
-  expect(listAfterFiltered[0].tokenId).toEqual(liqId.toNumber());
+  expect(listAfterFiltered[0].tokenId).toEqual(liqId);
   expect(listBeforeFiltered[0]).toBeUndefined();
 });
