@@ -288,9 +288,9 @@ test("check get_burn_amount", async () => {
   });
   testUser.addAsset(firstCurrency);
   testUser.addAsset(secondCurrency);
-  const burnAmount = await getBurnAmount(liqId, threshold);
 
   liqId = await getPoolId(firstCurrency, secondCurrency);
+  const burnAmount = await getBurnAmount(liqId, threshold);
 
   await testUser.refreshAmounts(AssetWallet.BEFORE);
 
