@@ -23,11 +23,14 @@ import {
   calculateExpectedLiquidityMinted,
   getBurnAmount,
   getPoolId,
+  getPoolsForTrading,
   getTradeableTokens,
   Market,
 } from "../../utils/market";
 import {
-  getLiquiditybalance,
+  calculate_buy_price_rpc,
+  calculate_sell_price_rpc,
+  getBalanceOfPool,
   getTokensAccountInfo,
   updateFeeLockMetadata,
 } from "../../utils/tx";
@@ -48,6 +51,7 @@ let sudo: User;
 let api: ApiPromise;
 let threshold: BN;
 let liqId: BN;
+let priceCalculationRetro: BN;
 
 let firstCurrency: BN;
 let secondCurrency: BN;
@@ -109,12 +113,26 @@ describe.each(["Xyk", "StableSwap"])(
       liqId = await getPoolId(firstCurrency, secondCurrency);
     });
 
-    test("Function calculate_sell_price works correctly", async () => {
+    test("Function calculateSellPriceByMarket works correctly", async () => {
       const sellPrice = await calculateSellPriceByMarket(
         liqId,
         firstCurrency,
         threshold.muln(2),
       );
+
+      if (poolType === "Xyk") {
+        const poolBalance = await getBalanceOfPool(
+          firstCurrency,
+          secondCurrency,
+        );
+        priceCalculationRetro = await calculate_sell_price_rpc(
+          poolBalance[0],
+          poolBalance[1],
+          threshold.muln(2),
+        );
+      } else {
+        priceCalculationRetro = sellPrice;
+      }
 
       //we create reverse calculation to check that we receive another value
       const sellPriceReverse = await calculateSellPriceByMarket(
@@ -142,11 +160,12 @@ describe.each(["Xyk", "StableSwap"])(
         secondCurrency,
       );
 
+      expect(sellPrice).bnEqual(priceCalculationRetro);
       expect(sellPrice).not.bnEqual(sellPriceReverse);
       expect(stringToBN(tokenAmount.free)).bnEqual(sellPrice);
     });
 
-    test("Function calculate_sell_price_with_impact makes reliable calculations", async () => {
+    test("Function calculateSellPriceWithImpact makes reliable calculations", async () => {
       const sellPriceBefore = await calculateSellPriceByMarket(
         liqId,
         firstCurrency,
@@ -180,18 +199,28 @@ describe.each(["Xyk", "StableSwap"])(
       expect(diff).bnLt(sellPriceAfter.muln(3).divn(1000));
     });
 
-    test("Function calculate_buy_price works correctly", async () => {
+    test("Function calculateBuyPriceByMarket works correctly", async () => {
       const buyPrice = await calculateBuyPriceByMarket(
         liqId,
         secondCurrency,
         threshold.muln(2),
       );
 
-      //const a = JSON.parse(JSON.stringify(await api.rpc.market.get_pools(null)));
-      //const b = a.filter((data: any) => data.assets === firstCurrency.toNumber());
-      // expect(b).not.toBeNull();
+      if (poolType === "Xyk") {
+        const poolBalance = await getBalanceOfPool(
+          firstCurrency,
+          secondCurrency,
+        );
+        priceCalculationRetro = await calculate_buy_price_rpc(
+          poolBalance[0],
+          poolBalance[1],
+          threshold.muln(2),
+        );
+      } else {
+        priceCalculationRetro = buyPrice;
+      }
 
-      const buyPriceReverse = await calculateSellPriceByMarket(
+      const buyPriceReverse = await calculateBuyPriceByMarket(
         liqId,
         firstCurrency,
         threshold.muln(2),
@@ -221,6 +250,7 @@ describe.each(["Xyk", "StableSwap"])(
         firstCurrency,
       );
 
+      expect(buyPrice).bnEqual(priceCalculationRetro);
       expect(buyPrice).not.bnEqual(buyPriceReverse);
       expect(
         stringToBN(tokenAmountBefore.free).sub(
@@ -229,7 +259,7 @@ describe.each(["Xyk", "StableSwap"])(
       ).bnEqual(buyPrice);
     });
 
-    test("Function calculate_buy_price_with_impact makes reliable calculations", async () => {
+    test("Function calculateBuyPriceWithImpact makes reliable calculations", async () => {
       const buyPriceBefore = await calculateBuyPriceByMarket(
         liqId,
         firstCurrency,
@@ -270,7 +300,7 @@ describe.each(["Xyk", "StableSwap"])(
   },
 );
 
-test("check get_burn_amount", async () => {
+test("check getBurnAmount", async () => {
   await Sudo.batchAsSudoFinalized(
     Assets.mintNative(testUser),
     Assets.mintToken(firstCurrency, testUser, threshold.muln(20)),
@@ -386,7 +416,35 @@ test("check calculation for minting", async () => {
   expect(diff).bnEqual(calculationData.expectedLiquidity);
 });
 
-test("check get_tradeable_token", async () => {
+test("check getPoolsForTrading", async () => {
+  const poolsListBefore = await getPoolsForTrading();
+
+  await Sudo.batchAsSudoFinalized(
+    Market.createPool(
+      firstCurrency,
+      threshold.muln(10),
+      secondCurrency,
+      threshold.muln(5),
+    ),
+    Assets.mintNative(testUser),
+    Assets.mintToken(firstCurrency, testUser, threshold.muln(20)),
+  );
+
+  liqId = await getPoolId(firstCurrency, secondCurrency);
+
+  const poolsListAfter = await getPoolsForTrading();
+
+  const listBeforeFiltered = poolsListBefore.filter(
+    (data: any) => data === liqId.toNumber(),
+  );
+  const listAfterFiltered = poolsListAfter.filter(
+    (data: any) => data === liqId.toNumber(),
+  );
+  expect(listAfterFiltered[0]).toEqual(liqId.toNumber());
+  expect(listBeforeFiltered[0]).toBeUndefined();
+});
+
+test("check getTradeableTokens", async () => {
   const tokensListBefore = await getTradeableTokens();
 
   await Sudo.batchAsSudoFinalized(
@@ -405,11 +463,11 @@ test("check get_tradeable_token", async () => {
   const tokensListAfter = await getTradeableTokens();
 
   const listBeforeFiltered = tokensListBefore.filter(
-    (data: any) => data.tokenId === getLiquiditybalance,
+    (data: any) => data.tokenId === liqId.toNumber(),
   );
   const listAfterFiltered = tokensListAfter.filter(
-    (data: any) => data.tokenId === liqId,
+    (data: any) => data.tokenId === liqId.toNumber(),
   );
-  expect(listAfterFiltered[0].tokenId).toEqual(liqId);
+  expect(listAfterFiltered[0].tokenId).toEqual(liqId.toNumber());
   expect(listBeforeFiltered[0]).toBeUndefined();
 });

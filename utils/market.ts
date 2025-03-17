@@ -205,6 +205,13 @@ export async function getPoolIdsInfo(tokenIds: BN[]) {
   return { swapPoolList, firstToken, lastToken };
 }
 
+export async function getPoolsForTrading() {
+  const data = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_pools_for_trading()),
+  );
+  return data;
+}
+
 export async function getTradeableTokens() {
   const data = JSON.parse(
     JSON.stringify(await api.rpc.market.get_tradeable_tokens()),
@@ -272,5 +279,5 @@ export async function getPoolId(firstAsset: BN, secondAsset: BN) {
     }
     index++;
   }
-  return result.lpTokenId;
+  return stringToBN(result.lpTokenId.toString());
 }

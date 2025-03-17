@@ -300,7 +300,7 @@ export async function getPoolIdFromEvent(event: MangataGenericEvent[]) {
   return poolId;
 }
 
-export async function getLiquiditybalance(liquidityAssetId: BN) {
+export async function getLiquidityBalance(liquidityAssetId: BN) {
   const pool = await getLiquidityPool(liquidityAssetId);
   return await getBalanceOfPool(pool[0], pool[1]);
 }
