@@ -70,8 +70,7 @@ export async function getFeeLockMetadata() {
   const value = (await api.query.feeLock.feeLockMetadata()).value;
   return value;
 }
-
-export async function calculateSellPriceByMarket(
+export async function rpcCalculateSellPrice(
   poolId: BN,
   sellAssetId: BN,
   sellAmount: BN,
@@ -91,7 +90,7 @@ export async function calculateSellPriceByMarket(
   return value;
 }
 
-export async function calculateBuyPriceByMarket(
+export async function rpcCalculateBuyPrice(
   poolId: BN,
   buyAssetId: BN,
   sellAmount: BN,
@@ -111,7 +110,7 @@ export async function calculateBuyPriceByMarket(
   return value;
 }
 
-export async function calculateSellPriceWithImpact(
+export async function rpcCalculateSellPriceWithImpact(
   poolId: BN,
   sellAssetId: BN,
   sellAmount: BN,
@@ -126,10 +125,13 @@ export async function calculateSellPriceWithImpact(
       ),
     ),
   );
-  return [stringToBN(value[0]), stringToBN(value[1])];
+  return {
+    firstIteration: stringToBN(value[0]),
+    secondIteration: stringToBN(value[1]),
+  };
 }
 
-export async function calculateBuyPriceWithImpact(
+export async function rpcCalculateBuyPriceWithImpact(
   poolId: BN,
   buyAssetId: BN,
   sellAmount: BN,
@@ -144,5 +146,8 @@ export async function calculateBuyPriceWithImpact(
       ),
     ),
   );
-  return [stringToBN(value[0]), stringToBN(value[1])];
+  return {
+    firstIteration: stringToBN(value[0]),
+    secondIteration: stringToBN(value[1]),
+  };
 }

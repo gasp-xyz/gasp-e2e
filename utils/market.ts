@@ -205,21 +205,21 @@ export async function getPoolIdsInfo(tokenIds: BN[]) {
   return { swapPoolList, firstToken, lastToken };
 }
 
-export async function getPoolsForTrading() {
+export async function rpcGetPoolsForTrading() {
   const data = JSON.parse(
     JSON.stringify(await api.rpc.market.get_pools_for_trading()),
   );
   return data;
 }
 
-export async function getTradeableTokens() {
+export async function rpcGetTradeableTokens() {
   const data = JSON.parse(
     JSON.stringify(await api.rpc.market.get_tradeable_tokens()),
   );
   return data;
 }
 
-export async function getBurnAmount(poolId: BN, lpBurnAmount: BN) {
+export async function rpcGetBurnAmount(poolId: BN, lpBurnAmount: BN) {
   const data = JSON.parse(
     JSON.stringify(await api.rpc.market.get_burn_amount(poolId, lpBurnAmount)),
   );
@@ -229,7 +229,7 @@ export async function getBurnAmount(poolId: BN, lpBurnAmount: BN) {
   };
 }
 
-export async function calculateExpectedLiquidityMinted(
+export async function rpcCalculateExpectedLiquidityMinted(
   poolId: BN,
   assetId: BN,
   assetAmount: BN,
@@ -258,24 +258,24 @@ export async function calculateExpectedLiquidityMinted(
   };
 }
 
-export async function getPoolId(firstAsset: BN, secondAsset: BN) {
+export async function rpcGetPoolId(firstAsset: BN, secondAsset: BN) {
   let index = 0;
   let result: any = [];
 
-  const events = JSON.parse(
+  const poolsList = JSON.parse(
     JSON.stringify(await api.rpc.market.get_pools(null)),
   );
 
-  const length = events.length;
+  const length = poolsList.length;
 
   while (index < length) {
     if (
-      (events[index].assets[0] === firstAsset.toNumber() &&
-        events[index].assets[1] === secondAsset.toNumber()) ||
-      (events[index].assets[0] === secondAsset.toNumber() &&
-        events[index].assets[1] === firstAsset.toNumber())
+      (poolsList[index].assets[0] === firstAsset.toNumber() &&
+        poolsList[index].assets[1] === secondAsset.toNumber()) ||
+      (poolsList[index].assets[0] === secondAsset.toNumber() &&
+        poolsList[index].assets[1] === firstAsset.toNumber())
     ) {
-      result = events[index];
+      result = poolsList[index];
     }
     index++;
   }
