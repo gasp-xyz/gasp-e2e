@@ -204,3 +204,80 @@ export async function getPoolIdsInfo(tokenIds: BN[]) {
   }
   return { swapPoolList, firstToken, lastToken };
 }
+
+export async function rpcGetPoolsForTrading() {
+  const data = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_pools_for_trading()),
+  );
+  return data;
+}
+
+export async function rpcGetTradeableTokens() {
+  const data = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_tradeable_tokens()),
+  );
+  return data;
+}
+
+export async function rpcGetBurnAmount(poolId: BN, lpBurnAmount: BN) {
+  const data = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_burn_amount(poolId, lpBurnAmount)),
+  );
+  return {
+    firstTokenAmount: stringToBN(data[0]),
+    secondTokenAmount: stringToBN(data[1]),
+  };
+}
+
+export async function rpcCalculateExpectedLiquidityMinted(
+  poolId: BN,
+  assetId: BN,
+  assetAmount: BN,
+) {
+  const expectedSecondAmount = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_expected_amount_for_minting(
+        poolId,
+        assetId,
+        assetAmount,
+      ),
+    ),
+  );
+
+  const expectedLiquidity = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_expected_lp_minted(poolId, [
+        assetAmount,
+        expectedSecondAmount,
+      ]),
+    ),
+  );
+  return {
+    expectedSecondAmount: stringToBN(expectedSecondAmount),
+    expectedLiquidity: stringToBN(expectedLiquidity),
+  };
+}
+
+export async function rpcGetPoolId(firstAsset: BN, secondAsset: BN) {
+  let index = 0;
+  let result: any = [];
+
+  const poolsList = JSON.parse(
+    JSON.stringify(await api.rpc.market.get_pools(null)),
+  );
+
+  const length = poolsList.length;
+
+  while (index < length) {
+    if (
+      (poolsList[index].assets[0] === firstAsset.toNumber() &&
+        poolsList[index].assets[1] === secondAsset.toNumber()) ||
+      (poolsList[index].assets[0] === secondAsset.toNumber() &&
+        poolsList[index].assets[1] === firstAsset.toNumber())
+    ) {
+      result = poolsList[index];
+    }
+    index++;
+  }
+  return stringToBN(result.lpTokenId.toString());
+}

@@ -70,8 +70,7 @@ export async function getFeeLockMetadata() {
   const value = (await api.query.feeLock.feeLockMetadata()).value;
   return value;
 }
-
-export async function calculateSellPriceByMarket(
+export async function rpcCalculateSellPrice(
   poolId: BN,
   sellAssetId: BN,
   sellAmount: BN,
@@ -91,9 +90,9 @@ export async function calculateSellPriceByMarket(
   return value;
 }
 
-export async function calculateBuyPriceByMarket(
+export async function rpcCalculateBuyPrice(
   poolId: BN,
-  sellAssetId: BN,
+  buyAssetId: BN,
   sellAmount: BN,
 ) {
   const api = getApi();
@@ -102,11 +101,53 @@ export async function calculateBuyPriceByMarket(
       JSON.stringify(
         await api.rpc.market.calculate_buy_price(
           poolId,
-          sellAssetId,
+          buyAssetId,
           sellAmount,
         ),
       ),
     ),
   );
   return value;
+}
+
+export async function rpcCalculateSellPriceWithImpact(
+  poolId: BN,
+  sellAssetId: BN,
+  sellAmount: BN,
+) {
+  const api = getApi();
+  const value = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_sell_price_with_impact(
+        poolId,
+        sellAssetId,
+        sellAmount,
+      ),
+    ),
+  );
+  return {
+    firstIteration: stringToBN(value[0]),
+    secondIteration: stringToBN(value[1]),
+  };
+}
+
+export async function rpcCalculateBuyPriceWithImpact(
+  poolId: BN,
+  buyAssetId: BN,
+  sellAmount: BN,
+) {
+  const api = getApi();
+  const value = JSON.parse(
+    JSON.stringify(
+      await api.rpc.market.calculate_buy_price_with_impact(
+        poolId,
+        buyAssetId,
+        sellAmount,
+      ),
+    ),
+  );
+  return {
+    firstIteration: stringToBN(value[0]),
+    secondIteration: stringToBN(value[1]),
+  };
 }

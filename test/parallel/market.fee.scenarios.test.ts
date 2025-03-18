@@ -32,8 +32,8 @@ import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import {
-  calculateBuyPriceByMarket,
-  calculateSellPriceByMarket,
+  rpcCalculateBuyPrice,
+  rpcCalculateSellPrice,
   getFeeLockMetadata,
 } from "../../utils/feeLockHelper";
 import { testLog } from "../../utils/Logger";
@@ -126,7 +126,7 @@ async function sellTokenAndReceiveSuccess(
 ) {
   const poolBalance = await getBalanceOfPool(currencies[0], currencies[1]);
 
-  const sellPrice = await calculateSellPriceByMarket(
+  const sellPrice = await rpcCalculateSellPrice(
     liqId,
     currencies[0],
     soldAssetAmount,
@@ -283,7 +283,7 @@ describe("SingleSell, user has only sold asset", () => {
     const liqId = await getPoolIdFromEvent(poolEvent);
     const sellAmount = threshold.muln(3).divn(2);
 
-    const sellPrice = await calculateSellPriceByMarket(
+    const sellPrice = await rpcCalculateSellPrice(
       liqId,
       firstCurrency,
       sellAmount,
@@ -711,7 +711,7 @@ describe("SingleSwap scenarios with slippage error, user has only sold asset", (
       testUser.keyRingPair.address,
       firstCurrency,
     );
-    const buyPrice = await calculateBuyPriceByMarket(
+    const buyPrice = await rpcCalculateBuyPrice(
       liqId,
       secondCurrency,
       threshold.muln(3).divn(2),
