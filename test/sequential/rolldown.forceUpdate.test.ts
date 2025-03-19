@@ -110,7 +110,7 @@ it("Validate that forceCancelRequestsFromL1 don't slash user", async () => {
   await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
     await waitSudoOperationSuccess(events);
   });
-  await waitBlockNumber(disputeEndBlockNumber.toString(), 25);
+  await waitBlockNumber((disputeEndBlockNumber + 10).toString(), 25);
   const stakeAmountAfter = await SequencerStaking.sequencerStake(
     testUser.keyRingPair.address,
     chain,
