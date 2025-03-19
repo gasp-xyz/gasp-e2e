@@ -36,7 +36,7 @@ import {
 import { BN } from "@polkadot/util";
 import { AssetWallet, User } from "../../utils/User";
 import { getAssetIdFromErc20 } from "../../utils/rollup/ethUtils";
-import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
+import { MAX_BALANCE } from "../../utils/Constants";
 
 async function checkAndSwitchMmOff() {
   let maintenanceStatus: any;
@@ -550,12 +550,12 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     );
     const update = new L2Update(api)
       .withDeposit(
-        txIndex + 1,
+        txIndex,
         sequencer.keyRingPair.address,
         sequencer.keyRingPair.address,
         BN_HUNDRED,
       )
-      .withCancelResolution(txIndex, 1, true)
+      .withCancelResolution(txIndex + 100, 1, true)
       .on(chain)
       .buildUnsafe();
     await Sudo.batchAsSudoFinalized(
@@ -566,6 +566,8 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
     const error = await getEventError(event);
     expect(error).toEqual("WrongCancelRequestId");
+    const events = await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
+    const assetId = await Rolldown.getRegisteredAssetIdByEvents(events);
     //lets wait a couple of blocks just in case the deposit happens a few blocks later
     await waitForNBlocks(2);
     const currencyId = await getAssetIdFromErc20(
@@ -573,7 +575,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
       "EthAnvil",
     );
     sequencer.addAsset(currencyId);
-    expect(currencyId).bnEqual(GASP_ASSET_ID);
+    expect(currencyId).bnEqual(assetId);
     //if above is true => no token has been created => token is not avl to the user.
   });
 
