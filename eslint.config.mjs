@@ -14,6 +14,7 @@ export default [
       "test/exploratory/**", 
       "**/reports/**", 
       "**/.yarn/**",
+      "**/contracts.sol/**",
       "utils/globalSetup.js",
       "utils/globalTeardown.js"
     ],
