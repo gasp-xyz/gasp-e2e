@@ -19,7 +19,7 @@ import { getApi, initApi } from "../../utils/api";
 import { setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { BN_MILLION, signTx } from "gasp-sdk";
-import { isBadOriginError } from "../../utils/utils";
+import { isBadOriginError, waitBlockNumber } from "../../utils/utils";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { AssetWallet, User } from "../../utils/User";
 import { GASP_ASSET_ID } from "../../utils/Constants";
@@ -94,6 +94,28 @@ it("Validate that forceCancelRequestsFromL1 can't be called by non-sudo user", a
     const isBadOrigin = isBadOriginError(events);
     expect(isBadOrigin).toEqual(true);
   });
+});
+
+it("Validate that forceCancelRequestsFromL1 don't slash user", async () => {
+  await SequencerStaking.setupASequencer(testUser, chain);
+  const stakeAmountBefore = await SequencerStaking.sequencerStake(
+    testUser.keyRingPair.address,
+    chain,
+  );
+  const { disputeEndBlockNumber } = await createAnUpdate(testUser, chain);
+  const cancel = await Rolldown.forceCancelRequestFromL1(
+    chain,
+    disputeEndBlockNumber,
+  );
+  await Sudo.asSudoFinalized(Sudo.sudo(cancel)).then(async (events) => {
+    await waitSudoOperationSuccess(events);
+  });
+  await waitBlockNumber(disputeEndBlockNumber.toString(), 25);
+  const stakeAmountAfter = await SequencerStaking.sequencerStake(
+    testUser.keyRingPair.address,
+    chain,
+  );
+  expect(stakeAmountAfter.toHuman()).toEqual(stakeAmountBefore.toHuman());
 });
 
 it("forceUpdateL2FromL1 does not wait for a dispute period", async () => {
