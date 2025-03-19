@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 /*
  *
  * @group xyk
@@ -306,7 +305,6 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     expect(userBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
 
-    // eslint-disable-next-line prettier/prettier
     const maxInstantBurnAmount =
       //@ts-ignore
       await api.rpc.xyk.get_max_instant_burn_amount(

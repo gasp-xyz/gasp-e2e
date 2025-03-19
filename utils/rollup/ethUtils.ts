@@ -8,6 +8,7 @@ import {
   http,
   PrivateKeyAccount,
   PublicClient,
+  WalletClient,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import fs from "fs";
@@ -50,7 +51,7 @@ export const { abi, metadata } = JSON.parse(
 export const erc20abi = JSON.parse(
   fs.readFileSync("utils/rollup/TestToken.json").toString(),
 ).abi;
-export const ethWalletClient = createWalletClient({
+export const ethWalletClient: WalletClient = createWalletClient({
   account,
   chain: EthAnvil as Chain,
   transport: http(),
@@ -60,7 +61,7 @@ export const ethPublicClient = createPublicClient({
   transport: http(),
 });
 
-export const arbWalletClient = createWalletClient({
+export const arbWalletClient: WalletClient = createWalletClient({
   account,
   chain: ArbAnvil as Chain,
   transport: http(),
@@ -73,7 +74,7 @@ export const arbPublicClient = createPublicClient({
 export function getPublicClient(l1: L1Type = "EthAnvil") {
   return l1 === "EthAnvil" ? ethPublicClient : arbPublicClient;
 }
-export function getWalletClient(l1: L1Type = "EthAnvil") {
+export function getWalletClient(l1: L1Type = "EthAnvil"): WalletClient {
   return l1 === "EthAnvil" ? ethWalletClient : arbWalletClient;
 }
 

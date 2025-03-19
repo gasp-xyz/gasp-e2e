@@ -408,7 +408,6 @@ export const mintAsset = async (
     sudoNonce,
     Assets.mintToken(asset_id, target, amount),
   ).catch((reason) => {
-    // eslint-disable-next-line no-console
     console.error("Tx.ts::OhOh sth went wrong. " + reason.toString());
     testLog
       .getLog()
@@ -841,7 +840,6 @@ export function requireFees() {
     _propertyKey: string,
     descriptor: TypedPropertyDescriptor<(...params: any[]) => Promise<any>>,
   ) => {
-    // eslint-disable-next-line no-console
     // console.log("first(): called");
     const oldFunc = descriptor.value;
     descriptor.value = async function () {

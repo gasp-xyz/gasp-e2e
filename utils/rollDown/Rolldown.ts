@@ -472,7 +472,7 @@ export class Rolldown {
     l1: L1Type,
     ferry: User,
     user: User,
-    // eslint-disable-next-line no-template-curly-in-string
+
     tokenAddress: "0x${string}",
     amount: number,
     tip: number,

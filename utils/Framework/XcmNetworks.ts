@@ -22,7 +22,6 @@ const toNumber = (value: string | undefined): number | undefined => {
   return Number(value);
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   kusama: (options?: Partial<SetupOption>) =>
     setupContext({

@@ -108,7 +108,6 @@ describe("upgrade - testpad", () => {
     );
     let found = false;
 
-    // eslint-disable-next-line no-loop-func
     await api!.query.system.events((events) => {
       events.forEach((record) => {
         // extract the phase, event and the event types

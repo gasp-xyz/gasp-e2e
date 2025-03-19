@@ -1,5 +1,3 @@
-/* eslint-disable no-loop-func */
-/* eslint-disable no-console */
 import { Guid } from "guid-typescript";
 import { testLog } from "./Logger";
 import { getCandidates, getCurrentNonce } from "./txHandler";

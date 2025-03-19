@@ -100,7 +100,7 @@ describe("Rollup-Ferry", () => {
     });
     test("A user who deposits a ferried native token Can ferry-withdraw", async () => {
       const l1 = "EthAnvil";
-      // eslint-disable-next-line no-template-curly-in-string
+
       const tokenAddress = getL1(l1)?.contracts.native.address as "0x${string}";
       const anyChange = await depositAndWaitNative(user, l1, true);
       // Check that got updated.
@@ -154,9 +154,8 @@ describe("Rollup-Ferry", () => {
     });
     test("A user who deposits a ferried erc20 token Can ferry-withdraw", async () => {
       const l1 = "EthAnvil";
-      const tokenAddress =
-        // eslint-disable-next-line no-template-curly-in-string
-        getL1(l1)?.contracts.dummyErc20.address as "0x${string}";
+      const tokenAddress = getL1(l1)?.contracts.dummyErc20
+        .address as "0x${string}";
       const anyChange = await depositAndWait(user, l1, false, true);
       // Check that got updated.
       expect(anyChange).toBeTruthy();

@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 import ipc from "node-ipc";
 
 ipc.config.id = "nonceManager";
