@@ -41,7 +41,7 @@ import {
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { getSudoUser, setupApi, setupUsers } from "./setup";
-import { Market } from "./market";
+import { Market, rpcGetPoolId } from "./market";
 
 export const signTxDeprecated = async (
   tx: SubmittableExtrinsic<"promise">,
@@ -664,7 +664,7 @@ export const mintLiquidity = async (
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
 ) => {
   let liqId: BN;
-  liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+  liqId = await rpcGetPoolId(firstAssetId, secondAssetId);
   if (liqId.lt(BN_ZERO)) {
     liqId = MAX_ARRAY_LENGTH;
   }

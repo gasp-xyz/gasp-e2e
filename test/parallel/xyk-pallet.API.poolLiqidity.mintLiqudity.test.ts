@@ -21,7 +21,7 @@ import { getEnvironmentRequiredVars } from "../../utils/utils";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
-import { Market } from "../../utils/market";
+import { Market, rpcGetPoolId } from "../../utils/market";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
@@ -200,15 +200,41 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
 test("Check that the activated amount is equal to the minted one", async () => {
   const [testUser2] = setupUsers();
   const tokenAmount = BN_BILLION.muln(30000000);
+  const [token3] = await Assets.setupUserWithCurrencies(
+    sudo,
+    [defaultCurrencyValue],
+    sudo,
+  );
 
   await Sudo.batchAsSudoFinalized(
-    Assets.mintToken(token1, testUser2, tokenAmount.muln(10)),
+    Assets.mintToken(token3, testUser1, Assets.DEFAULT_AMOUNT),
+    Assets.mintNative(testUser1),
+    Sudo.sudoAs(
+      testUser1,
+      Market.createPool(
+        GASP_ASSET_ID,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        token3,
+        Assets.DEFAULT_AMOUNT.divn(2),
+        "StableSwap",
+      ),
+    ),
+  );
+
+  const liqIdStablePool = await rpcGetPoolId(GASP_ASSET_ID, token3);
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.promotePool(liqIdStablePool.toNumber(), 20),
+  );
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(token3, testUser2, tokenAmount.muln(10)),
     Assets.mintNative(testUser2),
   );
 
   const events = await mintLiquidity(
     testUser2.keyRingPair,
-    token1,
+    token3,
     GASP_ASSET_ID,
     tokenAmount,
     MAX_BALANCE,
@@ -222,5 +248,12 @@ test("Check that the activated amount is equal to the minted one", async () => {
         item.method === "LiquidityActivated" && item.section === "proofOfStake",
     )
     .map((x) => new BN(x.eventData[2].data.toString()));
-  expect(tokensActivatedValue[0]).bnEqual(tokenAmount);
+
+  await testUser2.addAsset(liqIdStablePool);
+  await testUser2.refreshAmounts(AssetWallet.AFTER);
+
+  expect(tokensActivatedValue[0]).bnEqual(tokenAmount.muln(2));
+  expect(tokensActivatedValue[0]).bnEqual(
+    testUser2.getAsset(liqIdStablePool)?.amountAfter.reserved!,
+  );
 });
