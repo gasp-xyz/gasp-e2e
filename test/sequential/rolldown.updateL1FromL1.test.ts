@@ -37,6 +37,7 @@ import { BN } from "@polkadot/util";
 import { AssetWallet, User } from "../../utils/User";
 import { getAssetIdFromErc20 } from "../../utils/rollup/ethUtils";
 import { MAX_BALANCE } from "../../utils/Constants";
+import { checkMaintenanceStatus } from "../../utils/validators";
 
 async function checkAndSwitchMmOff() {
   let maintenanceStatus: any;
@@ -542,7 +543,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     await checkAndSwitchMmOff();
   });
 
-  it("[BUG] When a cancel resolution fail, the whole update wont be stored", async () => {
+  it("When a cancel resolution fail, the whole update wont be stored", async () => {
     await Rolldown.waitForReadRights(
       sequencer.keyRingPair.address,
       waitingPeriod,
@@ -550,12 +551,12 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     );
     const update = new L2Update(api)
       .withDeposit(
-        txIndex,
+        txIndex + 1,
         sequencer.keyRingPair.address,
         sequencer.keyRingPair.address,
         BN_HUNDRED,
       )
-      .withCancelResolution(txIndex + 100, 1, true)
+      .withCancelResolution(txIndex, 1, true)
       .on(chain)
       .buildUnsafe();
     await Sudo.batchAsSudoFinalized(
@@ -563,19 +564,18 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     ).then(async (events) => {
       expectMGAExtrinsicSuDidSuccess(events);
     });
+    await checkMaintenanceStatus(false, false);
     const event = await waitForEvents(api, "rolldown.RequestProcessedOnL2", 40);
     const error = await getEventError(event);
     expect(error).toEqual("WrongCancelRequestId");
-    const events = await Rolldown.waitForL2UpdateExecuted(new BN(txIndex));
-    const assetId = await Rolldown.getRegisteredAssetIdByEvents(events);
+    await checkMaintenanceStatus(true, false);
     //lets wait a couple of blocks just in case the deposit happens a few blocks later
-    await waitForNBlocks(2);
+    await waitForNBlocks(5);
     const currencyId = await getAssetIdFromErc20(
       sequencer.keyRingPair.address,
       "EthAnvil",
     );
-    sequencer.addAsset(currencyId);
-    expect(currencyId).bnEqual(assetId);
+    expect(currencyId).bnEqual(BN_ZERO);
     //if above is true => no token has been created => token is not avl to the user.
   });
 
