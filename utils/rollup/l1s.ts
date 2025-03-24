@@ -15,7 +15,7 @@ export interface TestChain extends Chain {
   gaspName: string;
 }
 
-export const EthereumProd: TestChain = defineChain({
+export const EthAnvil: TestChain = defineChain({
   id: 1,
   name: "EthAnvil",
   nativeCurrency: {
@@ -43,7 +43,7 @@ export const EthereumProd: TestChain = defineChain({
   gaspName: "Ethereum",
 }) as any as TestChain;
 
-export const EthAnvil: TestChain = defineChain({
+export const EthAnvil2: TestChain = defineChain({
   id: 31_337,
   name: "EthAnvil",
   nativeCurrency: {
