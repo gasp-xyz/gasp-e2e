@@ -167,7 +167,7 @@ describe("API fees test suite", () => {
   it("xyk-pallet - MGA tokens are / are not subtracted as fee : BuyAsset", async () => {
     const from = await getBlockNumber();
     await signSendFinalized(
-      Market.buyAsset(liqId, currency1, currency2, new BN(50)),
+      await Market.buyAsset(liqId, currency1, currency2, new BN(50)),
       user1,
     );
     const to = await getBlockNumber();

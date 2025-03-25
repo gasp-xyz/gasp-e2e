@@ -93,21 +93,16 @@ export async function rpcCalculateSellPrice(
 export async function rpcCalculateBuyPrice(
   poolId: BN,
   buyAssetId: BN,
-  sellAmount: BN,
+  buyAmount: BN,
 ) {
   const api = getApi();
-  const value = stringToBN(
+  return stringToBN(
     JSON.parse(
       JSON.stringify(
-        await api.rpc.market.calculate_buy_price(
-          poolId,
-          buyAssetId,
-          sellAmount,
-        ),
+        await api.rpc.market.calculate_buy_price(poolId, buyAssetId, buyAmount),
       ),
     ),
   );
-  return value;
 }
 
 export async function rpcCalculateSellPriceWithImpact(

@@ -1,10 +1,11 @@
-import { BN, BN_ZERO } from "@polkadot/util";
+import { BN, BN_HUNDRED, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { getLiquidityAssetId } from "./tx";
 import { filterAndStringifyFirstEvent } from "./eventListeners";
 import { MangataGenericEvent } from "gasp-sdk";
 import { stringToBN } from "./utils";
+import { rpcCalculateBuyPrice } from "./feeLockHelper";
 
 export class Market {
   static createPool(
@@ -79,19 +80,28 @@ export class Market {
     );
   }
 
-  static buyAsset(
+  static async buyAsset(
     swapPool: BN,
     soldAssetId: BN,
     boughtAssetId: BN,
     boughtAssetAmount: BN,
-    maxAmountIn: BN = new BN("340282366920938463463374607431768211455"), //u128::MAX,
-  ): Extrinsic {
+    maxAmountIn: BN = BN_ZERO,
+  ): Promise<Extrinsic> {
+    let maxAmount = maxAmountIn;
+    if (maxAmount.eq(BN_ZERO)) {
+      maxAmount = await rpcCalculateBuyPrice(
+        swapPool,
+        boughtAssetId,
+        boughtAssetAmount,
+      );
+      maxAmount.add(BN_HUNDRED);
+    }
     return api.tx.market.multiswapAssetBuy(
       [swapPool],
       boughtAssetId,
       boughtAssetAmount,
       soldAssetId,
-      maxAmountIn,
+      maxAmount,
     );
   }
 

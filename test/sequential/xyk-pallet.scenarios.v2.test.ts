@@ -369,7 +369,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     expect(buyPriceLocal).bnEqual(buyPriceRpc);
 
     await signSendFinalized(
-      Market.buyAsset(liquidityAssetId, assetId1, assetId2, amount),
+      await Market.buyAsset(liquidityAssetId, assetId1, assetId2, amount),
       user2,
     );
 
@@ -421,7 +421,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     expect(buyPriceLocal).bnEqual(buyPriceRpc);
 
     await signSendFinalized(
-      Market.buyAsset(liquidityAssetId, assetId2, assetId1, amount),
+      await Market.buyAsset(liquidityAssetId, assetId2, assetId1, amount),
       user2,
     );
 
@@ -913,7 +913,7 @@ describe("xyk-pallet: Liquidity sufficiency scenario", () => {
     const liq = await getLiquidityAssetId(sell, buy);
     let errString = "";
     await signSendFinalized(
-      Market.buyAsset(liq, sell, buy, amount),
+      await Market.buyAsset(liq, sell, buy, amount),
       user2,
     ).catch((exc) => {
       errString = JSON.parse(JSON.stringify(exc)).data.toString();

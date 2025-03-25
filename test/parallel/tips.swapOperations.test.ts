@@ -54,7 +54,7 @@ describe("Tips - Tips are not allowed for swaps", () => {
         BN_HUNDRED,
         BN_ONE,
       ),
-      buyAsset: Market.buyAsset(
+      buyAsset: await Market.buyAsset(
         liqId,
         tokenIds[0],
         tokenIds[1],

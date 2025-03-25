@@ -84,7 +84,7 @@ beforeEach(async () => {
 test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const buyAssetEvent = await signTx(
     api,
-    Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
+    await Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -100,7 +100,13 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
   //fixed to make the op fail, but executed.
   const buyAssetEvent = await signTx(
     api,
-    Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000), new BN(1)),
+    await Market.buyAsset(
+      liqId,
+      token1,
+      GASP_ASSET_ID,
+      new BN(1000),
+      new BN(1),
+    ),
     testUser1.keyRingPair,
   );
 

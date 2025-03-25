@@ -168,7 +168,12 @@ async function getSwappingTokenError(
   tx = Market.sellAsset(liqId, currencies[0], currencies[1], soldAssetAmount);
 
   if (swapType === "Buy") {
-    tx = Market.buyAsset(liqId, currencies[0], currencies[1], soldAssetAmount);
+    tx = await Market.buyAsset(
+      liqId,
+      currencies[0],
+      currencies[1],
+      soldAssetAmount,
+    );
   }
   testLog
     .getLog()
@@ -207,7 +212,7 @@ async function swapTokenAndReceiveSlippageError(
   );
   //if we need buyAsset, we change extrinsic
   if (swapType === "Buy") {
-    tx = Market.buyAsset(
+    tx = await Market.buyAsset(
       liqId,
       currencies[0],
       currencies[1],

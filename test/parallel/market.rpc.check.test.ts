@@ -242,7 +242,7 @@ describe.each(["Xyk", "StableSwap"])(
 
       await signTx(
         api,
-        Market.buyAsset(
+        await Market.buyAsset(
           liqId,
           firstCurrency,
           secondCurrency,
@@ -283,7 +283,7 @@ describe.each(["Xyk", "StableSwap"])(
 
       await signTx(
         api,
-        Market.buyAsset(
+        await Market.buyAsset(
           liqId,
           firstCurrency,
           secondCurrency,

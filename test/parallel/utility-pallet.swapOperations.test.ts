@@ -87,7 +87,7 @@ describe("Utility - batched swaps are not allowed", () => {
         BN_HUNDRED,
         BN_ONE,
       ),
-      buyAsset: Market.buyAsset(
+      buyAsset: await Market.buyAsset(
         poolIds[0],
         tokenIds[0],
         tokenIds[1],
