@@ -16,6 +16,7 @@ import {
 import { BN } from "@polkadot/util";
 import { Assets } from "../../utils/Assets";
 import { getSudoUser } from "../../utils/setup";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -89,7 +90,6 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
       expect(priceBuy).bnEqual(expected);
     },
   );
-
   test.each([
     [0, 1, new BN(0), new BN(0)],
     [0, 1, new BN(1), new BN(0)], //weird scenario.
@@ -116,6 +116,11 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
         amount,
       );
       expect(priceBuyNoIds).bnEqual(priceBuy);
+      testLog.getLog().info("SoldId " + dictAssets.get(soldTokenId)!);
+      testLog.getLog().info("BoughtId " + dictAssets.get(boughtTokenId)!);
+      testLog.getLog().info("Expected " + expected);
+      testLog.getLog().info("price " + priceBuy);
+      //Goncer: This must be adapted to use market rpc and waiting for shoeb fixes. Leaving it failing.
       expect(priceBuy).bnEqual(expected);
     },
   );
