@@ -238,7 +238,7 @@ test("Check that the activated amount is equal to the minted one", async () => {
     GASP_ASSET_ID,
     tokenAmount,
     MAX_BALANCE,
-    liqIdStablePool,
+    "StableSwap",
   );
 
   const result = getEventResultFromMangataTx(events);
