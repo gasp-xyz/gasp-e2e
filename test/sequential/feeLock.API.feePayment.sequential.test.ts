@@ -12,7 +12,7 @@ import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { feeLockErrors, findErrorMetadata } from "../../utils/utils";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
-import { sellAsset } from "../../utils/tx";
+import { sellAsset, updateFeeLockMetadata } from "../../utils/tx";
 import { Market } from "../../utils/market";
 import { filterAndStringifyFirstEvent } from "../../utils/eventListeners";
 
@@ -67,6 +67,8 @@ beforeAll(async () => {
     defaultCurrencyValue,
     sudo,
   );
+
+  await updateFeeLockMetadata(sudo, null, null, thresholdValue, [null]);
 });
 
 beforeEach(async () => {
@@ -106,8 +108,6 @@ test.skip("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the 
 });
 
 test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
-  await clearMgaFromWhitelisted(thresholdValue, sudo);
-
   await testUser1.addGASPTokens(sudo, new BN(2));
 
   const events = await sellAsset(
@@ -126,8 +126,6 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
 });
 
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
-  await clearMgaFromWhitelisted(thresholdValue, sudo);
-
   await testUser1.addGASPTokens(sudo);
   testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
