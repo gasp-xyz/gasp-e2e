@@ -67,8 +67,14 @@ beforeAll(async () => {
     defaultCurrencyValue,
     sudo,
   );
-
-  await updateFeeLockMetadata(sudo, null, null, thresholdValue, [null]);
+  //Aleks: as we don't have GASP in whitelist a priori we need to update Metadata. I also change here timeoutAmount because after previous tests it is 10
+  await updateFeeLockMetadata(
+    sudo,
+    null,
+    defaultCurrencyValue,
+    thresholdValue,
+    null,
+  );
 });
 
 beforeEach(async () => {
@@ -108,6 +114,7 @@ test.skip("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the 
 });
 
 test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
+  //Aleks: delete clearMgaFromWhitelisted as we have update function now and change checking method
   await testUser1.addGASPTokens(sudo, new BN(2));
 
   const events = await sellAsset(
@@ -126,6 +133,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
 });
 
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
+  //Aleks: delete clearMgaFromWhitelisted
   await testUser1.addGASPTokens(sudo);
   testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
