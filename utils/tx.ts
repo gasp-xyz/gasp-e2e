@@ -662,11 +662,18 @@ export const mintLiquidity = async (
   secondAssetId: BN,
   firstAssetAmount: BN,
   expectedSecondAssetAmount: BN = new BN(Number.MAX_SAFE_INTEGER),
+  poolType = "Xyk",
 ) => {
   let liqId: BN;
-  liqId = await rpcGetPoolId(firstAssetId, secondAssetId);
-  if (liqId.lt(BN_ZERO)) {
-    liqId = MAX_ARRAY_LENGTH;
+
+  //you can use getLiquidityAssetId only for Xyk pools
+  if (poolType === "Xyk") {
+    liqId = await getLiquidityAssetId(firstAssetId, secondAssetId);
+    if (liqId.lt(BN_ZERO)) {
+      liqId = MAX_ARRAY_LENGTH;
+    }
+  } else {
+    liqId = await rpcGetPoolId(firstAssetId, secondAssetId);
   }
   return await signTx(
     getApi(),
