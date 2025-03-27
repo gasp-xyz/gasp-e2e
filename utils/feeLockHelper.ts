@@ -87,6 +87,7 @@ export async function rpcCalculateSellPrice(
     ),
   );
 }
+
 export async function rpcCalculateBuyPriceMulti(
   poolId: BN,
   buyAssetId: BN,
