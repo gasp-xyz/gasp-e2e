@@ -3,7 +3,7 @@
  * @group poolLiq
  */
 import { jest } from "@jest/globals";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
@@ -28,6 +28,7 @@ import {
 import { BN_ZERO } from "gasp-sdk";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { Market } from "../../utils/market";
+import { rpcCalculateNativeRewards } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -111,10 +112,7 @@ test("GIVEN user create a pool, wait for rewards and then deactivate the pool WH
     liquidityId,
   );
 
-  const rewardsAmount = await mangata?.rpc.calculateRewardsAmount({
-    address: testUser1.keyRingPair.address,
-    liquidityTokenId: liquidityId.toString(),
-  });
+  const rewardsAmount = await rpcCalculateNativeRewards(testUser1, liquidityId);
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAs(testUser1, await ProofOfStake.claimNativeRewards(liquidityId)),

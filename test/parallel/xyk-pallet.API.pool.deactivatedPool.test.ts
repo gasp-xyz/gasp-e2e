@@ -3,7 +3,7 @@
  * @group poolLiq
  */
 import { jest } from "@jest/globals";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
@@ -36,6 +36,7 @@ import {
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
 import { Market } from "../../utils/market";
+import { rpcCalculateBuyPrice } from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -218,10 +219,11 @@ test("GIVEN deactivated pool WHEN a bootstrap is scheduled for the existing pair
   await waitSudoOperationFail(sudoBootstrap, ["PoolAlreadyExists"]);
 });
 
-test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., calculate_buy_price_id) THEN zero returns", async () => {
-  const priceAmount = await mangata?.rpc.calculateBuyPriceId(
-    GASP_ASSET_ID.toString(),
-    token1.toString(),
+test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., rpcCalculateBuyPrice) THEN zero returns", async () => {
+  //Aleks: here we changed rpc function
+  const priceAmount = await rpcCalculateBuyPrice(
+    liquidityId,
+    token1,
     defaultCurrencyValue,
   );
 

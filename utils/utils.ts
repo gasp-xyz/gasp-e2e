@@ -268,6 +268,19 @@ export function calculateCompleteFees(soldAmount: BN) {
   return { completeFee: threePercent };
 }
 
+//Aleks: this function is a working alternative for mangata rpc function
+export async function rpcCalculateNativeRewards(
+  user: User | string,
+  liqToken: any,
+) {
+  const address = typeof user === "string" ? user : user.keyRingPair.address;
+  const rewardsAmount = await getApi().rpc.pos.calculate_native_rewards_amount(
+    address,
+    liqToken,
+  );
+  return rewardsAmount;
+}
+
 export const waitForNBlocks = async (n: number) => {
   if (n > 0) {
     await waitNewBlock();

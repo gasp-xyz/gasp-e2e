@@ -5,15 +5,14 @@
  * @group poolLiq
  */
 import { jest } from "@jest/globals";
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { MangataInstance } from "gasp-sdk";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { rpcCalculateNativeRewards } from "../../utils/utils";
 import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { Market } from "../../utils/market";
@@ -29,7 +28,6 @@ let sudo: User;
 let token1: BN;
 let token2: BN;
 let liqIdPromPool: BN;
-let mangata: MangataInstance;
 const defaultCurrencyValue = new BN(250000);
 
 beforeAll(async () => {
@@ -38,9 +36,6 @@ beforeAll(async () => {
   } catch (e) {
     await initApi();
   }
-
-  const { chainUri } = getEnvironmentRequiredVars();
-  mangata = await getMangataInstance(chainUri);
 
   // setup users
   sudo = getSudoUser();
@@ -113,15 +108,15 @@ test("Users minted a different number of tokens THEN they receive an equivalent 
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  const rewardsAmountUser1 = await mangata.rpc.calculateRewardsAmount({
-    address: testUser1.keyRingPair.address,
-    liquidityTokenId: liqIdPromPool.toString(),
-  });
+  const rewardsAmountUser1 = await rpcCalculateNativeRewards(
+    testUser1.keyRingPair.address,
+    liqIdPromPool,
+  );
 
-  const rewardsAmountUser2 = await mangata.rpc.calculateRewardsAmount({
-    address: testUser2.keyRingPair.address,
-    liquidityTokenId: liqIdPromPool.toString(),
-  });
+  const rewardsAmountUser2 = await rpcCalculateNativeRewards(
+    testUser2,
+    liqIdPromPool,
+  );
   const rewardsDifference = rewardsAmountUser1.sub(
     rewardsAmountUser2.mul(new BN(2)),
   );
@@ -181,15 +176,15 @@ test("One user mints X tokens, other mints those X tokens but splitted in 5 mint
 
   await waitForRewards(testUser1, liqIdPromPool);
 
-  const rewardsAmountUser1 = await mangata.rpc.calculateRewardsAmount({
-    address: testUser1.keyRingPair.address,
-    liquidityTokenId: liqIdPromPool.toString(),
-  });
+  const rewardsAmountUser1 = await rpcCalculateNativeRewards(
+    testUser1,
+    liqIdPromPool,
+  );
 
-  const rewardsAmountUser2 = await mangata.rpc.calculateRewardsAmount({
-    address: testUser2.keyRingPair.address,
-    liquidityTokenId: liqIdPromPool.toString(),
-  });
+  const rewardsAmountUser2 = await rpcCalculateNativeRewards(
+    testUser2,
+    liqIdPromPool,
+  );
 
   expect(rewardsAmountUser1).bnEqual(rewardsAmountUser2);
 });
