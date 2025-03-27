@@ -5,7 +5,7 @@ import { getLiquidityAssetId } from "./tx";
 import { filterAndStringifyFirstEvent } from "./eventListeners";
 import { MangataGenericEvent } from "gasp-sdk";
 import { stringToBN } from "./utils";
-import { rpcCalculateBuyPrice } from "./feeLockHelper";
+import { rpcCalculateBuyPriceMulti } from "./feeLockHelper";
 
 export class Market {
   static createPool(
@@ -89,10 +89,11 @@ export class Market {
   ): Promise<Extrinsic> {
     let maxAmount = maxAmountIn;
     if (maxAmount.eq(BN_ZERO)) {
-      maxAmount = await rpcCalculateBuyPrice(
+      maxAmount = await rpcCalculateBuyPriceMulti(
         swapPool,
         boughtAssetId,
         boughtAssetAmount,
+        soldAssetId,
       );
       maxAmount.add(BN_HUNDRED);
     }
