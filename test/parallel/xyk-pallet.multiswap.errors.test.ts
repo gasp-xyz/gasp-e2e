@@ -14,7 +14,7 @@ import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import {
-  feeLockErrors,
+  getEventErrorByMetadata,
   getUserBalanceOfToken,
   stringToBN,
 } from "../../utils/utils";
@@ -37,6 +37,7 @@ let users: User[] = [];
 let tokenIds: BN[] = [];
 let api: ApiPromise;
 describe("Multiswap - error cases: disabled tokens", () => {
+  // Aleks: we changed the way to catch the error
   beforeAll(async () => {
     try {
       getApi();
@@ -59,19 +60,15 @@ describe("Multiswap - error cases: disabled tokens", () => {
       await Assets.disableToken(tokenIds[position]);
       const testUser1 = users[0];
       //comment from Gonzalo: "We can leave it now, but it looks like a bug"
-      const event = JSON.parse(
-        JSON.stringify(
-          (
-            await multiSwapBuyMarket(
-              testUser1,
-              tokenIds,
-              new BN(1000),
-              BN_TEN_THOUSAND,
-            )
-          ).filter((x) => x.method === "ExtrinsicFailed"),
-        ),
+      const event = await multiSwapBuyMarket(
+        testUser1,
+        tokenIds,
+        new BN(1000),
+        BN_TEN_THOUSAND,
       );
-      expect(event[0].error.name).toEqual("FunctionNotAvailableForThisToken");
+
+      const error = await getEventErrorByMetadata(event, "SwapFailed");
+      expect(error).toEqual("FunctionNotAvailableForThisToken");
     },
   );
   it.each([2, 4])(
@@ -89,10 +86,11 @@ describe("Multiswap - error cases: disabled tokens", () => {
         new BN(1000),
         BN_TEN_THOUSAND,
       );
-
-      const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual("FunctionNotAvailableForThisToken");
+      const error = await getEventErrorByMetadata(
+        multiSwapOutput,
+        "SwapFailed",
+      );
+      expect(error).toEqual("FunctionNotAvailableForThisToken");
 
       const boughtTokens = await getUserBalanceOfToken(
         tokenIds[tokenIds.length - 1],
@@ -136,6 +134,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     ).bnEqual(feeLockAmount);
   });
   test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
+    //Aleks: I changed the error, but I think we also need to change description
     const [testUser1] = setupUsers();
     const sudo = getSudoUser();
     await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
@@ -152,16 +151,14 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
       undefined,
       tokenIds.map((x) => [x, true]),
     );
-    let exception = false;
-    await expect(
-      multiSwapSellMarket(testUser1, tokenIds, threshold.addn(10)).catch(
-        (reason) => {
-          exception = true;
-          throw new Error(reason.data);
-        },
-      ),
-    ).rejects.toThrow(feeLockErrors.FeeLockFail);
-    expect(exception).toBeTruthy();
+    const event = await multiSwapSellMarket(
+      testUser1,
+      tokenIds,
+      threshold.addn(10),
+    );
+
+    const error = await getEventErrorByMetadata(event, "SwapFailed");
+    expect(error).toEqual("NotEnoughAssetsForFeeLock");
   });
   test.skip("[gasless] Fail on swap when selling remove all MGAs", async () => {
     const testUser = users[1];

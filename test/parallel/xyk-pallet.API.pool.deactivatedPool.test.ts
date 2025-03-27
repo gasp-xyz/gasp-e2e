@@ -9,7 +9,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { findErrorMetadata, stringToBN } from "../../utils/utils";
+import { getEventErrorByMetadata, stringToBN } from "../../utils/utils";
 import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
@@ -26,7 +26,6 @@ import {
 } from "../../utils/txHandler";
 import {
   ExtrinsicResult,
-  filterAndStringifyFirstEvent,
   waitSudoOperationFail,
 } from "../../utils/eventListeners";
 import { BN_ZERO } from "gasp-sdk";
@@ -178,12 +177,9 @@ test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the
     defaultCurrencyValue,
     new BN(1),
   );
-  const eventFiltered = filterAndStringifyFirstEvent(events, "SwapFailed");
-  const error = await findErrorMetadata(
-    eventFiltered.error.error,
-    eventFiltered.error.index,
-  );
-  expect(error.method).toEqual("ExcesiveInputAmount");
+
+  const error = await getEventErrorByMetadata(events, "SwapFailed");
+  expect(error).toEqual("ExcesiveInputAmount");
 });
 
 test("GIVEN deactivated pool WHEN sudo try to promote a pool THEN poolPromotion is updated", async () => {

@@ -10,11 +10,10 @@ import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import { feeLockErrors, findErrorMetadata } from "../../utils/utils";
+import { feeLockErrors, getEventErrorByMetadata } from "../../utils/utils";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
 import { sellAsset, updateFeeLockMetadata } from "../../utils/tx";
 import { Market } from "../../utils/market";
-import { filterAndStringifyFirstEvent } from "../../utils/eventListeners";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -124,12 +123,8 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
     thresholdValue.sub(new BN(100)),
     new BN(0),
   );
-  const eventFiltered = filterAndStringifyFirstEvent(events, "SwapFailed");
-  const error = await findErrorMetadata(
-    eventFiltered.error.error,
-    eventFiltered.error.index,
-  );
-  expect(error.method).toEqual("NotEnoughAssetsForFeeLock");
+  const error = await getEventErrorByMetadata(events, "SwapFailed");
+  expect(error).toEqual("NotEnoughAssetsForFeeLock");
 });
 
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {

@@ -4,7 +4,11 @@ import { getApi, initApi, mangata } from "./api";
 import { Assets } from "./Assets";
 import { User } from "./User";
 import { getAccountJSON } from "./frontend/utils/Helper";
-import { ExtrinsicResult, waitNewBlock } from "./eventListeners";
+import {
+  ExtrinsicResult,
+  filterAndStringifyFirstEvent,
+  waitNewBlock,
+} from "./eventListeners";
 import { logEvent, testLog } from "./Logger";
 import { AnyNumber } from "@polkadot/types/types";
 import { ApiPromise } from "@polkadot/api";
@@ -640,6 +644,24 @@ export async function findErrorMetadata(errorStr: string, index: string) {
   console.info(err);
   return err;
 }
+
+export async function getEventErrorByMetadata(
+  events: MangataGenericEvent[],
+  methodFiltered: string,
+) {
+  try {
+    getApi();
+  } catch (e) {
+    await initApi();
+  }
+  const eventFiltered = filterAndStringifyFirstEvent(events, methodFiltered);
+  const error = await findErrorMetadata(
+    eventFiltered.error.error,
+    eventFiltered.error.index,
+  );
+  return error.method;
+}
+
 export async function printCandidatePowers() {
   await initApi();
   const api = getApi();

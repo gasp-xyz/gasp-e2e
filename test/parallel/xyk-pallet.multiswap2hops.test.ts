@@ -12,7 +12,10 @@ import {
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
-import { getUserBalanceOfToken } from "../../utils/utils";
+import {
+  getEventErrorByMetadata,
+  getUserBalanceOfToken,
+} from "../../utils/utils";
 import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
 import {
   getBalanceOfPool,
@@ -146,9 +149,8 @@ describe("Multiswap [2 hops] - happy paths", () => {
       swapAmount,
       BN_TEN_THOUSAND,
     );
-    const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("InsufficientOutputAmount");
+    const error = await getEventErrorByMetadata(multiSwapOutput, "SwapFailed");
+    expect(error).toEqual("InsufficientOutputAmount");
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
     //Validate that the modified tokens are MGX and the first element in the list.
@@ -166,7 +168,6 @@ describe("Multiswap [2 hops] - happy paths", () => {
     )?.diff.free;
     const expectedFeeCharged = swapAmount.muln(3).divn(1000).neg();
     expect(changeInSoldAsset).bnEqual(expectedFeeCharged);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     //check only 0.3%
     expect(
       multiSwapOutput.findIndex(
