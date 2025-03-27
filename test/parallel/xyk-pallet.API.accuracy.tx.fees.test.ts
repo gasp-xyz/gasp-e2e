@@ -148,7 +148,7 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
       firstCurrency,
       new BN(100),
       secondCurrency,
-      new BN(1000000),
+      new BN(200),
     )
     .paymentInfo(testUser1.keyRingPair, opt);
   await buyAsset(
@@ -156,7 +156,7 @@ test("xyk-pallet - Calculate required MGA fee - BuyAsset", async () => {
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(1000000),
+    new BN(200),
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
