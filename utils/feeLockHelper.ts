@@ -96,7 +96,6 @@ export async function rpcCalculateBuyPriceMulti(
   assetIn: BN,
 ) {
   const api = getApi();
-
   return stringToBN(
     JSON.parse(
       JSON.stringify(
