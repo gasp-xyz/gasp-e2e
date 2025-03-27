@@ -249,8 +249,11 @@ export function calculateLiqAssetAmount(
 }
 
 export function calculateFees(soldAmount: BN) {
-  const treasury = soldAmount.mul(new BN(5)).div(new BN(10000));
-  const treasuryFee = treasury.add(new BN(1));
+  const treasuryFee = soldAmount.mul(new BN(5)).div(new BN(10000));
+  // no more rounding. const treasuryFee = treasury.add(new BN(1));
+  if (treasuryFee.eq(BN_ZERO)) {
+    throw new Error("GONCER:: Investigate - fee is zero.");
+  }
   return { treasury: treasuryFee, treasuryBurn: treasuryFee };
 }
 

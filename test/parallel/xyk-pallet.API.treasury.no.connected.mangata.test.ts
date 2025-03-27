@@ -105,7 +105,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     ]);
   });
   test("assets won when assets are sold - 1 [rounding] [no connected to MGA]", async () => {
-    const sellAssetAmount = new BN(500);
+    const sellAssetAmount = new BN(2000);
 
     await sellAsset(
       testUser1.keyRingPair,
