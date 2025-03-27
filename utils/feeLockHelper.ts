@@ -67,8 +67,7 @@ export async function addMgaToWhitelisted(
 
 export async function getFeeLockMetadata() {
   const api = getApi();
-  const value = (await api.query.feeLock.feeLockMetadata()).value;
-  return value;
+  return (await api.query.feeLock.feeLockMetadata()).value;
 }
 export async function rpcCalculateSellPrice(
   poolId: BN,
@@ -76,7 +75,7 @@ export async function rpcCalculateSellPrice(
   sellAmount: BN,
 ) {
   const api = getApi();
-  const value = stringToBN(
+  return stringToBN(
     JSON.parse(
       JSON.stringify(
         await api.rpc.market.calculate_sell_price(
@@ -87,7 +86,6 @@ export async function rpcCalculateSellPrice(
       ),
     ),
   );
-  return value;
 }
 export async function rpcCalculateBuyPriceMulti(
   poolId: BN,
@@ -96,6 +94,7 @@ export async function rpcCalculateBuyPriceMulti(
   assetIn: BN,
 ) {
   const api = getApi();
+
   return stringToBN(
     JSON.parse(
       JSON.stringify(
