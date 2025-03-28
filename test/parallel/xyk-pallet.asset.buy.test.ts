@@ -198,7 +198,12 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
     );
   let soldAssetId = firstCurrency;
   let boughtAssetId = secondCurrency;
-  await testUser1.buyAssets(soldAssetId, boughtAssetId, amount);
+  await testUser1.buyAssets(
+    soldAssetId,
+    boughtAssetId,
+    amount,
+    testUser1.getAsset(soldAssetId)?.amountBefore.free!,
+  );
 
   amount = new BN(15000);
   // considering the pool and the 15k amount

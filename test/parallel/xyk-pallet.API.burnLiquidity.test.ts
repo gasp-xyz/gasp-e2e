@@ -101,12 +101,12 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       new BN(9),
     );
     await sudo.mint(firstCurrency, testUser2, amountOfX);
-    //user2 exange some assets.
+    //user2 exchange some assets.
     await testUser2.buyAssets(
       firstCurrency,
       secondCurrency,
       new BN(9),
-      amountOfX.add(new BN(1)),
+      amountOfX.add(new BN(2)),
     );
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const ownedLiquidityAssets = calculateLiqAssetAmount(

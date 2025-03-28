@@ -155,7 +155,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       firstCurrency,
       secondCurrency,
       secondAssetAmount.add(new BN(1)),
-      new BN(1000000),
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);

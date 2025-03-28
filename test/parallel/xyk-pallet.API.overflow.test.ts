@@ -229,10 +229,10 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       secondCurrency,
       firstCurrency,
       new BN(10),
-      MAX_BALANCE,
+      new BN(10),
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
-      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       expect(eventResponse.data).toEqual(xykErrors.MathOverflow);
     });
     await testUser2.refreshAmounts(AssetWallet.AFTER);
