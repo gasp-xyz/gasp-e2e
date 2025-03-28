@@ -253,11 +253,11 @@ export function calculateLiqAssetAmount(
 }
 
 export function calculateFees(soldAmount: BN) {
-  const treasuryFee = soldAmount.mul(new BN(5)).div(new BN(10000));
-  // no more rounding. const treasuryFee = treasury.add(new BN(1));
+  let treasuryFee = soldAmount.mul(new BN(5)).div(new BN(10000));
   if (treasuryFee.eq(BN_ZERO)) {
-    throw new Error("GONCER:: Investigate - fee is zero.");
+    treasuryFee = BN_ONE;
   }
+  //treasuryFee = treasuryFee.add(new BN(1));
   return { treasury: treasuryFee, treasuryBurn: treasuryFee };
 }
 
@@ -281,11 +281,10 @@ export async function rpcCalculateNativeRewards(
   liqToken: any,
 ) {
   const address = typeof user === "string" ? user : user.keyRingPair.address;
-  const rewardsAmount = await getApi().rpc.pos.calculate_native_rewards_amount(
+  return await getApi().rpc.pos.calculate_native_rewards_amount(
     address,
     liqToken,
   );
-  return rewardsAmount;
 }
 
 export const waitForNBlocks = async (n: number) => {
