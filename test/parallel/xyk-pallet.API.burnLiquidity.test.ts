@@ -19,7 +19,7 @@ import {
   ExtrinsicResult,
   EventResult,
 } from "../../utils/eventListeners";
-import { BN } from "@polkadot/util";
+import { BN, BN_ONE } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import {
@@ -100,14 +100,10 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       new BN(assetYamount),
       new BN(9),
     );
-    await sudo.mint(firstCurrency, testUser2, amountOfX);
+    const maxOfX = amountOfX.add(new BN(2));
+    await sudo.mint(firstCurrency, testUser2, maxOfX);
     //user2 exchange some assets.
-    await testUser2.buyAssets(
-      firstCurrency,
-      secondCurrency,
-      new BN(9),
-      amountOfX.add(new BN(2)),
-    );
+    await testUser2.buyAssets(firstCurrency, secondCurrency, new BN(9), maxOfX);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const ownedLiquidityAssets = calculateLiqAssetAmount(
       assetXamount,
@@ -144,7 +140,7 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     const fee = new BN(10);
     let amount = amountOfX.add(new BN(assetXamount)).sub(fee);
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      amount,
+      amount.add(BN_ONE), //after shoebs multiSwap fixes, adding +1.
     );
 
     amount = new BN(1);
