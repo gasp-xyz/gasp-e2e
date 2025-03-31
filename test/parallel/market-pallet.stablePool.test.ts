@@ -86,7 +86,6 @@ test("Happy path - create stable pool", async () => {
   expect(poolId).bnGt(BN_ZERO);
 });
 
-// Goncer: Investigated & Reported.
 test("Happy path - Swap tokens in stableSwap pool", async () => {
   const event = await signTx(
     api,

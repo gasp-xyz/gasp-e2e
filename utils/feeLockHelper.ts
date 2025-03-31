@@ -1,5 +1,5 @@
 import { getApi } from "./api";
-import { GASP_ASSET_ID } from "./Constants";
+import { GASP_ASSET_ID, MAX_BALANCE } from "./Constants";
 import { waitSudoOperationSuccess } from "./eventListeners";
 import { updateFeeLockMetadata } from "./tx";
 import { User } from "./User";
@@ -89,27 +89,21 @@ export async function rpcCalculateSellPrice(
 }
 
 export async function rpcCalculateBuyPriceMulti(
-  poolId: BN | number,
-  buyAssetId: BN | number,
-  buyAmount: BN | number,
-  assetIn: BN | number,
+  poolId: BN,
+  buyAssetId: BN,
+  buyAmount: BN,
+  assetIn: BN,
+  maxIn: BN = MAX_BALANCE,
 ) {
   const api = getApi();
   const res = await api.rpc.market.get_multiswap_buy_info(
     [poolId],
     buyAssetId,
-    // @ts-ignore
     buyAmount,
     assetIn,
-    new BN(20000),
+    maxIn,
   );
-  const res2 = await rpcCalculateBuyPrice(
-    new BN(poolId),
-    new BN(buyAssetId),
-    new BN(buyAmount),
-  );
-  stringToBN(JSON.parse(JSON.stringify(res2)));
-  return stringToBN(JSON.parse(JSON.stringify(res)));
+  return new BN(res.totalAmountIn);
 }
 
 export async function rpcCalculateBuyPrice(

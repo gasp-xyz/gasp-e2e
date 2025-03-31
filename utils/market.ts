@@ -1,4 +1,4 @@
-import { BN, BN_HUNDRED, BN_ZERO } from "@polkadot/util";
+import { BN, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import { getLiquidityAssetId } from "./tx";
@@ -95,7 +95,6 @@ export class Market {
         boughtAssetAmount,
         soldAssetId,
       );
-      maxAmount.add(BN_HUNDRED);
     }
     return api.tx.market.multiswapAssetBuy(
       [swapPool],
@@ -186,10 +185,7 @@ export async function getMintLiquidityPaymentInfo(
     maxOtherAssetAmount,
   );
 
-  const mintLiquidityPaymentInfo = await mintLiquidityEvent.paymentInfo(
-    user.keyRingPair,
-  );
-  return mintLiquidityPaymentInfo;
+  return await mintLiquidityEvent.paymentInfo(user.keyRingPair);
 }
 
 export async function getTransactionFeeInfo(event: MangataGenericEvent[]) {
@@ -197,8 +193,7 @@ export async function getTransactionFeeInfo(event: MangataGenericEvent[]) {
     event,
     "TransactionFeePaid",
   );
-  const actualFee = await stringToBN(transactionFeePaid.actualFee);
-  return actualFee;
+  return stringToBN(transactionFeePaid.actualFee);
 }
 
 export async function getPoolIdsInfo(tokenIds: BN[]) {
@@ -217,17 +212,15 @@ export async function getPoolIdsInfo(tokenIds: BN[]) {
 }
 
 export async function rpcGetPoolsForTrading() {
-  const data = JSON.parse(
+  return JSON.parse(
     JSON.stringify(await api.rpc.market.get_pools_for_trading()),
   );
-  return data;
 }
 
 export async function rpcGetTradeableTokens() {
-  const data = JSON.parse(
+  return JSON.parse(
     JSON.stringify(await api.rpc.market.get_tradeable_tokens()),
   );
-  return data;
 }
 
 export async function rpcGetBurnAmount(poolId: BN, lpBurnAmount: BN) {
