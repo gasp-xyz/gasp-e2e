@@ -77,12 +77,7 @@ export class Staking {
     );
   }
   static addStakingLiquidityToken(liqToken: BN): Extrinsic {
-    return api.tx.parachainStaking.addStakingLiquidityToken(
-      {
-        Liquidity: liqToken,
-      },
-      liqToken,
-    );
+    return api.tx.parachainStaking.addStakingLiquidityToken(liqToken, liqToken);
   }
   static setTotalSelected(totalNo: BN): Extrinsic {
     return api.tx.parachainStaking.setTotalSelected(totalNo);
