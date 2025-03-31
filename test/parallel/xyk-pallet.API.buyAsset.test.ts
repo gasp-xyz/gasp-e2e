@@ -14,6 +14,7 @@ import {
   buyAsset,
   calculate_buy_price_rpc,
   FeeTxs,
+  calculate_buy_price_local_no_fee,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -393,14 +394,19 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       thirdAssetAmount,
       amountToBuy,
     );
-
+    const buyPriceLocalNoFee = calculate_buy_price_local_no_fee(
+      thirdAssetAmount.div(new BN(2)),
+      thirdAssetAmount,
+      amountToBuy,
+    );
+    const realPrice = buyPriceLocal.addn(3);
     await new FeeTxs()
       .buyAsset(
         testUser2.keyRingPair,
         thirdCurrency,
         firstCurrency,
         amountToBuy,
-        buyPriceLocal.addn(1),
+        realPrice,
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [
@@ -413,7 +419,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
           eventResponse,
           testUser2.keyRingPair.address,
           thirdCurrency,
-          buyPriceLocal,
+          buyPriceLocalNoFee,
           firstCurrency,
           amountToBuy,
         );
