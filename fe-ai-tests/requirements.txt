@@ -1,6 +1,6 @@
-browser-use==0.1.37
 pyperclip==1.9.0
 gradio==5.10.0
+browser-use==0.1.37
 json-repair
 langchain-mistralai==0.2.4
 
