@@ -89,26 +89,27 @@ export async function rpcCalculateSellPrice(
 }
 
 export async function rpcCalculateBuyPriceMulti(
-  poolId: BN,
-  buyAssetId: BN,
-  buyAmount: BN,
-  assetIn: BN,
+  poolId: BN | number,
+  buyAssetId: BN | number,
+  buyAmount: BN | number,
+  assetIn: BN | number,
 ) {
   const api = getApi();
-
-  return stringToBN(
-    JSON.parse(
-      JSON.stringify(
-        //@ts-ignore
-        await api.rpc.market.get_multiswap_buy_info(
-          [poolId],
-          buyAssetId,
-          buyAmount,
-          assetIn,
-        ),
-      ),
-    ),
+  const res = await api.rpc.market.get_multiswap_buy_info(
+    [poolId],
+    buyAssetId,
+    // @ts-ignore
+    buyAmount,
+    assetIn,
+    new BN(20000),
   );
+  const res2 = await rpcCalculateBuyPrice(
+    new BN(poolId),
+    new BN(buyAssetId),
+    new BN(buyAmount),
+  );
+  stringToBN(JSON.parse(JSON.stringify(res2)));
+  return stringToBN(JSON.parse(JSON.stringify(res)));
 }
 
 export async function rpcCalculateBuyPrice(

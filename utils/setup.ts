@@ -51,7 +51,7 @@ export function isBackendTest() {
     (isThereAPath.toLowerCase().includes("ui") ||
       isThereAPath.toLowerCase().includes("rollup"))
   ) {
-    return false;
+    return true;
   }
   return !(
     isAGroupRun &&
