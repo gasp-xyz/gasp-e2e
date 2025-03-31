@@ -28,7 +28,10 @@ import {
 } from "gasp-sdk";
 import { getLiquidityAssetId, getTokensAccountInfo } from "../../utils/tx";
 import { stringToBN } from "../../utils/utils";
-import { rpcCalculateSellPrice } from "../../utils/feeLockHelper";
+import {
+  getFeeLockMetadata,
+  rpcCalculateSellPrice,
+} from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -159,6 +162,8 @@ beforeEach(async () => {
 });
 
 test("User can buy GASP in multiswap operation", async () => {
+  const { feeLockAmount } = await getFeeLockMetadata();
+
   const userBalanceBeforeSwap = await getTokensAccountInfo(testUser, token1);
   const userBalanceGaspBeforeSwap = await getTokensAccountInfo(
     testUser,
@@ -189,7 +194,8 @@ test("User can buy GASP in multiswap operation", async () => {
   expect(stringToBN(userBalanceAfterSwap.free)).bnEqual(
     stringToBN(userBalanceBeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
-  expect(gaspDiff).bnGt(BN_ZERO);
+  // Aleks [TODO]: add here a specific amount checking when we can calculate StableSwap pools
+  expect(gaspDiff.add(feeLockAmount)).bnGt(BN_ZERO);
   expect(gaspDiff).bnLte(BN_TEN_THOUSAND);
 });
 
