@@ -169,7 +169,7 @@ test("GIVEN deactivated pool WHEN the user mints liquidity in the pool again THE
 });
 
 test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the deactivated pool THEN error returns", async () => {
-  // Aleks: add catching error fron SwapFailed event
+  // Aleks: add catching error from SwapFailed event
   const events = await sellAsset(
     testUser1.keyRingPair,
     GASP_ASSET_ID,
