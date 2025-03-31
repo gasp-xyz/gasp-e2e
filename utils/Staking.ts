@@ -136,9 +136,7 @@ export class Staking {
   }
   static removeStakingLiquidityToken(liqToken: BN): Extrinsic {
     return api.tx.parachainStaking.removeStakingLiquidityToken(
-      {
-        Liquidity: liqToken,
-      },
+      liqToken,
       liqToken,
     );
   }
