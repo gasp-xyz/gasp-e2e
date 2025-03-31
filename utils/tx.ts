@@ -7,7 +7,6 @@ import {
   toBN,
   TokenBalance,
 } from "gasp-sdk";
-import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
@@ -17,10 +16,10 @@ import { env } from "process";
 import { getApi, getMangataInstance } from "./api";
 import {
   ETH_ASSET_ID,
-  MAX_BALANCE,
   GASP_ASSET_ID,
-  MGA_DEFAULT_LIQ_TOKEN,
   MAX_ARRAY_LENGTH,
+  MAX_BALANCE,
+  MGA_DEFAULT_LIQ_TOKEN,
 } from "./Constants";
 import { Fees } from "./Fees";
 import { SudoUser } from "./Framework/User/SudoUser";
@@ -42,17 +41,6 @@ import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { getSudoUser, setupApi, setupUsers } from "./setup";
 import { Market, rpcGetPoolId } from "./market";
-
-export const signTxDeprecated = async (
-  tx: SubmittableExtrinsic<"promise">,
-  address: AddressOrPair,
-  nonce: BN,
-) => {
-  await tx.signAndSend(address, { nonce }, () => {
-    // handleTx(result, unsub)
-  });
-  //   setNonce(nonce + 1)
-};
 
 export async function calcuate_mint_liquidity_price_local(
   firstAssetId: BN,
@@ -175,12 +163,7 @@ export async function calculate_sell_price_rpc(
   output_reserve: BN,
   sell_amount: BN,
 ): Promise<BN> {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateSellPrice({
-    amount: sell_amount,
-    inputReserve: input_reserve,
-    outputReserve: output_reserve,
-  });
+  return calculate_sell_price_local(input_reserve, output_reserve, sell_amount);
 }
 
 export async function calculate_buy_price_rpc(
@@ -188,12 +171,43 @@ export async function calculate_buy_price_rpc(
   outputReserve: BN,
   buyAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateBuyPrice({
-    inputReserve: inputReserve,
-    outputReserve: outputReserve,
-    amount: buyAmount,
-  });
+  return calculate_buy_price_local(inputReserve, outputReserve, buyAmount);
+}
+
+export async function rpcCalculateBuyPriceMulti(
+  poolId: BN,
+  buyAssetId: BN,
+  buyAmount: BN,
+  assetIn: BN,
+  maxIn: BN = MAX_BALANCE,
+) {
+  const api = getApi();
+  const res = await api.rpc.market.get_multiswap_buy_info(
+    [poolId],
+    buyAssetId,
+    buyAmount,
+    assetIn,
+    maxIn,
+  );
+  return new BN(res.totalAmountIn);
+}
+
+export async function rpcCalculateSellPriceMulti(
+  poolId: BN,
+  assetIdIn: BN,
+  assetAmountIn: BN,
+  assetIdOut: BN,
+  minOut: BN = MAX_BALANCE,
+) {
+  const api = getApi();
+  const res = await api.rpc.market.get_multiswap_sell_info(
+    [poolId],
+    assetIdIn,
+    assetAmountIn,
+    assetIdOut,
+    minOut,
+  );
+  return new BN(res.totalAmountIn);
 }
 
 export async function calculate_buy_price_id_rpc(
@@ -201,11 +215,12 @@ export async function calculate_buy_price_id_rpc(
   boughtTokenId: BN,
   buyAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateBuyPriceId(
-    soldTokenId.toString(),
-    boughtTokenId.toString(),
+  const pool = await rpcGetPoolId(soldTokenId, boughtTokenId);
+  return await rpcCalculateBuyPriceMulti(
+    pool,
+    boughtTokenId,
     buyAmount,
+    soldTokenId,
   );
 }
 
@@ -214,11 +229,12 @@ export async function calculate_sell_price_id_rpc(
   boughtTokenId: BN,
   sellAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateSellPriceId(
-    soldTokenId.toString(),
-    boughtTokenId.toString(),
+  const pool = await rpcGetPoolId(soldTokenId, boughtTokenId);
+  return await rpcCalculateSellPriceMulti(
+    pool,
+    soldTokenId,
     sellAmount,
+    boughtTokenId,
   );
 }
 
@@ -296,8 +312,7 @@ export async function getPoolIdFromEvent(event: MangataGenericEvent[]) {
     event,
     "PoolCreated",
   );
-  const poolId = stringToBN(filteredEvent.poolId);
-  return poolId;
+  return stringToBN(filteredEvent.poolId);
 }
 
 export async function getLiquidityBalance(liquidityAssetId: BN) {

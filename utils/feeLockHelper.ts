@@ -1,10 +1,15 @@
 import { getApi } from "./api";
-import { GASP_ASSET_ID, MAX_BALANCE } from "./Constants";
+import { GASP_ASSET_ID } from "./Constants";
 import { waitSudoOperationSuccess } from "./eventListeners";
-import { updateFeeLockMetadata } from "./tx";
+import {
+  rpcCalculateBuyPriceMulti,
+  rpcCalculateSellPriceMulti,
+  updateFeeLockMetadata,
+} from "./tx";
 import { User } from "./User";
 import { stringToBN } from "./utils";
 import { BN } from "@polkadot/util";
+import { Market } from "./market";
 
 export async function clearMgaFromWhitelisted(
   thresholdValueExpected: BN,
@@ -74,36 +79,11 @@ export async function rpcCalculateSellPrice(
   sellAssetId: BN,
   sellAmount: BN,
 ) {
-  const api = getApi();
-  return stringToBN(
-    JSON.parse(
-      JSON.stringify(
-        await api.rpc.market.calculate_sell_price(
-          poolId,
-          sellAssetId,
-          sellAmount,
-        ),
-      ),
-    ),
-  );
-}
-
-export async function rpcCalculateBuyPriceMulti(
-  poolId: BN,
-  buyAssetId: BN,
-  buyAmount: BN,
-  assetIn: BN,
-  maxIn: BN = MAX_BALANCE,
-) {
-  const api = getApi();
-  const res = await api.rpc.market.get_multiswap_buy_info(
-    [poolId],
-    buyAssetId,
-    buyAmount,
-    assetIn,
-    maxIn,
-  );
-  return new BN(res.totalAmountIn);
+  const pool = await Market.getPool(poolId);
+  const secToken = pool[0].assets[0].eq(sellAssetId)
+    ? pool[0].assets[1]
+    : pool[0].assets[0];
+  return rpcCalculateSellPriceMulti(poolId, sellAssetId, sellAmount, secToken);
 }
 
 export async function rpcCalculateBuyPrice(
@@ -111,14 +91,11 @@ export async function rpcCalculateBuyPrice(
   buyAssetId: BN,
   buyAmount: BN,
 ) {
-  const api = getApi();
-  return stringToBN(
-    JSON.parse(
-      JSON.stringify(
-        await api.rpc.market.calculate_buy_price(poolId, buyAssetId, buyAmount),
-      ),
-    ),
-  );
+  const pool = await Market.getPool(poolId);
+  const secToken = pool[0].assets[0].eq(buyAssetId)
+    ? pool[0].assets[1]
+    : pool[0].assets[0];
+  return rpcCalculateBuyPriceMulti(poolId, buyAssetId, buyAmount, secToken);
 }
 
 export async function rpcCalculateSellPriceWithImpact(

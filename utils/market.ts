@@ -1,11 +1,10 @@
 import { BN, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
-import { getLiquidityAssetId } from "./tx";
+import { getLiquidityAssetId, rpcCalculateBuyPriceMulti } from "./tx";
 import { filterAndStringifyFirstEvent } from "./eventListeners";
 import { MangataGenericEvent } from "gasp-sdk";
 import { stringToBN } from "./utils";
-import { rpcCalculateBuyPriceMulti } from "./feeLockHelper";
 
 export class Market {
   static createPool(
@@ -135,6 +134,10 @@ export class Market {
       boughtAssetId,
       minBoughtOut,
     );
+  }
+
+  static getPool(poolId: BN) {
+    return api.rpc.market.get_pools(poolId);
   }
 }
 
