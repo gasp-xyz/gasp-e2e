@@ -1,190 +1,76 @@
-name: GASP UI prod smoke tests
+name: GASP UI Playwright Tests
 
 on:
   workflow_dispatch:
   schedule:
     - cron: "30 7 * * *"
+
 jobs:
-  setup-report:
-    name: setup testmo report
-    runs-on: ubuntu-latest
-    outputs:
-      testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
-
-    steps:
-      - name: Install testmo
-        run: yarn global add @testmo/testmo-cli
-
-      - name: Add extra params
-        run: |
-          testmo automation:resources:add-field --name git --type string \
-            --value ${GITHUB_SHA:0:7} --resources resources.json
-          RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          testmo automation:resources:add-link --name build \
-            --url $RUN_URL --resources resources.json
-
-      - name: Create test run
-        run: |
-          testmo automation:run:create \
-            --instance https://mangata-finance.testmo.net  \
-            --project-id 2 \
-            --name "FE GASP prod smoke test run" \
-            --resources resources.json \
-            --source "gasp-prod-e2e-job" > testmo-run-id.txt
-          ID=$(cat testmo-run-id.txt)
-          echo "testmo-run-id=$ID" >> $GITHUB_OUTPUT
-          echo "ID=$ID" >> $GITHUB_ENV
-
-        env:
-          TESTMO_URL: ${{ secrets.TESTMO_URL }}
-          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
-        id: setTestRun
-
-  e2e-tm:
-    name: Run UI tests
-    needs: [setup-report]
-    strategy:
-      fail-fast: false
-      matrix:
-        command: ["first"]
+  playwright-tests:
+    name: Run Playwright Tests
     runs-on: ubuntu-latest
     env:
-      API_URL: "wss://collator-01-ws-rollup-prod.gasp.xyz"
-      UI_URL: https://app.gasp.xyz/
-      TEST_SUDO_NAME: ${{ secrets.DEV_SUDO_NAME }}
-      MNEMONIC_META: ${{ secrets.MNEMONIC_PROD_META }}
-      PRIVKEY_META: ${{ secrets.PRIVKEY_PROD_META }}
-      TEST_SCRIPT: "test-gasp-prod"
-      NODE_ENV: test
-      SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
+      UI_URL: https://app.gasp.xyz
+      LMNR_PROJECT_API_KEY: ${{ secrets.LMNR_PROJECT_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
-      - name: Start Selenoid Server
-        uses: Xotabu4/selenoid-github-action@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          selenoid-start-arguments: |
-            --args "-timeout 300s" --browsers 'chrome:119.0;chrome:129.0'
+          python-version: '3.10'
+          cache: 'pip'
 
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: yarn
-
-      - name: Install dependencies with Yarn
-        run: yarn
-      - name: Tsc code quality check
-        run: yarn tsc-lint
-      - name: ESLint code quality check
-        run: yarn eslint
-      - name: installed packages
-        run: yarn list
-
-      - name: is selenoid started?
-        run: curl http://localhost:4444/status
-
-      - name: Run tests
-        run: yarn test-gasp-prod-${{ matrix.command }}
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure() # run this step even if previous step failed
-        with:
-          name: JEST UI Tests ${{ matrix.command }} # Name of the check run which will be created
-          path: reports/*.xml # Path to test results
-          reporter: jest-junit # Format of test results
-
-      - name: Install testmo
-        run: yarn global add @testmo/testmo-cli
-
-      - name: Submit results to the testmo-run
-        if: always()
+      - name: Install dependencies
         run: |
-          testmo automation:run:submit-thread \
-            --instance https://mangata-finance.testmo.net \
-            --run-id ${{needs.setup-report.outputs.testmo-run-id}} \
-            --results reports/*.xml
-        env:
-          TESTMO_URL: ${{ secrets.TESTMO_URL }}
-          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
-        continue-on-error: true
-
-      - name: Sleep for 5 seconds
-        run: sleep 10s #close buffers of videos.
-
-      - name: Copy video files to reports folder
-        if: success() || failure()
-        run: "cp ~/.aerokube/selenoid/* -r  reports/artifacts/"
-
-      - name: Create  reports zip
-        uses: vimtor/action-zip@v1
-        if: success() || failure()
-        with:
-          files: reports/
-          dest: reports.zip
-
-      - name: Archive report files
+          python -m pip install --upgrade pip
+          cd fe-ai-tests
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+          
+      - name: Install Playwright browsers
+        run: |
+          python -m playwright install chromium
+          
+      - name: Create directories for test artifacts
+        run: |
+          mkdir -p fe-ai-tests/tmp/record_videos
+          
+      - name: Run Playwright tests
+        run: |
+          cd fe-ai-tests
+          pytest agent_gasp1_optimised_nowarn_test.py -v
+          
+      - name: Archive test results
+        if: always()
         uses: actions/upload-artifact@v4
-        if: success() || failure()
         with:
-          name: ReportData ${{ matrix.command }}
-          path: reports.zip
-
-      - name: Archive report files
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: TestReport ${{ matrix.command }}
-          path: reports/html-report/report.html
-
-  test-complete:
-    needs: [setup-report, e2e-tm]
+          name: test-results
+          path: fe-ai-tests/tmp/record_videos
+          retention-days: 7
+          
+  slack-notify:
+    needs: [playwright-tests]
     if: always()
     runs-on: ubuntu-latest
-
     steps:
-      - name: Install testmo
-        run: yarn global add @testmo/testmo-cli
-
-      - name: Complete test run
-        run: |
-          npx testmo automation:run:complete \
-            --instance https://mangata-finance.testmo.net \
-            --run-id ${{needs.setup-report.outputs.testmo-run-id}} \
-        env:
-          TESTMO_URL: ${{ secrets.TESTMO_URL }}
-          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
-        continue-on-error: true
-
-  slack-notify-ok:
-    needs: [e2e-tm, setup-report]
-    if: success()
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Slack Notification - OK
-        if: success()
+      - name: Slack Notification - Success
+        if: ${{ needs.playwright-tests.result == 'success' }}
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
-          SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
-          SLACK_TITLE: "PROD GASP smoke UI tests - results - OK"
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: "GASP UI Playwright Tests - Success"
           SLACK_COLOR: "#00ff11"
-          SLACK_MESSAGE: "Test succeed in [ ${{ env.TEST_SCRIPT }} ]
-            testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
-          GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
-
-  # slack-notify-nook:
-  #   needs: [e2e-tm]
-  #   if: failure()
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Slack Notification - Error
-  #       uses: bryannice/gitactions-slack-notification@2.0.0
-  #       env:
-  #         SLACK_INCOMING_WEBHOOK: ${{ secrets.STG_SLACK_WEBHOOK }}
-  #         SLACK_TITLE: "PROD GASP smoke UI tests - results - NOOK"
-  #         SLACK_COLOR: "#ff0011"
-  #         SLACK_MESSAGE: "Test failures [ ${{ env.TEST_SCRIPT }} ]
-  #           testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
-  #         GITHUB_REF: "https://mangata-finance.github.io/mangata-e2e/${{ github.run_number }}"
+          SLACK_MESSAGE: "Playwright tests passed successfully!"
+          
+      - name: Slack Notification - Failure
+        if: ${{ needs.playwright-tests.result == 'failure' }}
+        uses: bryannice/gitactions-slack-notification@2.0.0
+        env:
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: "GASP UI Playwright Tests - Failure"
+          SLACK_COLOR: "#ff0011"
+          SLACK_MESSAGE: "Playwright tests failed. Please check the logs for details."

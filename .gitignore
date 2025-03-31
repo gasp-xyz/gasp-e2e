@@ -13,3 +13,4 @@ reports/**/*
 .yarn/cache
 .yarn/*.*
 *.sqlite
+/fe-ai-tests/tmp
