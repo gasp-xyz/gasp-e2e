@@ -14,3 +14,20 @@ reports/**/*
 .yarn/*.*
 *.sqlite
 /fe-ai-tests/tmp
+
+tmp
+**/tmp
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# PDM
+.pdm-build/
+__pypackages__/
+.pdm-python
+
+# Virtual environment
+.venv/

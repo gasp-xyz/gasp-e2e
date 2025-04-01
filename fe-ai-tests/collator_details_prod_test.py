@@ -108,7 +108,8 @@ async def test_gasp_website(browser_context, controller_with_actions, llm):
         initial_actions=initial_actions,
         llm=llm,
         browser_context=browser_context,
-        controller=controller_with_actions
+        controller=controller_with_actions,
+        generate_gif='tmp/agent_history.gif'
     )
 
     # Run the agent

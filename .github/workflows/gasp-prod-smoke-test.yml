@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "30 7 * * *"
+  # TODO: Added for tests, remove this once the FE-AI-tests branch is merged into main
+  push:
+    branches: ['FE-AI-tests']
 
 jobs:
   playwright-tests:
@@ -15,41 +18,35 @@ jobs:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v4
         with:
-          python-version: '3.10'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          cd fe-ai-tests
-          pip install -r requirements.txt
-          pip install pytest pytest-asyncio
+          python-version-file: 'fe-ai-tests/.python-version'
+          cache: true
+          cache-dependency-path: 'fe-ai-tests/pdm.lock'
+          
+      - name: Install dependencies with PDM
+        run: cd fe-ai-tests && pdm install
           
       - name: Install Playwright browsers
-        run: |
-          python -m playwright install chromium
+        run: cd fe-ai-tests && pdm run playwright install chromium
           
-      - name: Create directories for test artifacts
-        run: |
-          mkdir -p fe-ai-tests/tmp/record_videos
+      # - name: Create directories for test artifacts
+      #   run: mkdir -p fe-ai-tests/tmp/record_videos
           
-      - name: Run Playwright tests
-        run: |
-          cd fe-ai-tests
-          pytest agent_gasp1_optimised_nowarn_test.py -v
+      - name: Run tests
+        run: cd fe-ai-tests && pdm run pytest collator_details_prod_test.py -v
           
-      - name: Archive test results
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: fe-ai-tests/tmp/record_videos
+          path: |
+            fe-ai-tests/tmp/record_videos
+            fe-ai-tests/tmp/agent_history.gif
           retention-days: 7
           
   slack-notify:
