@@ -78,43 +78,49 @@ describe("AssetRegistry RPC -", () => {
 
   test("GIVEN a token that does not exist on the asset registry THEN it won't be returned in RPC", async () => {
     await rpcGetTradeableTokens().then((tokens: any[]) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
         noRegistered.toString(),
       );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is empty and symbol is empty and operation disabled is not set THEN it won't be returned in RPC", async () => {
     await rpcGetTradeableTokens().then((tokens: any[]) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(empty.toString());
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
+        empty.toString(),
+      );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is empty and operation disabled is not set THEN it won't be returned in RPC", async () => {
     await rpcGetTradeableTokens().then((tokens: any[]) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(onlyName.toString());
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
+        onlyName.toString(),
+      );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is not set THEN its returned in RPC", async () => {
     await rpcGetTradeableTokens().then((tokens: any[]) => {
-      expect(tokens.map((x) => x.tokenId)).toContain(nameSymbol.toString());
+      expect(tokens.map((x) => x.tokenId.toString())).toContain(
+        nameSymbol.toString(),
+      );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is false THEN its returned in RPC", async () => {
     await rpcGetTradeableTokens().then((tokens: any[]) => {
-      expect(tokens.map((x) => x.tokenId)).toContain(
+      expect(tokens.map((x) => x.tokenId.toString())).toContain(
         nameSymbolDisableFalse.toString(),
       );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is true THEN its not returned in RPC", async () => {
     await rpcGetTradeableTokens().then((tokens: any[]) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
         nameSymbolDisableTrue.toString(),
       );
     });
   });
   test("GIVEN a token that belongs to a pool WHEN pool is not disabled THEN the token is not filtered", async () => {
     await rpcGetTradeableTokens().then((tokens: any[]) => {
-      expect(tokens.map((x) => x.tokenId)).toContain(liq.toString());
+      expect(tokens.map((x) => x.tokenId.toString())).toContain(liq.toString());
     });
   });
 });
