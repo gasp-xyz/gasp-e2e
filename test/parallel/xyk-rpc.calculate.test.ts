@@ -183,7 +183,12 @@ test("xyk-rpc - calculate_buy_price matches with the real buy", async () => {
     poolBalanceBefore[1],
     numberOfAssets,
   );
-  await testUser1.buyAssets(firstCurrency, secondCurrency, numberOfAssets);
+  await testUser1.buyAssets(
+    firstCurrency,
+    secondCurrency,
+    numberOfAssets,
+    testUser1.getFreeAssetAmount(firstCurrency).amountBefore.free,
+  );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;
   const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;

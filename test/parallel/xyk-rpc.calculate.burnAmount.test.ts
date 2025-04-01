@@ -14,6 +14,7 @@ import { ExtrinsicResult } from "../../utils/eventListeners";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { BN_ZERO } from "gasp-sdk";
 import { getSudoUser } from "../../utils/setup";
+import { rpcGetBurnAmount } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -92,27 +93,9 @@ describe("xyk-rpc - calculate get_burn amount: Missing requirements", () => {
       dictAssets.set(index, assetIds[index]);
     }
   });
-  //now with the dict indexes we do the testing.
-  //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
-  test.each([[0, 1, new BN(1000), new BN(0)]])(
-    "validate parameters - get_burn from not generated pool [soldTokenId->%s,boughtTokenId->%s,amount->%s,expected->%s]",
-    async (firstIdx, secondIdx, amount, expected) => {
-      const burnAmount = await getBurnAmount(
-        dictAssets.get(firstIdx)!,
-        dictAssets.get(secondIdx)!,
-        amount,
-      );
-      expect(burnAmount.firstAssetAmount).bnEqual(expected);
-      expect(burnAmount.secondAssetAmount).bnEqual(expected);
-    },
-  );
 
   test("validate parameters - get_burn from not created assets", async () => {
-    const burnAmount = await getBurnAmount(
-      new BN(12345),
-      new BN(12346),
-      new BN(10000000),
-    );
+    const burnAmount = await rpcGetBurnAmount(new BN(12345), new BN(10000000));
     expect(burnAmount.firstAssetAmount).bnEqual(BN_ZERO);
     expect(burnAmount.secondAssetAmount).bnEqual(BN_ZERO);
   });

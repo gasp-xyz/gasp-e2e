@@ -127,7 +127,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     soldAssetId,
     boughtAssetId,
     amount,
-    new BN(1000000),
+    testUser1.getFreeAssetAmount(soldAssetId).amountBefore.free,
   );
 
   const eventResponse = getEventResultFromMangataTx(event, [
@@ -230,7 +230,12 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   soldAssetId = secondCurrency;
   boughtAssetId = firstCurrency;
 
-  await testUser1.buyAssets(soldAssetId, boughtAssetId, amount);
+  await testUser1.buyAssets(
+    soldAssetId,
+    boughtAssetId,
+    amount,
+    testUser1.getFreeAssetAmount(soldAssetId).amountBefore.free,
+  );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);

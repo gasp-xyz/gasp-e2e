@@ -4,6 +4,7 @@ import { User } from "./User";
 import {
   getLiquidityAssetId,
   rpcCalculateBuyPriceMulti,
+  rpcCalculateBuyPriceMultiObj,
   rpcCalculateSellPriceMultiObj,
 } from "./tx";
 import { filterAndStringifyFirstEvent } from "./eventListeners";
@@ -156,6 +157,18 @@ export class Market {
     );
     return res.isLockless === true;
   }
+  static async isBuyAssetLockFree(assets: string[], sellAssetAmount: BN) {
+    const firstAsset = stringToBN(assets[0]);
+    const secondAsset = stringToBN(assets[1]);
+    const pool = await rpcGetPoolId(firstAsset, secondAsset);
+    const res = await rpcCalculateBuyPriceMultiObj(
+      pool,
+      firstAsset,
+      sellAssetAmount,
+      secondAsset,
+    );
+    return res.isLockless === true;
+  }
 }
 
 export async function getMultiswapSellPaymentInfo(
@@ -248,8 +261,8 @@ export async function rpcGetBurnAmount(poolId: BN, lpBurnAmount: BN) {
     JSON.stringify(await api.rpc.market.get_burn_amount(poolId, lpBurnAmount)),
   );
   return {
-    firstTokenAmount: stringToBN(data[0]),
-    secondTokenAmount: stringToBN(data[1]),
+    firstAssetAmount: stringToBN(data[0]),
+    secondAssetAmount: stringToBN(data[1]),
   };
 }
 

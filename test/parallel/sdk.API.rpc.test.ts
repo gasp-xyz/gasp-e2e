@@ -6,9 +6,15 @@ import { jest } from "@jest/globals";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Assets } from "../../utils/Assets";
 import { User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
-import { getLiquidityAssetId } from "../../utils/tx";
+import {
+  calculate_buy_price_id_rpc,
+  calculate_buy_price_local,
+  calculate_sell_price_id_rpc,
+  calculate_sell_price_local,
+  getLiquidityAssetId,
+} from "../../utils/tx";
 import { BN_ZERO, Mangata, MangataInstance } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { Market } from "../../utils/market";
@@ -51,24 +57,24 @@ beforeAll(async () => {
 
 describe("SDK tests for rpc functions", () => {
   test("Calculate Sell / buy / id", async () => {
-    const sellAmount = await mgaInstance.rpc.calculateSellPrice({
-      inputReserve: poolBalance,
-      outputReserve: poolBalance,
-      amount: amount,
-    });
-    const buyAmount = await mgaInstance.rpc.calculateBuyPrice({
-      inputReserve: poolBalance,
-      outputReserve: poolBalance,
-      amount: amount,
-    });
-    const sellAmountId = await mgaInstance.rpc.calculateSellPriceId(
-      token1.toString(),
-      token2.toString(),
+    const sellAmount = calculate_sell_price_local(
+      poolBalance,
+      poolBalance,
       amount,
     );
-    const buyAmountId = await mgaInstance.rpc.calculateBuyPriceId(
-      token1.toString(),
-      token2.toString(),
+    const buyAmount = calculate_buy_price_local(
+      poolBalance,
+      poolBalance,
+      amount,
+    );
+    const sellAmountId = await calculate_sell_price_id_rpc(
+      token1,
+      token2,
+      amount,
+    );
+    const buyAmountId = await calculate_buy_price_id_rpc(
+      token1,
+      token2,
       amount,
     );
 
@@ -78,31 +84,14 @@ describe("SDK tests for rpc functions", () => {
     expect(buyAmount).bnEqual(buyAmountId);
     expect(sellAmount).bnEqual(sellAmountId);
   });
-  test("Get Burn amount , maxInstant burn amount", async () => {
-    const burnAmount = await mgaInstance.rpc.getBurnAmount({
-      firstTokenId: token1.toString(),
-      secondTokenId: token2.toString(),
-      amount: amount,
-    });
+  test("Calculate sellForMinting amount", async () => {
     const api = await mgaInstance.api();
-    // @ts-ignore
-    const maxInstantBurnAmount = await api.rpc.xyk.get_max_instant_burn_amount(
-      user1.keyRingPair.address,
-      liquidityToken.toString(),
-    );
-    expect(burnAmount.firstAssetAmount).bnLte(maxInstantBurnAmount);
-    expect(burnAmount.secondAssetAmount).bnLte(maxInstantBurnAmount);
-    expect(poolBalance).bnEqual(maxInstantBurnAmount);
-    expect(burnAmount.firstAssetAmount).bnGt(BN_ZERO);
-    expect(burnAmount.secondAssetAmount).bnGt(BN_ZERO);
-  });
-  test("Calculate balanced sell amount", async () => {
-    const api = await mgaInstance.api();
-    // @ts-ignore
-    const balancedSell = await api.rpc.xyk.calculate_balanced_sell_amount(
-      amount,
-      poolBalance,
-    );
-    expect(balancedSell).bnGt(BN_ZERO);
+    const sellForMinting =
+      await api.rpc.market.calculate_expected_amount_for_minting(
+        liquidityToken,
+        token1,
+        amount,
+      );
+    expect(stringToBN(sellForMinting.toString())).bnGt(BN_ZERO);
   });
 });

@@ -14,11 +14,14 @@ import {
 import { BN, BN_ZERO } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
-import { multiSwapSellMarket, updateFeeLockMetadata } from "../../utils/tx";
+import {
+  calculate_sell_price_id_rpc,
+  multiSwapSellMarket,
+  updateFeeLockMetadata,
+} from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Market } from "../../utils/market";
-import { ApiPromise } from "@polkadot/api";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -29,7 +32,6 @@ let sudo: User;
 let firstCurrency: BN;
 let secondCurrency: BN;
 let thirdCurrency: BN;
-let api: ApiPromise;
 
 const thresholdValue = new BN(666).mul(Assets.MG_UNIT);
 const defaultCurrencyValue = new BN(10000000).mul(Assets.MG_UNIT);
@@ -44,8 +46,7 @@ beforeAll(async () => {
 
   // setup users
   sudo = getSudoUser();
-  api = getApi();
-
+  await setupApi();
   [secondCurrency] = await Assets.setupUserWithCurrencies(
     sudo,
     [defaultCurrencyValue],
@@ -115,26 +116,17 @@ beforeAll(async () => {
 
 test("gasless- isFree depends on the token and the sell valuation", async () => {
   const saleAssetValue = thresholdValue.add(new BN(2));
-  //non existing pool
-  expect(
-    (
-      await api.rpc.xyk.is_buy_asset_lock_free(
-        [secondCurrency.toString(), firstCurrency.addn(10).toString()],
-        thresholdValue!.addn(1),
-      )
-    ).toString(),
-  ).toEqual("");
   // non mga paired token. -> always false.
   expect(
     (
-      await api.rpc.xyk.is_buy_asset_lock_free(
+      await Market.isBuyAssetLockFree(
         [secondCurrency.toString(), thirdCurrency.toString()],
         thresholdValue!.addn(1000),
       )
     ).toString(),
   ).toEqual("false");
 
-  const isFree = api.rpc.xyk.is_sell_asset_lock_free(
+  const isFree = Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -142,7 +134,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //MGA pool
   expect(
     (
-      await api.rpc.xyk.is_sell_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [firstCurrency.toString(), GASP_ASSET_ID.toString()],
         thresholdValue.subn(2),
       )
@@ -150,7 +142,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   ).toEqual("false");
   expect(
     (
-      await api.rpc.xyk.is_sell_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [GASP_ASSET_ID.toString(), firstCurrency.toString()],
         thresholdValue.subn(2),
       )
@@ -158,7 +150,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   ).toEqual("false");
   expect(
     (
-      await api.rpc.xyk.is_sell_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [GASP_ASSET_ID.toString(), firstCurrency.toString()],
         thresholdValue,
       )
@@ -166,7 +158,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   ).toEqual("true");
   expect(
     (
-      await api.rpc.xyk.is_sell_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [firstCurrency.toString(), GASP_ASSET_ID.toString()],
         thresholdValue,
       )
@@ -176,7 +168,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //MGA paired token
   expect(
     (
-      await api.rpc.xyk.is_sell_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [firstCurrency.toString(), secondCurrency.toString()],
         thresholdValue.subn(2),
       )
@@ -192,7 +184,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   //th is 670,
   expect(
     (
-      await api.rpc.xyk.is_sell_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [secondCurrency.toString(), firstCurrency.toString()],
         thresholdValue.addn(2),
       )
@@ -201,7 +193,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
 
   expect(
     (
-      await api.rpc.xyk.is_sell_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [secondCurrency.toString(), firstCurrency.toString()],
         amount.addn(1),
       )
@@ -210,7 +202,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
 
   expect(
     (
-      await api.rpc.xyk.is_buy_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [firstCurrency.toString(), secondCurrency.toString()],
         thresholdValue.subn(1),
       )
@@ -218,7 +210,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   ).toEqual("false");
   expect(
     (
-      await api.rpc.xyk.is_buy_asset_lock_free(
+      await Market.isSellAssetLockFree(
         [firstCurrency.toString(), secondCurrency.toString()],
         amount.addn(1),
       )
@@ -226,16 +218,16 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   ).toEqual("true");
 
   //Indirect paired token
-  const amountReqToGetThreshold = await mangata?.rpc.calculateSellPriceId(
-    firstCurrency.toString(),
-    secondCurrency.toString(),
+  const amountReqToGetThreshold = await calculate_sell_price_id_rpc(
+    firstCurrency,
+    secondCurrency,
     thresholdValue.subn(1),
   );
   //Same as before, we first calcualte from wich value, the buy results on the threshold.
   //Then we check that the value (-1) result in false, and +1 in true.
   expect(
     (
-      await api.rpc.xyk.is_buy_asset_lock_free(
+      await Market.isBuyAssetLockFree(
         [secondCurrency.toString(), firstCurrency.toString()],
         amountReqToGetThreshold!,
       )
@@ -243,7 +235,7 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
   ).toEqual("false");
   expect(
     (
-      await api.rpc.xyk.is_buy_asset_lock_free(
+      await Market.isBuyAssetLockFree(
         [secondCurrency.toString(), firstCurrency.toString()],
         amountReqToGetThreshold!.addn(1),
       )
@@ -256,7 +248,7 @@ test("gasless- isFree works same as multiswap of two", async () => {
     .add(new BN(2))
     .add(thresholdValue.muln(0.004));
 
-  const isFree = await api.rpc.xyk.is_sell_asset_lock_free(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );

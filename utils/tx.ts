@@ -40,7 +40,7 @@ import {
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
 import { getSudoUser, setupApi, setupUsers } from "./setup";
-import { Market, rpcGetPoolId } from "./market";
+import { Market, rpcGetBurnAmount, rpcGetPoolId } from "./market";
 
 export async function calcuate_mint_liquidity_price_local(
   firstAssetId: BN,
@@ -148,12 +148,8 @@ export async function getBurnAmount(
   secondAssetId: BN,
   liquidityAssetAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  const result = await mangata.rpc.getBurnAmount({
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    amount: liquidityAssetAmount,
-  });
+  const pool = await rpcGetPoolId(firstAssetId, secondAssetId);
+  const result = await rpcGetBurnAmount(pool, liquidityAssetAmount);
   testLog.getLog().info(result.firstAssetAmount.toString());
   return result;
 }
@@ -205,6 +201,22 @@ export async function rpcCalculateSellPriceMultiObj(
     assetAmountIn,
     assetIdOut,
     minOut,
+  );
+}
+export async function rpcCalculateBuyPriceMultiObj(
+  poolId: BN,
+  assetIdOut: BN,
+  assetAmountOut: BN,
+  assetIdIn: BN,
+  maxIn: BN = MAX_BALANCE,
+) {
+  const api = getApi();
+  return await api.rpc.market.get_multiswap_buy_info(
+    [poolId],
+    assetIdOut,
+    assetAmountOut,
+    assetIdIn,
+    maxIn,
   );
 }
 export async function rpcCalculateSellPriceMulti(

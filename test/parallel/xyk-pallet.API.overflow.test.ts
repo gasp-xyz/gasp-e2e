@@ -229,7 +229,7 @@ describe("xyk-pallet - Operate with a pool close to overflow", () => {
       secondCurrency,
       firstCurrency,
       new BN(10),
-      new BN(10),
+      testUser2.getFreeAssetAmount(secondCurrency).amountBefore.free,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

@@ -19,12 +19,12 @@ import { stringToBN } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import {
+  Market,
   rpcCalculateExpectedLiquidityMinted,
   rpcGetBurnAmount,
   rpcGetPoolId,
   rpcGetPoolsForTrading,
   rpcGetTradeableTokens,
-  Market,
 } from "../../utils/market";
 import {
   calculate_buy_price_rpc,
@@ -71,9 +71,7 @@ async function createPoolAndGetLiqId(
 
   await updateFeeLockMetadata(sudo, null, null, null, [[firstAsset, true]]);
 
-  const liquidityId = await rpcGetPoolId(firstAsset, secondAsset);
-
-  return liquidityId;
+  return await rpcGetPoolId(firstAsset, secondAsset);
 }
 
 beforeAll(async () => {
@@ -359,8 +357,8 @@ describe("Market - rpc", () => {
         testUser.getAsset(secondCurrency)?.amountBefore.free!,
       );
 
-    expect(burnAmount.firstTokenAmount).bnEqual(firstCurrencyDiff);
-    expect(burnAmount.secondTokenAmount).bnEqual(secondCurrencyDiff);
+    expect(burnAmount.firstAssetAmount).bnEqual(firstCurrencyDiff);
+    expect(burnAmount.secondAssetAmount).bnEqual(secondCurrencyDiff);
   });
 
   test("rpcCalculateExpectedLiquidityMinted test", async () => {
