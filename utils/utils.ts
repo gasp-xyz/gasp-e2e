@@ -598,6 +598,7 @@ export enum xykErrors {
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
   PoolIsEmpty = "PoolIsEmpty",
   ExcessiveInputAmount = "ExcesiveInputAmount",
+  NotEnoughAssetsForFeeLock = "NotEnoughAssetsForFeeLock",
 }
 
 export enum feeLockErrors {

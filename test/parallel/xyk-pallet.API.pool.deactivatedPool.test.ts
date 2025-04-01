@@ -9,7 +9,11 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { getEventErrorByMetadata, stringToBN } from "../../utils/utils";
+import {
+  getEventErrorByMetadata,
+  stringToBN,
+  xykErrors,
+} from "../../utils/utils";
 import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
@@ -179,7 +183,7 @@ test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the
   );
 
   const error = await getEventErrorByMetadata(events, "SwapFailed");
-  expect(error).toEqual("ExcesiveInputAmount");
+  expect(error).toEqual(xykErrors.ExcessiveInputAmount);
 });
 
 test("GIVEN deactivated pool WHEN sudo try to promote a pool THEN poolPromotion is updated", async () => {

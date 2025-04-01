@@ -23,7 +23,7 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Market } from "../../utils/market";
-import { getEventErrorByMetadata } from "../../utils/utils";
+import { getEventErrorByMetadata, xykErrors } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -112,7 +112,7 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
 
   // Aleks: I changed the error but it sounds logic because we try to buy 1000 and pay for this only 1
   const error = await getEventErrorByMetadata(buyAssetEvent, "SwapFailed");
-  expect(error).toEqual("InsufficientInputAmount");
+  expect(error).toEqual(xykErrors.InsufficientInputAmount);
 });
 
 test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
@@ -144,7 +144,7 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
   );
 
   const error = await getEventErrorByMetadata(sellAssetEvent, "SwapFailed");
-  expect(error).toEqual("InsufficientOutputAmount");
+  expect(error).toEqual(xykErrors.InsufficientOutputAmount);
 });
 
 test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
@@ -180,7 +180,7 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
 
   // Aleks: I changed the error as in the previous comment
   const error = await getEventErrorByMetadata(multiSwapBuyEvent, "SwapFailed");
-  expect(error).toEqual("InsufficientInputAmount");
+  expect(error).toEqual(xykErrors.InsufficientInputAmount);
 });
 
 test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
@@ -214,5 +214,5 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransacti
   );
 
   const error = await getEventErrorByMetadata(multiSwapSellEvent, "SwapFailed");
-  expect(error).toEqual("InsufficientOutputAmount");
+  expect(error).toEqual(xykErrors.InsufficientOutputAmount);
 });

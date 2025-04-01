@@ -10,7 +10,11 @@ import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import { feeLockErrors, getEventErrorByMetadata } from "../../utils/utils";
+import {
+  feeLockErrors,
+  getEventErrorByMetadata,
+  xykErrors,
+} from "../../utils/utils";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
 import { sellAsset, updateFeeLockMetadata } from "../../utils/tx";
 import { Market } from "../../utils/market";
@@ -124,7 +128,7 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
     new BN(0),
   );
   const error = await getEventErrorByMetadata(events, "SwapFailed");
-  expect(error).toEqual("NotEnoughAssetsForFeeLock");
+  expect(error).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
 });
 
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {

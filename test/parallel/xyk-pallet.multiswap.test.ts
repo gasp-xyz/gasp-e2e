@@ -17,6 +17,7 @@ import { User, AssetWallet } from "../../utils/User";
 import {
   getEventErrorByMetadata,
   getUserBalanceOfToken,
+  xykErrors,
 } from "../../utils/utils";
 import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
 import {
@@ -155,7 +156,7 @@ describe("Multiswap - happy paths", () => {
       BN_TEN_THOUSAND,
     );
     const error = await getEventErrorByMetadata(multiSwapOutput, "SwapFailed");
-    expect(error).toEqual("InsufficientOutputAmount");
+    expect(error).toEqual(xykErrors.InsufficientOutputAmount);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
     //Validate that the modified tokens are MGX and the first element in the list.

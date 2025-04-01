@@ -17,6 +17,7 @@ import {
   getEventErrorByMetadata,
   getUserBalanceOfToken,
   stringToBN,
+  xykErrors,
 } from "../../utils/utils";
 import {
   setupApi,
@@ -68,7 +69,7 @@ describe("Multiswap - error cases: disabled tokens", () => {
       );
 
       const error = await getEventErrorByMetadata(event, "SwapFailed");
-      expect(error).toEqual("FunctionNotAvailableForThisToken");
+      expect(error).toEqual(xykErrors.FunctionNotAvailableForThisToken);
     },
   );
   it.each([2, 4])(
@@ -90,7 +91,7 @@ describe("Multiswap - error cases: disabled tokens", () => {
         multiSwapOutput,
         "SwapFailed",
       );
-      expect(error).toEqual("FunctionNotAvailableForThisToken");
+      expect(error).toEqual(xykErrors.FunctionNotAvailableForThisToken);
 
       const boughtTokens = await getUserBalanceOfToken(
         tokenIds[tokenIds.length - 1],
@@ -158,7 +159,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     );
 
     const error = await getEventErrorByMetadata(event, "SwapFailed");
-    expect(error).toEqual("NotEnoughAssetsForFeeLock");
+    expect(error).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
   });
   test.skip("[gasless] Fail on swap when selling remove all MGAs", async () => {
     const testUser = users[1];
