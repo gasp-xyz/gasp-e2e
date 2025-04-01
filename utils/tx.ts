@@ -207,7 +207,7 @@ export async function rpcCalculateSellPriceMulti(
     assetIdOut,
     minOut,
   );
-  return new BN(res.totalAmountIn);
+  return new BN(res.amountOut);
 }
 
 export async function calculate_buy_price_id_rpc(
