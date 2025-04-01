@@ -31,10 +31,8 @@ jobs:
         run: cd fe-ai-tests && pdm install
           
       - name: Install Playwright browsers
-        # Using new headless option to run Playwright tests in headless mode
-        # Ref: https://github.com/microsoft/playwright/issues/33566
         # Ref: https://playwright.dev/docs/browsers#chromium-headless-shell
-        run: cd fe-ai-tests && pdm run playwright install --with-deps --no-shell chromium
+        run: cd fe-ai-tests && pdm run playwright install --with-deps --only-shell chromium
           
       # - name: Create directories for test artifacts
       #   run: mkdir -p fe-ai-tests/tmp/record_videos

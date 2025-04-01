@@ -3,7 +3,7 @@ import os
 from playwright.async_api import async_playwright
 import pytest
 import pytest_asyncio
-from browser_use import Agent, Browser, Controller, ActionResult
+from browser_use import Agent, Browser, Controller, ActionResult, BrowserConfig
 from browser_use.browser.context import BrowserContextConfig, BrowserContext
 from langchain_anthropic import ChatAnthropic
 from pydantic import BaseModel, SecretStr
@@ -27,21 +27,29 @@ initial_actions = [
 
 @pytest_asyncio.fixture
 async def browser():
+    # Check if running in a CI environment
+    is_ci = os.getenv('CI') == 'true'
+
+    # Configure the Browser launch settings here
+    browser_config = BrowserConfig(
+        headless=is_ci # Set headless based on CI environment variable
+    )
     async with async_playwright() as p:
-        browser = Browser()
-        yield browser
-        await browser.close()
+        browser_instance = Browser(config=browser_config)
+        yield browser_instance # Yield the configured instance
+        await browser_instance.close()
 
 
 @pytest_asyncio.fixture
 async def browser_context(browser):
-    config = BrowserContextConfig(
+    context_config = BrowserContextConfig(
         browser_window_size={'width': 1300, 'height': 900},
         locale='en-US',
         highlight_elements=True,
-        save_recording_path='tmp/record_videos'
+        save_recording_path='tmp/record_videos',
     )
-    context = BrowserContext(browser=browser, config=config)
+    # Use the pre-configured browser instance passed from the 'browser' fixture
+    context = BrowserContext(browser=browser, config=context_config)
     yield context
     await context.close()
 
