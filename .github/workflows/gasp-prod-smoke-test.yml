@@ -32,7 +32,7 @@ jobs:
           
       - name: Install Playwright browsers
         # Ref: https://playwright.dev/docs/browsers#chromium-headless-shell
-        run: cd fe-ai-tests && pdm run playwright install --with-deps --only-shell chromium
+        run: cd fe-ai-tests && pdm run playwright install --only-shell chromium
           
       # - name: Create directories for test artifacts
       #   run: mkdir -p fe-ai-tests/tmp/record_videos
