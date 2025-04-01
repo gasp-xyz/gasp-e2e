@@ -26,7 +26,12 @@ import {
   getTokensAccountInfo,
   updateFeeLockMetadata,
 } from "../../utils/tx";
-import { feeLockErrors, stringToBN, xykErrors } from "../../utils/utils";
+import {
+  feeLockErrors,
+  getEventErrorByMetadata,
+  stringToBN,
+  xykErrors,
+} from "../../utils/utils";
 import { ApiPromise } from "@polkadot/api";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -158,8 +163,9 @@ async function getSwappingTokenError(
   currencies: [firstCurrency: BN, secondCurrency: BN],
   liqId: BN,
   soldAssetAmount: BN,
-  matchErrorString: any = feeLockErrors.FeeLockFail,
+  matchErrorString: any = xykErrors.NotEnoughAssetsForFeeLock,
   swapType: string = "Sell",
+  isError = false,
 ) {
   let error: any;
   let tx: Extrinsic;
@@ -173,6 +179,7 @@ async function getSwappingTokenError(
       currencies[0],
       currencies[1],
       soldAssetAmount,
+      soldAssetAmount.muln(1000),
     );
   }
   testLog
@@ -185,12 +192,18 @@ async function getSwappingTokenError(
         " and excepting error " +
         matchErrorString,
     );
-  try {
-    await signTx(api, tx, user.keyRingPair);
-  } catch (e) {
-    error = e;
+  if (isError === true) {
+    try {
+      await signTx(api, tx, user.keyRingPair);
+    } catch (e) {
+      error = e;
+    }
+    expect(error.data).toEqual(matchErrorString);
+  } else {
+    const events = await signTx(api, tx, user.keyRingPair);
+    error = await getEventErrorByMetadata(events, "SwapFailed");
+    expect(error).toEqual(matchErrorString);
   }
-  expect(error.data).toEqual(matchErrorString);
 }
 
 async function swapTokenAndReceiveSlippageError(
@@ -230,10 +243,9 @@ async function swapTokenAndReceiveSlippageError(
         " and excepting error " +
         matchErrorString,
     );
-  await signTx(api, tx, user.keyRingPair).then((result) => {
-    const eventResponse = getEventResultFromMangataTx(result);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual(matchErrorString);
+  await signTx(api, tx, user.keyRingPair).then(async (result) => {
+    const error = await getEventErrorByMetadata(result, "SwapFailed");
+    expect(error).toEqual(matchErrorString);
   });
 }
 
@@ -727,7 +739,7 @@ describe("SingleSwap scenarios with slippage error, user has only sold asset", (
       [firstCurrency, secondCurrency],
       liqId,
       swappingAmount,
-      xykErrors.ExcessiveInputAmount,
+      xykErrors.InsufficientInputAmount,
       "Buy",
     );
 
@@ -774,7 +786,7 @@ describe("SingleSwap scenarios with slippage error, user has only sold asset", (
       [firstCurrency, secondCurrency],
       liqId,
       swappingAmount,
-      xykErrors.ExcessiveInputAmount,
+      xykErrors.InsufficientInputAmount,
       "Buy",
     );
 
@@ -822,6 +834,8 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       liqId,
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
+      "Sell",
+      true,
     );
   });
 
@@ -845,6 +859,8 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       liqId,
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
+      "Sell",
+      true,
     );
   });
 
@@ -869,6 +885,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
       "Buy",
+      true,
     );
   });
 
@@ -893,6 +910,7 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
       "Buy",
+      true,
     );
   });
 });
