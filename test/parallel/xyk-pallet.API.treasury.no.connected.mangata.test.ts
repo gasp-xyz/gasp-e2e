@@ -140,7 +140,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       firstCurrency,
       secondCurrency,
       buyAssetAmount,
-      new BN(100000000),
+      testUser1.getFreeAssetAmount(firstCurrency).amountBefore.free,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
