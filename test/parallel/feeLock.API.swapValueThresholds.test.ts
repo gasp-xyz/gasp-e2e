@@ -219,7 +219,7 @@ test("[BUG] gasless- Given a feeLock correctly configured WHEN the user swaps tw
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );

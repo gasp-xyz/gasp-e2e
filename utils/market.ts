@@ -1,7 +1,11 @@
 import { BN, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
-import { getLiquidityAssetId, rpcCalculateBuyPriceMulti } from "./tx";
+import {
+  getLiquidityAssetId,
+  rpcCalculateBuyPriceMulti,
+  rpcCalculateSellPriceMultiObj,
+} from "./tx";
 import { filterAndStringifyFirstEvent } from "./eventListeners";
 import { MangataGenericEvent } from "gasp-sdk";
 import { stringToBN } from "./utils";
@@ -138,6 +142,19 @@ export class Market {
 
   static getPool(poolId: BN) {
     return api.rpc.market.get_pools(poolId);
+  }
+
+  static async isSellAssetLockFree(assets: string[], sellAssetAmount: BN) {
+    const firstAsset = stringToBN(assets[0]);
+    const secondAsset = stringToBN(assets[1]);
+    const pool = await rpcGetPoolId(firstAsset, secondAsset);
+    const res = await rpcCalculateSellPriceMultiObj(
+      pool,
+      firstAsset,
+      sellAssetAmount,
+      secondAsset,
+    );
+    return res.isLockless === true;
   }
 }
 

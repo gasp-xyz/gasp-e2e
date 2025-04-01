@@ -191,8 +191,7 @@ export async function rpcCalculateBuyPriceMulti(
   );
   return new BN(res.totalAmountIn);
 }
-
-export async function rpcCalculateSellPriceMulti(
+export async function rpcCalculateSellPriceMultiObj(
   poolId: BN,
   assetIdIn: BN,
   assetAmountIn: BN,
@@ -200,8 +199,23 @@ export async function rpcCalculateSellPriceMulti(
   minOut: BN = MAX_BALANCE,
 ) {
   const api = getApi();
-  const res = await api.rpc.market.get_multiswap_sell_info(
+  return await api.rpc.market.get_multiswap_sell_info(
     [poolId],
+    assetIdIn,
+    assetAmountIn,
+    assetIdOut,
+    minOut,
+  );
+}
+export async function rpcCalculateSellPriceMulti(
+  poolId: BN,
+  assetIdIn: BN,
+  assetAmountIn: BN,
+  assetIdOut: BN,
+  minOut: BN = MAX_BALANCE,
+) {
+  const res = await rpcCalculateSellPriceMultiObj(
+    poolId,
     assetIdIn,
     assetAmountIn,
     assetIdOut,
