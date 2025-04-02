@@ -5,7 +5,11 @@
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
-import { getEnvironmentRequiredVars, stringToBN } from "../../utils/utils";
+import {
+  getEnvironmentRequiredVars,
+  rpcCalculateNativeRewards,
+  stringToBN,
+} from "../../utils/utils";
 import { Assets } from "../../utils/Assets";
 import { Sudo } from "../../utils/sudo";
 import {
@@ -131,10 +135,10 @@ describe("rewards v2 tests", () => {
       await waitForRewards(testUser1, liqId);
     });
     test("Given a user with Liquidity activated When tries to deactivate Then the user gets all tokens burn and rewards amount are readable in RPC THEN the user can claim them", async () => {
-      const availableRewardsBefore = await mangata.rpc.calculateRewardsAmount({
-        address: testUser1.keyRingPair.address,
-        liquidityTokenId: liqId.toString(),
-      });
+      const availableRewardsBefore = await rpcCalculateNativeRewards(
+        testUser1.keyRingPair.address,
+        liqId,
+      );
       const reservedTokens = (
         await mangata.query.getTokenBalance(
           liqId.toString(),
@@ -169,10 +173,10 @@ describe("rewards v2 tests", () => {
       expect(rewardsAfterBurning.rewardsNotYetClaimed).bnEqual(claimedAmount);
     });
     test("Given a user with Liquidity activated When tries to burn some Then the user gets automatically deactivated that amount And rewards are stored in NotYetClaimed section in rewards info", async () => {
-      const availableRewardsBefore = await mangata.rpc.calculateRewardsAmount({
-        address: testUser2.keyRingPair.address,
-        liquidityTokenId: liqId.toString(),
-      });
+      const availableRewardsBefore = await rpcCalculateNativeRewards(
+        testUser2.keyRingPair.address,
+        liqId,
+      );
       const reservedTokens = (
         await mangata.query.getTokenBalance(
           liqId.toString(),
