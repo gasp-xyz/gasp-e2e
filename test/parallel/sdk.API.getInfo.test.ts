@@ -5,7 +5,7 @@
 import { jest } from "@jest/globals";
 import { getApi, getMangataInstance, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
-import { BN } from "@polkadot/util";
+import { BN, hexToString } from "@polkadot/util";
 import { api, getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
@@ -14,7 +14,11 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getLiquidityAssetId } from "../../utils/tx";
 import { BN_BILLION, BN_ZERO, MangataInstance, PoolWithRatio } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
-import { Market } from "../../utils/market";
+import {
+  Market,
+  rpcGetPoolsForTrading,
+  rpcGetTradeableTokens,
+} from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -299,17 +303,17 @@ test("sdk - filter deactivated pools on node", async () => {
   const deactivatedPoolId = await getLiquidityAssetId(GASP_ASSET_ID, token2);
   //this list contain only tokens that are active.
   const liquidityAssetsInfo = JSON.parse(
-    JSON.stringify(await mangata.rpc.getLiquidityTokensForTrading()),
+    JSON.stringify(await rpcGetPoolsForTrading()),
   );
   expect(liquidityAssetsInfo).not.toContain(deactivatedPoolId.toString());
 
   //this list contain all liq tokens that are active and inactive from asset registry.
-  const poolAssetsInfo = (await mangata.rpc.getTradeableTokens()).filter((id) =>
-    id.name.includes("LiquidityPoolToken"),
+  const poolAssetsInfo = (await rpcGetTradeableTokens()).filter((id: any) =>
+    hexToString(id.name).includes("LiquidityPoolToken"),
   );
   const tokenIdsToDeleteSet = new Set(liquidityAssetsInfo);
   //let's remove the active ones from the list => only deactivated ones will remain.
-  const deactivatedPoolsAssetsInfo = poolAssetsInfo.filter((id) => {
+  const deactivatedPoolsAssetsInfo = poolAssetsInfo.filter((id: any) => {
     return !tokenIdsToDeleteSet.has(id.tokenId);
   });
   const deactivatedPoolsIds: string[] = deactivatedPoolsAssetsInfo.map(
