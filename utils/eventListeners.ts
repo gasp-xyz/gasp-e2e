@@ -226,10 +226,10 @@ export const waitForEvents = async (
 
         const filtered = _.filter(
           events,
-          ({ event }: { event: any }) =>
-            `${event.section}.${event.method}` === method &&
+          (event) =>
+            `${event.event.section}.${event.event.method}` === method &&
             (withData.length > 0
-              ? JSON.stringify(event.data.toHuman()).includes(withData)
+              ? JSON.stringify(event.event.data.toHuman()).includes(withData)
               : true),
         );
 
