@@ -5,7 +5,7 @@
  */
 import { jest } from "@jest/globals";
 import { ApiPromise } from "@polkadot/api";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import {
@@ -33,6 +33,7 @@ import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { testLog } from "../../utils/Logger";
 import { BN } from "@polkadot/util";
+import { Market } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -111,7 +112,7 @@ test("[BUG] gasless- GIVEN some locked tokens and no more free MGX WHEN another 
   await testUsers[0].addGASPTokens(sudo, feeLockAmount);
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -135,7 +136,7 @@ test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is 
   await testUsers[1].addGASPTokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -166,7 +167,7 @@ test("gasless- GIVEN some locked tokens WHEN querying accountFeeLockData THEN th
   await testUsers[2].addGASPTokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -195,7 +196,7 @@ test("gasless- GIVEN some locked tokens and lastFeeLockBlock is lower than curre
   await testUsers[3].addGASPTokens(sudo, new BN(feeLockAmount).add(new BN(1)));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -236,7 +237,7 @@ test("gasless- GIVEN a lock WHEN the period is N THEN the tokens can not be unlo
   await testUsers[4].addGASPTokens(sudo, new BN(feeLockAmount));
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );

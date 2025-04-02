@@ -4,7 +4,7 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { waitSudoOperationSuccess } from "../../utils/eventListeners";
@@ -107,7 +107,7 @@ test("gasless- GIVEN a feeLock configured WHEN a swap happens THEN fees are not 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [GASP_ASSET_ID.toString(), firstCurrency.toString()],
     saleAssetValue,
   );
@@ -215,7 +215,7 @@ test("gasless- For low-value swaps, token reservation status and pallet storage 
 
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [GASP_ASSET_ID.toString(), firstCurrency.toString()],
     saleAssetValue,
   );
@@ -280,7 +280,7 @@ test("gasless- High-value swaps when successful are not charged txn fee or token
   const saleAssetValue = thresholdValue.add(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
