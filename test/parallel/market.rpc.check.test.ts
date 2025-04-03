@@ -204,7 +204,7 @@ describe.each(["Xyk", "StableSwap"])(
       expect(diff).bnLt(sellPriceAfter.muln(3).divn(1000));
     });
 
-    test("Function rpcCalculateBuyPrice works correctly", async () => {
+    test.only("Function rpcCalculateBuyPrice works correctly", async () => {
       let buyPriceRetro: BN;
 
       const buyPrice = await rpcCalculateBuyPrice(

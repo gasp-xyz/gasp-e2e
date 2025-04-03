@@ -22,6 +22,7 @@ import {
 import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Market } from "../../utils/market";
+import { rpcCalculateBuyPrice } from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -174,9 +175,9 @@ test("gasless- isFree depends on the token and the sell valuation", async () => 
       )
     ).toString(),
   ).toEqual("false");
-  const amount = (await mangata?.rpc.calculateBuyPriceId(
-    secondCurrency.toString(),
-    firstCurrency.toString(),
+  const amount = (await rpcCalculateBuyPrice(
+    secondCurrency,
+    firstCurrency,
     thresholdValue,
   ))!;
   //this is false because the token is not whitelisted & there is no direct conversion to mgx.

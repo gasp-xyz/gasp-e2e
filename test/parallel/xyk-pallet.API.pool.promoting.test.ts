@@ -5,7 +5,7 @@
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO } from "gasp-sdk";
@@ -17,6 +17,7 @@ import { waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
 import { Market } from "../../utils/market";
+import { rpcCalculateNativeRewards } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -160,22 +161,22 @@ test("GIVEN a promoted pool WHEN more pools gets activated THEN shares are decre
 
   await waitForRewards(testUser11, liqIdPool1);
 
-  const testUser1Rewards = await mangata?.rpc.calculateRewardsAmount({
-    address: testUser1.keyRingPair.address,
-    liquidityTokenId: liqIdPool1.toString(),
-  })!;
-  const testUser11Rewards = await mangata?.rpc.calculateRewardsAmount({
-    address: testUser11.keyRingPair.address,
-    liquidityTokenId: liqIdPool1.toString(),
-  })!;
-  const testUser2Rewards = await mangata?.rpc.calculateRewardsAmount({
-    address: testUser2.keyRingPair.address,
-    liquidityTokenId: liqIdPool2.toString(),
-  })!;
-  const testUser3Rewards = await mangata?.rpc.calculateRewardsAmount({
-    address: testUser3.keyRingPair.address,
-    liquidityTokenId: liqIdPool3.toString(),
-  })!;
+  const testUser1Rewards = await rpcCalculateNativeRewards(
+    testUser1.keyRingPair.address,
+    liqIdPool1,
+  );
+  const testUser11Rewards = await rpcCalculateNativeRewards(
+    testUser11.keyRingPair.address,
+    liqIdPool1,
+  );
+  const testUser2Rewards = await rpcCalculateNativeRewards(
+    testUser2.keyRingPair.address,
+    liqIdPool2,
+  );
+  const testUser3Rewards = await rpcCalculateNativeRewards(
+    testUser3.keyRingPair.address,
+    liqIdPool3,
+  );
   expect(testUser1Rewards).bnEqual(BN_ZERO);
   expect(testUser11Rewards).bnGt(BN_ZERO);
   expect(testUser11Rewards).bnEqual(testUser2Rewards);
