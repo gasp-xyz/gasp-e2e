@@ -188,15 +188,16 @@ export async function rpcCalculateBuyPriceMulti(
   return new BN(res.totalAmountIn);
 }
 export async function rpcCalculateSellPriceMultiObj(
-  poolId: BN,
+  poolId: BN | BN[],
   assetIdIn: BN,
   assetAmountIn: BN,
   assetIdOut: BN,
   minOut: BN = MAX_BALANCE,
 ) {
+  const poolParam = poolId instanceof Array ? poolId : [poolId];
   const api = getApi();
   return await api.rpc.market.get_multiswap_sell_info(
-    [poolId],
+    poolParam,
     assetIdIn,
     assetAmountIn,
     assetIdOut,

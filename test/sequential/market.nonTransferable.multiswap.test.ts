@@ -26,12 +26,13 @@ import {
   BN_ZERO,
   MangataGenericEvent,
 } from "gasp-sdk";
-import { getLiquidityAssetId, getTokensAccountInfo } from "../../utils/tx";
-import { stringToBN } from "../../utils/utils";
 import {
-  getFeeLockMetadata,
-  rpcCalculateSellPrice,
-} from "../../utils/feeLockHelper";
+  getLiquidityAssetId,
+  getTokensAccountInfo,
+  rpcCalculateSellPriceMultiObj,
+} from "../../utils/tx";
+import { stringToBN } from "../../utils/utils";
+import { getFeeLockMetadata } from "../../utils/feeLockHelper";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -236,15 +237,12 @@ test("[Flipped] User can't sell GASP in multiswap operation (GASP token in the m
 test("Happy path - multiswap with only stable pools", async () => {
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token3);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token5);
-  const firstSwapAmount = await rpcCalculateSellPrice(
-    liqIds[3],
+  const expectedFromRpc = await rpcCalculateSellPriceMultiObj(
+    [liqIds[3], liqIds[4]],
     token3,
     BN_TEN_THOUSAND,
-  );
-  const secondSwapAmount = await rpcCalculateSellPrice(
-    liqIds[4],
-    token4,
-    firstSwapAmount,
+    token5,
+    BN_ZERO,
   );
 
   await Sudo.asSudoFinalized(
@@ -267,7 +265,7 @@ test("Happy path - multiswap with only stable pools", async () => {
     stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
   expect(stringToBN(userBalance2AfterSwap.free)).bnEqual(
-    stringToBN(userBalance2BeforeSwap.free).add(secondSwapAmount),
+    stringToBN(userBalance2BeforeSwap.free).add(expectedFromRpc.amountOut),
   );
 });
 
@@ -275,17 +273,13 @@ test("Happy path - multiswap with stable and xyk pools", async () => {
   const liqIdXyk = await getLiquidityAssetId(token5, token6);
   const userBalance1BeforeSwap = await getTokensAccountInfo(testUser, token4);
   const userBalance2BeforeSwap = await getTokensAccountInfo(testUser, token6);
-  const firstSwapAmount = await rpcCalculateSellPrice(
-    liqIds[4],
+  const expectedFromRpc = await rpcCalculateSellPriceMultiObj(
+    [liqIds[4], liqIdXyk],
     token4,
     BN_TEN_THOUSAND,
+    token6,
+    BN_ZERO,
   );
-  const secondSwapAmount = await rpcCalculateSellPrice(
-    liqIdXyk,
-    token5,
-    firstSwapAmount,
-  );
-
   await Sudo.asSudoFinalized(
     Sudo.sudoAsWithAddressString(
       testUser,
@@ -306,6 +300,6 @@ test("Happy path - multiswap with stable and xyk pools", async () => {
     stringToBN(userBalance1BeforeSwap.free).sub(BN_TEN_THOUSAND),
   );
   expect(stringToBN(userBalance2AfterSwap.free)).bnEqual(
-    stringToBN(userBalance2BeforeSwap.free).add(secondSwapAmount),
+    stringToBN(userBalance2BeforeSwap.free).add(expectedFromRpc.amountOut),
   );
 });
