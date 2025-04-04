@@ -4,11 +4,12 @@ import { ApiPromise } from "@polkadot/api";
 import { Codec } from "@polkadot/types/types";
 import { BN } from "@polkadot/util";
 import _ from "lodash";
-import { ExtrinsicResult } from "./eventListeners";
+import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { logEvent, testLog } from "./Logger";
 import { api, Extrinsic } from "./setup";
 import { getEventResultFromMangataTx } from "./txHandler";
 import { User } from "./User";
+import { findErrorMetadata } from "./utils";
 
 export const signSendFinalized = async (
   tx: Extrinsic,
@@ -28,13 +29,32 @@ export const signSendFinalized = async (
       testLog.getLog().error(reason.data || reason);
       throw reason;
     })
-    .then((result) => {
+    .then(async (result) => {
       const event = getEventResultFromMangataTx(result);
       if (event.state === ExtrinsicResult.ExtrinsicFailed) {
         throw event;
       }
+      if ((await getSwapFailedEvent(result)) !== undefined) {
+        throw await getSwapFailedEvent(result);
+      }
+
       return result;
     });
+};
+export const getSwapFailedEvent = async (events: MangataGenericEvent[]) => {
+  const swapFailed = events.filter(
+    (x) => x.section === "market" && x.method === "SwapFailed",
+  );
+  if (swapFailed && swapFailed.length > 0) {
+    const error = await findErrorMetadata(
+      //@ts-ignore
+      swapFailed[0].eventData[0].data.error.toString(),
+      //@ts-ignore
+      swapFailed[0].eventData[0].data.index.toString(),
+    );
+    return new EventResult(ExtrinsicResult.ExtrinsicFailed, error?.name);
+  }
+  return undefined;
 };
 
 // used for APIs other than mangata

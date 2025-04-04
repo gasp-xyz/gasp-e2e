@@ -1,4 +1,4 @@
-import { BN, BN_ZERO } from "@polkadot/util";
+import { BN, BN_ONE, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import {
@@ -93,12 +93,16 @@ export class Market {
   ): Promise<Extrinsic> {
     let maxAmount = maxAmountIn;
     if (maxAmount.eq(BN_ZERO)) {
-      maxAmount = await rpcCalculateBuyPriceMulti(
-        swapPool,
-        boughtAssetId,
-        boughtAssetAmount,
-        soldAssetId,
-      );
+      try {
+        maxAmount = await rpcCalculateBuyPriceMulti(
+          swapPool,
+          boughtAssetId,
+          boughtAssetAmount,
+          soldAssetId,
+        );
+      } catch (e) {
+        maxAmount = BN_ONE;
+      }
     }
     return api.tx.market.multiswapAssetBuy(
       [swapPool],
