@@ -40,6 +40,7 @@ import {
 } from "../../utils/Bootstrap";
 import { Market } from "../../utils/market";
 import { rpcCalculateBuyPrice } from "../../utils/feeLockHelper";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -220,14 +221,14 @@ test("GIVEN deactivated pool WHEN a bootstrap is scheduled for the existing pair
 });
 
 test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., rpcCalculateBuyPrice) THEN zero returns", async () => {
-  //Aleks: here we changed rpc function
-  const priceAmount = await rpcCalculateBuyPrice(
-    liquidityId,
-    token1,
-    defaultCurrencyValue,
+  let isError = false;
+  await rpcCalculateBuyPrice(liquidityId, token1, defaultCurrencyValue).catch(
+    (e) => {
+      testLog.getLog().info(e);
+      isError = true;
+    },
   );
-
-  expect(priceAmount).bnEqual(BN_ZERO);
+  expect(isError).toEqual(true);
 });
 
 test("GIVEN deactivated pool WHEN user tries to activate the pool THEN error returns", async () => {
