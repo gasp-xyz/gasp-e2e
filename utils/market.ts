@@ -249,6 +249,9 @@ export async function rpcGetPoolsForTrading() {
     JSON.stringify(await api.rpc.market.get_pools_for_trading()),
   );
 }
+export async function rpcGetPoolsForTradingObj() {
+  return api.rpc.market.get_pools_for_trading();
+}
 
 export async function rpcGetTradeableTokens() {
   return JSON.parse(

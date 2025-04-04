@@ -31,7 +31,11 @@ import {
   signSendAndWaitToFinishTx,
 } from "./txHandler";
 import { User } from "./User";
-import { getEnvironmentRequiredVars, stringToBN } from "./utils";
+import {
+  getEnvironmentRequiredVars,
+  rpcCalculateNativeRewards,
+  stringToBN,
+} from "./utils";
 import Keyring from "@polkadot/keyring";
 import {
   ExtrinsicResult,
@@ -39,8 +43,14 @@ import {
 } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { getSudoUser, setupApi, setupUsers } from "./setup";
-import { Market, rpcGetBurnAmount, rpcGetPoolId } from "./market";
+import { api, getSudoUser, setupApi, setupUsers } from "./setup";
+import {
+  Market,
+  rpcGetBurnAmount,
+  rpcGetPoolId,
+  rpcGetPoolsForTradingObj,
+} from "./market";
+import { ProofOfStake } from "./ProofOfStake";
 
 export async function calcuate_mint_liquidity_price_local(
   firstAssetId: BN,
@@ -826,7 +836,7 @@ export async function getAllAssets(accountAddress: string) {
         (((asset as any[])[0] as StorageKey).toHuman() as any[])[0] ===
         accountAddress,
     )
-    .map((tuple) => new BN((tuple[0].toHuman() as any[])[1]));
+    .map((tuple) => stringToBN((tuple[0].toHuman() as any[])[1].toString()));
 }
 
 export async function lockAsset(user: User, amount: BN) {
@@ -1374,10 +1384,22 @@ export async function claimRewards(user: User, liquidityTokenId: BN) {
 
 export async function claimRewardsAll(user: User) {
   const account = user.keyRingPair;
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.claimRewardsAll({
-    account: account,
-  });
+  const avlAssets = await getAllAssets(account.address);
+  const pools = await rpcGetPoolsForTradingObj();
+  const poolsNumbers = pools.map((poolId) =>
+    stringToBN(poolId.toString()).toNumber(),
+  );
+  const liqTokens = avlAssets.filter((x) =>
+    poolsNumbers.includes(x.toNumber()),
+  );
+  const txs = [];
+  for (const liqToken of liqTokens) {
+    const rew = await rpcCalculateNativeRewards(user, liqToken);
+    if (rew.gt(BN_ZERO)) {
+      txs.push(ProofOfStake.claimRewardsAll(liqToken));
+    }
+  }
+  return await signTx(getApi(), api.tx.utility.batchAll(txs), user.keyRingPair);
 }
 
 export async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {
