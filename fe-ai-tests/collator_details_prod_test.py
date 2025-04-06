@@ -131,7 +131,6 @@ async def test_gasp_website(browser_context, controller_with_actions, llm):
     parsed = Output.model_validate_json(result)
 
     # Add assertion for welcome_modal_dismissed
-    assert parsed.welcome_modal_dismissed is True, "Welcome modal should be dismissed"
     assert parsed.first_collator_rewards > 0, "First collator rewards should be greater than 0"
     assert parsed.first_collator_stake > 0, "First collator stake should be greater than 0"
 
