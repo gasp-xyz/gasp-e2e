@@ -23,7 +23,8 @@ def controller_with_actions():
 
 
 @pytest.mark.asyncio
-async def test_gasp_website(browser_context, controller_with_actions, llm):
+@pytest.mark.collator
+async def test_gasp_collator_details(browser_context, controller_with_actions, llm):
     # Get initial actions for staking page
     initial_actions = get_initial_actions("/staking")
     

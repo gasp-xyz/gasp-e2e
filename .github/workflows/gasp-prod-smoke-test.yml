@@ -38,7 +38,7 @@ jobs:
       #   run: mkdir -p fe-ai-tests/tmp/record_videos
           
       - name: Run tests
-        run: cd fe-ai-tests && pdm run pytest collator_details_prod_test.py -v
+        run: cd fe-ai-tests && pdm run pdm run pytest -m -v "wallet and collator"
           
       - name: Upload test results
         if: always()
