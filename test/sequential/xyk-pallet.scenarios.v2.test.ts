@@ -15,7 +15,7 @@ import {
   getBalanceOfPool,
   getLiquidityAssetId,
 } from "../../utils/tx";
-import { BN_ZERO } from "gasp-sdk";
+import { BN_ONE, BN_ZERO } from "gasp-sdk";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
@@ -445,13 +445,14 @@ describe("xyk-pallet: Happy case scenario", () => {
       xykPalletUser
         .getAsset(assetId2)!
         .amountBefore.free.add(buyPriceLocal)
-        .sub(fee),
+        .sub(fee)
+        .sub(BN_ONE),
     ]).collectionBnEqual(assetsAfterFree(xykPalletUser));
 
     const poolBalance = await getBalanceOfPool(assetId1, assetId2);
     expect([
       poolBalanceBefore[0].sub(amount),
-      poolBalanceBefore[1].add(buyPriceLocal).sub(fee),
+      poolBalanceBefore[1].add(buyPriceLocal).sub(fee).sub(BN_ONE),
     ]).collectionBnEqual(poolBalance);
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
