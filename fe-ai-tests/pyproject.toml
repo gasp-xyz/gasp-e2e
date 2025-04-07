@@ -34,6 +34,10 @@ filterwarnings = [
     "ignore:.*Deprecated call to `pkg_resources.declare_namespace.*:DeprecationWarning",
     "ignore:.*The `schema` method is deprecated.*:pydantic.PydanticDeprecatedSince20"
 ]
+markers = [
+    "collator: marks tests related to collator functionality",
+    "wallet: marks tests related to wallet functionality"
+]
 
 [build-system]
 requires = ["pdm-backend"]
