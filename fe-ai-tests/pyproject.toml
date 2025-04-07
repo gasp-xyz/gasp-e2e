@@ -19,6 +19,9 @@ dependencies = [
     "python-dotenv~=1.0.1",
 ]
 
+[tool.pdm]
+includes = ["utils"]
+
 [tool.pytest.ini_options]
 testpaths = ["."]
 python_files = "*_test.py"
