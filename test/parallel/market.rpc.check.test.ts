@@ -11,8 +11,10 @@ import { BN } from "ethereumjs-util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
   rpcCalculateBuyPrice,
+  rpcCalculateBuyPriceNoFees,
   rpcCalculateBuyPriceWithImpact,
   rpcCalculateSellPrice,
+  rpcCalculateSellPriceNoFee,
   rpcCalculateSellPriceWithImpact,
 } from "../../utils/feeLockHelper";
 import { stringToBN } from "../../utils/utils";
@@ -171,7 +173,7 @@ describe.each(["Xyk", "StableSwap"])(
     });
 
     test("Function rpcCalculateSellPriceWithImpact makes reliable calculations", async () => {
-      const sellPriceBefore = await rpcCalculateSellPrice(
+      const sellPriceBefore = await rpcCalculateSellPriceNoFee(
         liqId,
         firstCurrency,
         BN_MILLION,
@@ -192,7 +194,7 @@ describe.each(["Xyk", "StableSwap"])(
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
 
-      const sellPriceAfter = await rpcCalculateSellPrice(
+      const sellPriceAfter = await rpcCalculateSellPriceNoFee(
         liqId,
         firstCurrency,
         BN_MILLION,
@@ -204,7 +206,7 @@ describe.each(["Xyk", "StableSwap"])(
       expect(diff).bnLt(sellPriceAfter.muln(3).divn(1000));
     });
 
-    test.only("Function rpcCalculateBuyPrice works correctly", async () => {
+    test("Function rpcCalculateBuyPrice works correctly", async () => {
       let buyPriceRetro: BN;
 
       const buyPrice = await rpcCalculateBuyPrice(
@@ -267,7 +269,7 @@ describe.each(["Xyk", "StableSwap"])(
     });
 
     test("Function rpcCalculateBuyPriceWithImpact makes reliable calculations", async () => {
-      const buyPriceBefore = await rpcCalculateBuyPrice(
+      const buyPriceBefore = await rpcCalculateBuyPriceNoFees(
         liqId,
         firstCurrency,
         BN_MILLION.divn(4),
@@ -293,7 +295,7 @@ describe.each(["Xyk", "StableSwap"])(
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
 
-      const buyPriceAfter = await rpcCalculateBuyPrice(
+      const buyPriceAfter = await rpcCalculateBuyPriceNoFees(
         liqId,
         firstCurrency,
         BN_MILLION.divn(4),

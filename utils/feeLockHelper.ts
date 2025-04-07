@@ -97,7 +97,32 @@ export async function rpcCalculateBuyPrice(
     : pool[0].assets[0];
   return rpcCalculateBuyPriceMulti(poolId, buyAssetId, buyAmount, secToken);
 }
-
+export async function rpcCalculateSellPriceNoFee(
+  poolId: BN,
+  sellAssetId: BN,
+  sellAmount: BN,
+) {
+  const api = getApi();
+  const value = await api.rpc.market.calculate_sell_price(
+    poolId,
+    sellAssetId,
+    sellAmount,
+  );
+  return stringToBN(value.toString());
+}
+export async function rpcCalculateBuyPriceNoFees(
+  poolId: BN,
+  buyAssetId: BN,
+  buyAmount: BN,
+) {
+  const api = getApi();
+  const value = await api.rpc.market.calculate_buy_price(
+    poolId,
+    buyAssetId,
+    buyAmount,
+  );
+  return stringToBN(value.toString());
+}
 export async function rpcCalculateSellPriceWithImpact(
   poolId: BN,
   sellAssetId: BN,
