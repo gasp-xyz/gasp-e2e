@@ -34,7 +34,7 @@ async def test_gasp_wallets(browser_context, controller_with_actions, llm):
     # Define the task
     task = """
     1. click Select Token from You Pay section and pick GASP native token from modal
-    2. click Select Token from You Get section and search for USDT, pick one with ethereum label
+    2. click Select Token from You Get section and type USDT in opened modals searchbar, pick USDT with ethereum label
     3. Set You Get input value to 10
     4. check all visible swap details and you pay field
     """
