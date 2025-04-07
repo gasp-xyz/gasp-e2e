@@ -125,6 +125,7 @@ const extrinsicResultMethods = [
   "ExtrinsicSuccess",
   "ExtrinsicFailed",
   "ExtrinsicUndefined",
+  "SwapFailed",
 ];
 
 export const getEventResultFromMangataTx = function (
@@ -225,6 +226,14 @@ function createEventResultfromExtrinsic(extrinsicResult: MangataGenericEvent) {
         ExtrinsicResult.ExtrinsicFailed,
         JSON.parse(JSON.stringify(extrinsicResult.error!)).name,
       );
+
+    case extrinsicResultMethods[3]:
+      const data = JSON.parse(JSON.stringify(eventResult.data!));
+      const err = getApi().registry.findMetaError({
+        error: hexToU8a(data.error.error),
+        index: new BN(data.error.index),
+      });
+      return new EventResult(ExtrinsicResult.ExtrinsicFailed, err.method);
 
     case extrinsicResultMethods[2]:
       return new EventResult(
