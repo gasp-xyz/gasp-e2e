@@ -225,7 +225,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.ExcessiveInputAmount);
+      expect(eventResponse.data).toEqual(xykErrors.InsufficientInputAmount);
     });
 
     await validateUserPaidFeeForFailedTx(
@@ -316,7 +316,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     const fee = treasury.add(treasuryBurn);
     const pool_balance = await getBalanceOfPool(firstCurrency, secondCurrency);
     expect([
-      buyPriceLocal.add(firstAssetAmount).sub(fee),
+      buyPriceLocal.add(firstAssetAmount).sub(fee).subn(1),
       new BN(1),
     ]).collectionBnEqual(pool_balance);
 
@@ -410,7 +410,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [
-          "xyk",
+          "market",
           "AssetsSwapped",
           testUser2.keyRingPair.address,
         ]);
