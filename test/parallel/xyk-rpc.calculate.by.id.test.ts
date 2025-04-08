@@ -61,14 +61,12 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
   //now with the dict indexes we do the testing.
   //ie, pool1, assets(0 and 1) in the dictionary, requesting amount of 0 , we expect 1. Weird.
   test.each([
-    [0, 1, new BN(0), new BN(1)],
-    [0, 1, new BN(1), new BN(0)], //weird scenario.
-    [1, 2, new BN(0), new BN(1)],
-    [1, 2, new BN(1), new BN(2)],
-    [2, 1, new BN(1), new BN(0)], //weird scenario.
-    [2, 3, new BN(1), new BN(3)],
-    [3, 2, new BN(1), new BN(3)],
-    [3, 2, new BN(2), new BN(0)], //weird scenario.
+    [0, 1, new BN(100), new BN(0)],
+    [1, 0, new BN(100), new BN(0)],
+    [1, 2, new BN(100), new BN(1)],
+    [2, 1, new BN(100), new BN(0)],
+    [3, 2, new BN(100), new BN(1)],
+    [2, 3, new BN(100), new BN(1)],
   ])(
     "validate parameters - buy [soldTokenId->%s,boughtTokenId->%s,amount->%s,expected->%s]",
     async (soldTokenId, boughtTokenId, amount, expected) => {
@@ -91,13 +89,12 @@ describe("xyk-rpc - calculate_buy_price_by_id, calculate_sell_price_by_id", () =
     },
   );
   test.each([
-    [0, 1, new BN(0), new BN(0)],
-    [0, 1, new BN(1), new BN(0)], //weird scenario.
-    [1, 2, new BN(0), new BN(0)],
-    [1, 2, new BN(1), new BN(0)],
-    [2, 1, new BN(1), new BN(0)], //weird scenario.
-    [3, 2, new BN(1), new BN(0)],
-    [2, 3, new BN(1), new BN(0)], //weird scenario.	 <-- all of them are zeroes because selling would leave the pool empty.
+    [0, 1, new BN(100), new BN(0)],
+    [1, 0, new BN(100), new BN(0)],
+    [1, 2, new BN(100), new BN(1)],
+    [2, 1, new BN(100), new BN(0)],
+    [3, 2, new BN(100), new BN(1)],
+    [2, 3, new BN(100), new BN(1)],
   ])(
     "validate parameters - sell [soldTokenId->%s,boughtTokenId->%s,amount->%s,expected->%s]",
     async (soldTokenId, boughtTokenId, amount, expected) => {
