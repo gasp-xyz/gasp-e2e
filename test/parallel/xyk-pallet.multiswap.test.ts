@@ -14,11 +14,7 @@ import {
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
-import {
-  getEventErrorByMetadata,
-  getUserBalanceOfToken,
-  xykErrors,
-} from "../../utils/utils";
+import { getUserBalanceOfToken, xykErrors } from "../../utils/utils";
 import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
 import {
   getBalanceOfPool,
@@ -155,8 +151,9 @@ describe("Multiswap - happy paths", () => {
       swapAmount,
       BN_TEN_THOUSAND,
     );
-    const error = await getEventErrorByMetadata(multiSwapOutput, "SwapFailed");
-    expect(error).toEqual(xykErrors.InsufficientOutputAmount);
+    const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual(xykErrors.InsufficientOutputAmount);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
     //Validate that the modified tokens are MGX and the first element in the list.
@@ -357,8 +354,9 @@ describe("Multiswap - happy paths", () => {
       Assets.DEFAULT_AMOUNT.divn(100000),
       BN_ZERO,
     );
-    const error = await getEventErrorByMetadata(multiSwapOutput2, "SwapFailed");
-    expect(error).toEqual("ZeroAmount");
+    const eventResponse2 = getEventResultFromMangataTx(multiSwapOutput2);
+    expect(eventResponse2.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse2.data).toEqual("ZeroAmount");
     await testUser4.refreshAmounts(AssetWallet.AFTER);
 
     //check that we bought 0 tokens, but operation still works.

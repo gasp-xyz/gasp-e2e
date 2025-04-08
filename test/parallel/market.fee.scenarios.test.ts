@@ -26,12 +26,7 @@ import {
   getTokensAccountInfo,
   updateFeeLockMetadata,
 } from "../../utils/tx";
-import {
-  feeLockErrors,
-  getEventErrorByMetadata,
-  stringToBN,
-  xykErrors,
-} from "../../utils/utils";
+import { feeLockErrors, stringToBN, xykErrors } from "../../utils/utils";
 import { ApiPromise } from "@polkadot/api";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
@@ -200,9 +195,11 @@ async function getSwappingTokenError(
     }
     expect(error.data).toEqual(matchErrorString);
   } else {
-    const events = await signTx(api, tx, user.keyRingPair);
-    error = await getEventErrorByMetadata(events, "SwapFailed");
-    expect(error).toEqual(matchErrorString);
+    await signTx(api, tx, user.keyRingPair).then((result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(matchErrorString);
+    });
   }
 }
 
@@ -243,9 +240,10 @@ async function swapTokenAndReceiveSlippageError(
         " and excepting error " +
         matchErrorString,
     );
-  await signTx(api, tx, user.keyRingPair).then(async (result) => {
-    const error = await getEventErrorByMetadata(result, "SwapFailed");
-    expect(error).toEqual(matchErrorString);
+  await signTx(api, tx, user.keyRingPair).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual(matchErrorString);
   });
 }
 

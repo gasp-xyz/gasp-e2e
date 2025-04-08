@@ -10,11 +10,7 @@ import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import {
-  feeLockErrors,
-  getEventErrorByMetadata,
-  xykErrors,
-} from "../../utils/utils";
+import { feeLockErrors, xykErrors } from "../../utils/utils";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
 import {
   getLiquidityAssetId,
@@ -23,6 +19,8 @@ import {
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { Market } from "../../utils/market";
+import { ExtrinsicResult } from "../../utils/eventListeners";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -132,8 +130,9 @@ test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user
     thresholdValue.sub(new BN(100)),
     new BN(0),
   );
-  const error = await getEventErrorByMetadata(events, "SwapFailed");
-  expect(error).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
+  const eventResponse = getEventResultFromMangataTx(events);
+  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+  expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
 });
 
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {

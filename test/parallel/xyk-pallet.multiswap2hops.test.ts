@@ -12,11 +12,7 @@ import {
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
-import {
-  getEventErrorByMetadata,
-  getUserBalanceOfToken,
-  xykErrors,
-} from "../../utils/utils";
+import { getUserBalanceOfToken, xykErrors } from "../../utils/utils";
 import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
 import {
   getBalanceOfPool,
@@ -150,8 +146,9 @@ describe("Multiswap [2 hops] - happy paths", () => {
       swapAmount,
       BN_TEN_THOUSAND,
     );
-    const error = await getEventErrorByMetadata(multiSwapOutput, "SwapFailed");
-    expect(error).toEqual(xykErrors.InsufficientOutputAmount);
+    const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual(xykErrors.InsufficientOutputAmount);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
     //Validate that the modified tokens are MGX and the first element in the list.

@@ -14,7 +14,6 @@ import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
 import {
-  getEventErrorByMetadata,
   getUserBalanceOfToken,
   stringToBN,
   xykErrors,
@@ -68,8 +67,12 @@ describe("Multiswap - error cases: disabled tokens", () => {
         BN_TEN_THOUSAND,
       );
 
-      const error = await getEventErrorByMetadata(event, "SwapFailed");
-      expect(error).toEqual(xykErrors.FunctionNotAvailableForThisToken);
+      //Aleks: As we can't catch SwapFailed, we need to change method
+      const eventResponse = getEventResultFromMangataTx(event);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(
+        xykErrors.FunctionNotAvailableForThisToken,
+      );
     },
   );
   it.each([2, 4])(
@@ -87,11 +90,11 @@ describe("Multiswap - error cases: disabled tokens", () => {
         new BN(1000),
         BN_TEN_THOUSAND,
       );
-      const error = await getEventErrorByMetadata(
-        multiSwapOutput,
-        "SwapFailed",
+      const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(
+        xykErrors.FunctionNotAvailableForThisToken,
       );
-      expect(error).toEqual(xykErrors.FunctionNotAvailableForThisToken);
 
       const boughtTokens = await getUserBalanceOfToken(
         tokenIds[tokenIds.length - 1],
@@ -158,8 +161,9 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
       threshold.addn(10),
     );
 
-    const error = await getEventErrorByMetadata(event, "SwapFailed");
-    expect(error).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
+    const eventResponse = getEventResultFromMangataTx(event);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
   });
   test.skip("[gasless] Fail on swap when selling remove all MGAs", async () => {
     const testUser = users[1];

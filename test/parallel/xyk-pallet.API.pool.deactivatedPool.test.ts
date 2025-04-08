@@ -9,11 +9,7 @@ import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import {
-  getEventErrorByMetadata,
-  stringToBN,
-  xykErrors,
-} from "../../utils/utils";
+import { stringToBN, xykErrors } from "../../utils/utils";
 import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
@@ -174,17 +170,18 @@ test("GIVEN deactivated pool WHEN the user mints liquidity in the pool again THE
 });
 
 test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the deactivated pool THEN error returns", async () => {
-  // Aleks: add catching error from SwapFailed event
-  const events = await sellAsset(
+  // Aleks: change error type
+  await sellAsset(
     testUser1.keyRingPair,
     GASP_ASSET_ID,
     token1,
     defaultCurrencyValue,
     new BN(1),
-  );
-
-  const error = await getEventErrorByMetadata(events, "SwapFailed");
-  expect(error).toEqual(xykErrors.ExcessiveInputAmount);
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual(xykErrors.ExcessiveInputAmount);
+  });
 });
 
 test("GIVEN deactivated pool WHEN sudo try to promote a pool THEN poolPromotion is updated", async () => {
