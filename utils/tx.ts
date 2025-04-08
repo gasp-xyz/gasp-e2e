@@ -103,16 +103,46 @@ export async function calcuate_burn_liquidity_price_local(
   return [first_asset_amount, second_asset_amount];
 }
 
+export function getSellFeesLocal(inputAmount: BN) {
+  const totalFeePercentage = 30;
+  const poolFeePercentage = 20;
+  const bnbFeePercentage = 5;
+
+  let totalFees = inputAmount.muln(totalFeePercentage).divn(10000);
+  totalFees = totalFees.gt(new BN(6)) ? totalFees : new BN(6);
+
+  const poolFees = totalFees.muln(poolFeePercentage).divn(totalFeePercentage);
+  const treasury = totalFees.muln(bnbFeePercentage).divn(totalFeePercentage);
+
+  const returnPoolFees = totalFees.lt(poolFees) ? totalFees : poolFees;
+
+  const returnTreasuryFees = treasury.lt(totalFees.sub(returnPoolFees))
+    ? treasury
+    : totalFees.sub(returnPoolFees);
+  return {
+    totalFees: totalFees,
+    poolFees: returnPoolFees,
+    treasuryFees: returnTreasuryFees,
+    treasuryBurn: totalFees.sub(returnPoolFees).sub(returnTreasuryFees),
+  };
+}
 export function calculate_sell_price_local(
   input_reserve: BN,
   output_reserve: BN,
   sell_amount: BN,
+  force_fees_amount = BN_ZERO,
 ) {
-  const input_amount_with_fee: BN = sell_amount.mul(new BN(997));
+  let input_amount_with_fee: BN = sell_amount.mul(new BN(997));
+  if (force_fees_amount.gt(BN_ZERO)) {
+    input_amount_with_fee = sell_amount.sub(force_fees_amount);
+  }
   const numerator: BN = input_amount_with_fee.mul(output_reserve);
-  const denominator: BN = input_reserve
+  let denominator: BN = input_reserve
     .mul(new BN(1000))
     .add(input_amount_with_fee);
+  if (force_fees_amount.gt(BN_ZERO)) {
+    denominator = input_reserve.add(input_amount_with_fee);
+  }
   const result: BN = numerator.div(denominator);
   return new BN(result.toString());
 }
@@ -138,7 +168,7 @@ export function calculate_buy_price_local(
 ) {
   const numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
   const denominator: BN = output_reserve.sub(buy_amount).mul(new BN(997));
-  const result: BN = numerator.div(denominator).add(new BN(1));
+  const result: BN = numerator.div(denominator);
   return new BN(result.toString());
 }
 
@@ -168,8 +198,14 @@ export async function calculate_sell_price_rpc(
   input_reserve: BN,
   output_reserve: BN,
   sell_amount: BN,
+  force_fees_amount: BN = BN_ZERO,
 ): Promise<BN> {
-  return calculate_sell_price_local(input_reserve, output_reserve, sell_amount);
+  return calculate_sell_price_local(
+    input_reserve,
+    output_reserve,
+    sell_amount,
+    force_fees_amount,
+  );
 }
 
 export async function calculate_buy_price_rpc(

@@ -71,25 +71,28 @@ export function validateAssetsSwappedEvent(
   result: EventResult,
   userAddress: string,
   firstCurrency: BN,
-  first_asset_amount: BN,
+  firstAssetAmount: BN,
   secondCurrency: BN,
-  second_asset_amount: BN,
+  secondAssetAmount: BN,
 ) {
   //validate the asset swapped created event contract.
   const rawData = result.data;
   expect(rawData).not.toBeNull();
-  expect(rawData[0]).toEqual(userAddress);
-  expect(stringToBN(rawData[1][0])).bnEqual(
+  //@ts-ignore
+  expect(rawData.who).toEqual(userAddress);
+  //@ts-ignore
+  expect(rawData.totalAmountIn).toEqual(firstAssetAmount.toHuman());
+  //@ts-ignore
+  expect(stringToBN(rawData.swaps[0].assetIn.toString())).bnEqual(
     stringToBN(firstCurrency.toString()),
   );
-  expect(fromStringToUnitString(rawData[2])).toEqual(
-    fromBNToUnitString(first_asset_amount),
-  );
-  expect(stringToBN(rawData[1][1])).toEqual(
+  //@ts-ignore
+  expect(stringToBN(rawData.swaps[0].assetOut.toString())).bnEqual(
     stringToBN(secondCurrency.toString()),
   );
-  expect(fromStringToUnitString(rawData[3])).toEqual(
-    fromBNToUnitString(second_asset_amount),
+  //@ts-ignore
+  expect(stringToBN(rawData.swaps[0].amountOut.toString())).bnEqual(
+    stringToBN(secondAssetAmount.toString()),
   );
 }
 

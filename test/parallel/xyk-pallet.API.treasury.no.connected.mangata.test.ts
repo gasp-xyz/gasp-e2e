@@ -11,6 +11,7 @@ import {
   buyAsset,
   calculate_buy_price_rpc,
   createPool,
+  calculate_buy_price_id_rpc,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -130,9 +131,9 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
 
   test("assets won when assets are bought - 2 [no connected to MGA]", async () => {
     const buyAssetAmount = new BN(10000);
-    const sellPriceRpc = await calculate_buy_price_rpc(
-      first_asset_amount,
-      first_asset_amount.div(new BN(2)),
+    const sellPriceRpc = await calculate_buy_price_id_rpc(
+      firstCurrency,
+      secondCurrency,
       buyAssetAmount,
     );
     await buyAsset(
