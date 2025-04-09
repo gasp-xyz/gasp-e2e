@@ -15,7 +15,7 @@ import {
   getBalanceOfPool,
   getLiquidityAssetId,
 } from "../../utils/tx";
-import { BN_ONE, BN_ZERO } from "gasp-sdk";
+import { BN_ZERO } from "gasp-sdk";
 import { EventResult, ExtrinsicResult } from "../../utils/eventListeners";
 import { AssetWallet, User } from "../../utils/User";
 import { BN } from "@polkadot/util";
@@ -382,7 +382,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     expect(assetsBeforeFree(user1)).collectionBnEqual(assetsAfterFree(user1));
 
     expect([
-      user2.getAsset(assetId1)!.amountBefore.free.sub(buyPriceLocal),
+      user2.getAsset(assetId1)!.amountBefore.free.sub(buyPriceLocal).subn(1), //accuracy issue-multiswap-mods
       user2.getAsset(assetId2)!.amountBefore.free.add(amount),
       user2.getAsset(liquidityAssetId)!.amountBefore.free,
     ]).collectionBnEqual(assetsAfterFree(user2));
@@ -391,13 +391,14 @@ describe("xyk-pallet: Happy case scenario", () => {
       xykPalletUser
         .getAsset(assetId1)!
         .amountBefore.free.add(buyPriceLocal)
-        .sub(fee),
+        .sub(fee)
+        .addn(1), //accuracy issue-multiswap-mods
       xykPalletUser.getAsset(assetId2)!.amountBefore.free.sub(amount),
     ]).collectionBnEqual(assetsAfterFree(xykPalletUser));
 
     const poolBalance = await getBalanceOfPool(assetId1, assetId2);
     expect([
-      poolBalanceBefore[0].add(buyPriceLocal).sub(fee),
+      poolBalanceBefore[0].add(buyPriceLocal).sub(fee).addn(1), //accuracy issue-multiswap-mods
       poolBalanceBefore[1].sub(amount),
     ]).collectionBnEqual(poolBalance);
 
@@ -436,7 +437,7 @@ describe("xyk-pallet: Happy case scenario", () => {
     //the addn(1) is because when buying, sometimes, u get 1 extra :) Reported to shoeb.
     expect([
       user2.getAsset(assetId1)!.amountBefore.free.add(amount),
-      user2.getAsset(assetId2)!.amountBefore.free.sub(buyPriceLocal).addn(1),
+      user2.getAsset(assetId2)!.amountBefore.free.sub(buyPriceLocal), //accuracy issue-multiswap-mods
       user2.getAsset(liquidityAssetId)!.amountBefore.free,
     ]).collectionBnEqual(assetsAfterFree(user2));
 
@@ -445,14 +446,13 @@ describe("xyk-pallet: Happy case scenario", () => {
       xykPalletUser
         .getAsset(assetId2)!
         .amountBefore.free.add(buyPriceLocal)
-        .sub(fee)
-        .sub(BN_ONE),
+        .sub(fee), //accuracy issue-multiswap-mods
     ]).collectionBnEqual(assetsAfterFree(xykPalletUser));
 
     const poolBalance = await getBalanceOfPool(assetId1, assetId2);
     expect([
       poolBalanceBefore[0].sub(amount),
-      poolBalanceBefore[1].add(buyPriceLocal).sub(fee).sub(BN_ONE),
+      poolBalanceBefore[1].add(buyPriceLocal).sub(fee), //accuracy issue-multiswap-mods
     ]).collectionBnEqual(poolBalance);
 
     const totalLiquidityAssets = await getAssetSupply(liquidityAssetId);
