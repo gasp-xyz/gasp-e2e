@@ -11,10 +11,9 @@ from utils.common_test_utils import (
 
 
 class Output(BaseModel):
-    welcome_modal_dismissed: bool
-    metamask_wallet_visible: bool
-    walletconnect_wallet_visible: bool
-    binance_wallet_visible: bool
+    metamask_wallet_connector_visible: bool
+    walletconnect_wallet_connector_visible: bool
+    binance_wallet_connector_visible: bool
     binance_modal_opened: bool
 
 
@@ -33,7 +32,7 @@ async def test_gasp_wallets(browser_context, controller_with_actions, llm):
     # Define the task
     task = """
     1. using vision click Connect your wallet button on right top side of the site
-    2. check what wallets can be conneced now
+    2. check what wallet connectors are visible now
     3. click on binance wallet
     4. wait and check if Connect With Binance modal was opened with qr code
     """
@@ -49,9 +48,9 @@ async def test_gasp_wallets(browser_context, controller_with_actions, llm):
     )
 
     # Assertions specific to this test
-    assert parsed.metamask_wallet_visible == True
-    assert parsed.walletconnect_wallet_visible == True
-    assert parsed.binance_wallet_visible == True
+    assert parsed.metamask_wallet_connector_visible == True
+    assert parsed.walletconnect_wallet_connector_visible == True
+    assert parsed.binance_wallet_connector_visible == True
     assert parsed.binance_modal_opened == True
 
 
