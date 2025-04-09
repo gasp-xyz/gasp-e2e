@@ -35,7 +35,6 @@ async def test_gasp_wallets(browser_context, controller_with_actions, llm):
     
     # Define the task
     task = """
-    before doing any action assess if there is predefined function in controller that could be used instead
     1. Select token from You Pay section with token_name="GASP" and origin="Native" using select_pay_token
     2. using select_get_token Select token from You Get section with token_name="USDT" and origin="Ethereum"
     3. using set_get_amount Set You Get amount to 10
