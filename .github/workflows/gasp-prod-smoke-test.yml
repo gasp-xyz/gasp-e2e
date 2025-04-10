@@ -10,8 +10,12 @@ on:
 
 jobs:
   playwright-tests:
-    name: Run Playwright Tests
+    name: Run Playwright Tests - ${{ matrix.test_group }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test_group: ["wallet", "collator", "swap"]
     env:
       UI_URL: https://app.gasp.xyz
       LMNR_PROJECT_API_KEY: ${{ secrets.LMNR_PROJECT_API_KEY }}
@@ -34,20 +38,20 @@ jobs:
         # Ref: https://playwright.dev/docs/browsers#chromium-headless-shell
         run: cd fe-ai-tests && pdm run playwright install --only-shell chromium
           
-      # - name: Create directories for test artifacts
-      #   run: mkdir -p fe-ai-tests/tmp/record_videos
+      - name: Create directories for test artifacts
+        run: mkdir -p fe-ai-tests/tmp/record_videos fe-ai-tests/tmp/agent_history-${{ matrix.test_group }}
           
       - name: Run tests
-        run: cd fe-ai-tests && pdm run pytest tests/ -m "wallet or collator or swap" -v
+        run: cd fe-ai-tests && pdm run pytest tests/ -m "${{ matrix.test_group }}" -v
           
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-${{ matrix.test_group }}
           path: |
             fe-ai-tests/tmp/record_videos
-            fe-ai-tests/tmp/agent_history.gif
+            fe-ai-tests/tmp/agent_history-${{ matrix.test_group }}
           retention-days: 7
           
   slack-notify:
