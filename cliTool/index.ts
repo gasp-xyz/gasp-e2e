@@ -71,7 +71,7 @@ import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { BN_ZERO, Mangata } from "gasp-sdk";
+import { BN_ZERO, Mangata, signTx } from "gasp-sdk";
 import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
@@ -82,8 +82,6 @@ import { L2Update, Rolldown } from "../utils/rollDown/Rolldown";
 import inquirer from "inquirer";
 import { getAssetIdFromErc20 } from "../utils/rollup/ethUtils";
 import Redis from "ioredis-rejson";
-import { Ferry } from "../utils/rollDown/Ferry";
-import { L1Type } from "../utils/rollup/l1s";
 
 async function app(): Promise<any> {
   return inquirer
@@ -1116,12 +1114,6 @@ async function app(): Promise<any> {
             },
             {
               type: "input",
-              name: "l1Type",
-              message: "L1 type",
-              default: "EthAnvil",
-            },
-            {
-              type: "input",
               name: "depositorAddress",
               message: "Depositor address",
             },
@@ -1129,6 +1121,11 @@ async function app(): Promise<any> {
               type: "input",
               name: "ferrierKey",
               message: "Ferrier private key",
+            },
+            {
+              type: "input",
+              name: "txIndex",
+              message: "requestId index",
             },
             {
               type: "input",
@@ -1146,38 +1143,51 @@ async function app(): Promise<any> {
               name: "ferryTip",
               message: "Ferry tip",
             },
+            {
+              type: "input",
+              name: "timestamp",
+              message: "Timestamp",
+              default: "0",
+            },
           ])
           .then(
             async (answers: {
-              chain: string;
-              l1Type: L1Type;
+              chain: any;
               depositorAddress: string;
               ferrierKey: string;
+              txIndex: number;
               tokenAddress: string;
               depositAmount: number;
               ferryTip: string;
+              timestamp: number;
             }) => {
               await initApi();
               const api = await getApi();
               const keyring = new Keyring({ type: "ethereum" });
               const ferrier = new User(keyring, answers.ferrierKey);
-              const txIndex1 = await Rolldown.lastProcessedRequestOnL2(
-                answers.chain,
-              );
               const depositUpdate = new L2Update(api)
                 .withDeposit(
-                  txIndex1,
+                  answers.txIndex,
                   answers.depositorAddress,
                   answers.tokenAddress,
                   answers.depositAmount,
-                  0,
+                  answers.timestamp,
                   stringToBN(answers.ferryTip),
                 )
                 .on(answers.chain);
-              await Ferry.ferryThisDeposit(
-                ferrier,
-                depositUpdate.pendingDeposits[0],
-                answers.l1Type,
+              const pendingDeposit = depositUpdate.pendingDeposits[0];
+              await signTx(
+                api,
+                api.tx.rolldown.ferryDepositUnsafe(
+                  answers.chain,
+                  pendingDeposit.requestId,
+                  pendingDeposit.depositRecipient,
+                  pendingDeposit.tokenAddress,
+                  pendingDeposit.amount,
+                  pendingDeposit.timeStamp,
+                  pendingDeposit.ferryTip,
+                ),
+                ferrier.keyRingPair,
               );
               return app();
             },
