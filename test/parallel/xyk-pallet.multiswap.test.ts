@@ -10,12 +10,23 @@ import {
   calculate_buy_price_id_rpc,
   multiSwapBuyMarket,
   multiSwapSellMarket,
+  updateFeeLockMetadata,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
-import { getUserBalanceOfToken, xykErrors } from "../../utils/utils";
-import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
+import {
+  getUserBalanceOfToken,
+  stringToBN,
+  xykErrors,
+} from "../../utils/utils";
+import {
+  setupApi,
+  setup5PoolsChained,
+  sudo,
+  setupUsers,
+  getSudoUser,
+} from "../../utils/setup";
 import {
   getBalanceOfPool,
   getEventResultFromMangataTx,
@@ -30,6 +41,7 @@ import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { Market } from "../../utils/market";
+import { FeeLock } from "../../utils/FeeLock";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -321,6 +333,66 @@ describe("Multiswap - happy paths", () => {
         userSoldAssetWallet?.amountAfter.free,
       ),
     ).bnLt(buy04);
+  });
+
+  test("[gasless] Not enough MGAs to lock AND tokens do exist whitelist AND buying GASP and less threshold: fail", async () => {
+    const [testUser1] = setupUsers();
+    await setupApi();
+    await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
+    const meta = await getApi().query.feeLock.feeLockMetadata();
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
+    );
+    const tokenList = tokenIds.concat(GASP_ASSET_ID);
+    testUser1.addAssets(tokenList);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await updateFeeLockMetadata(
+      getSudoUser(),
+      undefined,
+      undefined,
+      threshold,
+      tokenIds.map((x) => [x, true]),
+    );
+    await Sudo.batchAsSudoFinalized(
+      ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.addn(10)),
+    );
+    const events = await multiSwapSellMarket(testUser1, tokenList, threshold);
+    const err = getEventResultFromMangataTx(events);
+    expect(err.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(err.data).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
+
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    //TODO:Alek, validate the user paid 0,3 of sold fees
+  });
+
+  test("[gasless] Not enough MGAs to lock AND tokens do exist whitelist AND buying GASP and more than threshold: success", async () => {
+    const [testUser1] = setupUsers();
+    await setupApi();
+    await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
+    const meta = await getApi().query.feeLock.feeLockMetadata();
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
+    );
+    const tokenList = tokenIds.concat(GASP_ASSET_ID);
+    testUser1.addAssets(tokenList);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await updateFeeLockMetadata(
+      getSudoUser(),
+      undefined,
+      undefined,
+      threshold.divn(100),
+      tokenList.map((x) => [x, true]),
+    );
+    await Sudo.batchAsSudoFinalized(
+      ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.addn(10)),
+    );
+    const events = await multiSwapSellMarket(testUser1, tokenList, threshold);
+    const err = getEventResultFromMangataTx(events);
+    expect(err.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    //TODO: Alek ensure that the swap happened by checkign the sold amount and that the user got some gASps.
   });
   ///keep it on the last position, this test empty one pool!!!!
   test("[gasless] alternative scenario - one pool is highly unbalanced -> zero swap output", async () => {
