@@ -10,7 +10,7 @@ import { BN } from "@polkadot/util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
-import { feeLockErrors, xykErrors } from "../../utils/utils";
+import { feeLockErrors } from "../../utils/utils";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
 import {
   getLiquidityAssetId,
@@ -19,8 +19,6 @@ import {
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { Market } from "../../utils/market";
-import { ExtrinsicResult } from "../../utils/eventListeners";
-import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -122,17 +120,23 @@ test.skip("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the 
 test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
   //Aleks: delete clearMgaFromWhitelisted as we have update function now and change checking method
   await testUser1.addGASPTokens(sudo, new BN(2));
+  let exception = false;
+  const reason = feeLockErrors.SwapApprovalFail;
+  await expect(
+    sellAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      GASP_ASSET_ID,
+      thresholdValue.sub(new BN(100)),
+      new BN(0),
+    ).catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    }),
+  ).rejects.toThrow(reason);
 
-  const events = await sellAsset(
-    testUser1.keyRingPair,
-    firstCurrency,
-    GASP_ASSET_ID,
-    thresholdValue.sub(new BN(100)),
-    new BN(0),
-  );
-  const eventResponse = getEventResultFromMangataTx(events);
-  expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-  expect(eventResponse.data).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
+  expect(exception).toBeTruthy();
+  expect(reason).toBeTruthy();
 });
 
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
