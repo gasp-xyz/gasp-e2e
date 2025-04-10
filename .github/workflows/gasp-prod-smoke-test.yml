@@ -1,12 +1,9 @@
-name: GASP UI Playwright Tests
+name: GASP UI Prod AI Tests
 
 on:
   workflow_dispatch:
   schedule:
     - cron: "30 7 * * *"
-  # TODO: Added for tests, remove this once the FE-AI-tests branch is merged into main
-  push:
-    branches: ['FE-AI-tests']
 
 jobs:
   playwright-tests:
@@ -23,6 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+            ref: 'FE-AI-tests'
 
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v4
