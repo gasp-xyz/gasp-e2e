@@ -129,7 +129,7 @@ test("[BUG] gasless- GIVEN some locked tokens and no more free MGX WHEN another 
     ).catch((reason) => {
       throw new Error(reason.data);
     }),
-  ).rejects.toThrow(feeLockErrors.FeeLockFail);
+  ).rejects.toThrow(feeLockErrors.SwapApprovalFail);
 });
 
 test("gasless- GIVEN some locked tokens and no more free MGX WHEN another tx is submitted AND lock period finished THEN the operation can be submitted ( unlock before locking )", async () => {

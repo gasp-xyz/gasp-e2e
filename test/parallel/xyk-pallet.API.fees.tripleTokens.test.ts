@@ -31,6 +31,7 @@ import { signTx } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
 import { getFeeLockMetadata } from "../../utils/feeLockHelper";
 import { Market } from "../../utils/market";
+import { FeeLock } from "../../utils/FeeLock";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.spyOn(console, "error").mockImplementation(jest.fn());
@@ -248,7 +249,11 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
     Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
     Assets.mintToken(ETH_ASSET_ID, testUser1, feeLockAmount.divn(2)),
   );
-
+  await Sudo.asSudoFinalized(
+    Sudo.sudo(
+      FeeLock.updateTokenValueThreshold(firstCurrency, swapValueThreshold),
+    ),
+  );
   const saleAssetValue = swapValueThreshold.muln(2);
   const workAroundFromBug = swapValueThreshold.muln(1.5);
   await signTx(
@@ -320,7 +325,7 @@ test("[BUG] GIVEN User has a very limited amount of GASP & a minimal amount of E
     clientError = error;
   }
   //Goncer - fixing until this is done. https://mangatafinance.atlassian.net/browse/GASP-1723
-  expect(clientError.data).toContain(feeLockErrors.FeeLockFail);
+  expect(clientError.data).toContain(feeLockErrors.SwapApprovalFail);
 });
 
 test("User, when paying with eth, have to pay 1/30000 eth per GASP spent.", async () => {
