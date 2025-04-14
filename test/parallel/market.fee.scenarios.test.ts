@@ -539,6 +539,9 @@ describe("SingleSell, user has sold asset and GASP", () => {
     await updateFeeLockMetadata(sudo, null, null, null, [
       [firstCurrency, true],
     ]);
+    await Sudo.asSudoFinalized(
+      Sudo.sudo(FeeLock.updateTokenValueThreshold(firstCurrency, threshold)),
+    );
 
     const liqId = await rpcGetPoolId(firstCurrency, secondCurrency);
     const sellAmount = threshold.muln(3).divn(2);
