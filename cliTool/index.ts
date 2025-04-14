@@ -82,6 +82,7 @@ import { L2Update, Rolldown } from "../utils/rollDown/Rolldown";
 import inquirer from "inquirer";
 import { getAssetIdFromErc20 } from "../utils/rollup/ethUtils";
 import Redis from "ioredis-rejson";
+import { L1Type } from "../utils/rollup/l1s";
 
 async function app(): Promise<any> {
   return inquirer
@@ -152,6 +153,7 @@ async function app(): Promise<any> {
         "Track withdrawal transaction",
         "printAllSwapsFromPool",
         "Create deposit with ferry",
+        "Create withdrawal with ferry",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -1188,6 +1190,76 @@ async function app(): Promise<any> {
                   pendingDeposit.ferryTip,
                 ),
                 ferrier.keyRingPair,
+              );
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Create withdrawal with ferry")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "l1",
+              message: "L1 Type",
+              default: "EthAnvil",
+            },
+            {
+              type: "input",
+              name: "depositorAddress",
+              message: "Depositor address",
+            },
+            {
+              type: "input",
+              name: "ferrierKey",
+              message: "Ferrier private key",
+            },
+            {
+              type: "input",
+              name: "txIndex",
+              message: "requestId index",
+            },
+            {
+              type: "input",
+              name: "tokenAddress",
+              message: "ERC20 token address",
+              default: "0xc351628eb244ec633d5f21fbd6621e1a683b1181",
+            },
+            {
+              type: "input",
+              name: "depositAmount",
+              message: "Deposit amount",
+            },
+            {
+              type: "input",
+              name: "ferryTip",
+              message: "Ferry tip",
+            },
+          ])
+          .then(
+            async (answers: {
+              l1: L1Type;
+              depositorAddress: string;
+              ferrierKey: string;
+              txIndex: number;
+              tokenAddress: string;
+              depositAmount: number;
+              ferryTip: number;
+            }) => {
+              await initApi();
+              const keyring = new Keyring({ type: "ethereum" });
+              const ferrier = new User(keyring, answers.ferrierKey);
+              await Rolldown.ferryWithdrawal(
+                answers.l1,
+                ferrier,
+                answers.depositorAddress,
+                answers.tokenAddress,
+                answers.depositAmount,
+                answers.ferryTip,
+                {
+                  origin: 1,
+                  id: answers.txIndex,
+                },
               );
               return app();
             },
