@@ -19,6 +19,7 @@ import {
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { Market } from "../../utils/market";
+import { FeeLock } from "../../utils/FeeLock";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -117,10 +118,11 @@ test.skip("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the 
   );
 });
 
-test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
+test("gasless- GIVEN a feeLock configured -only Time and Amount- WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
   //Aleks: delete clearMgaFromWhitelisted as we have update function now and change checking method
   await testUser1.addGASPTokens(sudo, new BN(2));
   let exception = false;
+  FeeLock.updateTokenValueThreshold(firstCurrency, thresholdValue);
   const reason = feeLockErrors.SwapApprovalFail;
   await expect(
     sellAsset(
