@@ -142,9 +142,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     expect(except).toBeTruthy();
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const diff = testUser1.getWalletDifferences();
-    expect(
-      diff.find((x) => x.currencyId === GASP_ASSET_ID)?.diff.reserved,
-    ).bnEqual(BN_ZERO);
+    expect(diff).toHaveLength(0);
   });
   test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist AND not buying GASP", async () => {
     //Aleks: I changed the error, but I think we also need to change description
