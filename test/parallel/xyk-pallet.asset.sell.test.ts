@@ -154,7 +154,7 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
     poolBalanceBefore[1].sub(sellPriceLocal),
   ]).collectionBnEqual(pool_balance);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!.sub(fee).subn(2),
+    addFromWallet!.sub(fee).addn(2),
   );
 });
 
