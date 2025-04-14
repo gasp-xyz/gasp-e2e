@@ -155,7 +155,10 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     const { treasury, treasuryBurn } = calculateFees(sellPriceRpc);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
     //treasuries are stored always in the sold asset
-    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
+    await validateTreasuryAmountsEqual(firstCurrency, [
+      treasury,
+      treasuryBurn.addn(2),
+    ]);
   });
 
   test("assets won when assets are bought - 1 [no connected to MGA]", async () => {
