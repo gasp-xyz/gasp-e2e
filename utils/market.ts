@@ -160,7 +160,7 @@ export class Market {
       sellAssetAmount,
       secondAsset,
     );
-    return res.isLockless === true;
+    return res.isLockless.toString() === true.toString();
   }
   static async isBuyAssetLockFree(assets: string[], sellAssetAmount: BN) {
     const firstAsset = stringToBN(assets[0]);
@@ -172,7 +172,7 @@ export class Market {
       sellAssetAmount,
       secondAsset,
     );
-    return res.isLockless === true;
+    return res.isLockless.toString() === true.toString();
   }
 
   static async getMaxInstantUnreserveAmount(address: string, liquidityID: BN) {

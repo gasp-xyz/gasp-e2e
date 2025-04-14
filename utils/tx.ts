@@ -126,6 +126,14 @@ export function getSellFeesLocal(inputAmount: BN) {
     treasuryBurn: totalFees.sub(returnPoolFees).sub(returnTreasuryFees),
   };
 }
+export function getSellFeesLocalPost(inputAmount: BN) {
+  const totalFeePercentage = new BN(30);
+  const feeDenominator = new BN(10000);
+  const totalFees = inputAmount
+    .mul(totalFeePercentage)
+    .div(feeDenominator.sub(totalFeePercentage));
+  return totalFees.gt(new BN(6)) ? totalFees : new BN(6);
+}
 export function calculate_sell_price_local(
   input_reserve: BN,
   output_reserve: BN,

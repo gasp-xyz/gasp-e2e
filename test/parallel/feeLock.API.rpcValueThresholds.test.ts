@@ -16,12 +16,13 @@ import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import {
   calculate_sell_price_id_rpc,
+  getSellFeesLocalPost,
   multiSwapSellMarket,
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { Market } from "../../utils/market";
+import { Market, rpcGetPoolId } from "../../utils/market";
 import { rpcCalculateBuyPrice } from "../../utils/feeLockHelper";
 import { FeeLock } from "../../utils/FeeLock";
 
@@ -150,11 +151,13 @@ test("gasless- isFree depends on the token and the sell valuation AND prevalidat
       )
     ).toString(),
   ).toEqual("false");
+  const fees = getSellFeesLocalPost(thresholdValue);
+  const thresholdSellAmount = thresholdValue.add(fees);
   expect(
     (
       await Market.isSellAssetLockFree(
         [GASP_ASSET_ID.toString(), firstCurrency.toString()],
-        thresholdValue,
+        thresholdSellAmount,
       )
     ).toString(),
   ).toEqual("true");
@@ -162,7 +165,7 @@ test("gasless- isFree depends on the token and the sell valuation AND prevalidat
     (
       await Market.isSellAssetLockFree(
         [firstCurrency.toString(), GASP_ASSET_ID.toString()],
-        thresholdValue,
+        thresholdSellAmount,
       )
     ).toString(),
   ).toEqual("true");
@@ -172,12 +175,13 @@ test("gasless- isFree depends on the token and the sell valuation AND prevalidat
     (
       await Market.isSellAssetLockFree(
         [firstCurrency.toString(), secondCurrency.toString()],
-        thresholdValue.subn(2),
+        thresholdSellAmount.subn(2),
       )
     ).toString(),
   ).toEqual("false");
+  const poolId = await rpcGetPoolId(secondCurrency, firstCurrency);
   const amount = (await rpcCalculateBuyPrice(
-    secondCurrency,
+    poolId,
     firstCurrency,
     thresholdValue,
   ))!;
@@ -188,7 +192,7 @@ test("gasless- isFree depends on the token and the sell valuation AND prevalidat
     (
       await Market.isSellAssetLockFree(
         [secondCurrency.toString(), firstCurrency.toString()],
-        thresholdValue.addn(2),
+        thresholdSellAmount.addn(2),
       )
     ).toString(),
   ).toEqual("false");
@@ -206,7 +210,7 @@ test("gasless- isFree depends on the token and the sell valuation AND prevalidat
     (
       await Market.isSellAssetLockFree(
         [firstCurrency.toString(), secondCurrency.toString()],
-        thresholdValue.subn(1),
+        thresholdSellAmount.subn(1),
       )
     ).toString(),
   ).toEqual("false");
@@ -223,7 +227,7 @@ test("gasless- isFree depends on the token and the sell valuation AND prevalidat
   const amountReqToGetThreshold = await calculate_sell_price_id_rpc(
     firstCurrency,
     secondCurrency,
-    thresholdValue.subn(1),
+    thresholdSellAmount.subn(1),
   );
   //Same as before, we first calcualte from wich value, the buy results on the threshold.
   //Then we check that the value (-1) result in false, and +1 in true.
