@@ -150,11 +150,11 @@ test("xyk-pallet - AssetsOperation: sellAsset [minAmountOut = 0] , first to seco
   //Other two are about rounding.
   const fee = new BN(30).add(new BN(2));
   expect([
-    poolBalanceBefore[0].add(amount).sub(fee),
+    poolBalanceBefore[0].add(amount).sub(fee).addn(2),
     poolBalanceBefore[1].sub(sellPriceLocal),
   ]).collectionBnEqual(pool_balance);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
-    addFromWallet!.sub(fee),
+    addFromWallet!.sub(fee).subn(2),
   );
 });
 

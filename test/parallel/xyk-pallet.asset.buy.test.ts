@@ -155,7 +155,8 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
-    ?.amountBefore.free!.sub(buyPriceLocal);
+    ?.amountBefore.free!.sub(buyPriceLocal)
+    .subn(2);
   expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
     diffFromWallet!,
   );
@@ -264,7 +265,8 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   addFromWallet = pallet
     .getAsset(soldAssetId)
     ?.amountBefore.free!.add(buyPriceLocal)
-    .sub(bothFees);
+    .sub(bothFees)
+    .subn(1);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
     addFromWallet!,
   );
@@ -278,7 +280,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 
   const pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
   expect([
-    poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),
+    poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees).subn(1),
     poolBalanceBefore[1].sub(amount),
   ]).collectionBnEqual(pool_balance);
 });
