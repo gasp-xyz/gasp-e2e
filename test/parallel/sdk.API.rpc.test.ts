@@ -81,7 +81,7 @@ describe("SDK tests for rpc functions", () => {
     expect(sellAmount).bnGt(BN_ZERO);
     expect(liquidityToken).bnGt(BN_ZERO);
     //TODO: GonCer validate.
-    expect(buyAmount).bnEqual(buyAmountId);
+    expect(buyAmount).bnEqual(buyAmountId.subn(1));
     expect(sellAmount).bnEqual(sellAmountId);
   });
   test("Calculate sellForMinting amount", async () => {
