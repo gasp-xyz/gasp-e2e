@@ -522,6 +522,13 @@ export async function getBlockNumber(): Promise<number> {
   const blockNumber = stringToBN(await mangata!.query.getBlockNumber());
   return blockNumber.toNumber();
 }
+export async function getMultiPurposeLiquidityStatusObj(
+  address: string,
+  tokenId: BN,
+) {
+  const api = await mangata?.api()!;
+  return await api.query.multiPurposeLiquidity.reserveStatus(address, tokenId);
+}
 export async function getMultiPurposeLiquidityStatus(
   address: string,
   tokenId: BN,

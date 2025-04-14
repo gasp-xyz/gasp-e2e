@@ -2,6 +2,7 @@ import { BN, BN_ONE, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
 import {
+  getBalanceOfAssetStr,
   getLiquidityAssetId,
   rpcCalculateBuyPriceMulti,
   rpcCalculateBuyPriceMultiObj,
@@ -9,7 +10,7 @@ import {
 } from "./tx";
 import { filterAndStringifyFirstEvent } from "./eventListeners";
 import { MangataGenericEvent } from "gasp-sdk";
-import { stringToBN } from "./utils";
+import { getMultiPurposeLiquidityStatusObj, stringToBN } from "./utils";
 
 export class Market {
   static createPool(
@@ -172,6 +173,42 @@ export class Market {
       secondAsset,
     );
     return res.isLockless === true;
+  }
+
+  static async getMaxInstantUnreserveAmount(address: string, liquidityID: BN) {
+    //await api.rpc.xyk.get_max_instant_unreserve_amount(
+    //    testUser1.keyRingPair.address,
+    //    liquidityID.toString(),
+    //);
+    //https://github.com/gasp-xyz/gasp-monorepo/blob/a067244ee2a8e01113d13a77c4219e08fe267192/gasp-node/pallets/multipurpose-liquidity/src/lib.rs#L487
+
+    const mplStatus = await getMultiPurposeLiquidityStatusObj(
+      address,
+      liquidityID,
+    );
+    const totalRemainingReserve = mplStatus.stakedUnactivatedReserves
+      .add(mplStatus.stakedAndActivatedReserves)
+      .add(mplStatus.unspentReserves);
+    const amountHeldBackByRelock = mplStatus.relockAmount.sub(
+      totalRemainingReserve,
+    );
+    // We assume here that the actual unreserve will ofcoures go fine returning 0.
+    return mplStatus.activatedUnstakedReserves.sub(amountHeldBackByRelock);
+  }
+
+  static async getMaxInstantBurnAmount(address: string, liquidityID: BN) {
+    //@ts-ignore
+    //await api.rpc.xyk.get_max_instant_burn_amount(
+    //    testUser1.keyRingPair.address,
+    //    liquidityID,
+    //);
+    //https://github.com/gasp-xyz/gasp-monorepo/blob/a067244ee2a8e01113d13a77c4219e08fe267192/gasp-node/pallets/xyk/src/lib.rs#L1149
+
+    return (await this.getMaxInstantUnreserveAmount(address, liquidityID)).add(
+      (await getBalanceOfAssetStr(liquidityID, address)).free.sub(
+        (await getBalanceOfAssetStr(liquidityID, address)).frozen,
+      ),
+    );
   }
 }
 

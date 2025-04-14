@@ -24,6 +24,7 @@ import {
   burnLiquidity,
   transferAsset,
   unlockVestedToken,
+  getBalanceOfAssetStr,
 } from "../../utils/tx";
 import { BN_ZERO, toBN } from "gasp-sdk";
 import { getBlockNumber } from "../../utils/utils";
@@ -212,20 +213,17 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       ),
     ).bnGt(new BN(0));
 
-    const howManyCanBeUnReserved =
-      // @ts-ignore
-      await api.rpc.xyk.get_max_instant_unreserve_amount(
-        testUser1.keyRingPair.address,
-        liquidityID.toString(),
-      );
+    const howManyCanBeUnReserved = await Market.getMaxInstantUnreserveAmount(
+      testUser1.keyRingPair.address,
+      liquidityID,
+    );
+
     expect(howManyCanBeUnReserved).bnEqual(BN_ZERO);
 
-    const maxInstantBurnAmount =
-      //@ts-ignore
-      await api.rpc.xyk.get_max_instant_burn_amount(
-        testUser1.keyRingPair.address,
-        liquidityID,
-      );
+    const maxInstantBurnAmount = await Market.getMaxInstantBurnAmount(
+      testUser1.keyRingPair.address,
+      liquidityID,
+    );
 
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
@@ -237,9 +235,9 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
       ExtrinsicResult.ExtrinsicSuccess,
     );
 
-    const userBalanceAfterBurningAmount = await api.query.tokens.accounts(
-      testUser1.keyRingPair.address,
+    const userBalanceAfterBurningAmount = await getBalanceOfAssetStr(
       liquidityID,
+      testUser1.keyRingPair.address,
     );
     expect(
       userBalanceAfterBurningAmount.free.sub(
@@ -305,13 +303,10 @@ describe("xyk-pallet - Vested token tests: which action you can do with vesting 
 
     expect(userBalanceAfterUnlockingAmount.frozen).bnEqual(new BN(0));
 
-    const maxInstantBurnAmount =
-      //@ts-ignore
-      await api.rpc.xyk.get_max_instant_burn_amount(
-        testUser1.keyRingPair.address,
-        liquidityID,
-      );
-
+    const maxInstantBurnAmount = await Market.getMaxInstantBurnAmount(
+      testUser1.keyRingPair.address,
+      liquidityID,
+    );
     const burnUnlockedToken = await burnLiquidity(
       testUser1.keyRingPair,
       GASP_ASSET_ID,

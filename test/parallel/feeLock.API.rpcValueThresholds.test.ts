@@ -23,6 +23,7 @@ import { User } from "../../utils/User";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { Market } from "../../utils/market";
 import { rpcCalculateBuyPrice } from "../../utils/feeLockHelper";
+import { FeeLock } from "../../utils/FeeLock";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -74,11 +75,11 @@ beforeAll(async () => {
     ],
   );
   await waitSudoOperationSuccess(updateMetadataEvent);
-
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
     Assets.mintToken(thirdCurrency, testUser1, defaultCurrencyValue),
+    Sudo.sudo(FeeLock.updateTokenValueThreshold(firstCurrency, thresholdValue)),
     Sudo.sudoAs(
       sudo,
       Market.createPool(
@@ -115,7 +116,7 @@ beforeAll(async () => {
   testUser1.addAsset(thirdCurrency);
 });
 
-test("gasless- isFree depends on the token and the sell valuation", async () => {
+test("gasless- isFree depends on the token and the sell valuation AND prevalidation th", async () => {
   const saleAssetValue = thresholdValue.add(new BN(2));
   // non mga paired token. -> always false.
   expect(

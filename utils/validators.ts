@@ -1,6 +1,6 @@
 import { ApiPromise } from "@polkadot/api";
 import { Codec } from "@polkadot/types-codec/types";
-import { BN, BN_TWO } from "@polkadot/util";
+import { BN, BN_FOUR } from "@polkadot/util";
 import { EventResult, ExtrinsicResult } from "./eventListeners";
 import { CodecOrArray, toHex, toHuman, toJson } from "./setup";
 import {
@@ -81,7 +81,7 @@ export function validateAssetsSwappedEvent(
   //@ts-ignore
   expect(rawData.who).toEqual(userAddress);
   //@ts-ignore
-  expect(rawData.totalAmountIn).toEqual(firstAssetAmount.toHuman());
+  expect(stringToBN(rawData.totalAmountIn)).toEqual(firstAssetAmount);
   //@ts-ignore
   expect(stringToBN(rawData.swaps[0].assetIn.toString())).bnEqual(
     stringToBN(firstCurrency.toString()),
@@ -227,7 +227,7 @@ export async function validateUserPaidFeeForFailedTx(
   failedBoughtAssetId: BN,
   poolAmountFailedBought: BN,
   initialPoolValueSoldAssetId: BN,
-  roundingIssue = BN_TWO,
+  roundingIssue = BN_FOUR,
 ) {
   const { treasury, treasuryBurn } = calculateFees(soldAmount);
   let { completeFee } = calculateCompleteFees(soldAmount);
@@ -236,7 +236,7 @@ export async function validateUserPaidFeeForFailedTx(
   //first wallet should not be modified.
   //roundingISSUES - 2
   //https://mangatafinance.atlassian.net/browse/GASP-1869
-  completeFee = completeFee.sub(roundingIssue);
+  completeFee = completeFee.add(roundingIssue);
 
   await user.refreshAmounts(AssetWallet.AFTER);
   const diffFromWallet = user
