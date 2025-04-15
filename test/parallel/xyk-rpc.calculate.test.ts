@@ -10,6 +10,7 @@ import {
   calculate_buy_price_rpc,
   calculate_sell_price_rpc,
   getBalanceOfPool,
+  getSellFeesLocal,
 } from "../../utils/tx";
 import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
@@ -28,8 +29,8 @@ let firstCurrency: BN;
 let secondCurrency: BN;
 
 // Assuming the pallet's AccountId
-const firstAssetAmount = 1000;
-const seccondAssetAmount = 1000;
+const firstAssetAmount = 100000;
+const seccondAssetAmount = 100000;
 
 beforeAll(async () => {
   try {
@@ -69,13 +70,13 @@ beforeEach(async () => {
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
 });
 
-test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000", async () => {
+test.skip("DELETED RPC:xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
     secondCurrency,
   );
 
-  const numberOfAssets = new BN(100);
+  const numberOfAssets = new BN(10000);
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
@@ -106,15 +107,15 @@ test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 1000,1000"
   expect(buyPriceRpc).bnEqual(numberOfAssets);
 });
 
-test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000", async () => {
+test.skip("DELETED RPC :xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000", async () => {
   const poolBalanceBefore = await getBalanceOfPool(
     firstCurrency,
     secondCurrency,
   );
-  //lets unbalance it artificailly, now the relation is 2000X=1000Y
-  poolBalanceBefore[0] = poolBalanceBefore[0].add(new BN(1000));
+  //lets unbalance it artificially, now the relation is 2000X=1000Y
+  poolBalanceBefore[0] = poolBalanceBefore[0].add(new BN(10000));
 
-  const numberOfAssets = new BN(100);
+  const numberOfAssets = new BN(10000);
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
@@ -140,10 +141,7 @@ test("xyk-rpc - calculate_sell_price and calculate_buy_price matches, 2000,1000"
   //in a not perfect balanced pool, those number can not match
   expect(sellPriceRpcInverse).not.bnEqual(sellPriceRpc);
   expect(buyPriceRpc).not.bnEqual(buyPriceRpcInverse);
-
-  //the relation of buy and sell is maintained.
-  //because of rounding, we need to expend one unit more
-  expect(buyPriceRpc.add(new BN(1))).bnEqual(numberOfAssets);
+  expect(buyPriceRpc).bnEqual(numberOfAssets);
 });
 
 test("xyk-rpc - calculate_sell_price matches with the real sell", async () => {
@@ -153,10 +151,12 @@ test("xyk-rpc - calculate_sell_price matches with the real sell", async () => {
   );
 
   const numberOfAssets = new BN(100);
+  const fees = getSellFeesLocal(numberOfAssets);
   const sellPriceRpc = await calculate_sell_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
     numberOfAssets,
+    fees.totalFees,
   );
   await testUser1.sellAssets(firstCurrency, secondCurrency, numberOfAssets);
   await testUser1.refreshAmounts(AssetWallet.AFTER);
@@ -166,6 +166,7 @@ test("xyk-rpc - calculate_sell_price matches with the real sell", async () => {
   expect(assetsSold?.free).bnEqual(
     testUser1.getAsset(firstCurrency)?.amountBefore.free.sub(numberOfAssets)!,
   );
+
   expect(assetsBought?.free).bnEqual(
     testUser1.getAsset(secondCurrency)?.amountBefore.free.add(sellPriceRpc)!,
   );
@@ -177,13 +178,18 @@ test("xyk-rpc - calculate_buy_price matches with the real buy", async () => {
     secondCurrency,
   );
 
-  const numberOfAssets = new BN(100);
+  const numberOfAssets = new BN(10000);
   const sellPriceRpc = await calculate_buy_price_rpc(
     poolBalanceBefore[0],
     poolBalanceBefore[1],
     numberOfAssets,
   );
-  await testUser1.buyAssets(firstCurrency, secondCurrency, numberOfAssets);
+  await testUser1.buyAssets(
+    firstCurrency,
+    secondCurrency,
+    numberOfAssets,
+    testUser1.getFreeAssetAmount(firstCurrency).amountBefore.free,
+  );
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   const assetsSold = testUser1.getAsset(firstCurrency)?.amountAfter;
   const assetsBought = testUser1.getAsset(secondCurrency)?.amountAfter;

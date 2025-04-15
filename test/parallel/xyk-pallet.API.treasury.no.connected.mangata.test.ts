@@ -11,6 +11,7 @@ import {
   buyAsset,
   calculate_buy_price_rpc,
   createPool,
+  calculate_buy_price_id_rpc,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
@@ -130,9 +131,9 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
 
   test("assets won when assets are bought - 2 [no connected to MGA]", async () => {
     const buyAssetAmount = new BN(10000);
-    const sellPriceRpc = await calculate_buy_price_rpc(
-      first_asset_amount,
-      first_asset_amount.div(new BN(2)),
+    const sellPriceRpc = await calculate_buy_price_id_rpc(
+      firstCurrency,
+      secondCurrency,
       buyAssetAmount,
     );
     await buyAsset(
@@ -140,7 +141,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       firstCurrency,
       secondCurrency,
       buyAssetAmount,
-      new BN(100000000),
+      testUser1.getFreeAssetAmount(firstCurrency).amountBefore.free,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",
@@ -154,7 +155,10 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
     const { treasury, treasuryBurn } = calculateFees(sellPriceRpc);
     await validateTreasuryAmountsEqual(secondCurrency, [new BN(0), new BN(0)]);
     //treasuries are stored always in the sold asset
-    await validateTreasuryAmountsEqual(firstCurrency, [treasury, treasuryBurn]);
+    await validateTreasuryAmountsEqual(firstCurrency, [
+      treasury,
+      treasuryBurn.addn(2),
+    ]);
   });
 
   test("assets won when assets are bought - 1 [no connected to MGA]", async () => {
@@ -169,7 +173,7 @@ describe("xyk-pallet - treasury tests [No Mangata]: on treasury we store", () =>
       firstCurrency,
       secondCurrency,
       buyAssetAmount,
-      new BN(100000000),
+      testUser1.getFreeAssetAmount(firstCurrency).amountBefore.free,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
         "xyk",

@@ -132,7 +132,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
   expect(exangeValue).bnEqual(tokensWon);
 
   //0.05% = 5 tokens.
-  const extraTokenForRounding = new BN(1);
+  const extraTokenForRounding = new BN(0);
   const expectedTreasury = new BN(5);
   const treasury = await getTreasury(firstCurrency);
   const treasuryBurn = await getTreasuryBurn(firstCurrency);
@@ -145,7 +145,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - MGA- SellAsset", as
 
   //the other pool_fee tokens must be in the pool.
   const poolBalance = await getBalanceOfPool(firstCurrency, secondCurrency);
-  //adding treasury twice beacuse is burned.
+  //adding treasury twice because is burned.
   expect(
     poolBalance[0].add(incrementedTreasury).add(incrementedTreasury),
   ).bnEqual(firstAssetAmount.add(sellingAmount));

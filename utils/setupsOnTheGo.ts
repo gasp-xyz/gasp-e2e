@@ -30,6 +30,7 @@ import {
   getMultiPurposeLiquidityReLockStatus,
   getMultiPurposeLiquidityStatus,
   getUserBalanceOfToken,
+  rpcCalculateNativeRewards,
   stringToBN,
 } from "./utils";
 import { api, getApi, getMangataInstance, initApi } from "./api";
@@ -1281,9 +1282,6 @@ export async function findAllRewardsAndClaim() {
 
   const usersInfo: any = [];
   const extrinsicCall = [];
-  const { chainUri } = getEnvironmentRequiredVars();
-  const mangata = await getMangataInstance(chainUri);
-
   const accountsResponse = await api!.query.proofOfStake.rewardsInfo.entries();
 
   await accountsResponse.forEach((element: { toHuman: () => any }[]) => {
@@ -1327,10 +1325,10 @@ export async function findAllRewardsAndClaim() {
     }
     user.addFromAddress(keyring, usersInfo[index][0]);
     liqTokenId = new BN(usersInfo[index][1].tokenId);
-    rewardAmount = await mangata.rpc.calculateRewardsAmount({
-      address: user.keyRingPair.address,
-      liquidityTokenId: liqTokenId.toString(),
-    });
+    rewardAmount = await rpcCalculateNativeRewards(
+      user.keyRingPair.address,
+      liqTokenId,
+    );
     if (rewardAmount) {
       console.info(getPrint(usersInfo[index][0], usersInfo[index][1]));
       extrinsicCall.push(

@@ -185,7 +185,7 @@ test("xyk-pallet - User Balance - Buying an asset does not require paying fees",
     firstCurrency,
     secondCurrency,
     new BN(100),
-    new BN(10000000),
+    testUser1.getAsset(firstCurrency)?.amountBefore.free!,
   ).catch((reason) => {
     exception = true;
     throw new Error(reason.data);

@@ -11,20 +11,22 @@ import { BN } from "ethereumjs-util";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import {
   rpcCalculateBuyPrice,
+  rpcCalculateBuyPriceNoFees,
   rpcCalculateBuyPriceWithImpact,
   rpcCalculateSellPrice,
+  rpcCalculateSellPriceNoFee,
   rpcCalculateSellPriceWithImpact,
 } from "../../utils/feeLockHelper";
 import { stringToBN } from "../../utils/utils";
 import { Sudo } from "../../utils/sudo";
 import { Assets } from "../../utils/Assets";
 import {
+  Market,
   rpcCalculateExpectedLiquidityMinted,
   rpcGetBurnAmount,
   rpcGetPoolId,
   rpcGetPoolsForTrading,
   rpcGetTradeableTokens,
-  Market,
 } from "../../utils/market";
 import {
   calculate_buy_price_rpc,
@@ -71,9 +73,7 @@ async function createPoolAndGetLiqId(
 
   await updateFeeLockMetadata(sudo, null, null, null, [[firstAsset, true]]);
 
-  const liquidityId = await rpcGetPoolId(firstAsset, secondAsset);
-
-  return liquidityId;
+  return await rpcGetPoolId(firstAsset, secondAsset);
 }
 
 beforeAll(async () => {
@@ -173,7 +173,7 @@ describe.each(["Xyk", "StableSwap"])(
     });
 
     test("Function rpcCalculateSellPriceWithImpact makes reliable calculations", async () => {
-      const sellPriceBefore = await rpcCalculateSellPrice(
+      const sellPriceBefore = await rpcCalculateSellPriceNoFee(
         liqId,
         firstCurrency,
         BN_MILLION,
@@ -194,7 +194,7 @@ describe.each(["Xyk", "StableSwap"])(
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
 
-      const sellPriceAfter = await rpcCalculateSellPrice(
+      const sellPriceAfter = await rpcCalculateSellPriceNoFee(
         liqId,
         firstCurrency,
         BN_MILLION,
@@ -242,7 +242,7 @@ describe.each(["Xyk", "StableSwap"])(
 
       await signTx(
         api,
-        Market.buyAsset(
+        await Market.buyAsset(
           liqId,
           firstCurrency,
           secondCurrency,
@@ -269,7 +269,7 @@ describe.each(["Xyk", "StableSwap"])(
     });
 
     test("Function rpcCalculateBuyPriceWithImpact makes reliable calculations", async () => {
-      const buyPriceBefore = await rpcCalculateBuyPrice(
+      const buyPriceBefore = await rpcCalculateBuyPriceNoFees(
         liqId,
         firstCurrency,
         BN_MILLION.divn(4),
@@ -283,7 +283,7 @@ describe.each(["Xyk", "StableSwap"])(
 
       await signTx(
         api,
-        Market.buyAsset(
+        await Market.buyAsset(
           liqId,
           firstCurrency,
           secondCurrency,
@@ -295,7 +295,7 @@ describe.each(["Xyk", "StableSwap"])(
         expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
       });
 
-      const buyPriceAfter = await rpcCalculateBuyPrice(
+      const buyPriceAfter = await rpcCalculateBuyPriceNoFees(
         liqId,
         firstCurrency,
         BN_MILLION.divn(4),
@@ -359,8 +359,8 @@ describe("Market - rpc", () => {
         testUser.getAsset(secondCurrency)?.amountBefore.free!,
       );
 
-    expect(burnAmount.firstTokenAmount).bnEqual(firstCurrencyDiff);
-    expect(burnAmount.secondTokenAmount).bnEqual(secondCurrencyDiff);
+    expect(burnAmount.firstAssetAmount).bnEqual(firstCurrencyDiff);
+    expect(burnAmount.secondAssetAmount).bnEqual(secondCurrencyDiff);
   });
 
   test("rpcCalculateExpectedLiquidityMinted test", async () => {

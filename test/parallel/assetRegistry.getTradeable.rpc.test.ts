@@ -3,7 +3,7 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import {
   expectMGAExtrinsicSuDidSuccess,
   filterEventData,
@@ -14,7 +14,7 @@ import { Assets } from "../../utils/Assets";
 import { BN } from "@polkadot/util";
 import { BN_THOUSAND } from "gasp-sdk";
 import { getLiquidityAssetId } from "../../utils/tx";
-import { Market } from "../../utils/market";
+import { Market, rpcGetTradeableTokens } from "../../utils/market";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -77,44 +77,50 @@ describe("AssetRegistry RPC -", () => {
   });
 
   test("GIVEN a token that does not exist on the asset registry THEN it won't be returned in RPC", async () => {
-    await mangata?.rpc.getTradeableTokens().then((tokens) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(
+    await rpcGetTradeableTokens().then((tokens: any[]) => {
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
         noRegistered.toString(),
       );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is empty and symbol is empty and operation disabled is not set THEN it won't be returned in RPC", async () => {
-    await mangata?.rpc.getTradeableTokens().then((tokens) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(empty.toString());
+    await rpcGetTradeableTokens().then((tokens: any[]) => {
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
+        empty.toString(),
+      );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is empty and operation disabled is not set THEN it won't be returned in RPC", async () => {
-    await mangata?.rpc.getTradeableTokens().then((tokens) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(onlyName.toString());
+    await rpcGetTradeableTokens().then((tokens: any[]) => {
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
+        onlyName.toString(),
+      );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is not set THEN its returned in RPC", async () => {
-    await mangata?.rpc.getTradeableTokens().then((tokens) => {
-      expect(tokens.map((x) => x.tokenId)).toContain(nameSymbol.toString());
+    await rpcGetTradeableTokens().then((tokens: any[]) => {
+      expect(tokens.map((x) => x.tokenId.toString())).toContain(
+        nameSymbol.toString(),
+      );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is false THEN its returned in RPC", async () => {
-    await mangata?.rpc.getTradeableTokens().then((tokens) => {
-      expect(tokens.map((x) => x.tokenId)).toContain(
+    await rpcGetTradeableTokens().then((tokens: any[]) => {
+      expect(tokens.map((x) => x.tokenId.toString())).toContain(
         nameSymbolDisableFalse.toString(),
       );
     });
   });
   test("GIVEN a token that does exist on the asset registry AND name is not empty and symbol is not empty and operation disabled is true THEN its not returned in RPC", async () => {
-    await mangata?.rpc.getTradeableTokens().then((tokens) => {
-      expect(tokens.map((x) => x.tokenId)).not.toContain(
+    await rpcGetTradeableTokens().then((tokens: any[]) => {
+      expect(tokens.map((x) => x.tokenId.toString())).not.toContain(
         nameSymbolDisableTrue.toString(),
       );
     });
   });
   test("GIVEN a token that belongs to a pool WHEN pool is not disabled THEN the token is not filtered", async () => {
-    await mangata?.rpc.getTradeableTokens().then((tokens) => {
-      expect(tokens.map((x) => x.tokenId)).toContain(liq.toString());
+    await rpcGetTradeableTokens().then((tokens: any[]) => {
+      expect(tokens.map((x) => x.tokenId.toString())).toContain(liq.toString());
     });
   });
 });

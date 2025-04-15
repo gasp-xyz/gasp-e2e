@@ -120,7 +120,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       );
 
     await signSendFinalized(
-      Market.buyAsset(liqId, currency, GASP_ASSET_ID, buyAssetAmount),
+      await Market.buyAsset(liqId, currency, GASP_ASSET_ID, buyAssetAmount),
       user,
     );
 
@@ -188,7 +188,7 @@ describe("xyk-pallet - treasury tests [Mangata]: on treasury we store", () => {
       .debug(`treasury before: ${treasuryBefore}, sell price: ${sellPrice}`);
     //asset_amount1 as max should be enough, now the client validates the existance of the max.
     await signSendFinalized(
-      Market.buyAsset(
+      await Market.buyAsset(
         liqId,
         GASP_ASSET_ID,
         currency,
@@ -338,7 +338,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       );
 
     await signSendFinalized(
-      Market.buyAsset(
+      await Market.buyAsset(
         liqId,
         connectedToMGA,
         indirectlyConnected,
@@ -433,7 +433,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: on treasury we stor
       );
 
     await signSendFinalized(
-      Market.buyAsset(
+      await Market.buyAsset(
         liqId,
         connectedToMGA,
         indirectlyConnected,
@@ -497,7 +497,7 @@ describe("xyk-pallet - treasury tests [Connected - Mangata]: Error cases", () =>
     const from = await getBlockNumber();
     const liqId = await getLiquidityAssetId(GASP_ASSET_ID, currency);
     await signSendFinalized(
-      Market.buyAsset(
+      await Market.buyAsset(
         liqId,
         currency,
         GASP_ASSET_ID,

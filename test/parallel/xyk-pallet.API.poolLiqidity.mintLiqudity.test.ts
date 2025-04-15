@@ -4,7 +4,7 @@
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
-import { getApi, getMangataInstance, initApi } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { BN_BILLION, BN_ZERO } from "gasp-sdk";
 import { GASP_ASSET_ID, MAX_BALANCE } from "../../utils/Constants";
@@ -17,7 +17,7 @@ import {
   mintLiquidity,
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { rpcCalculateNativeRewards } from "../../utils/utils";
 import { ExtrinsicResult, waitForRewards } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { ProofOfStake } from "../../utils/ProofOfStake";
@@ -176,13 +176,11 @@ test("Given 3 pool: token1-MGX, token2-MGX and token1-token2 WHEN token1-token2 
     ),
   );
   await waitForRewards(testUser1, liqIdThirdPool, 41);
-  const mangata = await getMangataInstance(
-    getEnvironmentRequiredVars().chainUri,
+
+  const testUser1Rewards = await rpcCalculateNativeRewards(
+    testUser1.keyRingPair.address,
+    liqIdThirdPool,
   );
-  const testUser1Rewards = await mangata.rpc.calculateRewardsAmount({
-    address: testUser1.keyRingPair.address,
-    liquidityTokenId: liqIdThirdPool.toString(),
-  });
   await claimRewards(testUser1, liqIdThirdPool);
 
   const rewardsThirdPoolAfter = await getRewardsInfo(
@@ -250,7 +248,7 @@ test("Check that the activated amount is equal to the minted one", async () => {
     )
     .map((x) => new BN(x.eventData[2].data.toString()));
 
-  await testUser2.addAsset(liqIdStablePool);
+  testUser2.addAsset(liqIdStablePool);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
 
   expect(tokensActivatedValue[0]).bnEqual(tokenAmount.muln(2));

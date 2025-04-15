@@ -1,10 +1,16 @@
-import { BN, BN_ZERO } from "@polkadot/util";
+import { BN, BN_ONE, BN_ZERO } from "@polkadot/util";
 import { api, Extrinsic } from "./setup";
 import { User } from "./User";
-import { getLiquidityAssetId } from "./tx";
+import {
+  getBalanceOfAssetStr,
+  getLiquidityAssetId,
+  rpcCalculateBuyPriceMulti,
+  rpcCalculateBuyPriceMultiObj,
+  rpcCalculateSellPriceMultiObj,
+} from "./tx";
 import { filterAndStringifyFirstEvent } from "./eventListeners";
 import { MangataGenericEvent } from "gasp-sdk";
-import { stringToBN } from "./utils";
+import { getMultiPurposeLiquidityStatusObj, stringToBN } from "./utils";
 
 export class Market {
   static createPool(
@@ -79,19 +85,33 @@ export class Market {
     );
   }
 
-  static buyAsset(
-    swapPool: BN,
+  static async buyAsset(
+    swapPool: BN | BN[],
     soldAssetId: BN,
     boughtAssetId: BN,
     boughtAssetAmount: BN,
-    maxAmountIn: BN = new BN("340282366920938463463374607431768211455"), //u128::MAX,
-  ): Extrinsic {
+    maxAmountIn: BN = BN_ZERO,
+  ): Promise<Extrinsic> {
+    let maxAmount = maxAmountIn;
+    const param = Array.isArray(swapPool) === true ? swapPool : [swapPool];
+    if (maxAmount.eq(BN_ZERO)) {
+      try {
+        maxAmount = await rpcCalculateBuyPriceMulti(
+          param,
+          boughtAssetId,
+          boughtAssetAmount,
+          soldAssetId,
+        );
+      } catch (e) {
+        maxAmount = BN_ONE;
+      }
+    }
     return api.tx.market.multiswapAssetBuy(
-      [swapPool],
+      param,
       boughtAssetId,
       boughtAssetAmount,
       soldAssetId,
-      maxAmountIn,
+      maxAmount,
     );
   }
 
@@ -112,18 +132,84 @@ export class Market {
   }
 
   static sellAsset(
-    swapPool: BN,
+    swapPool: BN | BN[],
     soldAssetId: BN,
     boughtAssetId: BN,
     soldAssetAmount: BN,
     minBoughtOut: BN = BN_ZERO,
   ): Extrinsic {
+    const param = Array.isArray(swapPool) === true ? swapPool : [swapPool];
     return api.tx.market.multiswapAsset(
-      [swapPool],
+      param,
       soldAssetId,
       soldAssetAmount,
       boughtAssetId,
       minBoughtOut,
+    );
+  }
+
+  static getPool(poolId: BN) {
+    return api.rpc.market.get_pools(poolId);
+  }
+
+  static async isSellAssetLockFree(assets: string[], sellAssetAmount: BN) {
+    const firstAsset = stringToBN(assets[0]);
+    const secondAsset = stringToBN(assets[1]);
+    const pool = await rpcGetPoolId(firstAsset, secondAsset);
+    const res = await rpcCalculateSellPriceMultiObj(
+      pool,
+      firstAsset,
+      sellAssetAmount,
+      secondAsset,
+    );
+    return res.isLockless.toString() === true.toString();
+  }
+  static async isBuyAssetLockFree(assets: string[], sellAssetAmount: BN) {
+    const firstAsset = stringToBN(assets[0]);
+    const secondAsset = stringToBN(assets[1]);
+    const pool = await rpcGetPoolId(firstAsset, secondAsset);
+    const res = await rpcCalculateBuyPriceMultiObj(
+      pool,
+      firstAsset,
+      sellAssetAmount,
+      secondAsset,
+    );
+    return res.isLockless.toString() === true.toString();
+  }
+
+  static async getMaxInstantUnreserveAmount(address: string, liquidityID: BN) {
+    //await api.rpc.xyk.get_max_instant_unreserve_amount(
+    //    testUser1.keyRingPair.address,
+    //    liquidityID.toString(),
+    //);
+    //https://github.com/gasp-xyz/gasp-monorepo/blob/a067244ee2a8e01113d13a77c4219e08fe267192/gasp-node/pallets/multipurpose-liquidity/src/lib.rs#L487
+
+    const mplStatus = await getMultiPurposeLiquidityStatusObj(
+      address,
+      liquidityID,
+    );
+    const totalRemainingReserve = mplStatus.stakedUnactivatedReserves
+      .add(mplStatus.stakedAndActivatedReserves)
+      .add(mplStatus.unspentReserves);
+    const amountHeldBackByRelock = mplStatus.relockAmount.sub(
+      totalRemainingReserve,
+    );
+    // We assume here that the actual unreserve will ofcoures go fine returning 0.
+    return mplStatus.activatedUnstakedReserves.sub(amountHeldBackByRelock);
+  }
+
+  static async getMaxInstantBurnAmount(address: string, liquidityID: BN) {
+    //@ts-ignore
+    //await api.rpc.xyk.get_max_instant_burn_amount(
+    //    testUser1.keyRingPair.address,
+    //    liquidityID,
+    //);
+    //https://github.com/gasp-xyz/gasp-monorepo/blob/a067244ee2a8e01113d13a77c4219e08fe267192/gasp-node/pallets/xyk/src/lib.rs#L1149
+
+    return (await this.getMaxInstantUnreserveAmount(address, liquidityID)).add(
+      (await getBalanceOfAssetStr(liquidityID, address)).free.sub(
+        (await getBalanceOfAssetStr(liquidityID, address)).frozen,
+      ),
     );
   }
 }
@@ -175,10 +261,7 @@ export async function getMintLiquidityPaymentInfo(
     maxOtherAssetAmount,
   );
 
-  const mintLiquidityPaymentInfo = await mintLiquidityEvent.paymentInfo(
-    user.keyRingPair,
-  );
-  return mintLiquidityPaymentInfo;
+  return await mintLiquidityEvent.paymentInfo(user.keyRingPair);
 }
 
 export async function getTransactionFeeInfo(event: MangataGenericEvent[]) {
@@ -186,8 +269,7 @@ export async function getTransactionFeeInfo(event: MangataGenericEvent[]) {
     event,
     "TransactionFeePaid",
   );
-  const actualFee = await stringToBN(transactionFeePaid.actualFee);
-  return actualFee;
+  return stringToBN(transactionFeePaid.actualFee);
 }
 
 export async function getPoolIdsInfo(tokenIds: BN[]) {
@@ -206,17 +288,18 @@ export async function getPoolIdsInfo(tokenIds: BN[]) {
 }
 
 export async function rpcGetPoolsForTrading() {
-  const data = JSON.parse(
+  return JSON.parse(
     JSON.stringify(await api.rpc.market.get_pools_for_trading()),
   );
-  return data;
+}
+export async function rpcGetPoolsForTradingObj() {
+  return api.rpc.market.get_pools_for_trading();
 }
 
 export async function rpcGetTradeableTokens() {
-  const data = JSON.parse(
+  return JSON.parse(
     JSON.stringify(await api.rpc.market.get_tradeable_tokens()),
   );
-  return data;
 }
 
 export async function rpcGetBurnAmount(poolId: BN, lpBurnAmount: BN) {
@@ -224,8 +307,8 @@ export async function rpcGetBurnAmount(poolId: BN, lpBurnAmount: BN) {
     JSON.stringify(await api.rpc.market.get_burn_amount(poolId, lpBurnAmount)),
   );
   return {
-    firstTokenAmount: stringToBN(data[0]),
-    secondTokenAmount: stringToBN(data[1]),
+    firstAssetAmount: stringToBN(data[0]),
+    secondAssetAmount: stringToBN(data[1]),
   };
 }
 

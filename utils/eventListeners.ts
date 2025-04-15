@@ -2,14 +2,14 @@ import { BN_ONE, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
 import { BN } from "@polkadot/util";
 import * as _ from "lodash-es";
-import { getApi, getMangataInstance } from "./api";
+import { getApi } from "./api";
 import { logEvent, testLog } from "./Logger";
 import { api } from "./setup";
 import { getEventErrorFromSudo } from "./txHandler";
 import { User } from "./User";
 import {
-  getEnvironmentRequiredVars,
   getThirdPartyRewards,
+  rpcCalculateNativeRewards,
   stringToBN,
 } from "./utils";
 import { Codec } from "@polkadot/types/types";
@@ -226,10 +226,10 @@ export const waitForEvents = async (
 
         const filtered = _.filter(
           events,
-          ({ event }: { event: any }) =>
-            `${event.section}.${event.method}` === method &&
+          (event) =>
+            `${event.event.section}.${event.event.method}` === method &&
             (withData.length > 0
-              ? JSON.stringify(event.data.toHuman()).includes(withData)
+              ? JSON.stringify(event.event.data.toHuman()).includes(withData)
               : true),
         );
 
@@ -274,8 +274,6 @@ export const waitForRewards = async (
     let rewardAmount = BN_ZERO;
     const unsub = await api.rpc.chain.subscribeNewHeads(async (header) => {
       numblocks--;
-      const { chainUri } = getEnvironmentRequiredVars();
-      const mangata = await getMangataInstance(chainUri);
       if (thirdPartyRewardToken.gten(0)) {
         rewardAmount = await getThirdPartyRewards(
           user.keyRingPair.address,
@@ -283,10 +281,8 @@ export const waitForRewards = async (
           thirdPartyRewardToken,
         );
       } else {
-        rewardAmount = await mangata.rpc.calculateRewardsAmount({
-          address: user.keyRingPair.address,
-          liquidityTokenId: liquidityAssetId.toString(),
-        });
+        //Aleks: the system doesn't work with the previous RPC function and it was replaced
+        rewardAmount = await rpcCalculateNativeRewards(user, liquidityAssetId);
       }
       if (rewardAmount.gtn(0)) {
         unsub();

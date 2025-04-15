@@ -18,6 +18,7 @@ import { Assets } from "../../utils/Assets";
 import {
   calculateMGAFees,
   getEnvironmentRequiredVars,
+  rpcCalculateNativeRewards,
 } from "../../utils/utils";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { setupUsers, setupApi, getSudoUser } from "../../utils/setup";
@@ -45,22 +46,20 @@ describe("Story tests > Rewards - autocompound", () => {
   });
 
   test("Given a user1 with minted tokens when two sessions happen, then there are available rewards", async () => {
-    const { chainUri } = getEnvironmentRequiredVars();
-    const mangata = await getMangataInstance(chainUri);
-    const result = await mangata.rpc.calculateRewardsAmount({
-      address: users[0].keyRingPair.address,
-      liquidityTokenId: liqId.toString(),
-    });
+    const result = await rpcCalculateNativeRewards(
+      users[0].keyRingPair.address,
+      liqId,
+    );
     expect(result).bnGt(new BN(0));
   });
   test("Given a user2 WHEN available rewards can claim and mgas are increased", async () => {
     const testUser2 = users[1];
     const { chainUri } = getEnvironmentRequiredVars();
     const mangata = await getMangataInstance(chainUri);
-    const availableRewards = await mangata.rpc.calculateRewardsAmount({
-      address: testUser2.keyRingPair.address,
-      liquidityTokenId: liqId.toString(),
-    });
+    const availableRewards = await rpcCalculateNativeRewards(
+      testUser2.keyRingPair.address,
+      liqId,
+    );
     const mgasBalancesBefore = await mangata.query.getTokenBalance(
       GASP_ASSET_ID.toString(),
       testUser2.keyRingPair.address,
@@ -72,10 +71,10 @@ describe("Story tests > Rewards - autocompound", () => {
 
     await claimRewards(testUser2, liqId);
 
-    const availableRewardsAfter = await mangata.rpc.calculateRewardsAmount({
-      address: testUser2.keyRingPair.address,
-      liquidityTokenId: liqId.toString(),
-    });
+    const availableRewardsAfter = await rpcCalculateNativeRewards(
+      testUser2.keyRingPair.address,
+      liqId,
+    );
     const mgasBalancesAfter = await mangata.query.getTokenBalance(
       GASP_ASSET_ID.toString(),
       testUser2.keyRingPair.address,
@@ -96,10 +95,10 @@ describe("Story tests > Rewards - autocompound", () => {
       testUser3.keyRingPair.address,
     );
     await compoundRewards(testUser3, liqId);
-    const availableRewardsAfter = await mangata.rpc.calculateRewardsAmount({
-      address: testUser3.keyRingPair.address,
-      liquidityTokenId: liqId.toString(),
-    });
+    const availableRewardsAfter = await rpcCalculateNativeRewards(
+      testUser3.keyRingPair.address,
+      liqId,
+    );
     const liqAfter = await mangata.query.getTokenBalance(
       liqId.toString(),
       testUser3.keyRingPair.address,

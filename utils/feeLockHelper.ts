@@ -1,10 +1,15 @@
 import { getApi } from "./api";
 import { GASP_ASSET_ID } from "./Constants";
 import { waitSudoOperationSuccess } from "./eventListeners";
-import { updateFeeLockMetadata } from "./tx";
+import {
+  rpcCalculateBuyPriceMulti,
+  rpcCalculateSellPriceMulti,
+  updateFeeLockMetadata,
+} from "./tx";
 import { User } from "./User";
 import { stringToBN } from "./utils";
 import { BN } from "@polkadot/util";
+import { Market } from "./market";
 
 export async function clearMgaFromWhitelisted(
   thresholdValueExpected: BN,
@@ -67,49 +72,58 @@ export async function addMgaToWhitelisted(
 
 export async function getFeeLockMetadata() {
   const api = getApi();
-  const value = (await api.query.feeLock.feeLockMetadata()).value;
-  return value;
+  return (await api.query.feeLock.feeLockMetadata()).value;
 }
 export async function rpcCalculateSellPrice(
-  poolId: BN,
+  poolId: BN | BN[],
   sellAssetId: BN,
   sellAmount: BN,
 ) {
-  const api = getApi();
-  const value = stringToBN(
-    JSON.parse(
-      JSON.stringify(
-        await api.rpc.market.calculate_sell_price(
-          poolId,
-          sellAssetId,
-          sellAmount,
-        ),
-      ),
-    ),
-  );
-  return value;
+  const param = Array.isArray(poolId) ? poolId[0] : poolId;
+  const pool = await Market.getPool(param);
+  const secToken = pool[0].assets[0].eq(sellAssetId)
+    ? pool[0].assets[1]
+    : pool[0].assets[0];
+  return rpcCalculateSellPriceMulti(param, sellAssetId, sellAmount, secToken);
 }
 
 export async function rpcCalculateBuyPrice(
   poolId: BN,
   buyAssetId: BN,
+  buyAmount: BN,
+) {
+  const pool = await Market.getPool(poolId);
+  const secToken = pool[0].assets[0].eq(buyAssetId)
+    ? pool[0].assets[1]
+    : pool[0].assets[0];
+  return rpcCalculateBuyPriceMulti(poolId, buyAssetId, buyAmount, secToken);
+}
+export async function rpcCalculateSellPriceNoFee(
+  poolId: BN,
+  sellAssetId: BN,
   sellAmount: BN,
 ) {
   const api = getApi();
-  const value = stringToBN(
-    JSON.parse(
-      JSON.stringify(
-        await api.rpc.market.calculate_buy_price(
-          poolId,
-          buyAssetId,
-          sellAmount,
-        ),
-      ),
-    ),
+  const value = await api.rpc.market.calculate_sell_price(
+    poolId,
+    sellAssetId,
+    sellAmount,
   );
-  return value;
+  return stringToBN(value.toString());
 }
-
+export async function rpcCalculateBuyPriceNoFees(
+  poolId: BN,
+  buyAssetId: BN,
+  buyAmount: BN,
+) {
+  const api = getApi();
+  const value = await api.rpc.market.calculate_buy_price(
+    poolId,
+    buyAssetId,
+    buyAmount,
+  );
+  return stringToBN(value.toString());
+}
 export async function rpcCalculateSellPriceWithImpact(
   poolId: BN,
   sellAssetId: BN,

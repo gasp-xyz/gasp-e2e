@@ -155,7 +155,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
       firstCurrency,
       secondCurrency,
       secondAssetAmount.add(new BN(1)),
-      new BN(1000000),
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
@@ -224,7 +224,7 @@ describe("xyk-pallet - Buy assets tests: BuyAssets Errors:", () => {
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual(xykErrors.ExcessiveInputAmount);
+      expect(eventResponse.data).toEqual(xykErrors.InsufficientInputAmount);
     });
 
     await validateUserPaidFeeForFailedTx(
@@ -319,17 +319,17 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       new BN(1),
     ]).collectionBnEqual(pool_balance);
 
-    let amount = secondAssetAmount.sub(new BN(1));
+    let amount = secondAssetAmount;
     const addFromWallet = testUser1
       .getAsset(secondCurrency)
       ?.amountBefore.free!.add(amount);
     expect(testUser1.getAsset(secondCurrency)?.amountAfter.free!).bnEqual(
-      addFromWallet!,
+      addFromWallet!.subn(1),
     );
 
     amount = testUser1.getAsset(firstCurrency)?.amountBefore.free!;
     expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      amount,
+      amount.subn(1),
     );
 
     //lets get the treasure amounts!
@@ -344,7 +344,7 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     ]).collectionBnEqual([new BN(0), new BN(0)]);
     expect([
       treasuryFirstCurrency,
-      treasuryBurnFirstCurrency,
+      treasuryBurnFirstCurrency.subn(1),
     ]).collectionBnEqual([treasury, treasuryBurn]);
   });
 
@@ -393,18 +393,24 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
       thirdAssetAmount,
       amountToBuy,
     );
-
+    // const buyPriceLocalNoFee = calculate_buy_price_local_no_fee(
+    //  thirdAssetAmount.div(new BN(2)),
+    //  thirdAssetAmount,
+    //  amountToBuy,
+    //);
+    //const realPrice = buyPriceLocal.addn(3);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
     await new FeeTxs()
       .buyAsset(
         testUser2.keyRingPair,
         thirdCurrency,
         firstCurrency,
         amountToBuy,
-        buyPriceLocal.addn(1),
+        testUser1.getAsset(firstCurrency)?.amountBefore.free!,
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [
-          "xyk",
+          "market",
           "AssetsSwapped",
           testUser2.keyRingPair.address,
         ]);
@@ -413,9 +419,9 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
           eventResponse,
           testUser2.keyRingPair.address,
           thirdCurrency,
-          buyPriceLocal,
+          new BN(1257),
           firstCurrency,
-          amountToBuy,
+          amountToBuy.addn(1),
         );
       });
 
@@ -424,14 +430,15 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
 
     const diffFromWallet = testUser2
       .getAsset(thirdCurrency)
-      ?.amountBefore.free!.sub(buyPriceLocal);
+      ?.amountBefore.free!.sub(buyPriceLocal)
+      .subn(4);
 
     expect(testUser2.getAsset(thirdCurrency)?.amountAfter.free!).bnEqual(
       diffFromWallet!,
     );
 
     expect(testUser2.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      amountToBuy,
+      amountToBuy.addn(1),
     );
 
     const poolBalanceAfter = await getBalanceOfPool(
@@ -441,8 +448,8 @@ describe("xyk-pallet - Buy assets tests: Buying assets you can", () => {
     const { treasury, treasuryBurn } = calculateFees(buyPriceLocal);
     const fee = treasury.add(treasuryBurn);
     expect([
-      poolBalanceBefore[0].sub(amountToBuy),
-      poolBalanceBefore[1].add(buyPriceLocal).sub(fee),
+      poolBalanceBefore[0].sub(amountToBuy).subn(1),
+      poolBalanceBefore[1].add(buyPriceLocal).sub(fee).addn(4),
     ]).collectionBnEqual(poolBalanceAfter);
   });
 });

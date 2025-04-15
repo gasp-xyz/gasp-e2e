@@ -3,13 +3,13 @@
  * @group poolLiq
  */
 import { jest } from "@jest/globals";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
 import { User } from "../../utils/User";
-import { stringToBN } from "../../utils/utils";
+import { stringToBN, xykErrors } from "../../utils/utils";
 import { BN } from "@polkadot/util";
 import "jest-extended";
 import {
@@ -35,6 +35,8 @@ import {
   setupBootstrapTokensBalance,
 } from "../../utils/Bootstrap";
 import { Market } from "../../utils/market";
+import { rpcCalculateBuyPrice } from "../../utils/feeLockHelper";
+import { testLog } from "../../utils/Logger";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -168,6 +170,7 @@ test("GIVEN deactivated pool WHEN the user mints liquidity in the pool again THE
 });
 
 test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the deactivated pool THEN error returns", async () => {
+  // Aleks: change error type
   await sellAsset(
     testUser1.keyRingPair,
     GASP_ASSET_ID,
@@ -177,7 +180,7 @@ test("GIVEN deactivated pool WHEN the user tries to swap/multiswap tokens on the
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("PoolIsEmpty");
+    expect(eventResponse.data).toEqual(xykErrors.ExcessiveInputAmount);
   });
 });
 
@@ -214,14 +217,15 @@ test("GIVEN deactivated pool WHEN a bootstrap is scheduled for the existing pair
   await waitSudoOperationFail(sudoBootstrap, ["PoolAlreadyExists"]);
 });
 
-test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., calculate_buy_price_id) THEN zero returns", async () => {
-  const priceAmount = await mangata?.rpc.calculateBuyPriceId(
-    GASP_ASSET_ID.toString(),
-    token1.toString(),
-    defaultCurrencyValue,
+test("GIVEN deactivated pool WHEN call RPCs that work with the pools (e.g., rpcCalculateBuyPrice) THEN zero returns", async () => {
+  let isError = false;
+  await rpcCalculateBuyPrice(liquidityId, token1, defaultCurrencyValue).catch(
+    (e) => {
+      testLog.getLog().info(e);
+      isError = true;
+    },
   );
-
-  expect(priceAmount).bnEqual(BN_ZERO);
+  expect(isError).toEqual(true);
 });
 
 test("GIVEN deactivated pool WHEN user tries to activate the pool THEN error returns", async () => {

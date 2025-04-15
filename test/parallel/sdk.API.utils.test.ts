@@ -16,7 +16,6 @@ import {
   multiSwapSellMarket,
 } from "../../utils/tx";
 import {
-  BN_ONE,
   BN_TEN_THOUSAND,
   isMultiSwapAssetTransactionSuccessful,
   signTx,
@@ -24,6 +23,7 @@ import {
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Market } from "../../utils/market";
+import { xykErrors } from "../../utils/utils";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -84,7 +84,7 @@ beforeEach(async () => {
 test("GIVEN buyAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
   const buyAssetEvent = await signTx(
     api,
-    Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
+    await Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000)),
     testUser1.keyRingPair,
   );
 
@@ -100,19 +100,23 @@ test("GIVEN buyAsset WHEN operation is failed AND isMultiSwapAssetTransactionSuc
   //fixed to make the op fail, but executed.
   const buyAssetEvent = await signTx(
     api,
-    Market.buyAsset(liqId, token1, GASP_ASSET_ID, new BN(1000), new BN(1)),
+    await Market.buyAsset(
+      liqId,
+      token1,
+      GASP_ASSET_ID,
+      new BN(1000),
+      new BN(1),
+    ),
     testUser1.keyRingPair,
   );
 
-  const eventResult = isMultiSwapAssetTransactionSuccessful(buyAssetEvent);
-
+  // Aleks: I changed the error but it sounds logic because we try to buy 1000 and pay for this only 1. We also delete isMultiSwapAssetTransactionSuccessful
   expect(getEventResultFromMangataTx(buyAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(buyAssetEvent).data).toEqual(
-    "ExcesiveInputAmount",
+    xykErrors.InsufficientInputAmount,
   );
-  expect(eventResult).toEqual(false);
 });
 
 test("GIVEN sellAsset WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
@@ -143,15 +147,12 @@ test("GIVEN sellAsset WHEN operation is failed AND isMultiSwapAssetTransactionSu
     testUser1.keyRingPair,
   );
 
-  const eventResult = isMultiSwapAssetTransactionSuccessful(sellAssetEvent);
-
   expect(getEventResultFromMangataTx(sellAssetEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(sellAssetEvent).data).toEqual(
-    "InsufficientOutputAmount",
+    xykErrors.InsufficientOutputAmount,
   );
-  expect(eventResult).toEqual(false);
 });
 
 test("GIVEN multiSwapBuy WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
@@ -180,20 +181,17 @@ test("GIVEN multiSwapBuy WHEN operation is failed AND isMultiSwapAssetTransactio
       GASP_ASSET_ID,
       new BN(1000),
       token1,
-      BN_ONE,
+      new BN(1),
     ),
     testUser.keyRingPair,
   );
-
-  const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapBuyEvent);
 
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapBuyEvent).data).toEqual(
-    "ExcesiveInputAmount",
+    xykErrors.InsufficientInputAmount,
   );
-  expect(eventResult).toEqual(false);
 });
 
 test("GIVEN multiSwapSell WHEN operation is confirmed AND isMultiSwapAssetTransactionSuccessful THEN it returns true", async () => {
@@ -226,13 +224,10 @@ test("GIVEN multiSwapSell WHEN operation is failed AND isMultiSwapAssetTransacti
     testUser.keyRingPair,
   );
 
-  const eventResult = isMultiSwapAssetTransactionSuccessful(multiSwapSellEvent);
-
   expect(getEventResultFromMangataTx(multiSwapSellEvent).state).toEqual(
     ExtrinsicResult.ExtrinsicFailed,
   );
   expect(getEventResultFromMangataTx(multiSwapSellEvent).data).toEqual(
-    "InsufficientOutputAmount",
+    xykErrors.InsufficientOutputAmount,
   );
-  expect(eventResult).toEqual(false);
 });

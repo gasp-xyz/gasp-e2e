@@ -100,9 +100,7 @@ export class SudoUser extends BaseUser {
       this.node.api!,
       this.node.api!.tx.sudo.sudo(
         this.node?.api!.tx.parachainStaking.addStakingLiquidityToken(
-          {
-            Liquidity: liqTokenForCandidate,
-          },
+          liqTokenForCandidate,
           liqTokenForCandidate,
         ),
       ),

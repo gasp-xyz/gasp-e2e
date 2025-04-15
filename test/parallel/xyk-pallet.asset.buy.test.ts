@@ -127,7 +127,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     soldAssetId,
     boughtAssetId,
     amount,
-    new BN(1000000),
+    testUser1.getFreeAssetAmount(soldAssetId).amountBefore.free,
   );
 
   const eventResponse = getEventResultFromMangataTx(event, [
@@ -155,8 +155,9 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
 
   let diffFromWallet = testUser1
     .getAsset(soldAssetId)
-    ?.amountBefore.free!.sub(buyPriceLocal);
-  expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
+    ?.amountBefore.free!.sub(buyPriceLocal)
+    .subn(2);
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!.subn(1)).bnEqual(
     diffFromWallet!,
   );
 
@@ -198,7 +199,12 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
     );
   let soldAssetId = firstCurrency;
   let boughtAssetId = secondCurrency;
-  await testUser1.buyAssets(soldAssetId, boughtAssetId, amount);
+  await testUser1.buyAssets(
+    soldAssetId,
+    boughtAssetId,
+    amount,
+    testUser1.getAsset(soldAssetId)?.amountBefore.free!,
+  );
 
   amount = new BN(15000);
   // considering the pool and the 15k amount
@@ -225,7 +231,12 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   soldAssetId = secondCurrency;
   boughtAssetId = firstCurrency;
 
-  await testUser1.buyAssets(soldAssetId, boughtAssetId, amount);
+  await testUser1.buyAssets(
+    soldAssetId,
+    boughtAssetId,
+    amount,
+    testUser1.getFreeAssetAmount(soldAssetId).amountBefore.free,
+  );
 
   await testUser1.refreshAmounts(AssetWallet.AFTER);
   await testUser2.refreshAmounts(AssetWallet.AFTER);
@@ -254,7 +265,8 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
   addFromWallet = pallet
     .getAsset(soldAssetId)
     ?.amountBefore.free!.add(buyPriceLocal)
-    .sub(bothFees);
+    .sub(bothFees)
+    .subn(1);
   expect(pallet.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
     addFromWallet!,
   );
@@ -268,7 +280,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], sell a bought a
 
   const pool_balance = await getBalanceOfPool(secondCurrency, firstCurrency);
   expect([
-    poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees),
+    poolBalanceBefore[0].add(buyPriceLocal).sub(bothFees).subn(1),
     poolBalanceBefore[1].sub(amount),
   ]).collectionBnEqual(pool_balance);
 });

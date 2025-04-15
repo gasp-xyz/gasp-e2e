@@ -12286,8 +12286,9 @@ __metadata:
     ethers: "npm:^5.4.7"
     exec-sh: "npm:^0.4.0"
     express: "npm:^4.18.2"
-    gasp-sdk: "npm:0.0.2-eth-rollup-develop.120"
-    gasp-types: "npm:0.0.2-eth-rollup-develop.120"
+    gasp-sdk: "npm:0.0.2-feature-gasp-node-multiswap-mods.30"
+    gasp-type-definitions: "npm:0.0.2-feature-gasp-node-multiswap-mods.33"
+    gasp-types: "npm:0.0.2-feature-gasp-node-multiswap-mods.33"
     get-port-please: "npm:^3.0.1"
     globals: "npm:^16.0.0"
     guid-typescript: "npm:^1.0.9"
@@ -12322,37 +12323,37 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"gasp-sdk@npm:0.0.2-eth-rollup-develop.120":
-  version: 0.0.2-eth-rollup-develop.120
-  resolution: "gasp-sdk@npm:0.0.2-eth-rollup-develop.120"
+"gasp-sdk@npm:0.0.2-feature-gasp-node-multiswap-mods.30":
+  version: 0.0.2-feature-gasp-node-multiswap-mods.30
+  resolution: "gasp-sdk@npm:0.0.2-feature-gasp-node-multiswap-mods.30"
   dependencies:
     big.js: "npm:6.2.1"
-    gasp-type-definitions: "npm:0.0.2-eth-rollup-develop.124"
+    gasp-type-definitions: "npm:0.0.2-feature-gasp-node-multiswap-mods.33"
     tslib: "npm:^2.3.0"
     tslog: "npm:4.8.2"
     viem: "npm:^2.17.4"
     wagmi: "npm:^2.10.10"
   peerDependencies:
     "@polkadot/api": ^11.1.1
-  checksum: 10c0/e4d56fed7f64e18492ff78d99805c96a1ff8a5f18cb481e90b095dc8be010ff2365f64e4afa29a94ac09d528832e25719b6ab1dd8a7c3f5b8e1cc1bf532e3359
+  checksum: 10c0/808831a90d8979f4af6f1b1ef7c8b5a92c6a6e19ed73d9b823ea548128a33ca610280853af7ea1a5bdcc445ff23390a80e47f87c5803f0f088c96cc4bace4997
   languageName: node
   linkType: hard
 
-"gasp-type-definitions@npm:0.0.2-eth-rollup-develop.124":
-  version: 0.0.2-eth-rollup-develop.124
-  resolution: "gasp-type-definitions@npm:0.0.2-eth-rollup-develop.124"
+"gasp-type-definitions@npm:0.0.2-feature-gasp-node-multiswap-mods.33":
+  version: 0.0.2-feature-gasp-node-multiswap-mods.33
+  resolution: "gasp-type-definitions@npm:0.0.2-feature-gasp-node-multiswap-mods.33"
   peerDependencies:
     "@polkadot/types": ^11.1.1
-  checksum: 10c0/693974526711d29f6fbb3c3235aa43e8196bc22ca4f852d1be17c0a09f80e7704bea5f27edaed23923d87bcdec0441a0e33dcc0ce67b0572d30eb2411ebcdad7
+  checksum: 10c0/568c9b0c77c3e8acb886426726a0525af55f0a249cfcff33db8707427e5a10abf325fd497ca86c6608c8d485cce5b3dafb3127164cb5fa884a3df96793cb96a0
   languageName: node
   linkType: hard
 
-"gasp-types@npm:0.0.2-eth-rollup-develop.120":
-  version: 0.0.2-eth-rollup-develop.120
-  resolution: "gasp-types@npm:0.0.2-eth-rollup-develop.120"
+"gasp-types@npm:0.0.2-feature-gasp-node-multiswap-mods.33":
+  version: 0.0.2-feature-gasp-node-multiswap-mods.33
+  resolution: "gasp-types@npm:0.0.2-feature-gasp-node-multiswap-mods.33"
   peerDependencies:
     "@polkadot/api": ^11.1.1
-  checksum: 10c0/c9cd65f0939be4946d2809de8b0aa9d7eed9844155489d2cd6f675a2305ecf4d22555a9979c57585da2fe80c8d8317e2180426eac7d70df97f8cf26d9b25083b
+  checksum: 10c0/2570e4b7f6dc5c36444d2cc1bb7da0a8119bcf69ea1c207463a37d1d9ebc5651dac70d26b854ab991e6591194ef4eab752eb3036dfbcaf05e243e57a8754a420
   languageName: node
   linkType: hard
 

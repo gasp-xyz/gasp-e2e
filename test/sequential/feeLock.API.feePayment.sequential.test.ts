@@ -12,8 +12,14 @@ import { Sudo } from "../../utils/sudo";
 import { AssetWallet, User } from "../../utils/User";
 import { feeLockErrors } from "../../utils/utils";
 import { clearMgaFromWhitelisted } from "../../utils/feeLockHelper";
-import { sellAsset } from "../../utils/tx";
+import {
+  getLiquidityAssetId,
+  rpcCalculateSellPriceMultiObj,
+  sellAsset,
+  updateFeeLockMetadata,
+} from "../../utils/tx";
 import { Market } from "../../utils/market";
+import { FeeLock } from "../../utils/FeeLock";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(2500000);
@@ -66,6 +72,14 @@ beforeAll(async () => {
     defaultCurrencyValue,
     sudo,
   );
+  //Aleks: as we don't have GASP in whitelist a priori we need to update Metadata. I also change here timeoutAmount because after previous tests it is 10
+  await updateFeeLockMetadata(
+    sudo,
+    null,
+    defaultCurrencyValue,
+    thresholdValue,
+    null,
+  );
 });
 
 beforeEach(async () => {
@@ -104,28 +118,36 @@ test.skip("gasless- GIVEN a feeLock configured (only Time and Amount ) WHEN the 
   );
 });
 
-test("gasless- GIVEN a feeLock configured (only Time and Amount )  WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
-  await clearMgaFromWhitelisted(thresholdValue, sudo);
-
+test("gasless- GIVEN a feeLock configured -only Time and Amount- WHEN the user swaps AND the user does not have enough MGAs THEN the extrinsic fails on submission", async () => {
+  //Aleks: delete clearMgaFromWhitelisted as we have update function now and change checking method
   await testUser1.addGASPTokens(sudo, new BN(2));
+  let exception = false;
+  FeeLock.updateTokenValueThreshold(firstCurrency, thresholdValue);
+  const reason = feeLockErrors.SwapApprovalFail;
+  await expect(
+    sellAsset(
+      testUser1.keyRingPair,
+      firstCurrency,
+      GASP_ASSET_ID,
+      thresholdValue.sub(new BN(100)),
+      new BN(0),
+    ).catch((reason) => {
+      exception = true;
+      throw new Error(reason.data);
+    }),
+  ).rejects.toThrow(reason);
 
-  await checkErrorSellAsset(
-    testUser1,
-    firstCurrency,
-    GASP_ASSET_ID,
-    thresholdValue.sub(new BN(100)),
-    feeLockErrors.FeeLockFail,
-  );
+  expect(exception).toBeTruthy();
+  expect(reason).toBeTruthy();
 });
 
 test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
-  await clearMgaFromWhitelisted(thresholdValue, sudo);
-
+  //Aleks: delete clearMgaFromWhitelisted
   await testUser1.addGASPTokens(sudo);
   testUser1.addAsset(GASP_ASSET_ID);
   testUser1.addAsset(firstCurrency);
 
-  const saleAssetValue = thresholdValue.add(new BN(5));
+  const saleAssetValue = thresholdValue.add(new BN(6));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
   await testUser1.sellAssets(GASP_ASSET_ID, firstCurrency, saleAssetValue);
@@ -153,4 +175,48 @@ test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN
   expect(firstCurrencyDeposit).bnGt(new BN(0));
   expect(tokenFees).bnEqual(new BN(0));
   expect(userMgaFees).bnEqual(new BN(0));
+});
+
+test("gasless- Given a feeLock correctly configured (only Time and Amount ) WHEN the user swaps ( less than th after commission ) AND the user has enough MGAs THEN the extrinsic is correctly submitted", async () => {
+  //Aleks: delete clearMgaFromWhitelisted
+  await testUser1.addGASPTokens(sudo);
+  testUser1.addAsset(GASP_ASSET_ID);
+  testUser1.addAsset(firstCurrency);
+
+  const saleAssetValue = thresholdValue.add(new BN(5));
+
+  await testUser1.refreshAmounts(AssetWallet.BEFORE);
+  const liqId = await getLiquidityAssetId(firstCurrency, GASP_ASSET_ID);
+  const val = await rpcCalculateSellPriceMultiObj(
+    liqId,
+    GASP_ASSET_ID,
+    saleAssetValue,
+    firstCurrency,
+  );
+  await testUser1.sellAssets(GASP_ASSET_ID, firstCurrency, saleAssetValue);
+  await testUser1.refreshAmounts(AssetWallet.AFTER);
+
+  const firstCurrencyDeposit = testUser1
+    .getAsset(firstCurrency)
+    ?.amountAfter.free!.sub(
+      testUser1.getAsset(firstCurrency)?.amountBefore.free!,
+    );
+
+  const tokenFees = testUser1
+    .getAsset(GASP_ASSET_ID)
+    ?.amountAfter.reserved!.sub(
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.reserved!,
+    );
+
+  const userMgaFees = testUser1
+    .getAsset(GASP_ASSET_ID)
+    ?.amountAfter.free!.sub(
+      testUser1.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
+    )
+    .add(new BN(saleAssetValue));
+
+  expect(val.isLockless === true).toBe(false);
+  expect(firstCurrencyDeposit).bnGt(new BN(0));
+  expect(tokenFees).bnGt(new BN(0));
+  expect(userMgaFees).bnLt(new BN(0));
 });

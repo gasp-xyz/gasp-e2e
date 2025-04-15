@@ -4,7 +4,7 @@
  * @group rewardsV2Parallel
  */
 import { jest } from "@jest/globals";
-import { getApi, getMangataInstance, initApi, mangata } from "../../utils/api";
+import { getApi, initApi, mangata } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_HUNDRED, BN_ZERO, signTx } from "gasp-sdk";
@@ -18,7 +18,7 @@ import {
 } from "../../utils/tx";
 import { AssetWallet, User } from "../../utils/User";
 import {
-  getEnvironmentRequiredVars,
+  rpcCalculateNativeRewards,
   stringToBN,
   waitForNBlocks,
 } from "../../utils/utils";
@@ -253,13 +253,10 @@ test("GIVEN an activated pool WHEN pool was deactivated THEN check that the user
     JSON.stringify(await api.query.proofOfStake.promotedPoolRewards()),
   );
   const poolInfoAfter = await getPromotedPoolInfo(liqId);
-  const mangata = await getMangataInstance(
-    getEnvironmentRequiredVars().chainUri,
+  const rewardsAfterDisablePool = await rpcCalculateNativeRewards(
+    testUser1.keyRingPair.address,
+    liqId,
   );
-  const rewardsAfterDisablePool = await mangata.rpc.calculateRewardsAmount({
-    address: testUser1.keyRingPair.address,
-    liquidityTokenId: liqId.toString(),
-  });
   expect(poolInfoBefore.weight).bnGt(BN_ZERO);
   expect(poolInfoAfter.weight).bnEqual(BN_ZERO);
   //rewards should not grow.

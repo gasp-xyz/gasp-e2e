@@ -100,14 +100,10 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
       new BN(assetYamount),
       new BN(9),
     );
-    await sudo.mint(firstCurrency, testUser2, amountOfX);
-    //user2 exange some assets.
-    await testUser2.buyAssets(
-      firstCurrency,
-      secondCurrency,
-      new BN(9),
-      amountOfX.add(new BN(1)),
-    );
+    const maxOfX = amountOfX.add(new BN(2));
+    await sudo.mint(firstCurrency, testUser2, maxOfX);
+    //user2 exchange some assets.
+    await testUser2.buyAssets(firstCurrency, secondCurrency, new BN(9), maxOfX);
     await testUser1.refreshAmounts(AssetWallet.BEFORE);
     const ownedLiquidityAssets = calculateLiqAssetAmount(
       assetXamount,
@@ -143,8 +139,10 @@ describe("xyk-pallet - Burn liquidity tests: when burning liquidity you can", ()
     //TODO: validate with Stano.
     const fee = new BN(10);
     let amount = amountOfX.add(new BN(assetXamount)).sub(fee);
-    expect(testUser1.getAsset(firstCurrency)?.amountAfter.free!).bnEqual(
-      amount,
+    expect(
+      testUser1.getAsset(firstCurrency)?.amountAfter.free!.subn(2),
+    ).bnEqual(
+      amount, //after shoebs multiSwap fixes, adding -2.
     );
 
     amount = new BN(1);

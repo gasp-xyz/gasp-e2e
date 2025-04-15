@@ -10,7 +10,7 @@ import { BN } from "@polkadot/util";
 import { Keyring } from "@polkadot/api";
 import { AssetWallet, User } from "../../utils/User";
 import { Assets } from "../../utils/Assets";
-import { getEnvironmentRequiredVars } from "../../utils/utils";
+import { rpcCalculateNativeRewards } from "../../utils/utils";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { BN_ZERO, MangataInstance } from "gasp-sdk";
 import { testLog } from "../../utils/Logger";
@@ -292,22 +292,19 @@ test("Given 3 users that minted liquidity WHEN only one activated the rewards TH
     testUser3.keyRingPair.address,
     liqId,
   );
-  const mangata = await getMangataInstance(
-    getEnvironmentRequiredVars().chainUri,
-  );
   await waitForRewards(testUser2, liqId);
-  const user1AvailableRewards = await mangata.rpc.calculateRewardsAmount({
-    address: testUser1.keyRingPair.address,
-    liquidityTokenId: liqId.toString(),
-  });
-  const user2AvailableRewards = await mangata.rpc.calculateRewardsAmount({
-    address: testUser2.keyRingPair.address,
-    liquidityTokenId: liqId.toString(),
-  });
-  const user3AvailableRewards = await mangata.rpc.calculateRewardsAmount({
-    address: testUser3.keyRingPair.address,
-    liquidityTokenId: liqId.toString(),
-  });
+  const user1AvailableRewards = await rpcCalculateNativeRewards(
+    testUser1.keyRingPair.address,
+    liqId,
+  );
+  const user2AvailableRewards = await rpcCalculateNativeRewards(
+    testUser2.keyRingPair.address,
+    liqId,
+  );
+  const user3AvailableRewards = await rpcCalculateNativeRewards(
+    testUser3.keyRingPair.address,
+    liqId,
+  );
   expect(rewardsUser1.activatedAmount).bnEqual(BN_ZERO);
   expect(rewardsUser2.activatedAmount).bnEqual(default50k);
   expect(rewardsUser3.activatedAmount).bnEqual(BN_ZERO);

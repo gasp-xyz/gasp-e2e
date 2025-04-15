@@ -249,8 +249,11 @@ export function calculateLiqAssetAmount(
 }
 
 export function calculateFees(soldAmount: BN) {
-  const treasury = soldAmount.mul(new BN(5)).div(new BN(10000));
-  const treasuryFee = treasury.add(new BN(1));
+  let treasuryFee = soldAmount.mul(new BN(5)).div(new BN(10000));
+  if (treasuryFee.eq(BN_ZERO)) {
+    treasuryFee = BN_ONE;
+  }
+  //treasuryFee = treasuryFee.add(new BN(1));
   return { treasury: treasuryFee, treasuryBurn: treasuryFee };
 }
 
@@ -266,6 +269,18 @@ export function calculateCompleteFees(soldAmount: BN) {
   //We remove those two added by treasury_treasury_burn.
   threePercent = threePercent.sub(new BN(2));
   return { completeFee: threePercent };
+}
+
+//Aleks: this function is a working alternative for mangata rpc function
+export async function rpcCalculateNativeRewards(
+  user: User | string,
+  liqToken: any,
+) {
+  const address = typeof user === "string" ? user : user.keyRingPair.address;
+  return await getApi().rpc.pos.calculate_native_rewards_amount(
+    address,
+    liqToken,
+  );
 }
 
 export const waitForNBlocks = async (n: number) => {
@@ -507,6 +522,13 @@ export async function getBlockNumber(): Promise<number> {
   const blockNumber = stringToBN(await mangata!.query.getBlockNumber());
   return blockNumber.toNumber();
 }
+export async function getMultiPurposeLiquidityStatusObj(
+  address: string,
+  tokenId: BN,
+) {
+  const api = await mangata?.api()!;
+  return await api.query.multiPurposeLiquidity.reserveStatus(address, tokenId);
+}
 export async function getMultiPurposeLiquidityStatus(
   address: string,
   tokenId: BN,
@@ -579,6 +601,7 @@ export enum xykErrors {
   FunctionNotAvailableForThisToken = "FunctionNotAvailableForThisToken",
   PoolIsEmpty = "PoolIsEmpty",
   ExcessiveInputAmount = "ExcesiveInputAmount",
+  NotEnoughAssetsForFeeLock = "NotEnoughAssetsForFeeLock",
 }
 
 export enum feeLockErrors {
@@ -624,6 +647,7 @@ export async function findErrorMetadata(errorStr: string, index: string) {
   console.info(err);
   return err;
 }
+
 export async function printCandidatePowers() {
   await initApi();
   const api = getApi();

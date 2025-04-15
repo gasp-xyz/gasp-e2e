@@ -21,6 +21,7 @@ import { Staking } from "../../utils/Staking";
 import { getSudoUser, setupApi, setupUsers } from "../../utils/setup";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { Market } from "../../utils/market";
+import { getEventResultFromMangataTx } from "../../utils/txHandler";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -86,6 +87,18 @@ describe("Collators: MinCandidateStk limit", () => {
       Sudo.sudo(Staking.addStakingLiquidityToken(liqToken)),
     );
     minLiquidityToJoin = await calculateMinLiquidity(liqToken, totalMgxInPool);
+  });
+  test("Failed min liq.", async () => {
+    const e = await mintLiquidity(
+      testUser2.keyRingPair,
+      GASP_ASSET_ID,
+      newTokenId,
+      minLiquidityToJoin,
+      BN_ONE,
+    );
+    const eventResponse = getEventResultFromMangataTx(e);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+    expect(eventResponse.data).toEqual("SecondAssetAmountExceededExpectations");
   });
 
   test("Min Mangatas to be a collator matches with minLiq.", async () => {

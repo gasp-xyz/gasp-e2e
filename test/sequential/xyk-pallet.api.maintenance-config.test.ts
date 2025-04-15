@@ -233,7 +233,8 @@ test("maintenance- check we can sell GASP tokens THEN switch maintenanceMode to 
     );
   // it failed before, that means a 0.3% fee was applied on the failed swap at L195,
   // changed from 20000 to 20030
-  expect(currencyAssetDifference).bnEqual(new BN(20030));
+  // Aleks: we don't received fees for failing swap, value is changed to 20000 again
+  expect(currencyAssetDifference).bnEqual(new BN(20000));
 });
 async function getSudoError(
   mangataEvent: MangataGenericEvent[],

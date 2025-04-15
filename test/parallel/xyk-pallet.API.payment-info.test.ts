@@ -128,8 +128,8 @@ test.skip("GIVEN a paymentInfo request, WHEN extrinsic is provideLiquidityWithId
 
 test("GIVEN a paymentInfo request, WHEN extrinsic is a batch with a sell/buy operation THEN non-zero is returned AND the extrinsic will fail because sell/buy are forbidden in batches tx", async () => {
   const batchAllEvent = api.tx.utility.batchAll([
-    Market.buyAsset(liqId, GASP_ASSET_ID, ETH_ASSET_ID, BN_HUNDRED),
-    Market.buyAsset(liqId, GASP_ASSET_ID, ETH_ASSET_ID, BN_HUNDRED),
+    await Market.buyAsset(liqId, GASP_ASSET_ID, ETH_ASSET_ID, BN_HUNDRED),
+    await Market.buyAsset(liqId, GASP_ASSET_ID, ETH_ASSET_ID, BN_HUNDRED),
   ]);
 
   await signTx(api, batchAllEvent, testUser.keyRingPair).then((result) => {

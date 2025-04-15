@@ -104,7 +104,7 @@ test("Happy path - Swap tokens in stableSwap pool", async () => {
   const poolId = await getPoolIdFromEvent(event);
   await signTx(
     api,
-    Market.buyAsset(poolId, firstCurrency, secondCurrency, BN_HUNDRED),
+    await Market.buyAsset(poolId, firstCurrency, secondCurrency, BN_HUNDRED),
     testUser.keyRingPair,
   ).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);

@@ -98,7 +98,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - SellAsset", async (
 
   //10000 - 0.3% = 9970.
   //selling the amount without the fee.
-  const exangeValue = await calculate_sell_price_local_no_fee(
+  const exangeValue = calculate_sell_price_local_no_fee(
     secondAssetAmount,
     firstAssetAmount,
     new BN(9970),
@@ -122,7 +122,7 @@ test("xyk-pallet - Assets substracted are incremented by 1 - SellAsset", async (
   expect(exangeValue).bnEqual(tokensWon);
 
   //0.05% = 5 tokens.
-  const extraTokenForRounding = new BN(1);
+  const extraTokenForRounding = new BN(0);
   const expectedTreasury = new BN(5);
   const treasury = await getTreasury(firstCurrency);
   const treasuryBurn = await getTreasuryBurn(firstCurrency);

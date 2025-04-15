@@ -14,6 +14,7 @@ import {
   getTreasury,
   getTreasuryBurn,
   FeeTxs,
+  getSellFeesLocal,
 } from "../../utils/tx";
 import {
   ExtrinsicResult,
@@ -190,6 +191,9 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
       ]);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
     });
+    const expectedTreasuries = getSellFeesLocal(
+      remainingOfCurrency1.sub(new BN(1)),
+    );
 
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     remainingOfCurrency1 = testUser1.getAsset(firstCurrency)?.amountAfter.free!;
@@ -257,9 +261,13 @@ describe("xyk-pallet - Sell assets tests: SellAsset Errors:", () => {
     const treasuryBurnFirstCurrency = await getTreasuryBurn(firstCurrency);
     expect(treasurySecondCurrency).bnEqual(new BN(0));
     expect(treasuryBurnSecondCurrency).bnEqual(new BN(0));
-    expect([treasuryFirstCurrency, treasuryBurnFirstCurrency]).toEqual([
-      new BN(100),
-      new BN(100),
+
+    expect([
+      treasuryFirstCurrency,
+      treasuryBurnFirstCurrency,
+    ]).collectionBnEqual([
+      expectedTreasuries.treasuryFees,
+      expectedTreasuries.treasuryBurn,
     ]);
   });
 
@@ -383,7 +391,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       sellPriceLocal,
     ).then((result) => {
       const eventResponse = getEventResultFromMangataTx(result, [
-        "xyk",
+        "market",
         "AssetsSwapped",
         testUser1.keyRingPair.address,
       ]);
@@ -469,7 +477,7 @@ describe("xyk-pallet - Sell assets tests: Selling Assets you can", () => {
       )
       .then((result) => {
         const eventResponse = getEventResultFromMangataTx(result, [
-          "xyk",
+          "market",
           "AssetsSwapped",
           testUser2.keyRingPair.address,
         ]);

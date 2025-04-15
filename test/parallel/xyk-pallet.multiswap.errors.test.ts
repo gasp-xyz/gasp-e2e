@@ -17,6 +17,7 @@ import {
   feeLockErrors,
   getUserBalanceOfToken,
   stringToBN,
+  xykErrors,
 } from "../../utils/utils";
 import {
   setupApi,
@@ -29,6 +30,7 @@ import { BN_BILLION, BN_TEN_THOUSAND, BN_ZERO } from "gasp-sdk";
 import { ApiPromise } from "@polkadot/api";
 import { GASP_ASSET_ID } from "../../utils/Constants";
 import { Sudo } from "../../utils/sudo";
+import { FeeLock } from "../../utils/FeeLock";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -37,6 +39,7 @@ let users: User[] = [];
 let tokenIds: BN[] = [];
 let api: ApiPromise;
 describe("Multiswap - error cases: disabled tokens", () => {
+  // Aleks: we changed the way to catch the error
   beforeAll(async () => {
     try {
       getApi();
@@ -59,19 +62,19 @@ describe("Multiswap - error cases: disabled tokens", () => {
       await Assets.disableToken(tokenIds[position]);
       const testUser1 = users[0];
       //comment from Gonzalo: "We can leave it now, but it looks like a bug"
-      const event = JSON.parse(
-        JSON.stringify(
-          (
-            await multiSwapBuyMarket(
-              testUser1,
-              tokenIds,
-              new BN(1000),
-              BN_TEN_THOUSAND,
-            )
-          ).filter((x) => x.method === "ExtrinsicFailed"),
-        ),
+      const event = await multiSwapBuyMarket(
+        testUser1,
+        tokenIds,
+        new BN(1000),
+        BN_TEN_THOUSAND,
       );
-      expect(event[0].error.name).toEqual("FunctionNotAvailableForThisToken");
+
+      //Aleks: As we can't catch SwapFailed, we need to change method
+      const eventResponse = getEventResultFromMangataTx(event);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(
+        xykErrors.FunctionNotAvailableForThisToken,
+      );
     },
   );
   it.each([2, 4])(
@@ -89,10 +92,11 @@ describe("Multiswap - error cases: disabled tokens", () => {
         new BN(1000),
         BN_TEN_THOUSAND,
       );
-
       const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
       expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-      expect(eventResponse.data).toEqual("FunctionNotAvailableForThisToken");
+      expect(eventResponse.data).toEqual(
+        xykErrors.FunctionNotAvailableForThisToken,
+      );
 
       const boughtTokens = await getUserBalanceOfToken(
         tokenIds[tokenIds.length - 1],
@@ -113,29 +117,35 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     api = getApi();
     ({ users, tokenIds } = await setup5PoolsChained(users));
   });
-  test.skip("[gasless] High value swaps are disabled on multiswap", async () => {
-    const testUser0 = users[0];
+  test("[gasless] Fail on client when not enough MGAs to lock AND tokens do not exist whitelist AND buying GASP ", async () => {
+    const [testUser1] = setupUsers();
+    await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
     const meta = await api.query.feeLock.feeLockMetadata();
     const threshold = stringToBN(
       JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
     );
-    const feeLockAmount = stringToBN(
-      JSON.parse(JSON.stringify(meta)).feeLockAmount.toString(),
+    const tokenList = tokenIds.concat(GASP_ASSET_ID);
+    testUser1.addAssets(tokenList);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await Sudo.batchAsSudoFinalized(
+      ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.addn(10)),
     );
-    let tokenList = tokenIds.concat(GASP_ASSET_ID);
-    tokenList = tokenList.reverse();
-    testUser0.addAssets(tokenList);
-    await testUser0.refreshAmounts(AssetWallet.BEFORE);
-
-    await multiSwapSellMarket(testUser0, tokenList, threshold.addn(10));
-
-    await testUser0.refreshAmounts(AssetWallet.AFTER);
-    const diff = testUser0.getWalletDifferences();
-    expect(
-      diff.find((x) => x.currencyId === GASP_ASSET_ID)?.diff.reserved,
-    ).bnEqual(feeLockAmount);
+    const err = feeLockErrors.SwapApprovalFail;
+    let except = false;
+    try {
+      await multiSwapSellMarket(testUser1, tokenList, threshold.addn(10));
+    } catch (error: any) {
+      except = true;
+      expect(error.data).toEqual(err);
+    }
+    expect(except).toBeTruthy();
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    const diff = testUser1.getWalletDifferences();
+    expect(diff).toHaveLength(0);
   });
-  test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist", async () => {
+  test("[gasless] Fail on client when not enough MGAs to lock AND tokens that exist whitelist AND not buying GASP", async () => {
+    //Aleks: I changed the error, but I think we also need to change description
     const [testUser1] = setupUsers();
     const sudo = getSudoUser();
     await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
@@ -144,24 +154,26 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
     const threshold = stringToBN(
       JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
     );
-
+    //add the new thresholds!
+    await Sudo.batchAsSudoFinalized(
+      ...FeeLock.updateTokenValueThresholdMulti(tokenIds, threshold.addn(10)),
+    );
     await updateFeeLockMetadata(
       sudo,
       undefined,
-      undefined,
+      threshold,
       undefined,
       tokenIds.map((x) => [x, true]),
     );
-    let exception = false;
-    await expect(
-      multiSwapSellMarket(testUser1, tokenIds, threshold.addn(10)).catch(
-        (reason) => {
-          exception = true;
-          throw new Error(reason.data);
-        },
-      ),
-    ).rejects.toThrow(feeLockErrors.FeeLockFail);
-    expect(exception).toBeTruthy();
+    const err = feeLockErrors.SwapApprovalFail;
+    let except = false;
+    try {
+      await multiSwapSellMarket(testUser1, tokenIds, threshold.addn(10));
+    } catch (error: any) {
+      except = true;
+      expect(error.data).toEqual(err);
+    }
+    expect(except).toBeTruthy();
   });
   test.skip("[gasless] Fail on swap when selling remove all MGAs", async () => {
     const testUser = users[1];
@@ -175,7 +187,7 @@ describe("Multiswap - error cases: pool status & gasless integration", () => {
       testUser.getAsset(GASP_ASSET_ID)?.amountBefore.free!,
     );
     await testUser.refreshAmounts(AssetWallet.AFTER);
-    const swapErrorEvent = await getEventResultFromMangataTx(events, [
+    const swapErrorEvent = getEventResultFromMangataTx(events, [
       "MultiSwapAssetFailedOnAtomicSwap",
     ]);
     expect(swapErrorEvent.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);

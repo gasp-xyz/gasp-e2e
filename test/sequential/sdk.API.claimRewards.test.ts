@@ -293,7 +293,7 @@ test("GIVEN a user that has available some rewards in ten pools max for automati
   }
 });
 
-test("GIVEN a user has available some rewards in over ten pools WHEN claims all rewards THEN the error is received", async () => {
+test.skip("NO-SDK-No Error::GIVEN a user has available some rewards in over ten pools WHEN claims all rewards THEN the error is received", async () => {
   liqIds = await createMultiplePoolsForUser(testUser1, 12);
 
   await waitForRewards(testUser1, liqIds[11]);
@@ -312,19 +312,22 @@ test("GIVEN a user has available some rewards in over ten pools WHEN claims all 
 test("GIVEN a user has available some rewards in over ten pools AND this user claims some pool manually WHEN claims all rewards THEN the user gets the rewards for all remaining pools", async () => {
   const rewardsLiqIdBefore = [];
   const rewardsLiqIdAfter = [];
-
   liqIds = await createMultiplePoolsForUser(testUser1, 12);
-
   await waitForRewards(testUser1, liqIds[11]);
+  for (let i = 3; i < 12; i++) {
+    rewardsLiqIdBefore[i] = await getRewardsInfo(
+      testUser1.keyRingPair.address,
+      liqIds[i],
+    );
+  }
 
-  let errorReason: any;
+  await claimRewardsAll(testUser1);
 
-  await claimRewardsAll(testUser1).catch((error) => {
-    errorReason = error.toString();
-  });
-
+  //now evth is claimed tru extrinsic
+  // removing unncesary code.
+  /**
   expect(errorReason).toContain(
-    "Error: Only up to 10 can be claimed automatically, consider claiming rewards separately for each liquidity pool",
+  "Error: Only up to 10 can be claimed automatically, consider claiming rewards separately for each liquidity pool",
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -333,17 +336,11 @@ test("GIVEN a user has available some rewards in over ten pools AND this user cl
     Sudo.sudoAs(testUser1, ProofOfStake.claimRewardsAll(liqIds[2])),
   );
 
-  for (let i = 3; i < 12; i++) {
-    rewardsLiqIdBefore[i] = await getRewardsInfo(
-      testUser1.keyRingPair.address,
-      liqIds[i],
-    );
-  }
-
   await claimRewardsAll(testUser1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
+  **/
 
   for (let i = 3; i < 12; i++) {
     rewardsLiqIdAfter[i] = await getRewardsInfo(

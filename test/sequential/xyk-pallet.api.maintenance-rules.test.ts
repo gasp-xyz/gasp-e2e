@@ -88,7 +88,7 @@ describe("On Maintenance mode - multiSwaps / swaps / compound / prov liq are not
         BN_HUNDRED,
         BN_ONE,
       ),
-      buyAsset: Market.buyAsset(
+      buyAsset: await Market.buyAsset(
         poolIds[0],
         tokenIds[0],
         tokenIds[1],

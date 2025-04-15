@@ -7,7 +7,6 @@ import {
   toBN,
   TokenBalance,
 } from "gasp-sdk";
-import { AddressOrPair, SubmittableExtrinsic } from "@polkadot/api/types";
 import { KeyringPair } from "@polkadot/keyring/types";
 import { StorageKey } from "@polkadot/types";
 import { AccountData, AccountId32 } from "@polkadot/types/interfaces";
@@ -17,10 +16,10 @@ import { env } from "process";
 import { getApi, getMangataInstance } from "./api";
 import {
   ETH_ASSET_ID,
-  MAX_BALANCE,
   GASP_ASSET_ID,
-  MGA_DEFAULT_LIQ_TOKEN,
   MAX_ARRAY_LENGTH,
+  MAX_BALANCE,
+  MGA_DEFAULT_LIQ_TOKEN,
 } from "./Constants";
 import { Fees } from "./Fees";
 import { SudoUser } from "./Framework/User/SudoUser";
@@ -32,7 +31,11 @@ import {
   signSendAndWaitToFinishTx,
 } from "./txHandler";
 import { User } from "./User";
-import { getEnvironmentRequiredVars, stringToBN } from "./utils";
+import {
+  getEnvironmentRequiredVars,
+  rpcCalculateNativeRewards,
+  stringToBN,
+} from "./utils";
 import Keyring from "@polkadot/keyring";
 import {
   ExtrinsicResult,
@@ -40,19 +43,14 @@ import {
 } from "./eventListeners";
 import { Sudo } from "./sudo";
 import { Assets } from "./Assets";
-import { getSudoUser, setupApi, setupUsers } from "./setup";
-import { Market, rpcGetPoolId } from "./market";
-
-export const signTxDeprecated = async (
-  tx: SubmittableExtrinsic<"promise">,
-  address: AddressOrPair,
-  nonce: BN,
-) => {
-  await tx.signAndSend(address, { nonce }, () => {
-    // handleTx(result, unsub)
-  });
-  //   setNonce(nonce + 1)
-};
+import { api, getSudoUser, setupApi, setupUsers } from "./setup";
+import {
+  Market,
+  rpcGetBurnAmount,
+  rpcGetPoolId,
+  rpcGetPoolsForTradingObj,
+} from "./market";
+import { ProofOfStake } from "./ProofOfStake";
 
 export async function calcuate_mint_liquidity_price_local(
   firstAssetId: BN,
@@ -105,16 +103,54 @@ export async function calcuate_burn_liquidity_price_local(
   return [first_asset_amount, second_asset_amount];
 }
 
+export function getSellFeesLocal(inputAmount: BN) {
+  const totalFeePercentage = 30;
+  const poolFeePercentage = 20;
+  const bnbFeePercentage = 5;
+
+  let totalFees = inputAmount.muln(totalFeePercentage).divn(10000);
+  totalFees = totalFees.gt(new BN(6)) ? totalFees : new BN(6);
+
+  const poolFees = totalFees.muln(poolFeePercentage).divn(totalFeePercentage);
+  const treasury = totalFees.muln(bnbFeePercentage).divn(totalFeePercentage);
+
+  const returnPoolFees = totalFees.lt(poolFees) ? totalFees : poolFees;
+
+  const returnTreasuryFees = treasury.lt(totalFees.sub(returnPoolFees))
+    ? treasury
+    : totalFees.sub(returnPoolFees);
+  return {
+    totalFees: totalFees,
+    poolFees: returnPoolFees,
+    treasuryFees: returnTreasuryFees,
+    treasuryBurn: totalFees.sub(returnPoolFees).sub(returnTreasuryFees),
+  };
+}
+export function getSellFeesLocalPost(inputAmount: BN) {
+  const totalFeePercentage = new BN(30);
+  const feeDenominator = new BN(10000);
+  const totalFees = inputAmount
+    .mul(totalFeePercentage)
+    .div(feeDenominator.sub(totalFeePercentage));
+  return totalFees.gt(new BN(6)) ? totalFees : new BN(6);
+}
 export function calculate_sell_price_local(
   input_reserve: BN,
   output_reserve: BN,
   sell_amount: BN,
+  force_fees_amount = BN_ZERO,
 ) {
-  const input_amount_with_fee: BN = sell_amount.mul(new BN(997));
+  let input_amount_with_fee: BN = sell_amount.mul(new BN(997));
+  if (force_fees_amount.gt(BN_ZERO)) {
+    input_amount_with_fee = sell_amount.sub(force_fees_amount);
+  }
   const numerator: BN = input_amount_with_fee.mul(output_reserve);
-  const denominator: BN = input_reserve
+  let denominator: BN = input_reserve
     .mul(new BN(1000))
     .add(input_amount_with_fee);
+  if (force_fees_amount.gt(BN_ZERO)) {
+    denominator = input_reserve.add(input_amount_with_fee);
+  }
   const result: BN = numerator.div(denominator);
   return new BN(result.toString());
 }
@@ -140,7 +176,7 @@ export function calculate_buy_price_local(
 ) {
   const numerator: BN = input_reserve.mul(buy_amount).mul(new BN(1000));
   const denominator: BN = output_reserve.sub(buy_amount).mul(new BN(997));
-  const result: BN = numerator.div(denominator).add(new BN(1));
+  const result: BN = numerator.div(denominator);
   return new BN(result.toString());
 }
 
@@ -160,12 +196,8 @@ export async function getBurnAmount(
   secondAssetId: BN,
   liquidityAssetAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  const result = await mangata.rpc.getBurnAmount({
-    firstTokenId: firstAssetId.toString(),
-    secondTokenId: secondAssetId.toString(),
-    amount: liquidityAssetAmount,
-  });
+  const pool = await rpcGetPoolId(firstAssetId, secondAssetId);
+  const result = await rpcGetBurnAmount(pool, liquidityAssetAmount);
   testLog.getLog().info(result.firstAssetAmount.toString());
   return result;
 }
@@ -174,13 +206,14 @@ export async function calculate_sell_price_rpc(
   input_reserve: BN,
   output_reserve: BN,
   sell_amount: BN,
+  force_fees_amount: BN = BN_ZERO,
 ): Promise<BN> {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateSellPrice({
-    amount: sell_amount,
-    inputReserve: input_reserve,
-    outputReserve: output_reserve,
-  });
+  return calculate_sell_price_local(
+    input_reserve,
+    output_reserve,
+    sell_amount,
+    force_fees_amount,
+  );
 }
 
 export async function calculate_buy_price_rpc(
@@ -188,12 +221,75 @@ export async function calculate_buy_price_rpc(
   outputReserve: BN,
   buyAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateBuyPrice({
-    inputReserve: inputReserve,
-    outputReserve: outputReserve,
-    amount: buyAmount,
-  });
+  return calculate_buy_price_local(inputReserve, outputReserve, buyAmount);
+}
+
+export async function rpcCalculateBuyPriceMulti(
+  poolId: BN | BN[],
+  buyAssetId: BN,
+  buyAmount: BN,
+  assetIn: BN,
+  maxIn: BN = MAX_BALANCE,
+) {
+  const api = getApi();
+  const param = Array.isArray(poolId) === true ? poolId : [poolId];
+  const res = await api.rpc.market.get_multiswap_buy_info(
+    param,
+    buyAssetId,
+    buyAmount,
+    assetIn,
+    maxIn,
+  );
+  return new BN(res.totalAmountIn);
+}
+export async function rpcCalculateSellPriceMultiObj(
+  poolId: BN | BN[],
+  assetIdIn: BN,
+  assetAmountIn: BN,
+  assetIdOut: BN,
+  minOut: BN = MAX_BALANCE,
+) {
+  const poolParam = poolId instanceof Array ? poolId : [poolId];
+  const api = getApi();
+  return await api.rpc.market.get_multiswap_sell_info(
+    poolParam,
+    assetIdIn,
+    assetAmountIn,
+    assetIdOut,
+    minOut,
+  );
+}
+export async function rpcCalculateBuyPriceMultiObj(
+  poolId: BN,
+  assetIdOut: BN,
+  assetAmountOut: BN,
+  assetIdIn: BN,
+  maxIn: BN = MAX_BALANCE,
+) {
+  const api = getApi();
+  return await api.rpc.market.get_multiswap_buy_info(
+    [poolId],
+    assetIdOut,
+    assetAmountOut,
+    assetIdIn,
+    maxIn,
+  );
+}
+export async function rpcCalculateSellPriceMulti(
+  poolId: BN,
+  assetIdIn: BN,
+  assetAmountIn: BN,
+  assetIdOut: BN,
+  minOut: BN = MAX_BALANCE,
+) {
+  const res = await rpcCalculateSellPriceMultiObj(
+    poolId,
+    assetIdIn,
+    assetAmountIn,
+    assetIdOut,
+    minOut,
+  );
+  return new BN(res.amountOut);
 }
 
 export async function calculate_buy_price_id_rpc(
@@ -201,11 +297,12 @@ export async function calculate_buy_price_id_rpc(
   boughtTokenId: BN,
   buyAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateBuyPriceId(
-    soldTokenId.toString(),
-    boughtTokenId.toString(),
+  const pool = await rpcGetPoolId(soldTokenId, boughtTokenId);
+  return await rpcCalculateBuyPriceMulti(
+    pool,
+    boughtTokenId,
     buyAmount,
+    soldTokenId,
   );
 }
 
@@ -214,11 +311,12 @@ export async function calculate_sell_price_id_rpc(
   boughtTokenId: BN,
   sellAmount: BN,
 ) {
-  const mangata = await getMangataInstance();
-  return await mangata.rpc.calculateSellPriceId(
-    soldTokenId.toString(),
-    boughtTokenId.toString(),
+  const pool = await rpcGetPoolId(soldTokenId, boughtTokenId);
+  return await rpcCalculateSellPriceMulti(
+    pool,
+    soldTokenId,
     sellAmount,
+    boughtTokenId,
   );
 }
 
@@ -266,10 +364,17 @@ export async function getBalanceOfPool(
   assetId2: BN,
 ): Promise<BN[]> {
   const mangata = await getMangataInstance();
-  return await mangata.query.getAmountOfTokensInPool(
+  let val = await mangata.query.getAmountOfTokensInPool(
     assetId1.toString(),
     assetId2.toString(),
   );
+  if (val[0].isZero()) {
+    val = await mangata.query.getAmountOfTokensInPool(
+      assetId2.toString(),
+      assetId1.toString(),
+    );
+  }
+  return val;
 }
 
 export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {
@@ -296,8 +401,7 @@ export async function getPoolIdFromEvent(event: MangataGenericEvent[]) {
     event,
     "PoolCreated",
   );
-  const poolId = stringToBN(filteredEvent.poolId);
-  return poolId;
+  return stringToBN(filteredEvent.poolId);
 }
 
 export async function getLiquidityBalance(liquidityAssetId: BN) {
@@ -784,7 +888,7 @@ export async function getAllAssets(accountAddress: string) {
         (((asset as any[])[0] as StorageKey).toHuman() as any[])[0] ===
         accountAddress,
     )
-    .map((tuple) => new BN((tuple[0].toHuman() as any[])[1]));
+    .map((tuple) => stringToBN((tuple[0].toHuman() as any[])[1].toString()));
 }
 
 export async function lockAsset(user: User, amount: BN) {
@@ -1332,10 +1436,22 @@ export async function claimRewards(user: User, liquidityTokenId: BN) {
 
 export async function claimRewardsAll(user: User) {
   const account = user.keyRingPair;
-  const mangata = await getMangataInstance();
-  return await mangata.xyk.claimRewardsAll({
-    account: account,
-  });
+  const avlAssets = await getAllAssets(account.address);
+  const pools = await rpcGetPoolsForTradingObj();
+  const poolsNumbers = pools.map((poolId) =>
+    stringToBN(poolId.toString()).toNumber(),
+  );
+  const liqTokens = avlAssets.filter((x) =>
+    poolsNumbers.includes(x.toNumber()),
+  );
+  const txs = [];
+  for (const liqToken of liqTokens) {
+    const rew = await rpcCalculateNativeRewards(user, liqToken);
+    if (rew.gt(BN_ZERO)) {
+      txs.push(ProofOfStake.claimRewardsAll(liqToken));
+    }
+  }
+  return await signTx(getApi(), api.tx.utility.batchAll(txs), user.keyRingPair);
 }
 
 export async function setCrowdloanAllocation(crowdloanAllocationAmount: BN) {

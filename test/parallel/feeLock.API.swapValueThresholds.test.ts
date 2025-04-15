@@ -4,7 +4,7 @@
  * @group parallel
  */
 import { jest } from "@jest/globals";
-import { getApi, initApi, mangata } from "../../utils/api";
+import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import {
   GASP_ASSET_ID,
@@ -112,7 +112,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -175,7 +175,7 @@ test("gasless- Given a feeLock correctly configured WHEN the user swaps two toke
   const saleAssetValue = thresholdValue.sub(new BN(5));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -219,7 +219,7 @@ test("[BUG] gasless- Given a feeLock correctly configured WHEN the user swaps tw
   const saleAssetValue = thresholdValue.mul(new BN(2));
 
   await testUser1.refreshAmounts(AssetWallet.BEFORE);
-  const isFree = await mangata?.rpc.isSellAssetLockFree(
+  const isFree = await Market.isSellAssetLockFree(
     [firstCurrency.toString(), secondCurrency.toString()],
     saleAssetValue,
   );
@@ -234,5 +234,5 @@ test("[BUG] gasless- Given a feeLock correctly configured WHEN the user swaps tw
     ).catch((reason) => {
       throw new Error(reason.data);
     }),
-  ).rejects.toThrow(feeLockErrors.FeeLockFail);
+  ).rejects.toThrow(feeLockErrors.SwapApprovalFail);
 });

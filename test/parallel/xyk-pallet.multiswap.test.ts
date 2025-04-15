@@ -10,12 +10,23 @@ import {
   calculate_buy_price_id_rpc,
   multiSwapBuyMarket,
   multiSwapSellMarket,
+  updateFeeLockMetadata,
 } from "../../utils/tx";
 import { ExtrinsicResult } from "../../utils/eventListeners";
 import { BN } from "@polkadot/util";
 import { User, AssetWallet } from "../../utils/User";
-import { getUserBalanceOfToken } from "../../utils/utils";
-import { setupApi, setup5PoolsChained, sudo } from "../../utils/setup";
+import {
+  getUserBalanceOfToken,
+  stringToBN,
+  xykErrors,
+} from "../../utils/utils";
+import {
+  setupApi,
+  setup5PoolsChained,
+  sudo,
+  setupUsers,
+  getSudoUser,
+} from "../../utils/setup";
 import {
   getBalanceOfPool,
   getEventResultFromMangataTx,
@@ -30,6 +41,7 @@ import { Assets } from "../../utils/Assets";
 import { BN_MILLION } from "gasp-sdk";
 import { Sudo } from "../../utils/sudo";
 import { Market } from "../../utils/market";
+import { FeeLock } from "../../utils/FeeLock";
 
 jest.spyOn(console, "log").mockImplementation(jest.fn());
 jest.setTimeout(1500000);
@@ -153,7 +165,7 @@ describe("Multiswap - happy paths", () => {
     );
     const eventResponse = getEventResultFromMangataTx(multiSwapOutput);
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(eventResponse.data).toEqual("InsufficientOutputAmount");
+    expect(eventResponse.data).toEqual(xykErrors.InsufficientOutputAmount);
     await testUser1.refreshAmounts(AssetWallet.AFTER);
     const walletsModifiedInSwap = testUser1.getWalletDifferences();
     //Validate that the modified tokens are MGX and the first element in the list.
@@ -171,7 +183,6 @@ describe("Multiswap - happy paths", () => {
     )?.diff.free;
     const expectedFeeCharged = swapAmount.muln(3).divn(1000).neg();
     expect(changeInSoldAsset).bnEqual(expectedFeeCharged);
-    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
     expect(
       multiSwapOutput.findIndex(
         (x) =>
@@ -231,26 +242,27 @@ describe("Multiswap - happy paths", () => {
     //we buy sell [ 0 -> 1], [1 -> 2], [ 2-> 3]
     //assert pool1 diff is equal the bought amount.
     expect(poolsBefore01[0][1].sub(poolsAfter01[0][1])).bnEqual(buy01);
-    expect(poolsBefore12[0][1].sub(poolsAfter12[0][1])).bnEqual(buy02);
-    expect(poolsBefore23[0][1].sub(poolsAfter23[0][1])).bnEqual(buy03);
-    expect(poolsBefore34[0][1].sub(poolsAfter34[0][1])).bnEqual(buy04);
+    expect(poolsBefore12[0][1].sub(poolsAfter12[0][1])).bnGt(buy02);
+    expect(poolsBefore23[0][1].sub(poolsAfter23[0][1])).bnGt(buy03);
+    expect(poolsBefore34[0][1].sub(poolsAfter34[0][1])).bnGt(buy04);
     const userBoughtAssetWallet = testUser1.getAsset(
       tokenIds[tokenIds.length - 1],
     );
     const userSoldAssetWallet = testUser1.getAsset(tokenIds[0]);
-
+    //user got more tokens than if chained swap multiple times.
     expect(
       userBoughtAssetWallet?.amountAfter.free.sub(
         userBoughtAssetWallet?.amountBefore.free,
       ),
-    ).bnEqual(buy04);
+    ).bnGt(buy04);
+    //user spent the same tokens
     expect(
       userSoldAssetWallet?.amountBefore.free.sub(
         userSoldAssetWallet?.amountAfter.free,
       ),
     ).bnEqual(new BN(1000));
   });
-  test("[gasless] accuracy - Sum of calculate_buy_asset chained is equal to the multiswap operation", async () => {
+  test("[gasless] accuracy - Sum of calculate_buy_asset chained is no longer equal to the multiswap operation - only first pay", async () => {
     const testUser1 = users[0];
     const poolsBefore01 = await getBalanceOfPool(tokenIds[0], tokenIds[1]);
     const poolsBefore12 = await getBalanceOfPool(tokenIds[1], tokenIds[2]);
@@ -302,9 +314,9 @@ describe("Multiswap - happy paths", () => {
     // [ 4,3 ] -> [ 3,2 ] -> [ 2,1 ] -> [ 1,0 ]
     //assert pool1 diff is equal the bought amount.
     expect(poolsBefore34[0][1].sub(poolsAfter34[0][1])).bnEqual(new BN(1000));
-    expect(poolsBefore23[0][1].sub(poolsAfter23[0][1])).bnEqual(buy01);
-    expect(poolsBefore12[0][1].sub(poolsAfter12[0][1])).bnEqual(buy02);
-    expect(poolsBefore01[0][1].sub(poolsAfter01[0][1])).bnEqual(buy03);
+    expect(poolsBefore23[0][1].sub(poolsAfter23[0][1])).bnLt(buy01);
+    expect(poolsBefore12[0][1].sub(poolsAfter12[0][1])).bnLt(buy02);
+    expect(poolsBefore01[0][1].sub(poolsAfter01[0][1])).bnLt(buy03);
     const userBoughtAssetWallet = testUser1.getAsset(
       tokenIds[tokenIds.length - 1],
     );
@@ -315,11 +327,72 @@ describe("Multiswap - happy paths", () => {
         userBoughtAssetWallet?.amountBefore.free,
       ),
     ).bnEqual(new BN(1000));
+    //user spent less tokens to buy 1000.
     expect(
       userSoldAssetWallet?.amountBefore.free.sub(
         userSoldAssetWallet?.amountAfter.free,
       ),
-    ).bnEqual(buy04);
+    ).bnLt(buy04);
+  });
+
+  test("[gasless] Not enough MGAs to lock AND tokens do exist whitelist AND buying GASP and less threshold: fail", async () => {
+    const [testUser1] = setupUsers();
+    await setupApi();
+    await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
+    const meta = await getApi().query.feeLock.feeLockMetadata();
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
+    );
+    const tokenList = tokenIds.concat(GASP_ASSET_ID);
+    testUser1.addAssets(tokenList);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await updateFeeLockMetadata(
+      getSudoUser(),
+      undefined,
+      undefined,
+      threshold,
+      tokenIds.map((x) => [x, true]),
+    );
+    await Sudo.batchAsSudoFinalized(
+      ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.addn(10)),
+    );
+    let except = false;
+    try {
+      await multiSwapSellMarket(testUser1, tokenList, threshold);
+    } catch (e) {
+      except = true;
+    }
+    expect(except).toBeTruthy();
+  });
+
+  test("[gasless] Not enough MGAs to lock AND tokens do exist whitelist AND buying GASP and more than threshold: success", async () => {
+    const [testUser1] = setupUsers();
+    await setupApi();
+    await Sudo.batchAsSudoFinalized(Assets.mintToken(tokenIds[0], testUser1));
+    const meta = await getApi().query.feeLock.feeLockMetadata();
+    const threshold = stringToBN(
+      JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
+    );
+    const tokenList = tokenIds.concat(GASP_ASSET_ID);
+    testUser1.addAssets(tokenList);
+    await testUser1.refreshAmounts(AssetWallet.BEFORE);
+
+    await updateFeeLockMetadata(
+      getSudoUser(),
+      undefined,
+      undefined,
+      threshold.divn(100),
+      tokenList.map((x) => [x, true]),
+    );
+    await Sudo.batchAsSudoFinalized(
+      ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.subn(10)),
+    );
+    const events = await multiSwapSellMarket(testUser1, tokenList, threshold);
+    const err = getEventResultFromMangataTx(events);
+    expect(err.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    await testUser1.refreshAmounts(AssetWallet.AFTER);
+    //TODO: Alek ensure that the swap happened by checkign the sold amount and that the user got some gASps.
   });
   ///keep it on the last position, this test empty one pool!!!!
   test("[gasless] alternative scenario - one pool is highly unbalanced -> zero swap output", async () => {
