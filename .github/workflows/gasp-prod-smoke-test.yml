@@ -67,11 +67,11 @@ jobs:
           SLACK_COLOR: "#00ff11"
           SLACK_MESSAGE: "Playwright tests passed successfully!"
           
-      # - name: Slack Notification - Failure
-      #   if: ${{ needs.playwright-tests.result == 'failure' }}
-      #   uses: bryannice/gitactions-slack-notification@2.0.0
-      #   env:
-      #     SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      #     SLACK_TITLE: "GASP UI Playwright Tests - Failure"
-      #     SLACK_COLOR: "#ff0011"
-      #     SLACK_MESSAGE: "Playwright tests failed. Please check the logs for details."
+      - name: Slack Notification - Failure
+        if: ${{ needs.playwright-tests.result == 'failure' }}
+        uses: bryannice/gitactions-slack-notification@2.0.0
+        env:
+          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: "GASP UI Playwright Tests - Failure"
+          SLACK_COLOR: "#ff0011"
+          SLACK_MESSAGE: "Playwright tests failed. Please check the logs for details."
