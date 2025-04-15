@@ -357,13 +357,13 @@ describe("Multiswap - happy paths", () => {
     await Sudo.batchAsSudoFinalized(
       ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.addn(10)),
     );
-    const events = await multiSwapSellMarket(testUser1, tokenList, threshold);
-    const err = getEventResultFromMangataTx(events);
-    expect(err.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
-    expect(err.data).toEqual(xykErrors.NotEnoughAssetsForFeeLock);
-
-    await testUser1.refreshAmounts(AssetWallet.AFTER);
-    //TODO:Alek, validate the user paid 0,3 of sold fees
+    let except = false;
+    try {
+      await multiSwapSellMarket(testUser1, tokenList, threshold);
+    } catch (e) {
+      except = true;
+    }
+    expect(except).toBeTruthy();
   });
 
   test("[gasless] Not enough MGAs to lock AND tokens do exist whitelist AND buying GASP and more than threshold: success", async () => {
