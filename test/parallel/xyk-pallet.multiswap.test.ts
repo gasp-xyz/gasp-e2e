@@ -386,7 +386,7 @@ describe("Multiswap - happy paths", () => {
       tokenList.map((x) => [x, true]),
     );
     await Sudo.batchAsSudoFinalized(
-      ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.addn(10)),
+      ...FeeLock.updateTokenValueThresholdMulti(tokenList, threshold.subn(10)),
     );
     const events = await multiSwapSellMarket(testUser1, tokenList, threshold);
     const err = getEventResultFromMangataTx(events);
