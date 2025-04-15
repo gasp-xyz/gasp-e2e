@@ -7,7 +7,7 @@ import { hexToU8a } from "@polkadot/util";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_HUNDRED_BILLIONS, MangataGenericEvent, toBN } from "gasp-sdk";
+import { BN_HUNDRED_BILLIONS, MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -286,7 +286,9 @@ test("maintenance- bootstrap can be run in maintenanceMode, but you can't provid
 
   await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
 
-  await sudo.mint(bootstrapCurrency, testUser1, toBN("1", 20));
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(bootstrapCurrency, testUser1),
+  );
 
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
@@ -335,6 +337,78 @@ test("maintenance- bootstrap can be run in maintenanceMode, but you can't provid
     ),
   );
 
+  const filteredEvent = foundationSwitchModeEvents.filter(
+    (extrinsicResult) => extrinsicResult.method === "SudoAsDone",
+  );
+  const eventIndex = JSON.parse(JSON.stringify(filteredEvent[0].event.data[0]));
+  expect(eventIndex.ok).toBeDefined();
+
+  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, bootstrapCurrency);
+  expect(poolId).bnEqual(new BN(-1));
+  await checkMaintenanceStatus(false, false);
+  await checkLastBootstrapFinalized(sudo);
+});
+
+test.skip("[BUG] maintenance - GIVEN bootstrap start AND provision with one user WHEN maintenanceMode runs in Public phase THEN bootstrap pool doesn't appear", async () => {
+  await checkMaintenanceStatus(false, false);
+  await checkLastBootstrapFinalized(sudo);
+  const bootstrapCurrency = await createNewBootstrapCurrency(sudo);
+  const waitingPeriod = 10;
+  const bootstrapPeriod = 8;
+
+  [testUser1] = setupUsers();
+
+  await setupBootstrapTokensBalance(bootstrapCurrency, sudo, [testUser1]);
+
+  await Sudo.batchAsSudoFinalized(
+    Assets.mintToken(bootstrapCurrency, testUser1),
+  );
+
+  await scheduleBootstrap(
+    sudo,
+    GASP_ASSET_ID,
+    bootstrapCurrency,
+    waitingPeriod,
+    bootstrapPeriod,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await waitForBootstrapStatus("Public", waitingPeriod);
+
+  await provisionBootstrap(
+    testUser1,
+    bootstrapCurrency,
+    BN_HUNDRED_BILLIONS,
+  ).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      foundationAccountAddress,
+      Maintenance.switchMaintenanceModeOn(),
+    ),
+  );
+
+  await checkMaintenanceStatus(true, false);
+
+  await waitForBootstrapStatus("Finished", bootstrapPeriod);
+
+  //BUG - we need to have a possibility to claim rewards, but we received an error here
+  await claimRewardsBootstrap(testUser1).then((result) => {
+    const eventResponse = getEventResultFromMangataTx(result);
+    expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+  });
+
+  const foundationSwitchModeEvents = await Sudo.batchAsSudoFinalized(
+    Sudo.sudoAsWithAddressString(
+      foundationAccountAddress,
+      Maintenance.switchMaintenanceModeOff(),
+    ),
+  );
   const filteredEvent = foundationSwitchModeEvents.filter(
     (extrinsicResult) => extrinsicResult.method === "SudoAsDone",
   );
