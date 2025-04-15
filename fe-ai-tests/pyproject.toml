@@ -1,0 +1,44 @@
+[project]
+name = "fe-ai-tests"
+version = "0.1.0"
+description = "GASP Frontend AI Tests"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    # Core testing and browser automation
+    "playwright~=1.50.0",
+    "pytest",
+    "pytest-asyncio",
+
+    # AI and browser interaction libraries
+    "browser-use==0.1.37", # Keep specific version as it might be sensitive
+    "langchain-anthropic", # Let PDM determine the best compatible version
+    "pydantic",           # Let PDM determine the best compatible version
+    "lmnr",               # Let PDM determine the best compatible version
+
+    # Environment variable handling
+    "python-dotenv~=1.0.1",
+]
+
+[tool.pdm]
+includes = ["utils"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "--color=yes"
+filterwarnings = [
+    "ignore::pytest.PytestAssertRewriteWarning",
+    "ignore:.*pkg_resources is deprecated.*:DeprecationWarning",
+    "ignore:.*Deprecated call to `pkg_resources.declare_namespace.*:DeprecationWarning",
+    "ignore:.*The `schema` method is deprecated.*:pydantic.PydanticDeprecatedSince20"
+]
+markers = [
+    "collator: marks tests related to collator functionality",
+    "wallet: marks tests related to wallet functionality"
+]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
