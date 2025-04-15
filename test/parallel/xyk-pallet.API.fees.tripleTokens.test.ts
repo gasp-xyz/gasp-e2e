@@ -115,7 +115,7 @@ beforeEach(async () => {
 
   //add pool's tokens for user.
   await setupApi();
-  await setupUsers();
+  setupUsers();
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(firstCurrency, testUser1, defaultCurrencyValue),
     Assets.mintToken(secondCurrency, testUser1, defaultCurrencyValue),
@@ -243,7 +243,7 @@ test("GIVEN User has a very limited amount of GASP & enough ETH THEN Fees are ch
   expect(deductedEthTkns).bnGt(BN_ZERO);
 });
 
-test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok1 to tok2 above the “threshold” THEN operation succeed", async () => {
+test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok1 to tok2 above the “threshold” THEN operation fail on client", async () => {
   const api = getApi();
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
@@ -256,23 +256,29 @@ test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-t
   );
   const saleAssetValue = swapValueThreshold.muln(2);
   const workAroundFromBug = swapValueThreshold.muln(1.5);
-  await signTx(
-    api,
-    Market.sellAsset(
-      liqId,
-      firstCurrency,
-      secondCurrency,
-      saleAssetValue,
-      workAroundFromBug,
-    ),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    const res = getEventResultFromMangataTx(events);
-    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  let except = false;
+  try {
+    await signTx(
+      api,
+      Market.sellAsset(
+        liqId,
+        firstCurrency,
+        secondCurrency,
+        saleAssetValue,
+        workAroundFromBug,
+      ),
+      testUser1.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+  } catch (e) {
+    except = true;
+  }
+  expect(except).toBeTruthy();
 });
 
-test("[BUG] GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok2 to tok1 above the “threshold” THEN operation succeed", async () => {
+test("GIVEN User has a very limited GASP & a very limited ETH AND we have GASP-tok1 pool WHEN the Tx is a swap tok2 to tok1 above the “threshold” THEN operation fail on client", async () => {
   const api = getApi();
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(GASP_ASSET_ID, testUser1, feeLockAmount.divn(2)),
@@ -281,21 +287,31 @@ test("[BUG] GIVEN User has a very limited GASP & a very limited ETH AND we have 
 
   const saleAssetValue = swapValueThreshold.muln(2);
   const workAroundFromBug = swapValueThreshold.muln(1.5);
-
-  await signTx(
-    api,
-    Market.sellAsset(
-      liqId,
-      secondCurrency,
-      firstCurrency,
-      saleAssetValue,
-      workAroundFromBug,
+  await Sudo.asSudoFinalized(
+    Sudo.sudo(
+      FeeLock.updateTokenValueThreshold(secondCurrency, saleAssetValue),
     ),
-    testUser1.keyRingPair,
-  ).then((events) => {
-    const res = getEventResultFromMangataTx(events);
-    expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
-  });
+  );
+  let except = false;
+  try {
+    await signTx(
+      api,
+      Market.sellAsset(
+        liqId,
+        secondCurrency,
+        firstCurrency,
+        saleAssetValue,
+        workAroundFromBug,
+      ),
+      testUser1.keyRingPair,
+    ).then((events) => {
+      const res = getEventResultFromMangataTx(events);
+      expect(res.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    });
+  } catch (e) {
+    except = true;
+  }
+  expect(except).toBeTruthy();
 });
 
 test("[BUG] GIVEN User has a very limited amount of GASP & a minimal amount of Eth AND the Tx is a swap below the “threshold” THEN we receive client error", async () => {

@@ -81,7 +81,7 @@ export function validateAssetsSwappedEvent(
   //@ts-ignore
   expect(rawData.who).toEqual(userAddress);
   //@ts-ignore
-  expect(stringToBN(rawData.totalAmountIn)).toEqual(firstAssetAmount);
+  expect(stringToBN(rawData.totalAmountIn)).bnEqual(firstAssetAmount);
   //@ts-ignore
   expect(stringToBN(rawData.swaps[0].assetIn.toString())).bnEqual(
     stringToBN(firstCurrency.toString()),

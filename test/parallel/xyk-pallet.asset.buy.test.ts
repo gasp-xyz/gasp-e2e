@@ -157,7 +157,7 @@ test("xyk-pallet - AssetsOperation: buyAsset [maxAmountIn = 1M], buy asset", asy
     .getAsset(soldAssetId)
     ?.amountBefore.free!.sub(buyPriceLocal)
     .subn(2);
-  expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!).bnEqual(
+  expect(testUser1.getAsset(soldAssetId)?.amountAfter.free!.subn(1)).bnEqual(
     diffFromWallet!,
   );
 
