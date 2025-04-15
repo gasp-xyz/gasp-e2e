@@ -225,15 +225,16 @@ export async function calculate_buy_price_rpc(
 }
 
 export async function rpcCalculateBuyPriceMulti(
-  poolId: BN,
+  poolId: BN | BN[],
   buyAssetId: BN,
   buyAmount: BN,
   assetIn: BN,
   maxIn: BN = MAX_BALANCE,
 ) {
   const api = getApi();
+  const param = Array.isArray(poolId) === true ? poolId : [poolId];
   const res = await api.rpc.market.get_multiswap_buy_info(
-    [poolId],
+    param,
     buyAssetId,
     buyAmount,
     assetIn,
@@ -363,10 +364,17 @@ export async function getBalanceOfPool(
   assetId2: BN,
 ): Promise<BN[]> {
   const mangata = await getMangataInstance();
-  return await mangata.query.getAmountOfTokensInPool(
+  let val = await mangata.query.getAmountOfTokensInPool(
     assetId1.toString(),
     assetId2.toString(),
   );
+  if (val[0].isZero()) {
+    val = await mangata.query.getAmountOfTokensInPool(
+      assetId2.toString(),
+      assetId1.toString(),
+    );
+  }
+  return val;
 }
 
 export async function getLiquidityAssetId(assetId1: BN, assetId2: BN) {

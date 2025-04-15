@@ -86,17 +86,18 @@ export class Market {
   }
 
   static async buyAsset(
-    swapPool: BN,
+    swapPool: BN | BN[],
     soldAssetId: BN,
     boughtAssetId: BN,
     boughtAssetAmount: BN,
     maxAmountIn: BN = BN_ZERO,
   ): Promise<Extrinsic> {
     let maxAmount = maxAmountIn;
+    const param = Array.isArray(swapPool) === true ? swapPool : [swapPool];
     if (maxAmount.eq(BN_ZERO)) {
       try {
         maxAmount = await rpcCalculateBuyPriceMulti(
-          swapPool,
+          param,
           boughtAssetId,
           boughtAssetAmount,
           soldAssetId,
@@ -106,7 +107,7 @@ export class Market {
       }
     }
     return api.tx.market.multiswapAssetBuy(
-      [swapPool],
+      param,
       boughtAssetId,
       boughtAssetAmount,
       soldAssetId,
@@ -131,14 +132,15 @@ export class Market {
   }
 
   static sellAsset(
-    swapPool: BN,
+    swapPool: BN | BN[],
     soldAssetId: BN,
     boughtAssetId: BN,
     soldAssetAmount: BN,
     minBoughtOut: BN = BN_ZERO,
   ): Extrinsic {
+    const param = Array.isArray(swapPool) === true ? swapPool : [swapPool];
     return api.tx.market.multiswapAsset(
-      [swapPool],
+      param,
       soldAssetId,
       soldAssetAmount,
       boughtAssetId,

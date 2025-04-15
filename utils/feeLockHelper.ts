@@ -75,15 +75,16 @@ export async function getFeeLockMetadata() {
   return (await api.query.feeLock.feeLockMetadata()).value;
 }
 export async function rpcCalculateSellPrice(
-  poolId: BN,
+  poolId: BN | BN[],
   sellAssetId: BN,
   sellAmount: BN,
 ) {
-  const pool = await Market.getPool(poolId);
+  const param = Array.isArray(poolId) ? poolId[0] : poolId;
+  const pool = await Market.getPool(param);
   const secToken = pool[0].assets[0].eq(sellAssetId)
     ? pool[0].assets[1]
     : pool[0].assets[0];
-  return rpcCalculateSellPriceMulti(poolId, sellAssetId, sellAmount, secToken);
+  return rpcCalculateSellPriceMulti(param, sellAssetId, sellAmount, secToken);
 }
 
 export async function rpcCalculateBuyPrice(
