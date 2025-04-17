@@ -7,7 +7,7 @@ import { hexToU8a } from "@polkadot/util";
 import { getApi, initApi } from "../../utils/api";
 import { Assets } from "../../utils/Assets";
 import { GASP_ASSET_ID } from "../../utils/Constants";
-import { BN_HUNDRED_BILLIONS, MangataGenericEvent } from "gasp-sdk";
+import { BN_HUNDRED_BILLIONS, BN_ZERO, MangataGenericEvent } from "gasp-sdk";
 import { BN } from "@polkadot/util";
 import { setupApi, setupUsers, sudo } from "../../utils/setup";
 import { Sudo } from "../../utils/sudo";
@@ -288,6 +288,7 @@ test("maintenance- bootstrap can be run in maintenanceMode, but you can't provid
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(bootstrapCurrency, testUser1),
+    Assets.mintNative(testUser1),
   );
 
   await Sudo.batchAsSudoFinalized(
@@ -323,6 +324,16 @@ test("maintenance- bootstrap can be run in maintenanceMode, but you can't provid
     expect(eventResponse.data).toEqual("ProvisioningBlockedByMaintenanceMode");
   });
 
+  await provisionBootstrap(testUser1, GASP_ASSET_ID, BN_HUNDRED_BILLIONS).then(
+    (result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(
+        "ProvisioningBlockedByMaintenanceMode",
+      );
+    },
+  );
+
   await waitForBootstrapStatus("Finished", bootstrapPeriod);
   await claimRewardsBootstrap(testUser1).then((result) => {
     const eventResponse = getEventResultFromMangataTx(result);
@@ -349,7 +360,7 @@ test("maintenance- bootstrap can be run in maintenanceMode, but you can't provid
   await checkLastBootstrapFinalized(sudo);
 });
 
-test.skip("[BUG] maintenance - GIVEN bootstrap start AND provision with one user WHEN maintenanceMode runs in Public phase THEN bootstrap pool doesn't appear", async () => {
+test("[BUG] maintenance - GIVEN bootstrap start AND provision with one user WHEN maintenanceMode runs in Public phase THEN bootstrap pool doesn't appear", async () => {
   await checkMaintenanceStatus(false, false);
   await checkLastBootstrapFinalized(sudo);
   const bootstrapCurrency = await createNewBootstrapCurrency(sudo);
@@ -362,6 +373,7 @@ test.skip("[BUG] maintenance - GIVEN bootstrap start AND provision with one user
 
   await Sudo.batchAsSudoFinalized(
     Assets.mintToken(bootstrapCurrency, testUser1),
+    Assets.mintNative(testUser1),
   );
 
   await scheduleBootstrap(
@@ -386,6 +398,13 @@ test.skip("[BUG] maintenance - GIVEN bootstrap start AND provision with one user
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
+  await provisionBootstrap(testUser1, GASP_ASSET_ID, BN_HUNDRED_BILLIONS).then(
+    (result) => {
+      const eventResponse = getEventResultFromMangataTx(result);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
+    },
+  );
+
   await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
@@ -403,6 +422,10 @@ test.skip("[BUG] maintenance - GIVEN bootstrap start AND provision with one user
     expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicSuccess);
   });
 
+  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, bootstrapCurrency);
+  expect(poolId).bnGt(BN_ZERO);
+  await checkLastBootstrapFinalized(sudo);
+
   const foundationSwitchModeEvents = await Sudo.batchAsSudoFinalized(
     Sudo.sudoAsWithAddressString(
       foundationAccountAddress,
@@ -414,9 +437,5 @@ test.skip("[BUG] maintenance - GIVEN bootstrap start AND provision with one user
   );
   const eventIndex = JSON.parse(JSON.stringify(filteredEvent[0].event.data[0]));
   expect(eventIndex.ok).toBeDefined();
-
-  const poolId = await getLiquidityAssetId(GASP_ASSET_ID, bootstrapCurrency);
-  expect(poolId).bnEqual(new BN(-1));
   await checkMaintenanceStatus(false, false);
-  await checkLastBootstrapFinalized(sudo);
 });
