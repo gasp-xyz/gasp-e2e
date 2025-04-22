@@ -6,8 +6,43 @@ on:
     - cron: "30 7 * * *"
 
 jobs:
+  setup-report:
+    name: Setup Testmo Report
+    runs-on: ubuntu-latest
+    outputs:
+      testmo-run-id: ${{ steps.setTestRun.outputs.testmo-run-id }}
+
+    steps:
+      - name: Install testmo
+        run: yarn global add @testmo/testmo-cli
+
+      - name: Add extra params
+        run: |
+          testmo automation:resources:add-field --name git --type string \
+            --value ${GITHUB_SHA:0:7} --resources resources.json
+          RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          testmo automation:resources:add-link --name build \
+            --url $RUN_URL --resources resources.json
+
+      - name: Create test run
+        run: |
+          testmo automation:run:create \
+            --instance https://mangata-finance.testmo.net \
+            --project-id 2 \
+            --name "GASP UI Prod AI Tests" \
+            --resources resources.json \
+            --source "gasp-prod-ai-tests" > testmo-run-id.txt
+          ID=$(cat testmo-run-id.txt)
+          echo "testmo-run-id=$ID" >> $GITHUB_OUTPUT
+          echo "ID=$ID" >> $GITHUB_ENV
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
+        id: setTestRun
+
   playwright-tests:
     name: Run Playwright Tests - ${{ matrix.test_group }}
+    needs: [setup-report]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -17,11 +52,12 @@ jobs:
       UI_URL: https://app.gasp.xyz
       LMNR_PROJECT_API_KEY: ${{ secrets.LMNR_PROJECT_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      TESTMO_RUN_ID: ${{needs.setup-report.outputs.testmo-run-id}}
 
     steps:
       - uses: actions/checkout@v4
         with:
-            ref: 'FE-AI-tests'
+          ref: 'FE-AI-tests'
 
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v4
@@ -34,14 +70,28 @@ jobs:
         run: cd fe-ai-tests && pdm install
           
       - name: Install Playwright browsers
-        # Ref: https://playwright.dev/docs/browsers#chromium-headless-shell
         run: cd fe-ai-tests && pdm run playwright install --only-shell chromium
           
       - name: Create directories for test artifacts
-        run: mkdir -p fe-ai-tests/tmp/record_videos fe-ai-tests/tmp/agent_history-${{ matrix.test_group }}
+        run: mkdir -p fe-ai-tests/tmp/record_videos fe-ai-tests/tmp/agent_history-${{ matrix.test_group }} fe-ai-tests/reports
           
       - name: Run tests
-        run: cd fe-ai-tests && pdm run pytest tests/ -m "${{ matrix.test_group }}" -v
+        run: cd fe-ai-tests && pdm run pytest tests/ -m "${{ matrix.test_group }}" -v --junitxml=reports/junit-${{ matrix.test_group }}.xml
+          
+      - name: Install testmo
+        run: yarn global add @testmo/testmo-cli
+          
+      - name: Submit results to Testmo
+        if: always()
+        run: |
+          testmo automation:run:submit-thread \
+            --instance https://mangata-finance.testmo.net \
+            --run-id ${{needs.setup-report.outputs.testmo-run-id}} \
+            --results fe-ai-tests/reports/junit-${{ matrix.test_group }}.xml
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
+        continue-on-error: true
           
       - name: Upload test results
         if: always()
@@ -51,27 +101,53 @@ jobs:
           path: |
             fe-ai-tests/tmp/record_videos
             fe-ai-tests/tmp/agent_history-${{ matrix.test_group }}
+            fe-ai-tests/reports/junit-${{ matrix.test_group }}.xml
           retention-days: 7
           
-  slack-notify:
-    needs: [playwright-tests]
+  test-complete:
+    needs: [setup-report, playwright-tests]
     if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install testmo
+        run: yarn global add @testmo/testmo-cli
+
+      - name: Complete test run
+        run: |
+          npx testmo automation:run:complete \
+            --instance https://mangata-finance.testmo.net \
+            --run-id ${{needs.setup-report.outputs.testmo-run-id}}
+        env:
+          TESTMO_URL: ${{ secrets.TESTMO_URL }}
+          TESTMO_TOKEN: ${{ secrets.TESTMO_TOKEN }}
+        continue-on-error: true
+          
+  slack-notify-ok:
+    needs: [playwright-tests, setup-report]
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification - Success
-        if: ${{ needs.playwright-tests.result == 'success' }}
         uses: bryannice/gitactions-slack-notification@2.0.0
         env:
           SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_TITLE: "GASP UI Playwright Tests - Success"
           SLACK_COLOR: "#00ff11"
-          SLACK_MESSAGE: "Playwright tests passed successfully!"
+          SLACK_MESSAGE: "Playwright tests passed successfully! 
+            Testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
           
-      - name: Slack Notification - Failure
-        if: ${{ needs.playwright-tests.result == 'failure' }}
-        uses: bryannice/gitactions-slack-notification@2.0.0
-        env:
-          SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: "GASP UI Playwright Tests - Failure"
-          SLACK_COLOR: "#ff0011"
-          SLACK_MESSAGE: "Playwright tests failed. Please check the logs for details."
+  # slack-notify-nook:
+  #   needs: [playwright-tests, setup-report]
+  #   if: failure()
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Slack Notification - Failure
+  #       uses: bryannice/gitactions-slack-notification@2.0.0
+  #       env:
+  #         SLACK_INCOMING_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  #         SLACK_TITLE: "GASP UI Playwright Tests - Failure"
+  #         SLACK_COLOR: "#ff0011"
+  #         SLACK_MESSAGE: "Playwright tests failed. Please check the logs for details.
+  #           Testmo report: https://mangata-finance.testmo.net/automation/runs/view/${{needs.setup-report.outputs.testmo-run-id}}"
+            
