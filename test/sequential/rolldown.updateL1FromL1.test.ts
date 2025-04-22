@@ -520,7 +520,7 @@ describe("updateL2FromL1 - cancelResolution and deposit errors", () => {
     txIndex = (await Rolldown.maxAcceptedRequestIdOnl2(chain)) + 1;
   });
 
-  it("When a cancel resolution fail, maintenance mode will be triggered automatically", async () => {
+  it("When the cancel resolution fail, maintenance mode will be triggered automatically", async () => {
     await checkAndSwitchMmOff();
     await Rolldown.waitForReadRights(
       sequencer.keyRingPair.address,
