@@ -29,7 +29,7 @@ def controller_with_actions():
 
 @pytest.mark.asyncio
 @pytest.mark.swap
-async def test_gasp_wallets(browser_context, controller_with_actions, llm):
+async def test_gasp_swap(browser_context, controller_with_actions, llm):
     # Get initial actions for home page
     initial_actions = get_initial_actions()
     
