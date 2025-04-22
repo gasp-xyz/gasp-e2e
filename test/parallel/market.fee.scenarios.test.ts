@@ -22,13 +22,14 @@ import {
   getBalanceOfPool,
   getPoolIdFromEvent,
   getTokensAccountInfo,
+  getUserAssets,
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { feeLockErrors, stringToBN, xykErrors } from "../../utils/utils";
 import { ApiPromise } from "@polkadot/api";
-import { BN_ONE, BN_ZERO, signTx } from "gasp-sdk";
+import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult, filterEventData } from "../../utils/eventListeners";
 import {
   getFeeLockMetadata,
   rpcCalculateSellPrice,
@@ -112,24 +113,6 @@ async function prepareForMultiswapScenario(
     Market.createPool(currencies[0], amount, currencies[2], amount),
     Market.createPool(GASP_ASSET_ID, amount, currencies[2], amount),
     Market.createPool(GASP_ASSET_ID, amount, currencies[1], amount),
-    Assets.mintToken(currencies[0], testUser, amount),
-  );
-}
-
-async function prepareMultiswapPools(
-  currencies: [firstCurrency: BN, secondCurrency: BN, thirdCurrency: BN],
-  poolType: string,
-) {
-  const meta = await getFeeLockMetadata();
-  const amount = stringToBN(
-    JSON.parse(JSON.stringify(meta)).swapValueThreshold.toString(),
-  ).muln(5);
-  return await Sudo.batchAsSudoFinalized(
-    Market.createPool(currencies[0], amount, currencies[1], amount, poolType),
-    Market.createPool(currencies[1], amount, currencies[2], amount, poolType),
-    Market.createPool(GASP_ASSET_ID, amount, currencies[0], amount),
-    Market.createPool(GASP_ASSET_ID, amount, currencies[1], amount),
-    Market.createPool(GASP_ASSET_ID, amount, currencies[2], amount),
     Assets.mintToken(currencies[0], testUser, amount),
   );
 }
@@ -1104,39 +1087,56 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
   });
 });
 
-describe("MultiSell, user has only sold asset", () => {
-  test("GIVEN multi operation for stable pools AND sale amount > threshold THEN operation operation succeed", async () => {
-    [thirdCurrency] = await Assets.setupUserWithCurrencies(
-      sudo,
-      [threshold.muln(20), threshold.muln(20)],
-      sudo,
+describe("MultiSell, user has only sold asset and buy GASP", () => {
+  test("GIVEN sell operation for Xyk pools AND sale amount > threshold THEN operation operation succeed", async () => {
+    const soldAssetAmount = threshold.muln(2);
+    await Sudo.batchAsSudoFinalized(
+      ...(await addTestExtrinsic(
+        [firstCurrency, secondCurrency],
+        [true, "Xyk"],
+        [true, "Xyk"],
+        [true, "Xyk"],
+      )),
+      Assets.mintToken(firstCurrency, testUser, soldAssetAmount.muln(3)),
     );
-    await prepareMultiswapPools(
-      [firstCurrency, secondCurrency, thirdCurrency],
-      "Xyk",
-    );
-    const liqId1 = await rpcGetPoolId(firstCurrency, secondCurrency);
-    const liqId2 = await rpcGetPoolId(secondCurrency, thirdCurrency);
     await updateFeeLockMetadata(sudo, null, null, null, [
       [firstCurrency, true],
     ]);
+    const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
     await updateFeeLockMetadata(sudo, null, null, null, [
-      [secondCurrency, true],
-    ]);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [thirdCurrency, true],
+      [firstCurrency, true],
     ]);
 
-    await signTx(
+    const sellPrice = await rpcCalculateSellPrice(
+      liqId,
+      firstCurrency,
+      soldAssetAmount,
+    );
+
+    const userGaspAmountBefore = await getUserAssets(
+      testUser.keyRingPair.address,
+      [firstCurrency, GASP_ASSET_ID],
+    );
+
+    const events = await signTx(
       api,
-      Market.multiswapAssetSell(
-        [liqId1, liqId2],
-        firstCurrency,
-        threshold.muln(2),
-        thirdCurrency,
-        BN_ONE,
-      ),
+      Market.sellAsset(liqId, firstCurrency, GASP_ASSET_ID, soldAssetAmount),
       testUser.keyRingPair,
+    );
+    const filteredEvent = await filterEventData(events, "market.AssetsSwapped");
+
+    const userGaspAmountAfter = await getUserAssets(
+      testUser.keyRingPair.address,
+      [firstCurrency, GASP_ASSET_ID],
+    );
+
+    expect(userGaspAmountBefore[1].free).bnEqual(BN_ZERO);
+    expect(userGaspAmountAfter[1].free).bnEqual(sellPrice);
+    expect(
+      userGaspAmountBefore[0].free.sub(userGaspAmountAfter[0].free),
+    ).bnEqual(soldAssetAmount);
+    expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
+      soldAssetAmount.muln(997).divn(1000),
     );
   });
 });
