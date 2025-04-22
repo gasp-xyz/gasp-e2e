@@ -1,4 +1,4 @@
-import { api, Extrinsic, sudo } from "./setup";
+import { api, Extrinsic, setupUsers, sudo } from "./setup";
 import { User } from "./User";
 import { BN_ZERO, MangataGenericEvent, signTx } from "gasp-sdk";
 import { SudoDB } from "./SudoDB";
@@ -44,6 +44,7 @@ export class Sudo {
   static async batchAsSudoFinalized(
     ...txs: Extrinsic[]
   ): Promise<MangataGenericEvent[]> {
+    setupUsers();
     const nonce = await SudoDB.getInstance().getSudoNonce(
       sudo.keyRingPair.address,
     );
@@ -51,6 +52,7 @@ export class Sudo {
   }
 
   static async asSudoFinalized(tx: Extrinsic): Promise<MangataGenericEvent[]> {
+    setupUsers();
     const nonce = await SudoDB.getInstance().getSudoNonce(
       sudo.keyRingPair.address,
     );
@@ -59,6 +61,7 @@ export class Sudo {
 
   static async batchAsSudoFinalizedNonce(sudoNonce: BN, ...txs: Extrinsic[]) {
     const api = getApi();
+    setupUsers();
     let nonce = sudoNonce;
     if (stringToBN(sudoNonce.toString()).lt(BN_ZERO)) {
       nonce = await SudoDB.getInstance().getSudoNonce(sudo.keyRingPair.address);
