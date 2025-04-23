@@ -1087,56 +1087,62 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
   });
 });
 
-describe("MultiSell, user has only sold asset and buy GASP", () => {
-  test("GIVEN sell operation for Xyk pools AND sale amount > threshold THEN operation operation succeed", async () => {
-    const soldAssetAmount = threshold.muln(2);
-    await Sudo.batchAsSudoFinalized(
-      ...(await addTestExtrinsic(
-        [firstCurrency, secondCurrency],
-        [true, "Xyk"],
-        [true, "Xyk"],
-        [true, "Xyk"],
-      )),
-      Assets.mintToken(firstCurrency, testUser, soldAssetAmount.muln(3)),
-    );
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [firstCurrency, true],
-    ]);
-    const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [firstCurrency, true],
-    ]);
+describe("SingleSell, user has only sold asset and buy GASP", () => {
+  test.each(["Xyk", "StableSwap"])(
+    "GIVEN sell operation for %s pools AND sale amount > threshold THEN operation operation succeed",
+    async (poolType) => {
+      const soldAssetAmount = threshold.muln(2);
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [true, poolType],
+          [true, poolType],
+          [true, poolType],
+        )),
+        Assets.mintToken(firstCurrency, testUser, soldAssetAmount.muln(3)),
+      );
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+      const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
 
-    const sellPrice = await rpcCalculateSellPrice(
-      liqId,
-      firstCurrency,
-      soldAssetAmount,
-    );
+      const sellPrice = await rpcCalculateSellPrice(
+        liqId,
+        firstCurrency,
+        soldAssetAmount,
+      );
 
-    const userGaspAmountBefore = await getUserAssets(
-      testUser.keyRingPair.address,
-      [firstCurrency, GASP_ASSET_ID],
-    );
+      const userGaspAmountBefore = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
 
-    const events = await signTx(
-      api,
-      Market.sellAsset(liqId, firstCurrency, GASP_ASSET_ID, soldAssetAmount),
-      testUser.keyRingPair,
-    );
-    const filteredEvent = await filterEventData(events, "market.AssetsSwapped");
+      const events = await signTx(
+        api,
+        Market.sellAsset(liqId, firstCurrency, GASP_ASSET_ID, soldAssetAmount),
+        testUser.keyRingPair,
+      );
+      const filteredEvent = await filterEventData(
+        events,
+        "market.AssetsSwapped",
+      );
 
-    const userGaspAmountAfter = await getUserAssets(
-      testUser.keyRingPair.address,
-      [firstCurrency, GASP_ASSET_ID],
-    );
+      const userGaspAmountAfter = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
 
-    expect(userGaspAmountBefore[1].free).bnEqual(BN_ZERO);
-    expect(userGaspAmountAfter[1].free).bnEqual(sellPrice);
-    expect(
-      userGaspAmountBefore[0].free.sub(userGaspAmountAfter[0].free),
-    ).bnEqual(soldAssetAmount);
-    expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
-      soldAssetAmount.muln(997).divn(1000),
-    );
-  });
+      expect(userGaspAmountBefore[1].free).bnEqual(BN_ZERO);
+      expect(userGaspAmountAfter[1].free).bnEqual(sellPrice);
+      expect(
+        userGaspAmountBefore[0].free.sub(userGaspAmountAfter[0].free),
+      ).bnEqual(soldAssetAmount);
+      expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
+        soldAssetAmount.muln(997).divn(1000),
+      );
+    },
+  );
 });
