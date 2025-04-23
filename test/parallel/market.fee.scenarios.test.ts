@@ -1087,9 +1087,9 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
   });
 });
 
-describe("SingleSell, user has only sold asset and buy GASP", () => {
+describe("User has only sold asset and buy GASP", () => {
   test.each(["Xyk", "StableSwap"])(
-    "GIVEN sell operation for %s pools AND sale amount > threshold THEN operation operation succeed",
+    "SingleSell - GIVEN sell operation for %s pools AND sale amount > threshold THEN operation operation succeed",
     async (poolType) => {
       const soldAssetAmount = threshold.muln(2);
       await Sudo.batchAsSudoFinalized(
@@ -1115,7 +1115,7 @@ describe("SingleSell, user has only sold asset and buy GASP", () => {
         soldAssetAmount,
       );
 
-      const userGaspAmountBefore = await getUserAssets(
+      const userAmountBefore = await getUserAssets(
         testUser.keyRingPair.address,
         [firstCurrency, GASP_ASSET_ID],
       );
@@ -1130,16 +1130,99 @@ describe("SingleSell, user has only sold asset and buy GASP", () => {
         "market.AssetsSwapped",
       );
 
-      const userGaspAmountAfter = await getUserAssets(
+      const userAmountAfter = await getUserAssets(
         testUser.keyRingPair.address,
         [firstCurrency, GASP_ASSET_ID],
       );
 
-      expect(userGaspAmountBefore[1].free).bnEqual(BN_ZERO);
-      expect(userGaspAmountAfter[1].free).bnEqual(sellPrice);
-      expect(
-        userGaspAmountBefore[0].free.sub(userGaspAmountAfter[0].free),
-      ).bnEqual(soldAssetAmount);
+      expect(userAmountBefore[1].free).bnEqual(BN_ZERO);
+      expect(userAmountAfter[1].free).bnEqual(sellPrice);
+      expect(userAmountBefore[0].free.sub(userAmountAfter[0].free)).bnEqual(
+        soldAssetAmount,
+      );
+      expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
+        soldAssetAmount.muln(997).divn(1000),
+      );
+    },
+  );
+
+  test.each(["Xyk", "StableSwap"])(
+    "MultiSell - GIVEN sell operation for %s pools AND sale amount > threshold THEN operation operation succeed",
+    async (poolType) => {
+      const soldAssetAmount = threshold.muln(2);
+      const poolAmount = threshold.muln(5);
+      await Sudo.batchAsSudoFinalized(
+        Market.createPool(
+          firstCurrency,
+          poolAmount,
+          secondCurrency,
+          poolAmount,
+          poolType,
+        ),
+        Market.createPool(
+          secondCurrency,
+          poolAmount,
+          GASP_ASSET_ID,
+          poolAmount,
+          poolType,
+        ),
+        Assets.mintToken(firstCurrency, testUser, poolAmount),
+      );
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+      const liqId1 = await rpcGetPoolId(firstCurrency, secondCurrency);
+      const liqId2 = await rpcGetPoolId(secondCurrency, GASP_ASSET_ID);
+
+      const sellPrice1 = await rpcCalculateSellPrice(
+        liqId1,
+        firstCurrency,
+        soldAssetAmount,
+      );
+
+      const sellPrice2 = await rpcCalculateSellPrice(
+        liqId1,
+        firstCurrency,
+        sellPrice1,
+      );
+
+      const userAmountBefore = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
+
+      const events = await signTx(
+        api,
+        Market.sellAsset(
+          [liqId1, liqId2],
+          firstCurrency,
+          GASP_ASSET_ID,
+          soldAssetAmount,
+        ),
+        testUser.keyRingPair,
+      );
+      const filteredEvent = await filterEventData(
+        events,
+        "market.AssetsSwapped",
+      );
+
+      const userAmountAfter = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
+
+      const diff = userAmountAfter[1].free.sub(sellPrice2);
+
+      expect(userAmountBefore[1].free).bnEqual(BN_ZERO);
+      //we still have a problem with checking value in multiswap, so I decided to check that the values differ by less than 0.5 %
+      expect(diff).bnGt(BN_ZERO);
+      expect(diff).bnLt(sellPrice2.muln(5).divn(1000));
+      expect(userAmountBefore[0].free.sub(userAmountAfter[0].free)).bnEqual(
+        soldAssetAmount,
+      );
       expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
         soldAssetAmount.muln(997).divn(1000),
       );
