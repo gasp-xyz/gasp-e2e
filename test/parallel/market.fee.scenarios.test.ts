@@ -1298,10 +1298,6 @@ describe("User has only sold asset and buy GASP", () => {
         Assets.mintToken(thirdCurrency, testUser, poolAmount),
       );
 
-      await updateFeeLockMetadata(sudo, null, null, null, [
-        [thirdCurrency, true],
-      ]);
-
       const liqId = await rpcGetPoolId(thirdCurrency, GASP_ASSET_ID);
 
       let error: any;
@@ -1313,6 +1309,47 @@ describe("User has only sold asset and buy GASP", () => {
             firstCurrency,
             GASP_ASSET_ID,
             soldAssetAmount,
+          ),
+          testUser.keyRingPair,
+        );
+      } catch (e) {
+        error = e;
+      }
+      expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
+    },
+  );
+
+  test.each(["Xyk", "StableSwap"])(
+    "GIVEN a singleSell WHEN a user is selling a token that is tokenValueThreshold but amount is < thresholdSet THEN  it fails on pre-validation",
+    async (poolType) => {
+      const poolAmount = threshold.muln(5);
+
+      await Sudo.batchAsSudoFinalized(
+        Market.createPool(
+          firstCurrency,
+          poolAmount,
+          GASP_ASSET_ID,
+          poolAmount,
+          poolType,
+        ),
+        Assets.mintToken(firstCurrency, testUser, poolAmount),
+      );
+
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+
+      const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
+
+      let error: any;
+      try {
+        await signTx(
+          api,
+          Market.sellAsset(
+            liqId,
+            firstCurrency,
+            GASP_ASSET_ID,
+            threshold.divn(2),
           ),
           testUser.keyRingPair,
         );
