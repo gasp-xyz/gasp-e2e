@@ -22,13 +22,14 @@ import {
   getBalanceOfPool,
   getPoolIdFromEvent,
   getTokensAccountInfo,
+  getUserAssets,
   updateFeeLockMetadata,
 } from "../../utils/tx";
 import { feeLockErrors, stringToBN, xykErrors } from "../../utils/utils";
 import { ApiPromise } from "@polkadot/api";
 import { BN_ZERO, signTx } from "gasp-sdk";
 import { getEventResultFromMangataTx } from "../../utils/txHandler";
-import { ExtrinsicResult } from "../../utils/eventListeners";
+import { ExtrinsicResult, filterEventData } from "../../utils/eventListeners";
 import {
   getFeeLockMetadata,
   rpcCalculateSellPrice,
@@ -361,49 +362,55 @@ describe("SingleSell, user has only sold asset", () => {
     );
   });
 
-  test("GIVEN sale amount < threshold THEN operation fails on client", async () => {
-    await Sudo.batchAsSudoFinalized(
-      ...(await addTestExtrinsic(
-        [firstCurrency, secondCurrency],
-        [true, "Xyk"],
-        [true, "Xyk"],
-        [true, "Xyk"],
-      )),
-      Assets.mintToken(firstCurrency, testUser, threshold.muln(2)),
-    );
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [firstCurrency, true],
-    ]);
+  test.each(["Xyk", "StableSwap"])(
+    "GIVEN sale amount for %s pool < threshold THEN operation fails on client",
+    async (poolType) => {
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [true, poolType],
+          [true, poolType],
+          [true, poolType],
+        )),
+        Assets.mintToken(firstCurrency, testUser, threshold.muln(2)),
+      );
 
-    const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
+      const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
 
-    await getSwappingTokenError(
-      testUser,
-      [firstCurrency, GASP_ASSET_ID],
-      liqId,
-      threshold.divn(2),
-      feeLockErrors.SwapApprovalFail,
-      "Sell",
-      true,
-    );
-  });
+      await getSwappingTokenError(
+        testUser,
+        [firstCurrency, GASP_ASSET_ID],
+        liqId,
+        threshold.divn(2),
+        feeLockErrors.SwapApprovalFail,
+        "Sell",
+        true,
+      );
+    },
+  );
 
   test("GIVEN sold asset is not whitelisted AND sale amount > threshold THEN operation fails on client", async () => {
-    await Sudo.batchAsSudoFinalized(
-      ...(await addTestExtrinsic(
-        [firstCurrency, secondCurrency],
-        [true, "Xyk"],
-        [true, "Xyk"],
-        [true, "Xyk"],
-      )),
-      Assets.mintToken(firstCurrency, testUser, threshold.muln(2)),
+    const [thirdCurrency] = await Assets.setupUserWithCurrencies(
+      sudo,
+      [threshold.muln(20), threshold.muln(20)],
+      sudo,
     );
 
-    const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
+    await Sudo.batchAsSudoFinalized(
+      ...(await addTestExtrinsic(
+        [thirdCurrency, thirdCurrency],
+        [false, ""],
+        [true, "Xyk"],
+        [false, ""],
+      )),
+      Assets.mintToken(thirdCurrency, testUser, threshold.muln(2)),
+    );
+
+    const liqId = await rpcGetPoolId(thirdCurrency, GASP_ASSET_ID);
 
     await getSwappingTokenError(
       testUser,
-      [firstCurrency, GASP_ASSET_ID],
+      [thirdCurrency, GASP_ASSET_ID],
       liqId,
       threshold.muln(3).divn(2),
       feeLockErrors.SwapApprovalFail,
@@ -868,9 +875,11 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       [threshold.muln(20), threshold.muln(20)],
       sudo,
     );
-
     await updateFeeLockMetadata(sudo, null, null, null, [
       [firstCurrency, true],
+    ]);
+    await updateFeeLockMetadata(sudo, null, null, null, [
+      [secondCurrency, true],
     ]);
   });
 
@@ -879,12 +888,6 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       [firstCurrency, secondCurrency, thirdCurrency],
       "Xyk",
     );
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [firstCurrency, true],
-    ]);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [secondCurrency, true],
-    ]);
 
     const liqId = await rpcGetPoolId(thirdCurrency, secondCurrency);
 
@@ -904,12 +907,6 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
       [firstCurrency, secondCurrency, thirdCurrency],
       "StableSwap",
     );
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [firstCurrency, true],
-    ]);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [secondCurrency, true],
-    ]);
 
     const liqId = await getPoolIdFromEvent(poolEvent);
 
@@ -931,12 +928,6 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     );
 
     const liqId = await rpcGetPoolId(thirdCurrency, secondCurrency);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [firstCurrency, true],
-    ]);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [secondCurrency, true],
-    ]);
 
     await getSwappingTokenError(
       testUser,
@@ -956,12 +947,6 @@ describe("MultiSwap scenarios with slippage error, user has only sold asset", ()
     );
 
     const liqId = await getPoolIdFromEvent(poolEvent);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [firstCurrency, true],
-    ]);
-    await updateFeeLockMetadata(sudo, null, null, null, [
-      [secondCurrency, true],
-    ]);
 
     await getSwappingTokenError(
       testUser,
@@ -1085,3 +1070,404 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
     );
   });
 });
+
+describe.each(["Xyk", "StableSwap"])(
+  "User has only sold asset in %s pool and buy GASP, ",
+  (poolType) => {
+    test("SingleSell - GIVEN sell operation AND that is on tokenValueThreshold AND sale amount > threshold THEN operation operation succeed", async () => {
+      const soldAssetAmount = threshold.muln(2);
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [false, ""],
+          [true, poolType],
+          [false, ""],
+        )),
+        Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
+      );
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+      const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+
+      const sellPrice = await rpcCalculateSellPrice(
+        liqId,
+        firstCurrency,
+        soldAssetAmount,
+      );
+
+      const userAmountBefore = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
+
+      const events = await signTx(
+        api,
+        Market.sellAsset(liqId, firstCurrency, GASP_ASSET_ID, soldAssetAmount),
+        testUser.keyRingPair,
+      );
+      const filteredEvent = await filterEventData(
+        events,
+        "market.AssetsSwapped",
+      );
+
+      const userAmountAfter = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
+
+      expect(userAmountBefore[1].free).bnEqual(BN_ZERO);
+      expect(userAmountAfter[1].free).bnEqual(sellPrice);
+      expect(userAmountBefore[0].free.sub(userAmountAfter[0].free)).bnEqual(
+        soldAssetAmount,
+      );
+      expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
+        soldAssetAmount.muln(997).divn(1000),
+      );
+    });
+
+    test("MultiSell - GIVEN sell operation AND that is on tokenValueThreshold AND sale amount > threshold THEN operation operation succeed", async () => {
+      const soldAssetAmount = threshold.muln(2);
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [true, poolType],
+          [false, ""],
+          [true, poolType],
+        )),
+        Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
+      );
+
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+      const liqId1 = await rpcGetPoolId(firstCurrency, secondCurrency);
+      const liqId2 = await rpcGetPoolId(secondCurrency, GASP_ASSET_ID);
+
+      const sellPrice1 = await rpcCalculateSellPrice(
+        liqId1,
+        firstCurrency,
+        soldAssetAmount,
+      );
+
+      const sellPrice2 = await rpcCalculateSellPrice(
+        liqId1,
+        firstCurrency,
+        sellPrice1,
+      );
+
+      const userAmountBefore = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
+
+      const events = await signTx(
+        api,
+        Market.sellAsset(
+          [liqId1, liqId2],
+          firstCurrency,
+          GASP_ASSET_ID,
+          soldAssetAmount,
+        ),
+        testUser.keyRingPair,
+      );
+      const filteredEvent = await filterEventData(
+        events,
+        "market.AssetsSwapped",
+      );
+
+      const userAmountAfter = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency, GASP_ASSET_ID],
+      );
+
+      const diff = userAmountAfter[1].free.sub(sellPrice2);
+
+      expect(userAmountBefore[1].free).bnEqual(BN_ZERO);
+      //we still have a problem with checking value in multiswap, so I decided to check that the values differ by less than 0.5 %
+      expect(diff).bnGt(BN_ZERO);
+      expect(diff).bnLt(sellPrice2.muln(5).divn(1000));
+      expect(userAmountBefore[0].free.sub(userAmountAfter[0].free)).bnEqual(
+        soldAssetAmount,
+      );
+      expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
+        soldAssetAmount.muln(997).divn(1000),
+      );
+    });
+
+    test("GIVEN sellAsset operation AND that is on tokenValueThreshold AND sale amount > threshold AND buying GASP THEN operation fails on client", async () => {
+      const soldAssetAmount = threshold.muln(2);
+      const poolAmount = threshold.muln(5);
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [true, poolType],
+          [false, ""],
+          [true, poolType],
+        )),
+        Assets.mintToken(firstCurrency, testUser, poolAmount),
+      );
+      await updateFeeLockMetadata(sudo, null, null, null, [
+        [firstCurrency, true],
+      ]);
+
+      const liqId1 = await rpcGetPoolId(firstCurrency, secondCurrency);
+      const liqId2 = await rpcGetPoolId(secondCurrency, GASP_ASSET_ID);
+
+      const userAmountBefore = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency],
+      );
+
+      const events = await signTx(
+        api,
+        Market.sellAsset(
+          [liqId1, liqId2],
+          firstCurrency,
+          GASP_ASSET_ID,
+          soldAssetAmount,
+          soldAssetAmount.muln(1000),
+        ),
+        testUser.keyRingPair,
+      );
+
+      const userAmountAfter = await getUserAssets(
+        testUser.keyRingPair.address,
+        [firstCurrency],
+      );
+
+      const eventResponse = getEventResultFromMangataTx(events);
+      expect(eventResponse.state).toEqual(ExtrinsicResult.ExtrinsicFailed);
+      expect(eventResponse.data).toEqual(xykErrors.InsufficientOutputAmount);
+
+      expect(userAmountBefore[0].free.sub(userAmountAfter[0].free)).bnEqual(
+        soldAssetAmount.muln(3).divn(1000),
+      );
+    });
+
+    test("GIVEN a singleSell WHEN a user is selling a token AND that is not tokenValueThreshold it fails on pre-validation", async () => {
+      const [thirdCurrency] = await Assets.setupUserWithCurrencies(
+        sudo,
+        [threshold.muln(20)],
+        sudo,
+      );
+
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [thirdCurrency, thirdCurrency],
+          [false, ""],
+          [true, poolType],
+          [false, ""],
+        )),
+        Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
+      );
+
+      const liqId = await rpcGetPoolId(thirdCurrency, GASP_ASSET_ID);
+
+      let error: any;
+      try {
+        await signTx(
+          api,
+          Market.sellAsset(
+            liqId,
+            firstCurrency,
+            GASP_ASSET_ID,
+            threshold.muln(2),
+          ),
+          testUser.keyRingPair,
+        );
+      } catch (e) {
+        error = e;
+      }
+      expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
+    });
+
+    test("GIVEN a singleSell operation WHEN a user is selling a token AND that is on tokenValueThreshold but amount is < thresholdSet THEN  it fails on pre-validation", async () => {
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [false, ""],
+          [true, poolType],
+          [false, ""],
+        )),
+        Assets.mintToken(firstCurrency, testUser, threshold.muln(5)),
+      );
+
+      const liqId = await rpcGetPoolId(firstCurrency, GASP_ASSET_ID);
+
+      let error: any;
+      try {
+        await signTx(
+          api,
+          Market.sellAsset(
+            liqId,
+            firstCurrency,
+            GASP_ASSET_ID,
+            threshold.divn(2),
+          ),
+          testUser.keyRingPair,
+        );
+      } catch (e) {
+        error = e;
+      }
+      expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
+    });
+
+    test("GIVEN a multiSell WHEN a user is selling a token AND that is not tokenValueThreshold it fails on pre-validation", async () => {
+      const poolAmount = threshold.muln(5);
+      const [thirdCurrency, forthCurrency] =
+        await Assets.setupUserWithCurrencies(
+          sudo,
+          [threshold.muln(20), threshold.muln(20)],
+          sudo,
+        );
+
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [thirdCurrency, forthCurrency],
+          [true, poolType],
+          [false, ""],
+          [true, poolType],
+        )),
+        Assets.mintToken(firstCurrency, testUser, poolAmount),
+      );
+
+      const liqId1 = await rpcGetPoolId(thirdCurrency, forthCurrency);
+      const liqId2 = await rpcGetPoolId(forthCurrency, GASP_ASSET_ID);
+
+      let error: any;
+      try {
+        await signTx(
+          api,
+          Market.sellAsset(
+            [liqId1, liqId2],
+            thirdCurrency,
+            GASP_ASSET_ID,
+            threshold.muln(2),
+          ),
+          testUser.keyRingPair,
+        );
+      } catch (e) {
+        error = e;
+      }
+      expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
+    });
+
+    test("GIVEN a multiSell operation WHEN a user is selling a token AND that is on tokenValueThreshold AND amount is < thresholdSet THEN  it fails on pre-validation", async () => {
+      const poolAmount = threshold.muln(5);
+
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [true, poolType],
+          [false, ""],
+          [true, poolType],
+        )),
+        Assets.mintToken(firstCurrency, testUser, poolAmount),
+      );
+
+      const liqId1 = await rpcGetPoolId(firstCurrency, secondCurrency);
+      const liqId2 = await rpcGetPoolId(secondCurrency, GASP_ASSET_ID);
+
+      let error: any;
+      try {
+        await signTx(
+          api,
+          Market.sellAsset(
+            [liqId1, liqId2],
+            firstCurrency,
+            GASP_ASSET_ID,
+            threshold.divn(2),
+          ),
+          testUser.keyRingPair,
+        );
+      } catch (e) {
+        error = e;
+      }
+      expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
+    });
+
+    test("GIVEN a multiBuy operation WHEN a user is selling a token that is not tokenValueThreshold it fails on pre-validation", async () => {
+      const poolAmount = threshold.muln(5);
+      const [thirdCurrency, forthCurrency] =
+        await Assets.setupUserWithCurrencies(
+          sudo,
+          [threshold.muln(20), threshold.muln(20)],
+          sudo,
+        );
+
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [thirdCurrency, forthCurrency],
+          [true, poolType],
+          [false, ""],
+          [true, poolType],
+        )),
+        Assets.mintToken(thirdCurrency, testUser, poolAmount),
+      );
+
+      const liqId1 = await rpcGetPoolId(thirdCurrency, forthCurrency);
+      const liqId2 = await rpcGetPoolId(forthCurrency, GASP_ASSET_ID);
+
+      let error: any;
+      try {
+        await signTx(
+          api,
+          await Market.buyAsset(
+            [liqId1, liqId2],
+            thirdCurrency,
+            GASP_ASSET_ID,
+            threshold.muln(2),
+          ),
+          testUser.keyRingPair,
+        );
+      } catch (e) {
+        error = e;
+      }
+      expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
+    });
+
+    test("GIVEN a multiBuy operation WHEN a user is selling a token that is on tokenValueThreshold but amount is < thresholdSet THEN  it fails on pre-validation", async () => {
+      const poolAmount = threshold.muln(5);
+      const [firstCurrency, secondCurrency] =
+        await Assets.setupUserWithCurrencies(
+          sudo,
+          [threshold.muln(20), threshold.muln(20)],
+          sudo,
+        );
+
+      await Sudo.batchAsSudoFinalized(
+        ...(await addTestExtrinsic(
+          [firstCurrency, secondCurrency],
+          [true, poolType],
+          [false, ""],
+          [true, poolType],
+        )),
+        Assets.mintToken(firstCurrency, testUser, poolAmount),
+      );
+
+      const liqId1 = await rpcGetPoolId(firstCurrency, secondCurrency);
+      const liqId2 = await rpcGetPoolId(secondCurrency, GASP_ASSET_ID);
+
+      let error: any;
+      try {
+        await signTx(
+          api,
+          await Market.buyAsset(
+            [liqId1, liqId2],
+            firstCurrency,
+            GASP_ASSET_ID,
+            threshold.divn(2),
+          ),
+          testUser.keyRingPair,
+        );
+      } catch (e) {
+        error = e;
+      }
+      expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
+    });
+  },
+);
