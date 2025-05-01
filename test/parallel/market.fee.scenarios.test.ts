@@ -1071,10 +1071,10 @@ describe("Fee checking scenarios, user has only sold asset and sold amount > use
   });
 });
 
-describe("User has only sold asset and buy GASP", () => {
-  test.each(["Xyk", "StableSwap"])(
-    "SingleSell - GIVEN sell operation for %s pools AND that is on tokenValueThreshold AND sale amount > threshold THEN operation operation succeed",
-    async (poolType) => {
+describe.each(["Xyk", "StableSwap"])(
+  "User has only sold asset in %s pool and buy GASP, ",
+  (poolType) => {
+    test("SingleSell - GIVEN sell operation AND that is on tokenValueThreshold AND sale amount > threshold THEN operation operation succeed", async () => {
       const soldAssetAmount = threshold.muln(2);
       await Sudo.batchAsSudoFinalized(
         ...(await addTestExtrinsic(
@@ -1127,12 +1127,9 @@ describe("User has only sold asset and buy GASP", () => {
       expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
         soldAssetAmount.muln(997).divn(1000),
       );
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "MultiSell - GIVEN sell operation for %s pools AND that is on tokenValueThreshold AND sale amount > threshold THEN operation operation succeed",
-    async (poolType) => {
+    test("MultiSell - GIVEN sell operation AND that is on tokenValueThreshold AND sale amount > threshold THEN operation operation succeed", async () => {
       const soldAssetAmount = threshold.muln(2);
       await Sudo.batchAsSudoFinalized(
         ...(await addTestExtrinsic(
@@ -1199,12 +1196,9 @@ describe("User has only sold asset and buy GASP", () => {
       expect(stringToBN(filteredEvent[0].swaps[0].amountIn)).bnEqual(
         soldAssetAmount.muln(997).divn(1000),
       );
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "GIVEN sellAsset operation for %s pool AND that is on tokenValueThreshold AND sale amount > threshold AND buying GASP THEN operation fails on client",
-    async (poolType) => {
+    test("GIVEN sellAsset operation AND that is on tokenValueThreshold AND sale amount > threshold AND buying GASP THEN operation fails on client", async () => {
       const soldAssetAmount = threshold.muln(2);
       const poolAmount = threshold.muln(5);
       await Sudo.batchAsSudoFinalized(
@@ -1252,12 +1246,9 @@ describe("User has only sold asset and buy GASP", () => {
       expect(userAmountBefore[0].free.sub(userAmountAfter[0].free)).bnEqual(
         soldAssetAmount.muln(3).divn(1000),
       );
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "GIVEN a singleSell for %s pool WHEN a user is selling a token AND that is not tokenValueThreshold it fails on pre-validation",
-    async (poolType) => {
+    test("GIVEN a singleSell WHEN a user is selling a token AND that is not tokenValueThreshold it fails on pre-validation", async () => {
       const [thirdCurrency] = await Assets.setupUserWithCurrencies(
         sudo,
         [threshold.muln(20)],
@@ -1292,12 +1283,9 @@ describe("User has only sold asset and buy GASP", () => {
         error = e;
       }
       expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "GIVEN a singleSell operation for %s pool  WHEN a user is selling a token AND that is on tokenValueThreshold but amount is < thresholdSet THEN  it fails on pre-validation",
-    async (poolType) => {
+    test("GIVEN a singleSell operation WHEN a user is selling a token AND that is on tokenValueThreshold but amount is < thresholdSet THEN  it fails on pre-validation", async () => {
       await Sudo.batchAsSudoFinalized(
         ...(await addTestExtrinsic(
           [firstCurrency, secondCurrency],
@@ -1326,12 +1314,9 @@ describe("User has only sold asset and buy GASP", () => {
         error = e;
       }
       expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "GIVEN a multiSell for %s pool WHEN a user is selling a token AND that is not tokenValueThreshold it fails on pre-validation",
-    async (poolType) => {
+    test("GIVEN a multiSell WHEN a user is selling a token AND that is not tokenValueThreshold it fails on pre-validation", async () => {
       const poolAmount = threshold.muln(5);
       const [thirdCurrency, forthCurrency] =
         await Assets.setupUserWithCurrencies(
@@ -1369,12 +1354,9 @@ describe("User has only sold asset and buy GASP", () => {
         error = e;
       }
       expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "GIVEN a multiSell operation for %s pool WHEN a user is selling a token AND that is on tokenValueThreshold AND amount is < thresholdSet THEN  it fails on pre-validation",
-    async (poolType) => {
+    test("GIVEN a multiSell operation WHEN a user is selling a token AND that is on tokenValueThreshold AND amount is < thresholdSet THEN  it fails on pre-validation", async () => {
       const poolAmount = threshold.muln(5);
 
       await Sudo.batchAsSudoFinalized(
@@ -1406,12 +1388,9 @@ describe("User has only sold asset and buy GASP", () => {
         error = e;
       }
       expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "GIVEN a multiBuy operation for %s  WHEN a user is selling a token that is not tokenValueThreshold it fails on pre-validation",
-    async (poolType) => {
+    test("GIVEN a multiBuy operation WHEN a user is selling a token that is not tokenValueThreshold it fails on pre-validation", async () => {
       const poolAmount = threshold.muln(5);
       const [thirdCurrency, forthCurrency] =
         await Assets.setupUserWithCurrencies(
@@ -1449,12 +1428,9 @@ describe("User has only sold asset and buy GASP", () => {
         error = e;
       }
       expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
-    },
-  );
+    });
 
-  test.each(["Xyk", "StableSwap"])(
-    "GIVEN a multiBuy operation for %s  WHEN a user is selling a token that is on tokenValueThreshold but amount is < thresholdSet THEN  it fails on pre-validation",
-    async (poolType) => {
+    test("GIVEN a multiBuy operation WHEN a user is selling a token that is on tokenValueThreshold but amount is < thresholdSet THEN  it fails on pre-validation", async () => {
       const poolAmount = threshold.muln(5);
       const [firstCurrency, secondCurrency] =
         await Assets.setupUserWithCurrencies(
@@ -1492,6 +1468,6 @@ describe("User has only sold asset and buy GASP", () => {
         error = e;
       }
       expect(error.data).toEqual(feeLockErrors.SwapApprovalFail);
-    },
-  );
-});
+    });
+  },
+);
