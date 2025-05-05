@@ -2,8 +2,7 @@ name: Microapps UI prod smoke tests
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "5 10 * * *"
+  
 jobs:
   setup-report:
     name: setup testmo report
