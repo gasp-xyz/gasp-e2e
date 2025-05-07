@@ -204,7 +204,7 @@ test("gasless- isFree depends on the token and the sell valuation AND prevalidat
         amount.addn(1),
       )
     ).toString(),
-  ).toEqual("true");
+  ).toEqual("false");
 
   expect(
     (

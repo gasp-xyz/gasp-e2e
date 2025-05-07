@@ -16,6 +16,7 @@ import {
   calculateFees,
   calculateLiqAssetAmount,
   fromBNToUnitString,
+  fromStringToBN,
   fromStringToUnitString,
   stringToBN,
 } from "./utils";
@@ -117,10 +118,10 @@ export function validateMintedLiquidityEvent(
   expect(fromStringToUnitString(rawData[4])).toEqual(
     fromBNToUnitString(secondCurrencyAmount),
   );
-  expect(rawData[5].toString()).toEqual(liquidityAssetId.toString());
-  expect(fromStringToUnitString(rawData[6])).toEqual(
-    fromBNToUnitString(txAmount),
+  expect(fromStringToBN(rawData[5]).toString()).toEqual(
+    liquidityAssetId.toString(),
   );
+  expect(fromStringToBN(rawData[6]).toString()).toEqual(txAmount.toString());
 }
 
 export async function validateStatusWhenPoolCreated(
