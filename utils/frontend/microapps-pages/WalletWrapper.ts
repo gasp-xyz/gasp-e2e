@@ -13,7 +13,7 @@ import {
 
 const DIV_WALLET_WRAPPER = "wallet-wrapper";
 const DIV_WALLET_CONNECTED = "wallet-connected";
-const DIV_WALLET_ITEM = "installedWallets-walletCard";
+const DIV_WALLET_ITEM = "walletCard";
 const DIV_WALLET_WRAPPER_HEADER_ACC = "wallet-wrapper-header-account";
 const BUTTON_WALLET_CONNECT = "wallet-notConnected-cta";
 const BUTTON_WALLET_SETTINGS = "wallet-wrapper-header-settings";
