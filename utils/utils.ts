@@ -46,6 +46,11 @@ export function fromStringToUnitString(value: string) {
   return fromBNToUnitString(valueBN);
 }
 
+export function fromStringToBN(value: string) {
+  const stringWithoutCommas = value.split(",").join("");
+  return new BN(stringWithoutCommas);
+}
+
 export function getMangataApiUrlPort() {
   const { chainUri } = getEnvironmentRequiredVars();
   const port = chainUri.substring(chainUri.lastIndexOf(":") + 1);
