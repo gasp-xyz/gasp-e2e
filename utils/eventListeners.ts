@@ -129,13 +129,13 @@ export async function waitSudoOperationSuccess(
   checkingEvent: MangataGenericEvent[],
   filterBy = "Sudid",
 ) {
-  const filterBootstrapEvent = checkingEvent.filter(
+  const eventFiltered = checkingEvent.filter(
     (extrinsicResult) => extrinsicResult.method === filterBy,
   );
 
-  const userBootstrapCall = filterBootstrapEvent[0].event.data[0].toString();
+  const filteredEventData = eventFiltered[0].event.data[0].toString();
 
-  expect(userBootstrapCall).toContain("Ok");
+  expect(filteredEventData).toContain("Ok");
 }
 
 export async function waitSudoOperationFail(

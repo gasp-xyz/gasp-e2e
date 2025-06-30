@@ -24,9 +24,9 @@ import { testLog } from "../Logger";
 import { BTreeMap } from "@polkadot/types-codec";
 import {
   PalletRolldownMessagesChain,
+  PalletRolldownMessagesDeposit,
   PalletRolldownSequencerRights,
   SpRuntimeAccountAccountId20,
-  PalletRolldownMessagesDeposit,
 } from "@polkadot/types/lookup";
 import { User } from "../User";
 import { Sudo } from "../sudo";
@@ -402,7 +402,7 @@ export class Rolldown {
   }
 
   static async waitForL2UpdateExecuted(requestId: BN) {
-    const event = await waitForAllEventsFromMatchingBlock(
+    return await waitForAllEventsFromMatchingBlock(
       getApi(),
       30,
       (ev) =>
@@ -411,7 +411,6 @@ export class Rolldown {
         (ev.data.toHuman() as any).requestId.toString() ===
           requestId.toString(),
     );
-    return event;
   }
 
   static async waitForNextBatchCreated(chain: string, blocksLimit = 25) {
@@ -694,7 +693,8 @@ export async function createAnUpdate(
 ) {
   const address = typeof seq === "string" ? seq : seq.keyRingPair.address;
   await Rolldown.waitForReadRights(address, 50, chain);
-  let txIndex = await Rolldown.lastProcessedRequestOnL2(chain);
+  let txIndex = await Rolldown.maxAcceptedRequestIdOnl2(chain);
+  txIndex = txIndex + 1;
   if (forcedIndex !== 0) {
     txIndex = forcedIndex;
   }
