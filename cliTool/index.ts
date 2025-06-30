@@ -64,23 +64,25 @@ import {
   Withdrawal,
   DepositWithdrawalRecord,
   Deposit,
+  stringToBN,
 } from "../utils/utils";
 import { Node } from "../utils/Framework/Node/Node";
 import { SudoUser } from "../utils/Framework/User/SudoUser";
 import { Keyring } from "@polkadot/api";
 import { getApi, initApi } from "../utils/api";
 import { User } from "../utils/User";
-import { BN_ZERO, Mangata } from "gasp-sdk";
+import { BN_ZERO, Mangata, signTx } from "gasp-sdk";
 import { encodeAddress } from "@polkadot/keyring";
 import { stringToU8a, bnToU8a, u8aConcat, BN } from "@polkadot/util";
 import { Sudo } from "../utils/sudo";
 import { setupApi, setupUsers } from "../utils/setup";
 import { Assets } from "../utils/Assets";
 import { toNumber } from "lodash-es";
-import { Rolldown } from "../utils/rollDown/Rolldown";
+import { L2Update, Rolldown } from "../utils/rollDown/Rolldown";
 import inquirer from "inquirer";
 import { getAssetIdFromErc20 } from "../utils/rollup/ethUtils";
 import Redis from "ioredis-rejson";
+import { L1Type } from "../utils/rollup/l1s";
 
 async function app(): Promise<any> {
   return inquirer
@@ -150,6 +152,8 @@ async function app(): Promise<any> {
         "Track deposit transaction",
         "Track withdrawal transaction",
         "printAllSwapsFromPool",
+        "Create deposit with ferry",
+        "Create withdrawal with ferry",
       ],
     })
     .then(async (answers: { option: string | string[] }) => {
@@ -1100,6 +1104,166 @@ async function app(): Promise<any> {
             await redis.quit();
             return app();
           });
+      }
+      if (answers.option.includes("Create deposit with ferry")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "chain",
+              message: "Chain",
+              default: "Ethereum",
+            },
+            {
+              type: "input",
+              name: "depositorAddress",
+              message: "Depositor address",
+            },
+            {
+              type: "input",
+              name: "ferrierKey",
+              message: "Ferrier private key",
+            },
+            {
+              type: "input",
+              name: "txIndex",
+              message: "requestId index",
+            },
+            {
+              type: "input",
+              name: "tokenAddress",
+              message: "ERC20 token address",
+              default: "0xc351628eb244ec633d5f21fbd6621e1a683b1181",
+            },
+            {
+              type: "input",
+              name: "depositAmount",
+              message: "Deposit amount",
+            },
+            {
+              type: "input",
+              name: "ferryTip",
+              message: "Ferry tip",
+            },
+            {
+              type: "input",
+              name: "timestamp",
+              message: "Timestamp",
+              default: "0",
+            },
+          ])
+          .then(
+            async (answers: {
+              chain: any;
+              depositorAddress: string;
+              ferrierKey: string;
+              txIndex: number;
+              tokenAddress: string;
+              depositAmount: number;
+              ferryTip: string;
+              timestamp: number;
+            }) => {
+              await initApi();
+              const api = await getApi();
+              const keyring = new Keyring({ type: "ethereum" });
+              const ferrier = new User(keyring, answers.ferrierKey);
+              const depositUpdate = new L2Update(api)
+                .withDeposit(
+                  answers.txIndex,
+                  answers.depositorAddress,
+                  answers.tokenAddress,
+                  answers.depositAmount,
+                  answers.timestamp,
+                  stringToBN(answers.ferryTip),
+                )
+                .on(answers.chain);
+              const pendingDeposit = depositUpdate.pendingDeposits[0];
+              await signTx(
+                api,
+                api.tx.rolldown.ferryDepositUnsafe(
+                  answers.chain,
+                  pendingDeposit.requestId,
+                  pendingDeposit.depositRecipient,
+                  pendingDeposit.tokenAddress,
+                  pendingDeposit.amount,
+                  pendingDeposit.timeStamp,
+                  pendingDeposit.ferryTip,
+                ),
+                ferrier.keyRingPair,
+              );
+              return app();
+            },
+          );
+      }
+      if (answers.option.includes("Create withdrawal with ferry")) {
+        return inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "l1",
+              message: "L1 Type",
+              default: "EthAnvil",
+            },
+            {
+              type: "input",
+              name: "depositorAddress",
+              message: "Depositor address",
+            },
+            {
+              type: "input",
+              name: "ferrierKey",
+              message: "Ferrier private key",
+            },
+            {
+              type: "input",
+              name: "txIndex",
+              message: "requestId index",
+            },
+            {
+              type: "input",
+              name: "tokenAddress",
+              message: "ERC20 token address",
+              default: "0xc351628eb244ec633d5f21fbd6621e1a683b1181",
+            },
+            {
+              type: "input",
+              name: "depositAmount",
+              message: "Deposit amount",
+            },
+            {
+              type: "input",
+              name: "ferryTip",
+              message: "Ferry tip",
+            },
+          ])
+          .then(
+            async (answers: {
+              l1: L1Type;
+              depositorAddress: string;
+              ferrierKey: string;
+              txIndex: number;
+              tokenAddress: string;
+              depositAmount: number;
+              ferryTip: number;
+            }) => {
+              await initApi();
+              const keyring = new Keyring({ type: "ethereum" });
+              const ferrier = new User(keyring, answers.ferrierKey);
+              await Rolldown.ferryWithdrawal(
+                answers.l1,
+                ferrier,
+                answers.depositorAddress,
+                answers.tokenAddress,
+                answers.depositAmount,
+                answers.ferryTip,
+                {
+                  origin: 1,
+                  id: answers.txIndex,
+                },
+              );
+              return app();
+            },
+          );
       }
       return app();
     });

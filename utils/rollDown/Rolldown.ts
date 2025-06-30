@@ -471,13 +471,15 @@ export class Rolldown {
   static async ferryWithdrawal(
     l1: L1Type,
     ferry: User,
-    user: User,
+    user: User | string,
 
-    tokenAddress: "0x${string}",
+    tokenAddress: "0x${string}" | string,
     amount: number,
     tip: number,
     requestId: any,
   ) {
+    const recipientAddress =
+      typeof user === "string" ? user : user.keyRingPair.address;
     const publicClient = getPublicClient(l1);
     const walletClient = getWalletClient(l1);
     const account: PrivateKeyAccount = privateKeyToAccount(
@@ -488,7 +490,7 @@ export class Rolldown {
         origin: requestId.origin,
         id: requestId.id,
       },
-      recipient: user.keyRingPair.address,
+      recipient: recipientAddress,
       tokenAddress: tokenAddress,
       amount: nToBigInt(amount),
       ferryTip: nToBigInt(tip),
